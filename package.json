@@ -11,6 +11,7 @@
     "deploy": "bun run build && wrangler deploy",
     "preview": "vite preview",
     "content": "bun scripts/build-content.ts",
+    "audio": "bun scripts/build-audio.ts",
     "test": "bun test src",
     "typecheck": "tsc --noEmit && tsc --noEmit -p worker"
   },

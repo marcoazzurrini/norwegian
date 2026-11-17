@@ -2,6 +2,8 @@
 // pages are fetched from the network first and fall back to the cached shell;
 // everything else is served from the cache and refreshed in the background.
 const CACHE = 'norsk-v1'
+// Recorded audio never changes, so it is kept apart and survives app updates.
+const AUDIO = 'norsk-audio-v1'
 const SHELL = '/'
 
 self.addEventListener('install', (event) => {
@@ -10,13 +12,26 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()),
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== AUDIO).map((k) => caches.delete(k)))).then(() => self.clients.claim()),
   )
 })
 
 self.addEventListener('fetch', (event) => {
   const { request } = event
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return
+
+  if (new URL(request.url).pathname.startsWith('/audio/')) {
+    event.respondWith(
+      caches.open(AUDIO).then(async (cache) => {
+        const cached = await cache.match(request)
+        if (cached) return cached
+        const response = await fetch(request)
+        if (response.ok) cache.put(request, response.clone())
+        return response
+      }),
+    )
+    return
+  }
 
   if (request.mode === 'navigate') {
     event.respondWith(

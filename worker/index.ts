@@ -1,10 +1,11 @@
-// Sync server. Static files are served by Cloudflare directly; this code only handles /api/*.
-// It stores one learner's data in D1 and is protected by a single secret key.
+// Sync and audio server. Static files are served by Cloudflare directly; this code handles /api/* and /audio/*.
+// It stores one learner's data in D1 and recorded audio in R2. Changes need a single secret key.
 import { mergeMeta, type SyncedMeta } from '../src/sync/merge'
 import { LOG_PAGE, stampOf, type SyncRequest, type SyncResponse, type WireLog, type WireMem } from '../src/sync/protocol'
 
 interface Env {
   DB: D1Database
+  AUDIO: R2Bucket
   /** Set with `wrangler secret put SYNC_KEY`. */
   SYNC_KEY: string
 }
@@ -115,14 +116,45 @@ async function reset(db: D1Database, epoch: number): Promise<Response> {
   return json({ epoch })
 }
 
+const AUDIO_PATH = /^\/audio\/([a-z0-9-]{1,40}\/[0-9a-f]{20}\.mp3)$/
+
+/** Recorded audio is public and never changes: a new recording gets a new name. */
+async function audio(env: Env, name: string): Promise<Response> {
+  const object = await env.AUDIO.get(name)
+  if (!object) return new Response('Not found', { status: 404, headers: { 'cache-control': 'no-store' } })
+  return new Response(object.body, { headers: { 'content-type': 'audio/mpeg', 'cache-control': 'public, max-age=31536000, immutable', etag: object.httpEtag } })
+}
+
+/** Names of all recordings of one voice, so the build script uploads only what is missing. */
+async function audioList(env: Env, voice: string): Promise<string[]> {
+  const names: string[] = []
+  let cursor: string | undefined
+  do {
+    const page = await env.AUDIO.list({ prefix: `${voice}/`, cursor })
+    names.push(...page.objects.map((o) => o.key))
+    cursor = page.truncated ? page.cursor : undefined
+  } while (cursor)
+  return names
+}
+
 export default {
   async fetch(request, env): Promise<Response> {
     const { pathname } = new URL(request.url)
+    const file = pathname.match(AUDIO_PATH)?.[1]
+    if (pathname.startsWith('/audio/')) return file && request.method === 'GET' ? audio(env, file) : new Response('Not found', { status: 404 })
     if (!pathname.startsWith('/api/')) return new Response('Not found', { status: 404 })
-    if (request.method !== 'POST') return json({ error: 'Use POST' }, 405)
 
     const given = request.headers.get('authorization')?.replace(/^Bearer /, '') ?? ''
     if (!env.SYNC_KEY || !(await sameSecret(given, env.SYNC_KEY))) return json({ error: 'Wrong key' }, 401)
+
+    const upload = pathname.match(/^\/api(\/audio\/.+)$/)?.[1].match(AUDIO_PATH)?.[1]
+    if (upload && request.method === 'PUT') {
+      const body = await request.arrayBuffer()
+      if (body.byteLength > MAX_BODY) return json({ error: 'File too large' }, 413)
+      await env.AUDIO.put(upload, body, { httpMetadata: { contentType: 'audio/mpeg' } })
+      return json({ ok: true })
+    }
+    if (request.method !== 'POST') return json({ error: 'Use POST' }, 405)
 
     const text = await request.text()
     if (text.length > MAX_BODY) return json({ error: 'Too much data in one request' }, 413)
@@ -134,6 +166,7 @@ export default {
     }
 
     if (pathname === '/api/sync') return json(await sync(env.DB, body as SyncRequest))
+    if (pathname === '/api/audio-list') return json(await audioList(env, String((body as { voice: string }).voice)))
     if (pathname === '/api/reset') return reset(env.DB, (body as { epoch: number }).epoch)
     return json({ error: 'Not found' }, 404)
   },

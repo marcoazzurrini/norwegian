@@ -1,6 +1,9 @@
-// Norwegian audio through the browser's built-in voices (Web Speech API).
+// Norwegian audio. Recorded voices are used when they exist (see scripts/build-audio.ts);
+// otherwise the browser's built-in voices (Web Speech API) speak the text.
 import { useEffect, useState } from 'react'
+import recorded from '../content/audio.json'
 import { getState } from '../engine/store'
+import { audioKey, audioPath } from './audio-key'
 
 const supported = () => typeof window !== 'undefined' && 'speechSynthesis' in window
 
@@ -30,8 +33,58 @@ export interface SpeakOptions {
   voiceIndex?: number
 }
 
+const DAY = 86_400_000
+/** How the speaking-speed setting (made for built-in voices, where 0.9 is normal) maps to recordings. */
+const NORMAL_RATE = 0.9
+let player: HTMLAudioElement | null = null
+let playing = 0
+const blobs = new Map<string, string>()
+
+/**
+ * Plays the recording of a text. Returns false if there is none, so the caller can fall back.
+ * A text keeps one voice for a day and changes voice over time: hearing several speakers trains the ear.
+ */
+async function playRecorded(text: string, options: SpeakOptions): Promise<boolean> {
+  const voices: string[] = recorded.voices
+  if (!voices.length || typeof Audio === 'undefined') return false
+  const turn = ++playing
+  try {
+    const key = await audioKey(text)
+    const index = options.voiceIndex ?? parseInt(key.slice(0, 6), 16) + Math.floor(Date.now() / DAY)
+    const path = audioPath(voices[index % voices.length], key)
+    let url = blobs.get(path)
+    if (!url) {
+      const response = await fetch(path, { signal: AbortSignal.timeout(4000) })
+      if (!response.ok) return false
+      url = URL.createObjectURL(await response.blob())
+      blobs.set(path, url)
+    }
+    // Another text was requested while this one loaded.
+    if (turn !== playing) return true
+    window.speechSynthesis?.cancel()
+    player ??= new Audio()
+    const audio = player
+    audio.pause()
+    audio.src = url
+    audio.playbackRate = (options.rate ?? getState().meta.settings.rate) / NORMAL_RATE
+    await new Promise<void>((resolve) => {
+      audio.onended = audio.onerror = audio.onpause = () => resolve()
+      // Browsers refuse sound before the first tap; that is not an error worth reporting.
+      audio.play().catch(() => resolve())
+    })
+    return true
+  } catch {
+    return false
+  }
+}
+
 /** Speaks Norwegian text. Resolves when the audio ends, or at once if there is no voice. */
-export function speak(text: string, options: SpeakOptions = {}): Promise<void> {
+export async function speak(text: string, options: SpeakOptions = {}): Promise<void> {
+  if (await playRecorded(text, options)) return
+  return speakBuiltIn(text, options)
+}
+
+function speakBuiltIn(text: string, options: SpeakOptions): Promise<void> {
   if (!supported()) return Promise.resolve()
   const voices = norwegianVoices()
   const { voice: chosen, rate } = getState().meta.settings
@@ -51,4 +104,8 @@ export function speak(text: string, options: SpeakOptions = {}): Promise<void> {
   })
 }
 
-export const stopSpeaking = () => supported() && window.speechSynthesis.cancel()
+export const stopSpeaking = () => {
+  playing++
+  player?.pause()
+  if (supported()) window.speechSynthesis.cancel()
+}
