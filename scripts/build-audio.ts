@@ -85,7 +85,7 @@ async function record(voiceId: string, text: string, model: string): Promise<Buf
     if (response.ok) return Buffer.from(await response.arrayBuffer())
     const detail = (await response.text()).slice(0, 400)
     // Too many requests or a server fault: wait and try again. Anything else will not fix itself.
-    if ((response.status === 429 || response.status >= 500) && attempt < 5) {
+    if ((response.status === 429 || response.status >= 500) && attempt < 8) {
       await Bun.sleep(attempt * 3000)
       continue
     }
@@ -160,9 +160,9 @@ async function build() {
 
     let done = 0
     const queue = [...toRecord]
-    // Four at a time keeps within ElevenLabs' limit on parallel requests for small plans.
+    // Two at a time: the smallest ElevenLabs plans allow three parallel requests.
     await Promise.all(
-      Array.from({ length: 4 }, async () => {
+      Array.from({ length: 2 }, async () => {
         for (let job = queue.shift(); job; job = queue.shift()) {
           const file = local(job.key)
           mkdirSync(dirname(file), { recursive: true })

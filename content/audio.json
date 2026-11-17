@@ -1,4 +1,10 @@
 {
-  "model": "eleven_v3",
-  "voices": []
+  "model": "eleven_v4",
+  "voices": [
+    {
+      "slug": "mia",
+      "id": "uNsWM1StCcpydKYOjKyu",
+      "name": "Mia Starset"
+    }
+  ]
 }
