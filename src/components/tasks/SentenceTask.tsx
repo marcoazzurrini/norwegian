@@ -95,7 +95,7 @@ export function SentenceTask({ sentence, frame, onDone }: Props) {
             ) : (
               <span />
             )}
-            <Button autoFocus onClick={() => void done(phase.failed)} hint="Enter">
+            <Button key="continue" autoFocus onClick={() => void done(phase.failed)} hint="Enter">
               Continue
             </Button>
           </>

@@ -75,7 +75,7 @@ function SessionPage() {
     case 'sound':
       return <SoundTask key={count} pair={task.pair} target={task.target} index={task.index} frame={{ ...frame, label: `Sounds · ${task.index + 1} of ${task.total}` }} onDone={onDone} />
     case 'intro':
-      return <IntroTask key={count} item={task.item} frame={frame} onDone={onDone} />
+      return <IntroTask key={count} items={task.items} frame={frame} onDone={onDone} />
     case 'pattern':
       return <PatternTask key={count} item={task.item} practice={task.practice} frame={frame} onDone={onDone} />
     case 'card':

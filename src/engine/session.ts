@@ -4,11 +4,11 @@
 import { items, sounds } from '../content'
 import type { Item, Sentence, SoundPair, Story } from '../content/types'
 import { isLearning } from './memory'
-import { dueItems, nextLesson, nextNewItem, nextStory, pickReview, practiceFor, type Memory } from './select'
+import { dueItems, nextLesson, nextNewItems, nextStory, pickReview, practiceFor, type Memory } from './select'
 
 export type Task =
   | { type: 'sound'; pair: SoundPair; target: 'a' | 'b'; index: number; total: number }
-  | { type: 'intro'; item: Item }
+  | { type: 'intro'; items: Item[] }
   | { type: 'pattern'; item: Item; practice: Sentence[] }
   | { type: 'card'; item: Item; reason: 'learning' | 'review' }
   | { type: 'sentence'; sentence: Sentence; covers: string[] }
@@ -60,7 +60,7 @@ export class Session {
   record(ms: number, block: Block, itemIds: string[] = []) {
     this.elapsedMs += ms
     if (block === 'review') this.reviewMs += ms
-    this.recent = [...itemIds, ...this.recent].slice(0, 3)
+    this.recent = [...[...itemIds].reverse(), ...this.recent].slice(0, 3)
   }
 
   next(view: SessionView, now: number): Task {
@@ -93,9 +93,10 @@ export class Session {
     }
 
     if (lesson) {
-      const it = nextNewItem(lesson, memory)
-      if (it) {
-        return it.kind === 'pattern' ? { type: 'pattern', item: it, practice: practiceFor(it.id, memory, 3) } : { type: 'intro', item: it }
+      const fresh = nextNewItems(lesson, memory)
+      if (fresh.length) {
+        const [it] = fresh
+        return it.kind === 'pattern' ? { type: 'pattern', item: it, practice: practiceFor(it.id, memory, 3) } : { type: 'intro', items: fresh }
       }
     }
 

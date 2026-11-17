@@ -128,9 +128,8 @@ Do not show a backlog. Run a short adaptive check (10 to 15 carriers) that propa
 
 1. **Hear and see**: audio plays, then spelling, meaning, gender, and one short example. For English cognates, say so. Flag false friends.
 2. **Notice**: one line on a spelling or sound trap, only if there is one (*de* is said "di").
-3. **Recognise**: pick the meaning from four options. This is the only multiple choice.
-4. **Recall**: type the Norwegian from the English.
-5. **Recall again** later in the same session at growing gaps: about 1 minute, 4 minutes, end of session.
+3. **Recall**: type the Norwegian from the English. New items are shown in groups of up to three, and only then typed back, so that other items sit between seeing a word and recalling it.
+4. **Recall again** later in the same session at growing gaps: about 1 minute, 4 minutes, end of session.
 
 ### A grammar pattern (about 3 minutes)
 

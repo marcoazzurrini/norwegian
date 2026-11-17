@@ -67,7 +67,7 @@ export function CardTask({ item, frame, onDone }: Props) {
             ) : (
               <span />
             )}
-            <Button autoFocus onClick={() => void done(phase.firstTry)} hint="Enter">
+            <Button key="continue" autoFocus onClick={() => void done(phase.firstTry)} hint="Enter">
               Continue
             </Button>
           </>

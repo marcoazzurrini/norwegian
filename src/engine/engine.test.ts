@@ -151,7 +151,7 @@ describe('a session', () => {
     const session = new Session(5, () => 0.3)
     const task = session.next(view(new Map()), T0)
     expect(task.type).toBe('intro')
-    if (task.type === 'intro') expect(task.item.id).toBe(lessons[0].items[0])
+    if (task.type === 'intro') expect(task.items.map((i) => i.id)).toEqual(lessons[0].items.slice(0, task.items.length))
   })
 
   test('a longer session starts with sounds', () => {

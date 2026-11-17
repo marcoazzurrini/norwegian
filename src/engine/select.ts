@@ -55,9 +55,19 @@ export function nextLesson(mem: Memory, chosen?: number | null): Lesson | null {
   return lessons.find((l) => lessonState(l, mem) === 'ready') ?? null
 }
 
-export const nextNewItem = (l: Lesson, mem: Memory): Item | null => {
-  const id = l.items.find((i) => !mem.has(i))
-  return id ? items[id] : null
+/** How many new words or phrases are shown together before the learner types them back. */
+export const INTRO_BATCH = 3
+
+/**
+ * The next new material of a lesson: one pattern, or a small group of words and phrases.
+ * A group puts other items between seeing a word and typing it, so the first recall
+ * comes from memory and is not a copy of what is still in mind.
+ */
+export const nextNewItems = (l: Lesson, mem: Memory): Item[] => {
+  const waiting = l.items.filter((i) => !mem.has(i)).map((i) => items[i])
+  if (!waiting.length || waiting[0].kind === 'pattern') return waiting.slice(0, 1)
+  const stop = waiting.findIndex((it) => it.kind === 'pattern')
+  return waiting.slice(0, Math.min(INTRO_BATCH, stop === -1 ? waiting.length : stop))
 }
 
 export interface Due {

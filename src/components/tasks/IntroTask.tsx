@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { items, sentencesWith } from '../../content'
-import type { Item, Quiz } from '../../content/types'
+import { sentencesWith } from '../../content'
+import type { Item } from '../../content/types'
 import { gradeCard } from '../../engine/grade'
 import type { Mem } from '../../engine/memory'
 import { sentenceReady } from '../../engine/select'
@@ -11,9 +11,9 @@ import { AnswerInput } from '../AnswerInput'
 import { Focus } from '../Focus'
 import { AudioButton, Button, Card, Note, Pill } from '../ui'
 import { cueKind } from './CardTask'
-import { Choices, shuffle, type Frame, type TaskResult } from './shared'
+import type { Frame, TaskResult } from './shared'
 
-const STEPS = ['Hear and see', 'Recognise', 'Recall']
+const STEPS = ['Hear and see', 'Recall']
 
 export function Steps({ steps, active }: { steps: string[]; active: number }) {
   return (
@@ -44,14 +44,6 @@ function exampleFor(it: Item) {
     .sort((a, b) => a.tokens.length - b.tokens.length)[0]
 }
 
-/** Three wrong meanings from nearby lessons, of the same kind of item. */
-function meaningQuiz(it: Item): Quiz {
-  const near = Object.values(items).filter((o) => o.id !== it.id && o.kind === it.kind && o.gloss !== it.gloss && Math.abs(o.lesson - it.lesson) <= 8)
-  const samePos = near.filter((o) => o.pos === it.pos)
-  const pool = samePos.length >= 3 ? samePos : near
-  return { prompt: it.display, options: [it.gloss, ...shuffle(pool).slice(0, 3).map((o) => o.gloss)] }
-}
-
 function WordFacts({ it }: { it: Item }) {
   const present = it.forms?.find((f) => f.label === 'now')?.form
   return (
@@ -66,24 +58,30 @@ function WordFacts({ it }: { it: Item }) {
 }
 
 interface Props {
-  item: Item
+  items: Item[]
   frame: Frame
   onDone: (result: TaskResult) => void
 }
 
-/** Teaches one word or phrase: hear and see it, recognise its meaning, then type it from the meaning. */
-export function IntroTask({ item, frame, onDone }: Props) {
-  const [step, setStep] = useState(0)
+/**
+ * Teaches a small group of words or phrases: hear and see each one, then type each one from its meaning.
+ * There is no multiple-choice step: recalling a word builds memory better than recognising it,
+ * and showing the whole group first keeps the first recall from being a copy.
+ */
+export function IntroTask({ items, frame, onDone }: Props) {
+  const [phase, setPhase] = useState<'show' | 'recall'>('show')
+  const [index, setIndex] = useState(0)
   const [input, setInput] = useState('')
   const [misses, setMisses] = useState(0)
   const [recalled, setRecalled] = useState(false)
+  const [missed, setMissed] = useState(0)
+  const item = items[index]
   const example = useMemo(() => exampleFor(item), [item])
-  const quiz = useMemo(() => meaningQuiz(item), [item])
   const [article, word] = item.pos === 'noun' && item.display.includes(' ') ? item.display.split(' ') : ['', item.display]
 
   useEffect(() => {
-    void speak(item.text)
-  }, [item])
+    if (phase === 'show') void speak(item.text)
+  }, [item, phase])
 
   const check = async () => {
     if (gradeCard(item, input).correct) {
@@ -96,36 +94,65 @@ export function IntroTask({ item, frame, onDone }: Props) {
     }
   }
 
+  const next = () => {
+    if (index + 1 < items.length) {
+      setIndex(index + 1)
+      return
+    }
+    setIndex(0)
+    setPhase('recall')
+  }
+
+  const nextRecall = () => {
+    const wrong = missed + (misses ? 1 : 0)
+    if (index + 1 === items.length) {
+      onDone({ itemIds: items.map((i) => i.id), right: items.length - wrong, wrong, taught: items.length })
+      return
+    }
+    setMissed(wrong)
+    setIndex(index + 1)
+    setInput('')
+    setMisses(0)
+    setRecalled(false)
+  }
+
   return (
     <Focus
       {...frame}
       footer={
-        step === 0 ? (
+        phase === 'show' ? (
           <>
-            <span className="text-muted">You will type this in a moment.</span>
-            <Button autoFocus onClick={() => setStep(1)} hint="Enter">
+            <span className="text-muted">{index + 1 < items.length ? 'Another new one comes next.' : 'You will type this in a moment.'}</span>
+            <Button key={index} autoFocus onClick={next} hint="Enter">
               Continue
             </Button>
           </>
-        ) : step === 2 ? (
+        ) : (
           <>
             <span />
             {recalled ? (
-              <Button autoFocus onClick={() => onDone({ itemIds: [item.id], right: misses ? 0 : 1, wrong: misses ? 1 : 0, taught: 1 })} hint="Enter">
+              <Button key="continue" autoFocus onClick={nextRecall} hint="Enter">
                 Continue
               </Button>
             ) : (
-              <Button onClick={() => void check()} disabled={!input.trim()} hint="Enter">
+              <Button key="check" onClick={() => void check()} disabled={!input.trim()} hint="Enter">
                 Check
               </Button>
             )}
           </>
-        ) : undefined
+        )
       }
     >
-      <Steps steps={STEPS} active={step} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Steps steps={STEPS} active={phase === 'show' ? 0 : 1} />
+        {items.length > 1 && (
+          <span className="text-muted">
+            {index + 1} of {items.length}
+          </span>
+        )}
+      </div>
 
-      {step === 0 && (
+      {phase === 'show' && (
         <>
           <Card className="!p-6 sm:!p-8">
             <div className="flex items-center gap-5">
@@ -157,20 +184,7 @@ export function IntroTask({ item, frame, onDone }: Props) {
         </>
       )}
 
-      {step === 1 && (
-        <>
-          <div>
-            <div className="font-bold text-muted">What does it mean?</div>
-            <div className="mt-1.5 flex items-center gap-4">
-              <AudioButton text={item.text} size={48} />
-              <span className="text-4xl font-bold">{item.display}</span>
-            </div>
-          </div>
-          <Choices quiz={quiz} onRight={() => setStep(2)} />
-        </>
-      )}
-
-      {step === 2 && (
+      {phase === 'recall' && (
         <>
           <div>
             <div className="font-bold text-muted">{cueKind(item)}. Type it in Norwegian.</div>
@@ -188,7 +202,7 @@ export function IntroTask({ item, frame, onDone }: Props) {
             </Card>
           ) : (
             <>
-              <AnswerInput value={input} onChange={setInput} onSubmit={() => void check()} />
+              <AnswerInput key={index} value={input} onChange={setInput} onSubmit={() => void check()} />
               {misses === 1 && (
                 <Note tone="lingon" title="Not yet.">
                   {gradeCard(item, input).wrongArticle ? 'Is it an en, ei or et word?' : `It starts with “${item.text.slice(0, item.kind === 'chunk' ? 3 : 1)}…”. Try again.`}
