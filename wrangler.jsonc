@@ -3,6 +3,9 @@
   "name": "norsk",
   "main": "worker/index.ts",
   "compatibility_date": "2026-11-01",
+  // Better Auth uses Node's AsyncLocalStorage.
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": { "BETTER_AUTH_URL": "https://norwegian.marcoazzurrini.com" },
   // The built app. Unknown paths get index.html, so the app's own router handles them.
   "assets": {
     "directory": "dist/client",

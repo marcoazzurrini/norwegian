@@ -251,7 +251,7 @@ Differences from the plan above, and known gaps:
 | Sentence quality | Sampled review | Written by an AI model, checked by rule only | No native speaker has read them. Some may be stiff. |
 | Images as cues | For concrete nouns | Not built | |
 | After a long break | Short adaptive check | Not built | A backlog of 40 or more due items pauses new material instead. |
-| Sync between devices | Later | Built: Cloudflare Worker and D1, one sync key | Two devices that both study offline at the same moment can lose a little study-time count |
+| Sync between devices | Later | Built: Cloudflare Worker and D1, sign-in with Google (Better Auth) | Two devices that both study offline at the same moment can lose a little study-time count |
 | First review after learning | Inside a short sentence | On the item's own card | An item moves into sentences once its stability reaches 3 days. This keeps one clean, context-free check before compression starts. |
 
 ## 8. Open questions

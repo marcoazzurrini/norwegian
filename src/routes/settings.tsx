@@ -3,7 +3,7 @@ import { useRef, useState, type ReactNode } from 'react'
 import { Shell } from '../components/Shell'
 import { Button, Card, Heading } from '../components/ui'
 import { exportData, updateSettings, useApp } from '../engine/store'
-import { connect, disconnect, restoreBackup, startOver, syncNow, useSync } from '../engine/sync'
+import { restoreBackup, signIn, signOut, startOver, syncNow, useSync } from '../engine/sync'
 import { speak, useVoices } from '../lib/speech'
 
 export const Route = createFileRoute('/settings')({ component: SettingsPage })
@@ -47,7 +47,8 @@ function SettingsPage() {
   const [message, setMessage] = useState('')
   const [confirmReset, setConfirmReset] = useState(false)
   const sync = useSync()
-  const [key, setKey] = useState('')
+  // Google sends the browser back here with ?error=... if the sign-in failed or the account is not allowed.
+  const [signInFailed] = useState(() => new URLSearchParams(window.location.search).has('error'))
   const syncText = sync.error ?? (sync.busy ? 'Syncing now.' : sync.lastOkAt ? `Last synced at ${new Date(sync.lastOkAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.` : 'Not synced yet.')
 
   const download = async () => {
@@ -137,51 +138,32 @@ function SettingsPage() {
 
         <Card className="!py-2">
           {sync.linked ? (
-            <Row title="Sync" help="This device shares its progress with your other linked devices.">
+            <Row title="Sync" help={`Signed in as ${sync.account}. This device shares its progress with your other signed-in devices.`}>
               <div className="flex flex-wrap items-center gap-2">
                 <Button variant="secondary" className="!px-4 !py-2" onClick={() => void syncNow()}>
                   Sync now
                 </Button>
-                <Button variant="secondary" className="!px-4 !py-2" onClick={() => void disconnect()}>
-                  Unlink
+                <Button variant="secondary" className="!px-4 !py-2" onClick={() => void signOut()}>
+                  Sign out
                 </Button>
               </div>
             </Row>
           ) : (
-            <Row title="Sync" help="Enter your sync key on each device to share progress between them.">
-              <form
-                className="flex flex-wrap gap-2"
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  if (key.trim()) void connect(key).then(() => setKey(''))
-                }}
-              >
-                <input
-                  value={key}
-                  onChange={(e) => setKey(e.target.value)}
-                  aria-label="Sync key"
-                  placeholder="Sync key"
-                  type="password"
-                  autoComplete="off"
-                  autoCapitalize="none"
-                  spellCheck={false}
-                  className="w-56 max-w-full rounded-xl border-2 border-line bg-surface px-3 py-2 text-lg"
-                />
-                <Button variant="secondary" className="!px-4 !py-2" type="submit">
-                  Link
-                </Button>
-              </form>
+            <Row title="Sync" help="Sign in on each device to share progress between them.">
+              <Button variant="secondary" className="!px-4 !py-2" onClick={() => void signIn()}>
+                Sign in with Google
+              </Button>
             </Row>
           )}
-          {sync.linked && (
-            <p className={`m-0 pb-4 font-bold ${sync.error ? 'text-lingon' : 'text-muted'}`} role="status">
-              {syncText}
+          {(sync.linked || sync.error || signInFailed) && (
+            <p className={`m-0 pb-4 font-bold ${sync.error || !sync.linked ? 'text-lingon' : 'text-muted'}`} role="status">
+              {sync.linked || sync.error ? syncText : 'Sign-in failed. This Google account may not use this app.'}
             </p>
           )}
         </Card>
 
         <Card className="!py-2">
-          <Row title="Backup" help={sync.linked ? 'Save a copy of your progress as a file. Restoring a file replaces the progress on every linked device.' : 'Your progress is stored only on this device. Save a file to keep a copy.'}>
+          <Row title="Backup" help={sync.linked ? 'Save a copy of your progress as a file. Restoring a file replaces the progress on every signed-in device.' : 'Your progress is stored only on this device. Save a file to keep a copy.'}>
             <div className="flex flex-wrap gap-2">
               <Button variant="secondary" className="!px-4 !py-2" onClick={() => void download()}>
                 Save backup
@@ -192,7 +174,7 @@ function SettingsPage() {
               <input ref={file} type="file" accept="application/json" hidden onChange={(e) => void restore(e.target.files?.[0])} />
             </div>
           </Row>
-          <Row title="Start over" help={`Deletes all progress on ${sync.linked ? 'every linked device' : 'this device'}: ${memory.size} learned items.`}>
+          <Row title="Start over" help={`Deletes all progress on ${sync.linked ? 'every signed-in device' : 'this device'}: ${memory.size} learned items.`}>
             {confirmReset ? (
               <div className="flex flex-wrap gap-2">
                 <Button className="!bg-lingon !px-4 !py-2" onClick={() => void startOver().then(() => (setConfirmReset(false), setMessage('All progress deleted.')))}>

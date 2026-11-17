@@ -1,12 +1,13 @@
 // Sync and audio server. Static files are served by Cloudflare directly; this code handles /api/* and /audio/*.
-// It stores one learner's data in D1 and recorded audio in R2. Changes need a single secret key.
+// It stores one learner's data in D1 and recorded audio in R2. The app signs in with Google (see auth.ts);
+// the audio build script uses a secret key.
+import { getAuth, isAllowed, type AuthEnv } from './auth'
 import { mergeMeta, type SyncedMeta } from '../src/sync/merge'
 import { LOG_PAGE, stampOf, type SyncRequest, type SyncResponse, type WireLog, type WireMem } from '../src/sync/protocol'
 
-interface Env {
-  DB: D1Database
+interface Env extends AuthEnv {
   AUDIO: R2Bucket
-  /** Set with `wrangler secret put SYNC_KEY`. */
+  /** For the audio build script. Set with `wrangler secret put SYNC_KEY`. */
   SYNC_KEY: string
 }
 
@@ -144,17 +145,33 @@ export default {
     if (pathname.startsWith('/audio/')) return file && request.method === 'GET' ? audio(env, file) : new Response('Not found', { status: 404 })
     if (!pathname.startsWith('/api/')) return new Response('Not found', { status: 404 })
 
-    const given = request.headers.get('authorization')?.replace(/^Bearer /, '') ?? ''
-    if (!env.SYNC_KEY || !(await sameSecret(given, env.SYNC_KEY))) return json({ error: 'Wrong key' }, 401)
+    if (pathname.startsWith('/api/auth/')) return getAuth(env).handler(request)
 
-    const upload = pathname.match(/^\/api(\/audio\/.+)$/)?.[1].match(AUDIO_PATH)?.[1]
-    if (upload && request.method === 'PUT') {
-      const body = await request.arrayBuffer()
-      if (body.byteLength > MAX_BODY) return json({ error: 'File too large' }, 413)
-      await env.AUDIO.put(upload, body, { httpMetadata: { contentType: 'audio/mpeg' } })
-      return json({ ok: true })
+    // Recordings are uploaded by scripts/build-audio.ts, which has the secret key and no browser session.
+    if (pathname.startsWith('/api/audio')) {
+      const given = request.headers.get('authorization')?.replace(/^Bearer /, '') ?? ''
+      if (!env.SYNC_KEY || !(await sameSecret(given, env.SYNC_KEY))) return json({ error: 'Wrong key' }, 401)
+
+      const upload = pathname.match(/^\/api(\/audio\/.+)$/)?.[1].match(AUDIO_PATH)?.[1]
+      if (upload && request.method === 'PUT') {
+        const body = await request.arrayBuffer()
+        if (body.byteLength > MAX_BODY) return json({ error: 'File too large' }, 413)
+        await env.AUDIO.put(upload, body, { httpMetadata: { contentType: 'audio/mpeg' } })
+        return json({ ok: true })
+      }
+      if (pathname === '/api/audio-list' && request.method === 'POST') {
+        const { voice } = (await request.json().catch(() => ({}))) as { voice?: string }
+        return json(await audioList(env, String(voice)))
+      }
+      return json({ error: 'Not found' }, 404)
     }
+
     if (request.method !== 'POST') return json({ error: 'Use POST' }, 405)
+    // The session is a cookie, so refuse requests that another website made the browser send.
+    const origin = request.headers.get('origin')
+    if (origin && origin !== new URL(request.url).origin) return json({ error: 'Wrong origin' }, 403)
+    const session = await getAuth(env).api.getSession({ headers: request.headers })
+    if (!session || !isAllowed(env, session.user.email)) return json({ error: 'Not signed in' }, 401)
 
     const text = await request.text()
     if (text.length > MAX_BODY) return json({ error: 'Too much data in one request' }, 413)
@@ -166,7 +183,6 @@ export default {
     }
 
     if (pathname === '/api/sync') return json(await sync(env.DB, body as SyncRequest))
-    if (pathname === '/api/audio-list') return json(await audioList(env, String((body as { voice: string }).voice)))
     if (pathname === '/api/reset') return reset(env.DB, (body as { epoch: number }).epoch)
     return json({ error: 'Not found' }, 404)
   },

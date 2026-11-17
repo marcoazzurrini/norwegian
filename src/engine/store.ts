@@ -59,7 +59,8 @@ const emptyMeta = (): Meta => ({
 
 /** What this device knows about the sync server. Kept apart from Meta so it never ends up in a backup file. */
 export interface SyncState {
-  key: string | null
+  /** The email address signed in on this device, or null. Kept here so the app knows it while offline. */
+  account: string | null
   epoch: number | null
   memRev: number
   logSeq: number
@@ -69,7 +70,7 @@ export interface SyncState {
   pendingReset: number | null
   lastOkAt: number | null
 }
-const emptySync = (): SyncState => ({ key: null, epoch: null, memRev: 0, logSeq: 0, pushedAt: 0, pendingReset: null, lastOkAt: null })
+const emptySync = (): SyncState => ({ account: null, epoch: null, memRev: 0, logSeq: 0, pushedAt: 0, pendingReset: null, lastOkAt: null })
 
 let db: IDBPDatabase | null = null
 let scheduler: Scheduler | null = null
@@ -241,7 +242,9 @@ export async function resetAll() {
 // ---- Sync support (used by src/engine/sync.ts) ----
 
 export async function readSync(): Promise<SyncState> {
-  return { ...emptySync(), ...((await db?.get('meta', 'sync')) as Partial<SyncState> | undefined) }
+  // Older versions stored a sync key here. It is no longer used, so it is dropped.
+  const { key: _key, ...saved } = ((await db?.get('meta', 'sync')) ?? {}) as Partial<SyncState> & { key?: unknown }
+  return { ...emptySync(), ...saved }
 }
 
 export async function writeSync(sync: SyncState) {

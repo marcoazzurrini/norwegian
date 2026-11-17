@@ -34,7 +34,7 @@ bun run deploy                                    # build and publish
 bunx wrangler d1 migrations apply norsk --remote  # only after adding a file to migrations/
 ```
 
-To try sync on your own machine, put `SYNC_KEY=anything` in `.dev.vars`, then run `bun run build`, `bunx wrangler d1 migrations apply norsk --local` and `bunx wrangler dev`. `bun run dev` serves the app without the sync server.
+To try the server on your own machine, put `SYNC_KEY`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=http://localhost:8787`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `ALLOWED_EMAILS` in `.dev.vars`, then run `bun run build`, `bunx wrangler d1 migrations apply norsk --local` and `bunx wrangler dev`. `bun run dev` serves the app without the sync server.
 
 ## Install it as an app
 
@@ -88,9 +88,11 @@ With several voices, a text keeps one voice for a day and changes voice over tim
 
 ## Your progress and sync
 
-Progress is stored in the browser on each device (IndexedDB), so the app works offline. To share progress between devices, open Settings on each one and enter the sync key. On an iPhone, enter it in the installed app, not in Safari: the two keep separate data.
+Progress is stored in the browser on each device (IndexedDB), so the app works offline. To share progress between devices, open Settings on each one and press **Sign in with Google**. On an iPhone, sign in inside the installed app, not in Safari: the two keep separate data. A device stays signed in as long as it is used at least once every six months.
 
-The sync key is the Worker secret `SYNC_KEY`. A copy is in `.sync-key`, which is not in git. To change it, run `bunx wrangler secret put SYNC_KEY` and enter the new key on every device.
+Sign-in is handled by [Better Auth](https://better-auth.com) in the Worker (`worker/auth.ts`). Only the addresses in the Worker secret `ALLOWED_EMAILS` (separated by commas) can sign in. The other secrets are `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; set each with `bunx wrangler secret put NAME`. The Google OAuth client lives in the Google Cloud project "Norsk" and must list `https://norwegian.marcoazzurrini.com/api/auth/callback/google` as a redirect URI.
+
+`SYNC_KEY` is now used only by the audio build script. A copy is in `.sync-key`, which is not in git.
 
 How sync decides:
 

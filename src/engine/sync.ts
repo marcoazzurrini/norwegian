@@ -1,18 +1,21 @@
-// Keeps this device and the sync server in step. Without a sync key, nothing here runs
+// Keeps this device and the sync server in step. Until you sign in, nothing here runs
 // and the app works from local data alone.
 import { useSyncExternalStore } from 'react'
 import { LOG_PAGE, type SyncRequest, type SyncResponse } from '../sync/protocol'
+import { authClient } from '../lib/auth'
 import type { Mem } from './memory'
 import { applyRemote, importData, localChanges, onLocalChange, readSync, resetAll, writeSync, type LogEntry, type Meta } from './store'
 
 export interface SyncStatus {
+  /** True if this device is signed in, as far as it knows. */
   linked: boolean
+  account: string | null
   busy: boolean
   error: string | null
   lastOkAt: number | null
 }
 
-let status: SyncStatus = { linked: false, busy: false, error: null, lastOkAt: null }
+let status: SyncStatus = { linked: false, account: null, busy: false, error: null, lastOkAt: null }
 const listeners = new Set<() => void>()
 function setStatus(patch: Partial<SyncStatus>) {
   status = { ...status, ...patch }
@@ -39,27 +42,26 @@ class SyncError extends Error {
   }
 }
 
-async function post<T>(path: string, key: string, body: unknown): Promise<T> {
+async function post<T>(path: string, body: unknown): Promise<T> {
   let response: Response
   try {
-    response = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` }, body: JSON.stringify(body) })
+    response = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
   } catch {
     throw new SyncError('No connection. Your progress is saved on this device and will sync later.', 0)
   }
-  if (response.status === 401) throw new SyncError('The sync key is wrong.', 401)
+  if (response.status === 401) throw new SyncError('You are signed out. Sign in again to sync.', 401)
   if (!response.ok) throw new SyncError(`The sync server answered with an error (${response.status}).`, response.status)
   return (await response.json()) as T
 }
 
 async function run() {
   let s = await readSync()
-  if (!s.key) return
-  const key = s.key
-  setStatus({ linked: true, busy: true })
+  if (!s.account) return
+  setStatus({ linked: true, account: s.account, busy: true })
   try {
     if (s.pendingReset != null) {
       try {
-        await post('/api/reset', key, { epoch: s.pendingReset })
+        await post('/api/reset', { epoch: s.pendingReset })
         s = { ...s, epoch: s.pendingReset, memRev: 0, logSeq: 0, pushedAt: 0 }
       } catch (e) {
         // 409: another device started over more recently. Its data wins.
@@ -77,7 +79,7 @@ async function run() {
     let more = true
     while (more) {
       const request: SyncRequest = { epoch: s.epoch, memRev: s.memRev, logSeq: s.logSeq, memory, meta, log: queue.slice(0, LOG_PAGE) }
-      const res = await post<SyncResponse>('/api/sync', key, request)
+      const res = await post<SyncResponse>('/api/sync', request)
       queue = res.reset ? [] : queue.slice(LOG_PAGE)
       memory = []
       meta = null
@@ -90,6 +92,8 @@ async function run() {
     await writeSync(s)
     setStatus({ busy: false, error: null, lastOkAt: s.lastOkAt })
   } catch (e) {
+    // The server no longer accepts this device's session. Progress stays on the device.
+    if (e instanceof SyncError && e.status === 401) await forget()
     setStatus({ busy: false, error: e instanceof Error ? e.message : 'Sync failed.' })
   }
 }
@@ -119,37 +123,57 @@ function syncSoon() {
   timer = setTimeout(() => void syncNow(), 2500)
 }
 
+/** Marks this device as signed out. Progress stays on the device and on the server. */
+async function forget() {
+  await writeSync({ ...(await readSync()), account: null, epoch: null, memRev: 0, logSeq: 0, pushedAt: 0, pendingReset: null, lastOkAt: null })
+  setStatus({ linked: false, account: null, busy: false, lastOkAt: null })
+}
+
+/** Asks the server who is signed in, and updates this device to match. Without a connection, nothing changes. */
+async function checkAccount() {
+  const { data, error } = await authClient.getSession().catch(() => ({ data: null, error: true }))
+  if (error) return
+  const account = data?.user.email ?? null
+  const s = await readSync()
+  if (account === s.account) return
+  await running
+  if (!account) return forget()
+  // Newly signed in: this device's progress and the server's are merged.
+  await writeSync({ ...s, account, epoch: null, memRev: 0, logSeq: 0, pushedAt: 0, pendingReset: null, lastOkAt: null })
+  setStatus({ linked: true, account, error: null, lastOkAt: null })
+}
+
 /** Call once, after the store has loaded. */
 export async function startSync() {
   const s = await readSync()
-  setStatus({ linked: !!s.key, lastOkAt: s.lastOkAt })
+  setStatus({ linked: !!s.account, account: s.account, lastOkAt: s.lastOkAt })
   onLocalChange(syncSoon)
   window.addEventListener('online', () => void syncNow())
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') void syncNow()
   })
+  await checkAccount()
   void syncNow()
 }
 
-/** Links this device. Its progress and the server's are merged. */
-export async function connect(key: string) {
-  await running
-  await writeSync({ ...(await readSync()), key: key.trim(), epoch: null, memRev: 0, logSeq: 0, pushedAt: 0, pendingReset: null, lastOkAt: null })
-  setStatus({ linked: true, error: null, lastOkAt: null })
-  await syncNow()
+/** Sends the browser to Google. It comes back to the Settings page, signed in. */
+export async function signIn() {
+  const { error } = await authClient.signIn.social({ provider: 'google', callbackURL: '/settings', errorCallbackURL: '/settings' }).catch(() => ({ error: true }))
+  if (error) setStatus({ error: 'Sign-in could not start. Check your connection and try again.' })
 }
 
-/** Unlinks this device. Progress stays on the device and on the server. */
-export async function disconnect() {
+/** Signs this device out. Progress stays on the device and on the server. */
+export async function signOut() {
   await running
-  await writeSync({ ...(await readSync()), key: null, epoch: null, memRev: 0, logSeq: 0, pushedAt: 0, pendingReset: null, lastOkAt: null })
-  setStatus({ linked: false, busy: false, error: null, lastOkAt: null })
+  await authClient.signOut().catch(() => {})
+  await forget()
+  setStatus({ error: null })
 }
 
 /** Starts a new data generation on the server from whatever is now on this device. */
 async function replaceEverywhere() {
   const s = await readSync()
-  if (!s.key) return
+  if (!s.account) return
   await writeSync({ ...s, pendingReset: Date.now(), pushedAt: 0 })
   await syncNow()
 }

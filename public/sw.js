@@ -19,6 +19,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return
+  // Sign-in and sync answers must always come from the server.
+  if (new URL(request.url).pathname.startsWith('/api/')) return
 
   if (new URL(request.url).pathname.startsWith('/audio/')) {
     event.respondWith(
