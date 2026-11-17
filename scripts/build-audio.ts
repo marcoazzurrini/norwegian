@@ -95,14 +95,22 @@ async function record(voiceId: string, text: string, model: string): Promise<Buf
 
 async function listVoices() {
   const found = new Map<string, Record<string, string>>()
-  for (const query of ['language=no', 'language=nb', 'search=norwegian']) {
-    const response = await fetch(`${API}/v1/shared-voices?page_size=100&${query}`, { headers: { 'xi-api-key': apiKey() } })
-    if (!response.ok) throw new Error(`ElevenLabs answered ${response.status}: ${(await response.text()).slice(0, 300)}`)
-    const { voices } = (await response.json()) as { voices: Array<Record<string, string>> }
-    for (const v of voices) found.set(v.voice_id, v)
+  // The voice library answers without a key, but then only the first three voices of a search.
+  // Many narrow searches are used on purpose, so a key limited to speech generation is enough for this script.
+  const filters = ['', 'gender=male', 'gender=female', 'age=young', 'age=middle_aged', 'age=old', 'category=professional', 'category=high_quality', 'featured=true']
+  const sorts = ['', 'sort=trending', 'sort=cloned_by_count', 'sort=usage_character_count_1y', 'sort=created_date']
+  for (const base of ['language=no', 'search=norwegian', 'search=norsk']) {
+    for (const filter of filters) {
+      for (const sort of sorts) {
+        const response = await fetch(`${API}/v1/shared-voices?page_size=3&${[base, filter, sort].filter(Boolean).join('&')}`)
+        if (!response.ok) continue
+        const { voices } = (await response.json()) as { voices: Array<Record<string, string>> }
+        for (const v of voices) found.set(v.voice_id, v)
+      }
+    }
   }
   for (const v of found.values()) {
-    console.log([v.voice_id, v.name, v.gender, v.age, v.accent, v.language, v.category, `free:${v.free_users_allowed}`, `owner:${v.public_owner_id}`].join(' | '))
+    console.log([v.voice_id, v.name, v.gender, v.age, v.accent, v.language, v.locale, v.category, `uses:${v.usage_character_count_1y}`, `clones:${v.cloned_by_count}`, `free:${v.free_users_allowed}`, `owner:${v.public_owner_id}`].join(' | '))
     console.log(`    ${v.description?.slice(0, 160) ?? ''}`)
     console.log(`    ${v.preview_url ?? ''}`)
   }
