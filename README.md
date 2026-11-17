@@ -60,6 +60,22 @@ After the first visit it works offline.
 | `.penna/` | The screen designs. |
 | `data/raw/` | Downloaded language data. Not in git. See below. |
 
+## Recorded audio
+
+The app plays recorded Norwegian when it exists and falls back to the browser's voice when it does not. Recordings are made with ElevenLabs, stored in the R2 bucket `norsk-audio`, and served at `/audio/<voice>/<name>.mp3`. A file's name is a hash of its text, so the app finds a recording without a database.
+
+```bash
+bun run audio voices                  # list Norwegian voices in the ElevenLabs library
+bun run audio sample <voice-id>...    # record a few texts per voice into data/audio/samples
+bun run audio add <slug> <voice-id>   # add a voice to content/audio.json
+bun run audio build --dry             # count what would be recorded
+bun run audio build                   # record what is missing, upload it, switch the app over
+```
+
+This needs `ELEVENLABS_API_KEY` in `.env` and the sync key in `.sync-key`. Recordings are kept in `data/audio`, so a text is never paid for twice. After `build`, commit `content/audio.json` and `src/content/audio.json` and push. Run `build` again after the curriculum changes.
+
+With several voices, a text keeps one voice for a day and changes voice over time.
+
 ## Language data
 
 `bun run content` needs three downloads in `data/raw/`. They are only needed to rebuild the curriculum; the built `curriculum.json` is in the repository.
