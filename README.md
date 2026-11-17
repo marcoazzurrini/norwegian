@@ -25,6 +25,10 @@ Other commands:
 
 The app runs at https://norwegian.marcoazzurrini.com as a Cloudflare Worker. Static files come from `dist/client`; the Worker in `worker/` answers `/api/*` and stores progress in a D1 database.
 
+Every push to `main` runs the checks in `.github/workflows/ci.yml`, then applies new database migrations and publishes. The workflow uses the GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+To publish by hand instead:
+
 ```bash
 bun run deploy                                    # build and publish
 bunx wrangler d1 migrations apply norsk --remote  # only after adding a file to migrations/
