@@ -40,5 +40,14 @@ jobs:
           bun-version: latest
       - run: bun install --frozen-lockfile
       - run: bun run build
-      - run: bunx wrangler d1 migrations apply norsk --remote
-      - run: bunx wrangler deploy
+      # On an error Wrangler prints the account owner's email address, and these logs are public: hide it.
+      - name: Apply database migrations
+        shell: bash
+        run: |
+          set -o pipefail
+          bunx wrangler d1 migrations apply norsk --remote 2>&1 | sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/<email>/g'
+      - name: Deploy
+        shell: bash
+        run: |
+          set -o pipefail
+          bunx wrangler deploy 2>&1 | sed -E 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/<email>/g'
