@@ -1,0 +1,154 @@
+# unit 2 | Hjemme | Things, people and "the"
+
+## lesson A and an
+p gender | En, ei, et | needs: present
+rule: Every noun is an en word, an ei word or an et word. All three mean "a".
+rule: Learn each noun with its word: en bil, ei bok, et hus.
+ex: en bil | a car
+ex: ei bok | a book
+ex: et hus | a house
+q: et hus | *a house | the house
+q: ei bok | *a book | books
+w hus | noun et | house
+w bil | noun en | car
+w bok | noun ei | book
+w har | verb | have / has | lemma=ha | only
+w det | pron | it, that
+w dette | pron | this (pointing at a thing)
+
+## lesson Home
+w rom | noun et | room
+w kjøkken | noun et | kitchen
+w seng | noun ei | bed
+w bord | noun et | table
+w stol | noun en | chair
+w dør | noun ei | door
+w vindu | noun et | window
+
+## lesson Saying the
+p definite | Saying "the" | needs: gender
+rule: Norwegian puts "the" on the end of the noun.
+rule: en words add -en, ei words add -a, et words add -et.
+ex: en bil > bilen | the car
+ex: ei bok > boka | the book
+ex: et hus > huset | the house
+q: huset | *the house | a house
+q: en stol | *a chair | the chair
+q: døra | *the door | a door
+w her | adv | here
+w der | adv | there
+w ligge | verb | to lie, to be (somewhere)
+w stå | verb | to stand
+w på | prep | on
+c det er ___ | there is ___, it is ___
+
+## lesson People
+w mann | noun en | man
+w kvinne | noun ei | woman
+w barn | noun et | child
+w jente | noun ei | girl
+w gutt | noun en | boy
+w venn | noun en | friend
+w navn | noun et | name
+
+## lesson Things
+w telefon | noun en | phone
+w nøkkel | noun en | key
+w penger | noun pl | money | only
+w jobb | noun en | job
+w by | noun en | town, city
+w land | noun et | country
+
+## lesson Small words
+w eller | conj | or
+w med | prep | with
+w til | prep | to
+w veldig | adv | very
+w bra | adj | good, fine
+w nå | adv | now
+c ikke sant? | right? isn't it?
+
+## sentences
+
+s Jeg har en bil. | I have a car.
+s Hun har ei bok. | She has a book.
+s Vi har et hus. | We have a house.
+s Har du en bil? | Do you have a car?
+s Dette er et hus. | This is a house.
+s Dette er ei bok. | This is a book.
+s Det er en bil. | It is a car.
+s Bilen er her. | The car is here.
+s Boka er der. | The book is there.
+s Huset er i Oslo. | The house is in Oslo.
+s Hvor er boka? | Where is the book?
+s Boka ligger på bordet. | The book is lying on the table.
+s Telefonen ligger på senga. | The phone is lying on the bed.
+s Stolen står på kjøkkenet. | The chair is standing in the kitchen.
+s Bordet står på kjøkkenet. | The table is standing in the kitchen.
+s Senga står i rommet. | The bed is standing in the room.
+s Rommet har et vindu. | The room has a window.
+s Rommet har ei dør og et vindu. | The room has a door and a window.
+s Vinduet er der. | The window is there.
+s Døra er her. | The door is here.
+s Det er en mann. | It is a man.
+s Mannen heter Per. | The man is called Per.
+s Kvinna bor i Bergen. | The woman lives in Bergen.
+s Barnet snakker norsk. | The child speaks Norwegian.
+s Jenta har ei bok. | The girl has a book.
+s Gutten har en telefon. | The boy has a phone.
+s Jeg har en venn i Oslo. | I have a friend in Oslo.
+s Hun er en venn. | She is a friend.
+s Hva er navnet? | What is the name?
+s Jeg har en jobb. | I have a job.
+s Har hun en jobb i byen? | Does she have a job in the town?
+s Jeg har ikke penger. | I do not have money.
+s Han har penger. | He has money.
+s Hvor er nøkkelen? | Where is the key?
+s Nøkkelen ligger på bordet. | The key is lying on the table.
+s Har du nøkkelen? | Do you have the key?
+s Byen er i Norge. | The town is in Norway.
+s Norge er et land. | Norway is a country.
+s Oslo er en by. | Oslo is a city.
+s Landet heter Italia. | The country is called Italy.
+s Er det ei bok eller en telefon? | Is it a book or a phone?
+s Jeg bor med en venn. | I live with a friend.
+s Hun snakker med læreren. | She is speaking with the teacher.
+s Vi kommer til Oslo nå. | We are coming to Oslo now.
+s Bilen er veldig bra. | The car is very good.
+s Det er bra. | That is good.
+s Det er veldig bra, ikke sant? | It is very good, right?
+s Jeg bor i Bergen nå. | I live in Bergen now.
+s Studenten har ei bok og en telefon. | The student has a book and a phone.
+s Læreren står der. | The teacher is standing there.
+s Barnet ligger i senga. | The child is lying in the bed.
+s Er dette huset? | Is this the house?
+s Dette er ikke nøkkelen. | This is not the key.
+s Mannen og kvinna har et barn. | The man and the woman have a child.
+s Gutten kommer fra byen. | The boy comes from the town.
+s Jenta står på stolen. | The girl is standing on the chair.
+s Jeg har et rom i huset. | I have a room in the house.
+s Telefonen er ikke her. | The phone is not here.
+s Har dere et kjøkken? | Do you all have a kitchen?
+s Vennen bor i et land med jobb og penger. | The friend lives in a country with work and money.
+
+## story Hvor er nøkkelen? | Where is the key?
+Kari: Per, hvor er nøkkelen? | Per, where is the key?
+Per: Jeg vet ikke. Ligger nøkkelen på bordet? | I do not know. Is the key on the table?
+Kari: Nei. Boka og telefonen ligger på bordet. | No. The book and the phone are on the table.
+Per: Er nøkkelen på kjøkkenet? | Is the key in the kitchen?
+Kari: Nei, ikke der. | No, not there.
+Per: Unnskyld! Jeg har nøkkelen her. | Sorry! I have the key here.
+Kari: Bra! Takk. | Good! Thanks.
+? Where is the key? | *Per has it | on the table | in the kitchen
+? What is on the table? | *the book and the phone | the key | money
+
+## story Et rom i Oslo | A room in Oslo
+Tom: Jeg har et rom i Oslo nå. | I have a room in Oslo now.
+Anna: Bra! Hva har du i rommet? | Good! What do you have in the room?
+Tom: Jeg har ei seng, et bord og en stol. | I have a bed, a table and a chair.
+Anna: Har rommet et vindu? | Does the room have a window?
+Tom: Ja, og vinduet er veldig bra. | Yes, and the window is very good.
+Anna: Bor du med en venn? | Do you live with a friend?
+Tom: Ja, han heter Lars. Han er student. | Yes, his name is Lars. He is a student.
+? Who does Tom live with? | *a friend called Lars | Anna | a teacher
+? What does Tom not mention? | *a kitchen | a bed | a table

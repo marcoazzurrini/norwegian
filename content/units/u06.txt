@@ -1,0 +1,165 @@
+# unit 6 | I byen | Town, directions, me and you, orders
+
+## lesson Town
+w butikk | noun en | shop
+w gate | noun ei | street
+w buss | noun en | bus
+w tog | noun et | train
+w stasjon | noun en | station
+w sentrum | noun et | town centre
+
+## lesson Me, you, them
+p obj-pron | Me, you, him, her | needs: present
+rule: After a verb or a small word like med or til, the person changes form.
+rule: jeg > meg, du > deg, han > ham, hun > henne, vi > oss, de > dem.
+ex: jeg ser deg | I see you
+ex: du ser meg | you see me
+ex: hun bor med ham | she lives with him
+q: han hjelper oss | *he helps us | we help him
+q: kan du se dem? | *can you see them? | can they see you?
+w meg | pron | me
+w deg | pron | you (after a verb, one person)
+w ham | pron | him
+w henne | pron | her (after a verb)
+w oss | pron | us
+w dem | pron | them
+w hjelpe | verb | to help
+
+## lesson Directions
+c hvor er ___? | where is ___?
+c til høyre | to the right
+c til venstre | to the left
+c rett fram | straight ahead
+c i nærheten | nearby
+w langt | adv | far
+w finne | verb | to find
+
+## lesson Do it!
+p imperative | Telling someone to do it | needs: present
+rule: Take the verb and remove the final -e: vente > vent!, komme > kom!
+rule: Short verbs stay the same: gå > gå!, se > se!
+ex: å vente > vent! | wait!
+ex: å komme > kom! | come!
+ex: å se > se! | look!
+q: kom hit! | *come here! | he comes here
+q: vent litt | *wait a little | waiting a little
+w vente | verb | to wait
+w ta | verb | to take
+w gi | verb | to give
+w si | verb | to say
+w vise | verb | to show
+w hit | adv | here (coming here)
+
+## lesson Travel
+w billett | noun en | ticket
+w reise | verb | to travel
+w kjøre | verb | to drive
+w sykkel | noun en | bicycle
+w fly | noun et | plane
+w flyplass | noun en | airport
+
+## lesson Places
+w restaurant | noun en | restaurant
+w kafé | noun en | café
+w hotell | noun et | hotel
+w bank | noun en | bank
+w sykehus | noun et | hospital
+w åpen | adj | open
+w stengt | adj | closed | only
+
+## lesson Where exactly
+c på jobb | at work
+c på skolen | at school
+c i byen | in town
+c hos ___ | at ___'s place
+w ved | prep | by, next to
+w mellom | prep | between
+w foran | prep | in front of
+w bak | prep | behind
+
+## sentences
+
+s Hvor er stasjonen? | Where is the station?
+s Stasjonen ligger i sentrum. | The station is located in the town centre.
+s Butikken ligger i nærheten. | The shop is located nearby.
+s Jeg tar bussen til jobben. | I take the bus to work.
+s Toget går klokka åtte. | The train goes at eight o'clock.
+s Bussen kommer nå. | The bus is coming now.
+s Kan du hjelpe meg? | Can you help me?
+s Jeg kan hjelpe deg. | I can help you.
+s Hun hjelper ham. | She helps him.
+s Jeg ser henne ofte. | I often see her.
+s De kjenner oss. | They know us.
+s Kjenner du dem? | Do you know them?
+s Kom med meg! | Come with me!
+s Gå rett fram. | Go straight ahead.
+s Gå til høyre. | Go to the right.
+s Ta til venstre ved banken. | Take a left by the bank.
+s Er det langt? | Is it far?
+s Det er ikke langt. | It is not far.
+s Hotellet ligger i nærheten. | The hotel is located nearby.
+s Jeg kan ikke finne nøkkelen. | I cannot find the key.
+s Hvor kan jeg finne en bank? | Where can I find a bank?
+s Vent litt! | Wait a little!
+s Vent på meg! | Wait for me!
+s Ta bussen! | Take the bus!
+s Gi meg nøkkelen. | Give me the key.
+s Si det til ham. | Say it to him.
+s Vis meg billetten. | Show me the ticket.
+s Kom hit! | Come here!
+s Se der! | Look there!
+s Jeg må kjøpe en billett. | I must buy a ticket.
+s Hva koster en billett til Bergen? | How much is a ticket to Bergen?
+s Vi reiser til Italia i morgen. | We are travelling to Italy tomorrow.
+s Hun kjører til jobben. | She drives to work.
+s Jeg har en sykkel. | I have a bicycle.
+s Flyet går klokka ti. | The plane goes at ten o'clock.
+s Vi må kjøre til flyplassen. | We must drive to the airport.
+s Flyplassen ligger langt fra byen. | The airport is located far from the town.
+s Restauranten er åpen nå. | The restaurant is open now.
+s Banken er stengt i dag. | The bank is closed today.
+s Er kafeen åpen? | Is the café open?
+s Sykehuset ligger ved stasjonen. | The hospital is located by the station.
+s Jeg er på jobb. | I am at work.
+s Barna er på skolen. | The children are at school.
+s Vi spiser i byen i kveld. | We are eating in town tonight.
+s Jeg bor hos broren min. | I live at my brother's place.
+s Bilen står foran huset. | The car is standing in front of the house.
+s Katten ligger bak døra. | The cat is lying behind the door.
+s Banken ligger mellom hotellet og kafeen. | The bank is located between the hotel and the café.
+s Bussen står ved stasjonen. | The bus is standing by the station.
+s Kan du vise meg sentrum? | Can you show me the town centre?
+s Kan du gi ham boka? | Can you give him the book?
+s Jeg vil si det til henne. | I want to say it to her.
+s Vi venter på dem. | We are waiting for them.
+s Han tar toget hver dag. | He takes the train every day.
+s Unnskyld, hvor er hotellet? | Excuse me, where is the hotel?
+s Jeg bor i gata ved skolen. | I live in the street by the school.
+s Reiser du ofte med fly? | Do you often travel by plane?
+s Jeg går til butikken nå. | I am walking to the shop now.
+s Hun venter foran restauranten. | She is waiting in front of the restaurant.
+s Toget til Oslo går hver time. | The train to Oslo goes every hour.
+s Kan dere hjelpe oss? | Can you all help us?
+s Barnet vil gi deg et eple. | The child wants to give you an apple.
+
+## story Hvor er stasjonen? | Where is the station?
+Tom: Unnskyld, kan du hjelpe meg? Hvor er stasjonen? | Excuse me, can you help me? Where is the station?
+Kari: Stasjonen er ikke langt. Gå rett fram til banken. | The station is not far. Go straight ahead to the bank.
+Tom: Og så? | And then?
+Kari: Ta til venstre ved banken. Stasjonen ligger bak hotellet. | Take a left by the bank. The station is behind the hotel.
+Tom: Tusen takk. Når går toget til Bergen? | Thank you very much. When does the train to Bergen leave?
+Kari: Jeg vet ikke, men det går ofte. | I do not know, but it goes often.
+Tom: Bra. Jeg må kjøpe en billett først. | Good. I must buy a ticket first.
+? Where is the station? | *behind the hotel | in front of the bank | far away
+? What must Tom do first? | *buy a ticket | eat | take the bus
+
+## story Til flyplassen | To the airport
+Anna: Vi må kjøre til flyplassen nå. Flyet går klokka ti. | We must drive to the airport now. The plane leaves at ten o'clock.
+Per: Vent litt! Jeg kan ikke finne billettene. | Wait a little! I cannot find the tickets.
+Anna: Se på bordet. | Look on the table.
+Per: Nei, de ligger ikke der. | No, they are not there.
+Anna: Har du dem i bilen? | Do you have them in the car?
+Per: Ja! De ligger i bilen. Kom! | Yes! They are in the car. Come!
+Anna: Bra. Kan du gi meg nøkkelen? Jeg vil kjøre. | Good. Can you give me the key? I want to drive.
+? Where are the tickets? | *in the car | on the table | at the airport
+? Who wants to drive? | *Anna | Per | nobody

@@ -1,0 +1,169 @@
+# unit 8 | I går | Talking about the past
+
+## lesson Yesterday
+p past | The past | needs: present
+rule: For the past, most verbs swap -r for -et or -te: snakker > snakket, spiser > spiste.
+rule: The form is the same for everyone. Common verbs have their own past form, learned as words.
+ex: jeg snakker > jeg snakket | I spoke
+ex: vi spiser > vi spiste | we ate
+ex: hun jobber > hun jobbet | she worked
+q: de kjøpte brød | *they bought bread | they are buying bread
+q: jeg venter | *I am waiting | I waited
+c i går | yesterday
+w da | adv | then (at that time)
+w før | prep | before
+c for ___ siden | ___ ago
+c i forrige uke | last week
+
+## lesson Was and went
+f var | verb | was, were | lemma=være
+f hadde | verb | had | lemma=ha
+f gikk | verb | walked, went (on foot) | lemma=gå
+f kom | verb | came | lemma=komme
+f så | verb | saw | lemma=se
+
+## lesson Said and took
+f sa | verb | said | lemma=si
+f tok | verb | took | lemma=ta
+f fikk | verb | got, received | lemma=få
+w få | verb | to get, to receive
+w dra | verb | to leave, to go (travel)
+f dro | verb | left, went (travelled) | lemma=dra
+w bli | verb | to become, to stay
+f ble | verb | became, stayed | lemma=bli
+
+## lesson Meeting people
+w møte | verb | to meet
+w besøke | verb | to visit
+w huske | verb | to remember
+w glemme | verb | to forget
+w tro | verb | to believe, to think (not sure)
+w vet | verb | know (a fact) | lemma=vite | only
+f visste | verb | knew (a fact) | lemma=vite
+
+## lesson More past forms
+f drakk | verb | drank | lemma=drikke
+w skrive | verb | to write
+f skrev | verb | wrote | lemma=skrive
+f sov | verb | slept | lemma=sove
+f sto | verb | stood | lemma=stå
+f lå | verb | lay, was (somewhere) | lemma=ligge
+w sitte | verb | to sit
+f satt | verb | sat | lemma=sitte
+
+## lesson A trip
+w tur | noun en | trip, walk
+w ferie | noun en | holiday
+w fjell | noun et | mountain
+w sjø | noun en | sea, lake
+w vær | noun et | weather
+w gøy | adj | fun
+c ha det gøy | to have fun
+
+## lesson What did you do
+w gjøre | verb | to do
+f gjorde | verb | did | lemma=gjøre
+w fortelle | verb | to tell
+f fortalte | verb | told | lemma=fortelle
+w spørre | verb | to ask
+f spurte | verb | asked | lemma=spørre
+w svare | verb | to answer
+
+## sentences
+
+s I går jobbet jeg hjemme. | Yesterday I worked at home.
+s Jeg snakket med mora mi i går. | I spoke with my mother yesterday.
+s Vi spiste fisk til middag i går. | We ate fish for dinner yesterday.
+s Hun kjøpte en ny bil. | She bought a new car.
+s De bodde i Bergen før. | They lived in Bergen before.
+s Jeg ventet på deg. | I waited for you.
+s Han betalte. | He paid.
+s Vi reiste til Italia i forrige uke. | We travelled to Italy last week.
+s Jeg leste ei bok i går. | I read a book yesterday.
+s Hun begynte å jobbe klokka åtte. | She started working at eight o'clock.
+s Skolen sluttet tidlig i går. | School finished early yesterday.
+s Jeg var trøtt i går. | I was tired yesterday.
+s Var du hjemme i går? | Were you at home yesterday?
+s Vi var i Oslo for to år siden. | We were in Oslo two years ago.
+s Hun hadde en hund da. | She had a dog then.
+s Jeg hadde ikke penger. | I did not have money.
+s Han gikk hjem. | He walked home.
+s Vi gikk en tur. | We went for a walk.
+s De kom sent. | They came late.
+s Når kom du hjem? | When did you come home?
+s Jeg så{verb} deg i byen. | I saw you in town.
+s Vi så{verb} en katt. | We saw a cat.
+s Hva sa du? | What did you say?
+s Hun sa ja. | She said yes.
+s Han tok bussen. | He took the bus.
+s Jeg fikk en ny jobb. | I got a new job.
+s Vi dro til fjellet. | We went to the mountains.
+s Hun dro hjem klokka ti. | She went home at ten o'clock.
+s Jeg vil bli lærer. | I want to become a teacher.
+s Han ble syk. | He became ill.
+s Vi ble hjemme. | We stayed at home.
+s Jeg møtte en gammel venn. | I met an old friend.
+s Vi besøkte foreldrene mine. | We visited my parents.
+s Husker du meg? | Do you remember me?
+s Jeg husker ikke navnet. | I do not remember the name.
+s Jeg glemte nøkkelen. | I forgot the key.
+s Jeg vet det. | I know that.
+s Han drakk kaffe i går. | He drank coffee yesterday.
+s Jeg skrev til henne. | I wrote to her.
+s Barnet sov bra. | The child slept well.
+s Bilen sto foran huset. | The car stood in front of the house.
+s Boka lå på bordet. | The book lay on the table.
+s Vi satt på en kafé. | We sat at a café.
+s Hun sitter ved vinduet. | She is sitting by the window.
+s Turen var fin. | The trip was nice.
+s Vi hadde ferie i forrige uke. | We had a holiday last week.
+s Været var kaldt. | The weather was cold.
+s Været er fint i dag. | The weather is nice today.
+s Vi så{verb} sjøen fra hotellet. | We saw the sea from the hotel.
+s Fjellet er høyt. | The mountain is tall.
+s Det var gøy. | It was fun.
+s Vi hadde det gøy. | We had fun.
+s Hva gjorde du i går? | What did you do yesterday?
+s Hva gjør du nå? | What are you doing now?
+s Kan du fortelle meg navnet ditt? | Can you tell me your name?
+s Jeg spurte læreren. | I asked the teacher.
+s Hun svarte ikke. | She did not answer.
+s Læreren spurte, og jeg svarte. | The teacher asked, and I answered.
+s Kan jeg spørre deg? | Can I ask you?
+s Da var jeg ung. | Then I was young.
+s Før bodde vi i et lite hus. | Before, we lived in a small house.
+s For tre år siden møtte jeg kona mi. | Three years ago I met my wife.
+s I går spiste vi på restaurant. | Yesterday we ate at a restaurant.
+s Barna fikk kake. | The children got cake.
+s Jeg tok et eple. | I took an apple.
+s De dro på ferie til Italia. | They went on holiday to Italy.
+s Vi møtte dem i forrige uke. | We met them last week.
+s Jeg glemte å kjøpe melk. | I forgot to buy milk.
+s Likte du maten? | Did you like the food?
+s Jeg likte turen. | I liked the trip.
+s Hun fortalte meg navnet. | She told me the name.
+s Han trodde meg. | He believed me.
+s Vi vil få en hund. | We want to get a dog.
+
+## story En tur til fjellet | A trip to the mountains
+Jonas: Hva gjorde du i helga? | What did you do at the weekend?
+Emma: Vi dro til fjellet. Vi gikk en lang tur. | We went to the mountains. We went for a long walk.
+Jonas: Var været fint? | Was the weather nice?
+Emma: Nei, det var kaldt. Men vi hadde det gøy. | No, it was cold. But we had fun.
+Jonas: Hvor bodde dere? | Where did you stay?
+Emma: Vi bodde på et lite hotell ved sjøen. | We stayed at a small hotel by the lake.
+Jonas: Jeg var hjemme. Jeg leste og sov. | I was at home. I read and slept.
+Emma: Det er også fint! | That is nice too!
+? How was the weather? | *cold | warm | they do not say
+? Where did Emma stay? | *in a small hotel by the lake | at home | at a friend's place
+
+## story Jeg glemte nøkkelen | I forgot the key
+Per: I går kom jeg sent hjem. Og jeg hadde ikke nøkkelen! | Yesterday I came home late. And I did not have the key!
+Kari: Hva gjorde du da? | What did you do then?
+Per: Jeg satt foran døra og ventet. | I sat in front of the door and waited.
+Kari: Kom kona di hjem? | Did your wife come home?
+Per: Ja, klokka ti. Hun så{verb} meg og sa: Hva gjør du her? | Yes, at ten o'clock. She saw me and said: What are you doing here?
+Kari: Og hva svarte du? | And what did you answer?
+Per: Jeg sa: Jeg glemte nøkkelen på jobb. | I said: I forgot the key at work.
+? Where was the key? | *at work | in the car | at home
+? When did Per's wife come home? | *at ten o'clock | very late at night | she was at home

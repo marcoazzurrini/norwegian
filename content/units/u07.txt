@@ -1,0 +1,162 @@
+# unit 7 | Å beskrive | Describing things and people
+
+## lesson Big and small
+p adj-agree | Describing words change | needs: gender, plural
+rule: A describing word matches its noun: en stor bil, et stort hus, store biler.
+rule: Add -t for et words and -e for more than one. The same happens after er: huset er stort.
+ex: en stor bil | a big car
+ex: et stort hus | a big house
+ex: store biler | big cars
+ex: huset er stort | the house is big
+q: et nytt hus | *a new house | new houses
+q: fine bøker | *nice books | a nice book
+w stor | adj | big
+w liten | adj | small (with en words)
+f lite | adj | small (with et words) | lemma=liten
+f små | adj | small (more than one) | lemma=liten
+w ny | adj | new
+w fin | adj | nice, fine
+
+## lesson Old and new
+w ung | adj | young
+w pen | adj | pretty
+w dyr | adj | expensive
+w billig | adj | cheap
+w lang | adj | long
+w kort | adj | short
+
+## lesson Colours one
+w rød | adj | red
+w blå | adj | blue
+w grønn | adj | green
+w farge | noun en | colour
+w god | adj | good (tasty, kind, well made)
+
+## lesson Hard and easy
+w varm | adj | warm
+w kald | adj | cold
+w vanskelig | adj | difficult
+w lett | adj | easy
+w viktig | adj | important
+w feil | adj | wrong
+
+## lesson Clothes
+w hvit | adj | white
+w svart | adj | black
+w klær | noun pl | clothes
+w jakke | noun ei | jacket
+w sko | noun en | shoe
+w bukse | noun ei | trousers
+w kjole | noun en | dress
+
+## lesson People
+w snill | adj | kind
+w morsom | adj | funny
+w flink | adj | clever, good at something
+w høy | adj | tall
+w syk | adj | ill
+w frisk | adj | healthy
+c se ___ ut | to look ___ (appear)
+
+## lesson This and that
+w hvilken | det | which
+w denne | det | this (with en and ei words)
+w disse | det | these
+w annen | det | other
+w samme | det | same
+w for | adv | too (too big)
+w ut | adv | out
+
+## sentences
+
+s Jeg har en stor bil. | I have a big car.
+s Vi har et stort hus. | We have a big house.
+s De har store biler. | They have big cars.
+s Huset er stort. | The house is big.
+s Bilen er stor. | The car is big.
+s Bilene er store. | The cars are big.
+s Jeg har en liten hund. | I have a small dog.
+s Hun har et lite rom. | She has a small room.
+s Barna er små. | The children are small.
+s Han har en ny jobb. | He has a new job.
+s Vi har et nytt kjøkken. | We have a new kitchen.
+s Jeg trenger nye sko. | I need new shoes.
+s Det er en fin dag. | It is a nice day.
+s Huset ditt er fint. | Your house is nice.
+s Hun er ung. | She is young.
+s Foreldrene mine er gamle. | My parents are old.
+s Det er et gammelt hus. | It is an old house.
+s Kjolen er pen. | The dress is pretty.
+s Bilen er for dyr. | The car is too expensive.
+s Hotellet er dyrt. | The hotel is expensive.
+s Billettene er billige. | The tickets are cheap.
+s Jeg vil ha en billig telefon. | I want a cheap phone.
+s Gata er lang. | The street is long.
+s Boka er kort. | The book is short.
+s Jeg har en rød bil. | I have a red car.
+s Huset er rødt. | The house is red.
+s Jakka er blå. | The jacket is blue.
+s Eplet er grønt. | The apple is green.
+s Hun har grønne sko. | She has green shoes.
+s Hvilken farge liker du? | Which colour do you like?
+s Kaffen er varm. | The coffee is warm.
+s Vannet er kaldt. | The water is cold.
+s Maten er god. | The food is good.
+s Brødet er godt. | The bread is good.
+s Norsk er ikke vanskelig. | Norwegian is not difficult.
+s Det er lett. | It is easy.
+s Det er viktig å sove. | It is important to sleep.
+s Dette er feil. | This is wrong.
+s Jeg har en hvit katt. | I have a white cat.
+s Hun har ei svart jakke. | She has a black jacket.
+s Klærne er nye. | The clothes are new.
+s Jeg må kjøpe ei bukse. | I must buy a pair of trousers.
+s Skoene er for små. | The shoes are too small.
+s Læreren er snill. | The teacher is kind.
+s Broren min er morsom. | My brother is funny.
+s Hun er flink til å lage mat. | She is good at cooking.
+s Faren min er høy. | My father is tall.
+s Barnet er sykt. | The child is ill.
+s Jeg er frisk nå. | I am healthy now.
+s Du ser trøtt ut. | You look tired.
+s Hun ser glad ut. | She looks happy.
+s Hvilken buss tar du? | Which bus do you take?
+s Denne bilen er ny. | This car is new.
+s Dette huset er gammelt. | This house is old.
+s Disse skoene er dyre. | These shoes are expensive.
+s Jeg vil ha en annen kopp. | I want another cup.
+s Vi har samme lærer. | We have the same teacher.
+s Kjolen er for lang. | The dress is too long.
+s Hun har et annet navn. | She has another name.
+s Er billetten dyr? | Is the ticket expensive?
+s De er snille. | They are kind.
+s Vi er sultne. | We are hungry.
+s Jentene er flinke. | The girls are clever.
+s Jeg liker varm mat. | I like warm food.
+s Han drikker kald melk. | He drinks cold milk.
+s Det er en viktig jobb. | It is an important job.
+s Buksa er for kort. | The trousers are too short.
+s Har du andre farger? | Do you have other colours?
+
+## story Ei ny jakke | A new jacket
+Nora: Jeg trenger ei ny jakke. Denne er for liten. | I need a new jacket. This one is too small.
+Ida: Hvilken farge vil du ha? | Which colour do you want?
+Nora: Jeg liker blå klær. | I like blue clothes.
+Ida: Se, denne jakka er blå. Og fin! | Look, this jacket is blue. And nice!
+Nora: Ja, men hva koster denne? | Yes, but how much is this one?
+Ida: Jakka er veldig dyr. | The jacket is very expensive.
+Nora: Har de en annen butikk i nærheten? | Is there another shop nearby?
+Ida: Ja, ved stasjonen. Klærne der er billige. | Yes, by the station. The clothes there are cheap.
+? Why does Nora need a new jacket? | *her jacket is too small | her jacket is too expensive | she has no jacket
+? Where are the clothes cheap? | *in the shop by the station | in this shop | at the hotel
+
+## story Broren til Marco | Marco's brother
+Marco: Dette er broren min. Han er høy, ikke sant? | This is my brother. He is tall, isn't he?
+Emma: Ja! Og han ser snill ut. | Yes! And he looks kind.
+Marco: Han er snill og veldig morsom. | He is kind and very funny.
+Emma: Har han barn? | Does he have children?
+Marco: Ja, to små jenter. De er fire og seks år gamle. | Yes, two small girls. They are four and six years old.
+Emma: Og huset? Er det huset hans? | And the house? Is it his house?
+Marco: Nei, det er huset vårt i Italia. Det er gammelt, men fint. | No, it is our house in Italy. It is old, but nice.
+? How many children does the brother have? | *two | four | six
+? Whose house is it? | *Marco's family's | the brother's | Emma's

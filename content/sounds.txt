@@ -1,0 +1,42 @@
+# group id | title | hint
+# pair groupId | word a | meaning a | word b | meaning b
+#
+# Word melody (tone 1 and tone 2) is not drilled yet: computer voices do not
+# produce it reliably. See docs/spec.md.
+
+group y-i | y or i | Both have the tongue forward. For y the lips are rounded, for i they are spread.
+pair y-i | by | town | bi | bee
+pair y-i | ny | new | ni | nine
+pair y-i | sy | to sew | si | to say
+pair y-i | lyst | wish | list | list
+
+group u-o | u or o | The letter u has the tongue forward. The letter o is often a deep "oo".
+pair u-o | bur | cage | bor | lives
+pair u-o | du | you | do | toilet
+pair u-o | mur | wall | mor | mother
+pair u-o | bu | shed | bo | to live
+
+group ø-e | ø or e | For ø the lips are rounded. For e they are spread.
+pair ø-e | dør | door | der | there
+pair ø-e | øl | beer | el | electricity
+pair ø-e | sør | south | ser | sees
+pair ø-e | føle | to feel | fele | fiddle
+
+group å-o | å or o | Å is like the vowel in "saw". Long o is a deep "oo".
+pair å-o | tå | toe | to | two
+pair å-o | båt | boat | bot | fine (penalty)
+pair å-o | rå | raw | ro | calm
+pair å-o | såle | sole (of a shoe) | sole | to sunbathe
+
+group length | Long or short vowel | One consonant after the vowel: long vowel. Two consonants: short vowel.
+pair length | tak | roof | takk | thanks
+pair length | hat | hate | hatt | hat
+pair length | pen | pretty | penn | pen
+pair length | lege | doctor | legge | to lay
+pair length | mat | food | matt | dull, matt
+
+group kj-skj | kj or skj | Kj is a soft hiss with the tongue high, like the h in "huge". Skj is "sh".
+pair kj-skj | kjære | dear | skjære | to cut
+pair kj-skj | kjede | chain | skjede | sheath
+pair kj-skj | kjøre | to drive | skjøre | fragile (more than one)
+pair kj-skj | kjenne | to know | skjenne | to scold

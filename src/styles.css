@@ -1,0 +1,66 @@
+@import "tailwindcss";
+@import "@fontsource/atkinson-hyperlegible/400.css";
+@import "@fontsource/atkinson-hyperlegible/700.css";
+
+/* Tokens from the penna design (.penna/). */
+@theme {
+  --color-paper: #f5f2ec;
+  --color-surface: #ffffff;
+  --color-ink: #172126;
+  --color-muted: #58656a;
+  --color-line: #e2dcd0;
+  --color-fjord: #1e5a62;
+  --color-fjord-soft: #dce9e8;
+  --color-lingon: #b93a2b;
+  --color-lingon-soft: #f6e1dc;
+  --color-moss: #3f6b3a;
+  --color-moss-soft: #e1ecdd;
+  --color-sun: #8a5e06;
+  --color-sun-soft: #f6eacd;
+  --font-sans: "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+
+html {
+  /* The text size setting scales every rem-based size. */
+  font-size: calc(17px * var(--text-scale, 1));
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-fjord);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.18s ease-out;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}

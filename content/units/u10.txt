@@ -1,0 +1,168 @@
+# unit 10 | Planer | Plans, weather and invitations
+
+## lesson Going to
+p future | Going to | needs: modal
+rule: For a plan, use skal plus the verb with no ending: jeg skal reise.
+rule: With a time word, the present is enough: jeg reiser i morgen.
+ex: jeg reiser i dag | I am travelling today
+ex: jeg skal reise i morgen | I am going to travel tomorrow
+ex: hva skal du gjøre? | what are you going to do?
+q: vi skal spise ute | *we are going to eat out | we are eating out
+q: skal du jobbe? | *are you going to work? | are you working?
+w skal | verb | going to, shall | lemma=skulle | only
+c neste uke | next week
+w neste | det | next
+w sommer | noun en | summer
+w vinter | noun en | winter
+w ute | adv | outside, out
+
+## lesson It is raining
+p det-subj | It rains, it is cold | needs: present
+rule: Weather and general statements start with det, like English "it": det regner.
+rule: The describing word takes -t after det: det er kaldt, det er varmt.
+ex: det regner | it is raining
+ex: det er kaldt | it is cold
+ex: det er fint vær | the weather is nice
+q: det snør | *it is snowing | that is snow
+q: det er varmt i dag | *it is warm today | he is warm today
+w regne | verb | to rain
+w snø | verb | to snow
+w sol | noun ei | sun
+w vind | noun en | wind
+w skinne | verb | to shine
+
+## lesson Hopes
+w ønske | verb | to wish
+w håpe | verb | to hope
+w tenke | verb | to think (use your mind)
+w planlegge | verb | to plan
+c glede seg til ___ | to look forward to ___
+c ha lyst til å ___ | to feel like (doing something)
+w lyst | noun ei | wish, desire
+
+## lesson Free time
+w film | noun en | film
+w kino | noun en | cinema
+w fest | noun en | party
+w spille | verb | to play
+w fotball | noun en | football
+w svømme | verb | to swim
+c gå på ski | to go skiing
+
+## lesson The year
+w vår | noun en | spring (season)
+w høst | noun en | autumn
+w måned | noun en | month
+w jul | noun ei | Christmas
+w bursdag | noun en | birthday
+w gave | noun en | present, gift
+
+## lesson Invitations
+c det høres bra ut | that sounds good
+c jeg kan dessverre ikke | unfortunately I can't
+c vi ses | see you
+c god helg | have a good weekend
+c gratulerer med dagen | happy birthday
+w bør | verb | should | lemma=burde | only
+
+## lesson Big words
+w ting | noun en | thing
+w tid | noun ei | time
+w liv | noun et | life
+w verden | noun en | world
+w menneske | noun et | person, human being
+w folk | noun et | people
+
+## sentences
+
+s Jeg skal reise i morgen. | I am going to travel tomorrow.
+s Hva skal du gjøre i kveld? | What are you going to do tonight?
+s Vi skal spise ute. | We are going to eat out.
+s Hun skal besøke oss neste uke. | She is going to visit us next week.
+s Skal du jobbe i morgen? | Are you going to work tomorrow?
+s Jeg skal ikke jobbe i helga. | I am not going to work at the weekend.
+s Neste uke skal vi dra til fjellet. | Next week we are going to go to the mountains.
+s I sommer skal jeg reise til Italia. | This summer I am going to travel to Italy.
+s I vinter skal vi gå på ski. | This winter we are going to go skiing.
+s Det regner. | It is raining. | +det-subj
+s Det snør. | It is snowing. | +det-subj
+s Det regner ikke nå. | It is not raining now. | +det-subj
+s Det er kaldt ute. | It is cold outside. | +det-subj
+s Det er varmt i dag. | It is warm today. | +det-subj
+s Sola skinner. | The sun is shining.
+s Det er fint vær. | It is nice weather. | +det-subj
+s Vinden er kald. | The wind is cold.
+s I morgen skal det snø. | Tomorrow it is going to snow. | +det-subj
+s Jeg håper at sola skinner i morgen. | I hope that the sun shines tomorrow.
+s Jeg ønsker deg en fin dag. | I wish you a nice day.
+s Hva tenker du på? | What are you thinking about?
+s Jeg tenker på deg. | I am thinking of you.
+s Vi planlegger en ferie. | We are planning a holiday.
+s Jeg gleder meg til ferien. | I am looking forward to the holiday.
+s Hun gleder seg til jul. | She is looking forward to Christmas.
+s Jeg har lyst til å se en film. | I feel like watching a film.
+s Har du lyst til å gå på kino? | Do you feel like going to the cinema?
+s Vi skal på fest på lørdag. | We are going to a party on Saturday.
+s Barna spiller fotball. | The children are playing football.
+s Kan du spille fotball? | Can you play football?
+s Jeg liker å svømme. | I like to swim.
+s Vi svømmer i sjøen i sommer. | We are swimming in the sea this summer.
+s Våren{noun} er fin. | The spring is nice.
+s Høsten er kald. | The autumn is cold.
+s En måned har fire uker. | A month has four weeks.
+s Jula er snart her. | Christmas is here soon.
+s Når har du bursdag? | When is your birthday?
+s Jeg har bursdag neste måned. | My birthday is next month.
+s Hun fikk en fin gave. | She got a nice present.
+s Jeg må kjøpe en gave til ham. | I must buy a present for him.
+s Gratulerer med dagen! | Happy birthday!
+s Det høres bra ut. | That sounds good.
+s Jeg kan dessverre ikke. | Unfortunately I can't.
+s Vi ses i morgen. | See you tomorrow.
+s God helg! | Have a good weekend!
+s Du bør sove mer. | You should sleep more.
+s Vi bør dra nå. | We should leave now.
+s Jeg har mange ting å gjøre. | I have many things to do. | +plural
+s Jeg har ikke tid. | I do not have time.
+s Har du tid i morgen? | Do you have time tomorrow?
+s Livet er godt. | Life is good.
+s Verden er stor. | The world is big.
+s Det er mange mennesker her. | There are many people here.
+s Folk liker sol. | People like sun.
+s Hun skal bli lege. | She is going to become a doctor.
+s Skal vi spise snart? | Are we going to eat soon?
+s Jeg håper at du kan komme. | I hope that you can come.
+s Jeg tror at det skal regne i kveld. | I think that it is going to rain tonight. | +det-subj
+s Vi skal ha fest i helga. | We are going to have a party at the weekend.
+s Hva planlegger dere? | What are you all planning?
+s I høst begynner jeg å studere. | This autumn I am starting to study.
+s Filmen begynner klokka åtte. | The film starts at eight o'clock.
+s Kinoen ligger i sentrum. | The cinema is located in the town centre.
+s Har du lyst til å spise ute i kveld? | Do you feel like eating out tonight?
+s Jeg gleder meg til å møte deg. | I am looking forward to meeting you.
+s Sommeren er kort i Norge. | The summer is short in Norway.
+s Skal du svømme i dag? | Are you going to swim today?
+s Hunden vår{det} liker å svømme. | Our dog likes to swim.
+
+## story Helga på ski | The weekend on skis
++ ski | skis
+Kari: Hva skal du gjøre i helga? | What are you going to do at the weekend?
+Ola: Jeg vet ikke ennå. Og du? | I do not know yet. And you?
+Kari: Det skal snø, og jeg har lyst til å gå på ski. Vil du komme? | It is going to snow, and I feel like going skiing. Do you want to come?
+Ola: Det høres bra ut! Men jeg har ikke ski. | That sounds good! But I do not have skis.
+Kari: Broren min har ski. Du kan bruke dem. | My brother has skis. You can use them.
+Ola: Tusen takk. Når skal vi dra? | Thank you very much. When are we going to leave?
+Kari: Tidlig på lørdag. Vi ses klokka åtte! | Early on Saturday. See you at eight o'clock!
+? What are they going to do? | *go skiing | go to the cinema | swim
+? What is the problem? | *Ola has no skis | it is going to rain | Kari is busy
+
+## story Bursdag | Birthday
+Emma: Jonas har bursdag neste uke. Skal vi kjøpe en gave? | It is Jonas's birthday next week. Shall we buy a present?
+Lars: Ja. Hva liker han? | Yes. What does he like?
+Emma: Han liker film og fotball. | He likes film and football.
+Lars: Vi kan gi ham to billetter til kino. | We can give him two tickets to the cinema.
+Emma: Det er en god gave! Skal han ha fest? | That is a good present! Is he going to have a party?
+Lars: Ja, på fredag. Jeg gleder meg til festen. | Yes, on Friday. I am looking forward to the party.
+Emma: Jeg kan dessverre ikke komme på fredag. Jeg skal jobbe. | Unfortunately I cannot come on Friday. I am going to work.
+? What is the present? | *two cinema tickets | a football | a film
+? Why can Emma not come? | *she is going to work | she is ill | she is travelling

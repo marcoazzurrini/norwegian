@@ -1,0 +1,174 @@
+# unit 1 | Hei! | Greetings and saying who you are
+
+## lesson Greetings
+c hei | hi
+c ha det bra | goodbye
+w takk | interj | thanks
+w ja | interj | yes
+w nei | interj | no
+c god morgen | good morning
+
+## lesson I and you
+p present | Verbs now | needs:
+rule: A verb has one form for everyone: jeg er, du er, vi er.
+rule: Most verbs end in -r in the present: snakker, kommer, heter.
+ex: jeg er | I am
+ex: du er | you are
+ex: jeg heter Anna | my name is Anna
+q: du heter | *you are called | I am called
+q: jeg er | *I am | you are
+w jeg | pron | I
+w du | pron | you (one person)
+w er | verb | am / is / are | lemma=være | only
+w hete | verb | to be called
+c jeg heter ___ | my name is ___
+c hva heter du? | what is your name?
+
+## lesson Where from
+w komme | verb | to come
+w fra | prep | from
+w hvor | adv | where
+c hvor kommer du fra? | where are you from?
+w bo | verb | to live (in a place)
+w i | prep | in
+w og | conj | and
+
+## lesson Saying not
+p neg | Saying "not" | needs: present
+rule: Put ikke straight after the verb.
+rule: Norwegian does not use "do": jeg snakker ikke means "I do not speak".
+ex: jeg snakker norsk | I speak Norwegian
+ex: jeg snakker ikke norsk | I do not speak Norwegian
+ex: du er ikke fra Oslo | you are not from Oslo
+q: jeg bor ikke i Oslo | *I do not live in Oslo | I live in Oslo
+q: du kommer ikke | *you are not coming | you are coming
+w ikke | adv | not
+w snakke | verb | to speak
+w norsk | adj | Norwegian (language)
+w engelsk | adj | English (language)
+w forstå | verb | to understand
+w litt | adv | a little
+
+## lesson He, she, we
+w han | pron | he
+w hun | pron | she
+w vi | pron | we
+w de | pron | they
+w dere | pron | you (several people)
+w også | adv | also, too
+w men | conj | but
+
+## lesson Asking
+p q-yn | Yes or no questions | needs: present
+rule: Start with the verb. Then comes the person.
+rule: Again, no "do": Snakker du norsk?
+ex: du snakker norsk | you speak Norwegian
+ex: snakker du norsk? | do you speak Norwegian?
+ex: er han fra Bergen? | is he from Bergen?
+q: bor du i Oslo? | *do you live in Oslo? | you live in Oslo
+q: kommer hun? | *is she coming? | she is coming
+p q-wh | Questions with a question word | needs: q-yn
+rule: Question word first, then the verb, then the person.
+ex: hvor bor du? | where do you live?
+ex: hva heter hun? | what is her name?
+ex: hvem er han? | who is he?
+q: hvor bor de? | *where do they live? | do they live there?
+w hva | pron | what
+w hvem | pron | who
+w hvordan | adv | how
+c hvordan går det? | how are you? (how is it going)
+c bare bra | just fine
+
+## lesson Polite words
+c unnskyld | excuse me, sorry
+c tusen takk | thank you very much
+c vær så god | here you are, you are welcome
+c hyggelig å møte deg | nice to meet you
+c jeg vet ikke | I do not know
+w student | noun en | student
+w lærer | noun en | teacher
+
+## sentences
+
+s Jeg heter Anna. | My name is Anna.
+s Hva heter du? | What is your name?
+s Jeg er Ola. | I am Ola.
+s Du er Kari. | You are Kari.
+s Jeg kommer fra Norge. | I come from Norway.
+s Jeg er fra England. | I am from England.
+s Hvor kommer du fra? | Where do you come from?
+s Jeg bor i Oslo. | I live in Oslo.
+s Hvor bor du? | Where do you live?
+s Du bor i Bergen. | You live in Bergen.
+s Jeg snakker norsk. | I speak Norwegian.
+s Jeg snakker ikke norsk. | I do not speak Norwegian.
+s Jeg snakker litt norsk. | I speak a little Norwegian.
+s Snakker du engelsk? | Do you speak English?
+s Jeg forstår ikke. | I do not understand.
+s Forstår du? | Do you understand?
+s Jeg forstår litt. | I understand a little.
+s Han heter Per. | His name is Per.
+s Hun heter Ida. | Her name is Ida.
+s Han kommer fra Bergen. | He comes from Bergen.
+s Hun bor i Tromsø. | She lives in Tromsø.
+s Vi bor i Norge. | We live in Norway.
+s Vi snakker engelsk. | We speak English.
+s De kommer fra Italia. | They come from Italy.
+s De snakker ikke norsk. | They do not speak Norwegian.
+s Dere bor i Oslo. | You all live in Oslo.
+s Hvor bor dere? | Where do you all live?
+s Jeg er også fra Norge. | I am also from Norway.
+s Hun snakker også engelsk. | She also speaks English.
+s Jeg forstår, men jeg snakker ikke norsk. | I understand, but I do not speak Norwegian.
+s Han bor i Oslo, men han er fra Bergen. | He lives in Oslo, but he is from Bergen.
+s Jeg heter Tom og jeg er fra England. | My name is Tom and I am from England.
+s Hvem er du? | Who are you?
+s Hvem er hun? | Who is she?
+s Hva snakker de? | What do they speak?
+s Hvor er han? | Where is he?
+s Hvordan går det? | How are you?
+s Bare bra, takk. | Just fine, thanks.
+s Er du fra Norge? | Are you from Norway?
+s Nei, jeg er ikke fra Norge. | No, I am not from Norway.
+s Ja, jeg er fra Oslo. | Yes, I am from Oslo.
+s Bor hun i Bergen? | Does she live in Bergen?
+s Kommer de fra Sverige? | Do they come from Sweden?
+s Jeg er student. | I am a student.
+s Er du lærer? | Are you a teacher?
+s Hun er ikke student. | She is not a student.
+s Han er lærer i Oslo. | He is a teacher in Oslo.
+s Unnskyld, snakker du engelsk? | Excuse me, do you speak English?
+s Jeg vet ikke. | I do not know.
+s Hyggelig å møte deg. | Nice to meet you.
+s Tusen takk. | Thank you very much.
+s Hei, jeg heter Nora. | Hi, my name is Nora.
+s Hvor kommer dere fra? | Where do you all come from?
+s Hva heter han? | What is his name?
+s Hvem snakker norsk? | Who speaks Norwegian?
+s Jeg bor ikke i Oslo. | I do not live in Oslo.
+s Vi forstår ikke engelsk. | We do not understand English.
+s God morgen, Kari. | Good morning, Kari.
+s Ha det bra, Ola. | Goodbye, Ola.
+s Hun er lærer og han er student. | She is a teacher and he is a student.
+
+## story På toget | On the train
+Anna: Hei! Jeg heter Anna. Hva heter du? | Hi! My name is Anna. What is your name?
+Tom: Hei, jeg heter Tom. | Hi, my name is Tom.
+Anna: Hvor kommer du fra? | Where are you from?
+Tom: Jeg kommer fra England, men jeg bor i Oslo. | I come from England, but I live in Oslo.
+Anna: Snakker du norsk? | Do you speak Norwegian?
+Tom: Ja, litt. Jeg forstår litt norsk. | Yes, a little. I understand a little Norwegian.
+Anna: Jeg er lærer. Er du student? | I am a teacher. Are you a student?
+Tom: Ja, jeg er student. Hyggelig å møte deg! | Yes, I am a student. Nice to meet you!
+? Where does Tom live? | *Oslo | England | Bergen
+? What is Anna's job? | *teacher | student | she does not say
+
+## story Hvem er hun? | Who is she?
+Ola: Hvem er hun? | Who is she?
+Kari: Hun heter Maria. Hun kommer fra Italia. | Her name is Maria. She comes from Italy.
+Ola: Bor hun i Norge? | Does she live in Norway?
+Kari: Ja, hun bor i Bergen. | Yes, she lives in Bergen.
+Ola: Snakker hun norsk? | Does she speak Norwegian?
+Kari: Ja, og hun snakker også engelsk. | Yes, and she also speaks English.
+? Where is Maria from? | *Italy | Norway | England
+? Which languages does Maria speak? | *Norwegian and English | only English | only Norwegian

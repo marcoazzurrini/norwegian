@@ -1,0 +1,163 @@
+# unit 5 | Dagen min | Daily life, time, verb in second place
+
+## lesson Daily verbs
+c stå opp | to get up
+w opp | adv | up
+w sove | verb | to sleep
+w jobbe | verb | to work
+w gå | verb | to walk, to go (on foot)
+w lese | verb | to read
+w se | verb | to see, to watch
+
+## lesson Verb second
+p v2 | The verb comes second | needs: present, neg
+rule: The verb is always the second piece of a statement.
+rule: If you start with a time or a place, the person moves behind the verb.
+ex: jeg jobber nå | I am working now
+ex: nå jobber jeg | now I am working
+ex: i dag spiser vi fisk | today we are eating fish
+q: i dag jobber hun | *today she is working | is she working today?
+c i dag | today
+w så | adv | then, so
+w ofte | adv | often
+w alltid | adv | always
+w aldri | adv | never
+
+## lesson The clock
+w klokke | noun ei | clock
+c hva er klokka? | what time is it?
+c klokka er ___ | it is ___ o'clock
+w time | noun en | hour
+w minutt | noun et | minute
+w halv | adj | half
+w når | adv | when
+
+## lesson Parts of the day
+w dag | noun en | day
+w morgen | noun en | morning
+w kveld | noun en | evening
+w natt | noun ei | night
+c om morgenen | in the morning (every morning)
+c i kveld | tonight, this evening
+c i morgen | tomorrow
+
+## lesson The week
+w uke | noun ei | week
+w mandag | noun en | Monday
+w fredag | noun en | Friday
+w helg | noun ei | weekend
+c på mandag | on Monday
+w hver | det | every
+
+## lesson Activities
+w trene | verb | to exercise
+c lage mat | to cook
+c høre på ___ | to listen to ___
+w musikk | noun en | music
+w skole | noun en | school
+w hjemme | adv | at home
+w hjem | adv | home (going there)
+
+## lesson Start and finish
+w begynne | verb | to begin
+w slutte | verb | to finish, to stop
+w lørdag | noun en | Saturday
+w søndag | noun en | Sunday
+w først | adv | first
+w etterpå | adv | afterwards
+w tidlig | adv | early
+w sent | adv | late
+
+## lesson Midweek
+w tirsdag | noun en | Tuesday
+w onsdag | noun en | Wednesday
+w torsdag | noun en | Thursday
+w vanligvis | adv | usually
+w fri | adj | free, off work
+c ha fri | to be off work
+
+## sentences
+
+s Jeg står opp klokka sju. | I get up at seven o'clock.
+s Barnet sover nå. | The child is sleeping now.
+s Jeg jobber i Oslo. | I work in Oslo.
+s Han går til jobben. | He walks to work.
+s Hun leser ei bok. | She is reading a book.
+s Ser du bilen? | Do you see the car?
+s I dag jobber jeg hjemme. | Today I am working at home.
+s Nå spiser vi middag. | Now we are eating dinner.
+s Så går jeg hjem. | Then I walk home.
+s Jeg jobber ofte hjemme. | I often work at home.
+s Hun spiser alltid frokost. | She always eats breakfast.
+s Han drikker aldri kaffe. | He never drinks coffee.
+s Hva er klokka? | What time is it?
+s Klokka er åtte. | It is eight o'clock.
+s Klokka er halv ni. | It is half past eight.
+s Når står du opp? | When do you get up?
+s Når begynner du å jobbe? | When do you start working?
+s Jeg begynner klokka ni. | I start at nine o'clock.
+s Jeg slutter klokka fire. | I finish at four o'clock.
+s Skolen begynner tidlig. | School starts early.
+s Vi har en time. | We have an hour.
+s Jeg trenger ti minutter. | I need ten minutes.
+s Om morgenen drikker jeg kaffe. | In the morning I drink coffee.
+s I kveld lager jeg mat. | Tonight I am cooking.
+s I morgen kommer mora mi. | Tomorrow my mother is coming. | +v2
+s I dag er det mandag. | Today it is Monday.
+s På mandag jobber jeg. | On Monday I work.
+s På fredag spiser vi fisk. | On Friday we eat fish.
+s Jeg trener hver dag. | I exercise every day.
+s Hun trener ofte om morgenen. | She often exercises in the morning.
+s Jeg liker å høre på musikk. | I like to listen to music.
+s Han hører på musikk hver kveld. | He listens to music every evening.
+s Jeg er hjemme i kveld. | I am at home tonight.
+s Når kommer du hjem? | When are you coming home?
+s Jeg går hjem nå. | I am walking home now.
+s Først spiser jeg frokost. | First I eat breakfast.
+s Etterpå går jeg til skolen. | Afterwards I walk to school.
+s Jeg står opp tidlig. | I get up early.
+s Han kommer sent hjem. | He comes home late.
+s I helga trener vi sammen. | At the weekend we exercise together.
+s På lørdag har jeg fri. | On Saturday I am off work.
+s På søndag sover hun til klokka ti. | On Sunday she sleeps until ten o'clock.
+s Vi har fri i dag. | We are off work today.
+s Jeg jobber ikke på søndag. | I do not work on Sunday.
+s Vanligvis står jeg opp klokka seks. | Usually I get up at six o'clock.
+s Hun leser vanligvis hver kveld. | She usually reads every evening.
+s På tirsdag og torsdag trener han. | On Tuesday and Thursday he exercises.
+s På onsdag lager faren min mat. | On Wednesday my father cooks. | +v2
+s Ei uke har sju dager. | A week has seven days.
+s En dag har mange timer. | A day has many hours.
+s Jeg sover bra hver natt. | I sleep well every night.
+s Hver morgen leser jeg. | Every morning I read.
+s Jeg ser ofte broren min. | I often see my brother.
+s Leser du mange bøker? | Do you read many books?
+s Hun jobber aldri i helga. | She never works at the weekend.
+s Musikken er veldig bra. | The music is very good.
+s Når slutter skolen? | When does school finish?
+s I morgen er det fredag. | Tomorrow it is Friday.
+s Klokka er ti, og jeg er trøtt. | It is ten o'clock, and I am tired.
+s Jeg kan ikke komme i dag, men jeg kan komme i morgen. | I cannot come today, but I can come tomorrow.
+
+## story Dagen min | My day
+Lars: Når står du opp, Nora? | When do you get up, Nora?
+Nora: Jeg står opp klokka seks. Først trener jeg. | I get up at six o'clock. First I exercise.
+Lars: Klokka seks! Jeg sover til klokka åtte. | Six o'clock! I sleep until eight o'clock.
+Nora: Etterpå spiser jeg frokost og leser litt. | Afterwards I eat breakfast and read a little.
+Lars: Når begynner du å jobbe? | When do you start working?
+Nora: Klokka ni. Jeg slutter klokka fem. | At nine o'clock. I finish at five o'clock.
+Lars: Og i kveld? | And tonight?
+Nora: I kveld lager jeg mat og hører på musikk. | Tonight I am cooking and listening to music.
+? When does Nora get up? | *six o'clock | eight o'clock | nine o'clock
+? What does Nora do first? | *she exercises | she eats breakfast | she reads
+
+## story Helg | Weekend
+Ida: Har du fri på lørdag? | Are you off work on Saturday?
+Jonas: Ja, jeg har fri hver helg. | Yes, I am off work every weekend.
+Ida: Vil du komme til middag? | Do you want to come to dinner?
+Jonas: Ja takk! Når? | Yes please! When?
+Ida: Klokka sju. Broren min kommer også. | At seven o'clock. My brother is coming too.
+Jonas: Bra. Jeg kjenner ikke broren din. | Good. I do not know your brother.
+Ida: Han er vanligvis hjemme i Bergen, men i helga er han her. | He is usually at home in Bergen, but at the weekend he is here.
+? When is the dinner? | *Saturday at seven | Sunday at seven | Friday at six
+? Where is Ida's brother usually? | *Bergen | Oslo | at Ida's home

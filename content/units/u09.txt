@@ -1,0 +1,172 @@
+# unit 9 | Har gjort | Have done, because and that
+
+## lesson Have done
+p perfect | Have done | needs: past
+rule: Har plus a verb form in -et or -t: jeg har snakket, jeg har spist.
+rule: Use it as in English, for something that matters now or has no stated time.
+ex: jeg snakket med ham i går | I spoke with him yesterday
+ex: jeg har snakket med ham | I have spoken with him
+ex: har du spist? | have you eaten?
+q: hun har kjøpt en bil | *she has bought a car | she bought a car
+q: vi har ikke spist | *we have not eaten | we did not eat
+w allerede | adv | already
+w ennå | adv | yet, still
+c noen gang | ever
+w nettopp | adv | just (a moment ago)
+
+## lesson Been and done
+f vært | verb | been | lemma=være
+f gjort | verb | done | lemma=gjøre
+f sett | verb | seen | lemma=se
+f gått | verb | gone, walked | lemma=gå
+f kommet | verb | come (have come) | lemma=komme
+f tatt | verb | taken | lemma=ta
+
+## lesson Because and that
+p sub | Because, that, if | needs: present, neg
+rule: At, fordi and hvis join a second sentence to the first.
+rule: After them comes the person, then the verb: fordi jeg er trøtt.
+ex: jeg sover | I am sleeping
+ex: jeg sover fordi jeg er trøtt | I am sleeping because I am tired
+ex: hun sier at hun kommer | she says that she is coming
+q: vi spiser hvis du kommer | *we eat if you come | we eat when you come
+q: han tror at det er dyrt | *he thinks that it is expensive | he knows that it is expensive
+w at | conj | that (joining two sentences)
+w fordi | conj | because
+w hvis | conj | if
+w synes | verb | to think (have an opinion)
+w hvorfor | adv | why
+
+## lesson Work and study
+w kontor | noun et | office
+w kollega | noun en | colleague
+w sjef | noun en | boss
+w studere | verb | to study
+w lære | verb | to learn
+w språk | noun et | language
+
+## lesson Busy and ready
+w prøve | verb | to try
+w bruke | verb | to use
+w ferdig | adj | finished
+w klar | adj | ready
+w opptatt | adj | busy
+w ledig | adj | free, vacant
+
+## lesson Health
+w hode | noun et | head
+w lege | noun en | doctor
+w føle | verb | to feel
+c ha vondt i ___ | to have a pain in ___
+c føle seg ___ | to feel ___
+w bedre | adj | better
+w dårlig | adj | bad
+
+## lesson Maybe and soon
+w kanskje | adv | maybe
+w selvfølgelig | adv | of course
+w dessverre | adv | unfortunately
+w heldigvis | adv | luckily
+w snart | adv | soon
+w lenge | adv | for a long time
+w igjen | adv | again
+
+## sentences
+
+s Jeg har spist. | I have eaten.
+s Har du spist frokost? | Have you eaten breakfast?
+s Hun har kjøpt et hus. | She has bought a house.
+s Vi har bodd her lenge. | We have lived here for a long time.
+s Jeg har ikke lest boka. | I have not read the book.
+s Har du snakket med sjefen? | Have you spoken with the boss?
+s Jeg har allerede betalt. | I have already paid.
+s Han har ikke kommet ennå. | He has not come yet.
+s Har du noen gang vært i Norge? | Have you ever been to Norway?
+s Jeg har nettopp spist. | I have just eaten.
+s Jeg har vært i Bergen. | I have been to Bergen.
+s Hva har du gjort? | What have you done?
+s Har du sett nøkkelen min? | Have you seen my key?
+s Hun har gått hjem. | She has gone home.
+s De har tatt bussen. | They have taken the bus.
+s Jeg har aldri sett sjøen. | I have never seen the sea.
+s Vi har møtt ham før. | We have met him before.
+s Jeg har glemt navnet hans. | I have forgotten his name.
+s Jeg tror at hun kommer. | I think that she is coming.
+s Han sier at han er syk. | He says that he is ill.
+s Jeg vet at du er opptatt. | I know that you are busy.
+s Hun synes at boka er god. | She thinks that the book is good.
+s Jeg synes at norsk er lett. | I think that Norwegian is easy.
+s Jeg er hjemme fordi jeg er syk. | I am at home because I am ill.
+s Hun lærer norsk fordi hun bor i Norge. | She is learning Norwegian because she lives in Norway.
+s Vi tar bussen hvis det er kaldt. | We take the bus if it is cold.
+s Hvis du vil, kan vi spise nå. | If you want, we can eat now.
+s Kom hvis du kan. | Come if you can.
+s Hvorfor lærer du norsk? | Why are you learning Norwegian?
+s Hvorfor er du trøtt? | Why are you tired?
+s Jeg jobber på et kontor. | I work in an office.
+s Kollegaen min er snill. | My colleague is kind.
+s Sjefen er ikke på kontoret i dag. | The boss is not in the office today.
+s Hun studerer i Oslo. | She studies in Oslo.
+s Jeg lærer norsk. | I am learning Norwegian.
+s Hvilke språk snakker du? | Which languages do you speak? | +plural
+s Norsk er et fint språk. | Norwegian is a nice language.
+s Jeg prøver å lære norsk. | I am trying to learn Norwegian.
+s Kan jeg bruke telefonen din? | Can I use your phone?
+s Er du ferdig? | Are you finished?
+s Jeg er ikke ferdig ennå. | I am not finished yet.
+s Maten er klar. | The food is ready.
+s Er du klar? | Are you ready?
+s Sjefen er opptatt nå. | The boss is busy now.
+s Er denne stolen ledig? | Is this chair free?
+s Jeg har vondt i hodet. | I have a headache.
+s Du må gå til legen. | You must go to the doctor.
+s Jeg føler meg dårlig. | I feel unwell.
+s Føler du deg bedre? | Do you feel better?
+s Hun føler seg trøtt. | She feels tired.
+s Legen sier at jeg må sove. | The doctor says that I must sleep.
+s Dette er bedre. | This is better.
+s Været er dårlig i dag. | The weather is bad today.
+s Han kommer kanskje i morgen. | Maybe he is coming tomorrow. | alt: Kanskje kommer han i morgen; Kanskje han kommer i morgen
+s Selvfølgelig kan du komme. | Of course you can come.
+s Jeg kan dessverre ikke komme. | Unfortunately I cannot come. | alt: Dessverre kan jeg ikke komme
+s Heldigvis har jeg nøkkelen. | Luckily I have the key.
+s Vi spiser snart. | We are eating soon.
+s Toget kommer snart. | The train is coming soon.
+s Jeg har ventet lenge. | I have waited for a long time.
+s Kan du si det igjen? | Can you say it again?
+s Jeg må prøve igjen. | I must try again.
+s Hun har lært norsk i Oslo. | She has learned Norwegian in Oslo.
+s Jeg har studert engelsk. | I have studied English.
+s Har dere brukt bilen i dag? | Have you all used the car today?
+s Jeg har jobbet her i fem år. | I have worked here for five years. | +plural
+s Han er ikke her fordi han er på ferie. | He is not here because he is on holiday.
+s Hun sa at hun var trøtt. | She said that she was tired.
+s Jeg tror at det er feil. | I think that it is wrong.
+s Hvorfor har du ikke spist? | Why have you not eaten?
+s Er rommet ledig i kveld? | Is the room free tonight?
+s Sjefen har reist til Bergen. | The boss has travelled to Bergen.
+s Hvis du er syk, må du bli hjemme. | If you are ill, you must stay at home.
+s Jeg er glad fordi jeg har fri. | I am happy because I am off work.
+
+## story Hos legen | At the doctor's
+Lege: Hei. Hvorfor har du kommet i dag? | Hi. Why have you come today?
+Tom: Jeg føler meg dårlig. Jeg har vondt i hodet. | I feel unwell. I have a headache.
+Lege: Har du spist i dag? | Have you eaten today?
+Tom: Nei, jeg har ikke spist ennå. Jeg er ikke sulten. | No, I have not eaten yet. I am not hungry.
+Lege: Jobber du? | Do you work?
+Tom: Ja, jeg har jobbet veldig lenge hver dag. Sjefen sier at det er viktig. | Yes, I have worked very long every day. The boss says that it is important.
+Lege: Jeg tror at du er trøtt. Du må bli hjemme og sove. | I think that you are tired. You must stay at home and sleep.
+Tom: Heldigvis har jeg fri i morgen. | Luckily I am off work tomorrow.
+? What is wrong with Tom? | *he has a headache | he has a cold | his foot hurts
+? What does the doctor tell Tom to do? | *stay at home and sleep | eat more fish | work at home
+
+## story Ny på kontoret | New at the office
+Maria: Hei, jeg er ny her. Er denne stolen ledig? | Hi, I am new here. Is this chair free?
+Lars: Ja, selvfølgelig. Har du møtt sjefen ennå? | Yes, of course. Have you met the boss yet?
+Maria: Nei, hun er opptatt. Jeg prøver igjen snart. | No, she is busy. I will try again soon.
+Lars: Hvorfor har du kommet til Norge? | Why have you come to Norway?
+Maria: Fordi kjæresten min bor her. Og jeg synes at Norge er et fint land. | Because my boyfriend lives here. And I think that Norway is a nice country.
+Lars: Du snakker bra norsk! Hvor har du lært språket? | You speak good Norwegian! Where have you learned the language?
+Maria: Jeg har studert norsk i Italia. Men jeg har ikke brukt språket ofte. | I have studied Norwegian in Italy. But I have not used the language often.
+? Why did Maria come to Norway? | *her boyfriend lives there | only for the job | to study
+? Where did Maria study Norwegian? | *in Italy | in Norway | at the office

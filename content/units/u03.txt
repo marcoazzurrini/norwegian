@@ -1,0 +1,154 @@
+# unit 3 | Mat og kafé | Food, ordering, can and want
+
+## lesson Drinks and bread
+w kaffe | noun en | coffee
+w te | noun en | tea
+w vann | noun et | water
+w brød | noun et | bread
+w mat | noun en | food
+w melk | noun ei | milk
+
+## lesson Can, will, must
+p modal | Can, will, must | needs: present
+rule: After vil, kan and må, the next verb has no ending: jeg kan snakke.
+rule: These three never change and never take -r.
+ex: jeg snakker norsk | I speak Norwegian
+ex: jeg kan snakke norsk | I can speak Norwegian
+ex: hun vil spise | she wants to eat
+ex: vi må drikke vann | we must drink water
+q: du må komme | *you must come | you are coming
+q: han vil ha kaffe | *he wants coffee | he has coffee
+w vil | verb | want to, will | lemma=ville | only
+w kan | verb | can | lemma=kunne | only
+w må | verb | must, have to | lemma=måtte | only
+w ha | verb | to have
+w spise | verb | to eat
+w drikke | verb | to drink
+
+## lesson Ordering
+c jeg vil gjerne ha ___ | I would like ___
+c kan jeg få ___? | can I have ___?
+c hva koster det? | how much is it?
+c vær så snill | please
+w koste | verb | to cost
+w kopp | noun en | cup
+w krone | noun ei | krone (money)
+
+## lesson To do
+p inf-aa | To do something | needs: modal
+rule: Å is "to" before a verb: å spise, å snakke.
+rule: Use it after verbs like liker and trenger. Do not use it after vil, kan, må.
+ex: jeg liker å spise | I like to eat
+ex: jeg vil spise | I want to eat
+ex: hun trenger å spise | she needs to eat
+q: vi liker å snakke | *we like to talk | we want to talk
+q: jeg må spise | *I must eat | I like to eat
+w å | other | to (before a verb)
+w like | verb | to like
+w lage | verb | to make
+w kjøpe | verb | to buy
+w betale | verb | to pay
+w trenge | verb | to need
+
+## lesson Meals
+w frokost | noun en | breakfast
+w middag | noun en | dinner
+w eple | noun et | apple
+w ost | noun en | cheese
+w fisk | noun en | fish
+w kake | noun ei | cake
+
+## lesson How you feel
+w sulten | adj | hungry
+w tørst | adj | thirsty
+w trøtt | adj | tired
+w glad | adj | happy
+w mer | adv | more
+c ja takk | yes please
+c nei takk | no thanks
+
+## sentences
+
+s Jeg drikker kaffe. | I drink coffee.
+s Hun drikker te. | She drinks tea.
+s Vi spiser brød. | We eat bread.
+s Barnet drikker melk. | The child drinks milk.
+s Jeg vil ha kaffe. | I want coffee.
+s Vil du ha te? | Do you want tea?
+s Jeg vil gjerne ha en kopp kaffe. | I would like a cup of coffee.
+s Kan jeg få vann? | Can I have water?
+s Kan jeg få en kopp te, vær så snill? | Can I have a cup of tea, please?
+s Hva koster det? | How much is it?
+s Hva koster kaffen? | How much is the coffee?
+s Hva koster et eple? | How much is an apple?
+s Jeg kan snakke norsk. | I can speak Norwegian.
+s Kan du snakke engelsk? | Can you speak English?
+s Hun kan ikke komme. | She cannot come.
+s Vi må spise. | We must eat.
+s Du må drikke vann. | You must drink water.
+s Jeg må ha kaffe nå. | I must have coffee now.
+s Han vil ikke spise fisk. | He does not want to eat fish.
+s Vil dere spise middag? | Do you all want to eat dinner?
+s Jeg liker kaffe. | I like coffee.
+s Jeg liker ikke fisk. | I do not like fish.
+s Liker du ost? | Do you like cheese?
+s Hun liker å lage mat. | She likes to cook.
+s Jeg liker å spise frokost. | I like to eat breakfast.
+s Vi liker å snakke norsk. | We like to speak Norwegian.
+s Jeg trenger kaffe. | I need coffee.
+s Jeg trenger å spise. | I need to eat.
+s Du trenger ikke å betale. | You do not need to pay.
+s Jeg må kjøpe brød og melk. | I must buy bread and milk.
+s Han kjøper et eple. | He is buying an apple.
+s Kan jeg betale nå? | Can I pay now?
+s Hvem betaler? | Who is paying?
+s Jeg lager middag. | I am making dinner.
+s Hun lager ei kake. | She is making a cake.
+s Vil du ha mer kaffe? | Do you want more coffee?
+s Ja takk. | Yes please.
+s Nei takk. | No thanks.
+s Jeg er sulten. | I am hungry.
+s Er du tørst? | Are you thirsty?
+s Hun er trøtt. | She is tired.
+s Han er veldig glad. | He is very happy.
+s Jeg er trøtt, men jeg må lage frokost. | I am tired, but I must make breakfast.
+s Jeg er ikke sulten nå. | I am not hungry now.
+s Vi spiser fisk til middag. | We are eating fish for dinner.
+s Jeg spiser brød med ost til frokost. | I eat bread with cheese for breakfast.
+s Kaka er veldig bra. | The cake is very good.
+s Fisken er bra. | The fish is good.
+s Eplet ligger på bordet. | The apple is lying on the table.
+s Maten er på bordet. | The food is on the table.
+s Jeg vil gjerne ha et eple. | I would like an apple.
+s Kan jeg få mer brød? | Can I have more bread?
+s Jenta vil ha melk. | The girl wants milk.
+s Gutten liker ikke ost. | The boy does not like cheese.
+s Vil du ha te eller kaffe? | Do you want tea or coffee?
+s Jeg drikker ikke melk. | I do not drink milk.
+s Kan vi spise nå? | Can we eat now?
+s De må kjøpe mat. | They must buy food.
+s En kopp kaffe koster ei krone. | A cup of coffee costs one krone.
+s Hun trenger å drikke mer vann. | She needs to drink more water.
+
+## story På kafé | At a café
+Ida: Hei! Hva vil du ha? | Hi! What would you like?
+Tom: Jeg vil gjerne ha en kopp kaffe, takk. | I would like a cup of coffee, thanks.
+Ida: Vil du ha ei kake også? | Do you want a cake too?
+Tom: Nei takk, men jeg er sulten. Har dere brød? | No thanks, but I am hungry. Do you have bread?
+Ida: Ja, vi har brød med ost. | Yes, we have bread with cheese.
+Tom: Bra. Kan jeg få brød med ost og et eple? | Good. Can I have bread with cheese and an apple?
+Ida: Ja. Vær så god. | Yes. Here you are.
+Tom: Tusen takk. Hva koster det? | Thank you very much. How much is it?
+? What does Tom drink? | *coffee | tea | water
+? What does Tom not want? | *cake | bread | an apple
+
+## story Middag | Dinner
+Kari: Jeg er sulten. Hva spiser vi til middag? | I am hungry. What are we eating for dinner?
+Per: Jeg vet ikke. Liker du fisk? | I do not know. Do you like fish?
+Kari: Ja, jeg liker fisk. Har vi fisk? | Yes, I like fish. Do we have fish?
+Per: Nei. Jeg må kjøpe fisk og brød. | No. I must buy fish and bread.
+Kari: Kan du kjøpe melk også? Barnet trenger melk. | Can you buy milk too? The child needs milk.
+Per: Ja. Og jeg vil lage ei kake. | Yes. And I want to make a cake.
+Kari: Bra! Jeg kan lage kaffe. | Good! I can make coffee.
+? What must Per buy? | *fish, bread and milk | cake and coffee | only fish
+? Who needs milk? | *the child | Kari | Per

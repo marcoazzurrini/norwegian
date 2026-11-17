@@ -1,0 +1,19 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.env
+.nitro
+.tanstack
+.wrangler
+.output
+.vinxi
+__unconfig*
+todos.json
+
+# Downloaded language data (see docs/spec.md, section 5) and build reports
+data/raw
+data/build
+.dev.vars
+.sync-key

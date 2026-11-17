@@ -1,0 +1,23 @@
+{
+ "version": 2,
+ "pages": [
+  "page-1",
+  "desktop",
+  "mobile"
+ ],
+ "variables": {
+  "paper": "#F5F2EC",
+  "surface": "#FFFFFF",
+  "ink": "#172126",
+  "muted": "#58656A",
+  "line": "#E2DCD0",
+  "fjord": "#1E5A62",
+  "fjord-soft": "#DCE9E8",
+  "lingon": "#B93A2B",
+  "lingon-soft": "#F6E1DC",
+  "moss": "#3F6B3A",
+  "moss-soft": "#E1ECDD",
+  "sun": "#8A5E06",
+  "sun-soft": "#F6EACD"
+ }
+}

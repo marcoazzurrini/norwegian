@@ -1,0 +1,46 @@
+{
+  "name": "norsk",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build && cp dist/client/_shell.html dist/client/index.html",
+    "deploy": "bun run build && wrangler deploy",
+    "preview": "vite preview",
+    "content": "bun scripts/build-content.ts",
+    "test": "bun test src",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p worker"
+  },
+  "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-router": "1.170.46",
+    "@tanstack/react-start": "1.169.5",
+    "idb": "^8.0.4",
+    "lucide-react": "^1.74.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.18",
+    "ts-fsrs": "^6.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261117.1",
+    "@types/bun": "^1.4.4",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.0",
+    "wrangler": "^4.164.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss"
+    ]
+  }
+}

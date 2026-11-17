@@ -1,0 +1,172 @@
+# unit 4 | Familie | Family, more than one, mine and yours
+
+## lesson Family
+w mor | noun ei | mother
+w far | noun en | father
+w bror | noun en | brother
+w søster | noun ei | sister
+w familie | noun en | family
+w foreldre | noun pl | parents | lemma=forelder
+
+## lesson More than one
+p plural | More than one | needs: gender
+rule: Most nouns add -er: en bil, to biler. Nouns ending in -e add -r: ei jente, to jenter.
+rule: Short et words do not change: et hus, to hus.
+ex: en bil > to biler | two cars
+ex: ei jente > to jenter | two girls
+ex: et hus > to hus | two houses
+q: tre stoler | *three chairs | the chair
+q: mange barn | *many children | a child
+w to | num | two
+w tre | num | three
+w mange | adj | many | only
+w noen | det | some, any
+w hund | noun en | dog
+w katt | noun en | cat
+
+## lesson Mine and yours
+p possessive | Mine and yours | needs: definite
+rule: The owner comes after the noun, and the noun takes "the": bilen min, "my car".
+rule: Min and din change with the noun: bilen min, boka mi, huset mitt. Hans and hennes never change.
+ex: bilen min | my car
+ex: boka mi | my book
+ex: huset mitt | my house
+ex: bilen hans | his car
+q: huset ditt | *your house | my house
+q: boka hennes | *her book | his book
+w min | det | my
+w din | det | your (one person)
+w hans | det | his
+w hennes | det | her, hers (owner)
+
+## lesson Counting
+w fire | num | four
+w fem | num | five
+w seks | num | six
+w år | noun et | year
+w gammel | adj | old
+c hvor gammel er du? | how old are you?
+c jeg er ___ år gammel | I am ___ years old
+
+## lesson All of them
+p plural-def | "The" for more than one | needs: plural, definite
+rule: To say "the" for more than one, add -ene: bilene, jentene, husene.
+rule: A few common nouns change their vowel: ei bok, bøker, bøkene.
+ex: biler > bilene | the cars
+ex: jenter > jentene | the girls
+ex: hus > husene | the houses
+q: stolene | *the chairs | chairs
+q: bøker | *books | the books
+f bøker | noun | books (more than one bok) | lemma=bok
+f brødre | noun | brothers | lemma=bror
+f søstre | noun | sisters | lemma=søster
+f menn | noun | men | lemma=mann
+w vår | det | our
+w deres | det | their
+
+## lesson Partners and children
+w sønn | noun en | son
+w datter | noun ei | daughter
+w kone | noun ei | wife
+w kjæreste | noun en | boyfriend, girlfriend
+w gift | adj | married
+w sammen | adv | together
+w sju | num | seven
+w åtte | num | eight
+
+## lesson How many
+c hvor mange | how many
+w ni | num | nine
+w ti | num | ten
+w bare | adv | only, just
+w alle | pron | all, everyone
+w ingen | pron | nobody, none
+w kjenne | verb | to know (a person)
+
+## sentences
+
+s Dette er mora mi. | This is my mother.
+s Faren min heter Per. | My father is called Per.
+s Jeg har en bror. | I have a brother.
+s Hun har to søstre. | She has two sisters.
+s Jeg har tre brødre. | I have three brothers.
+s Familien min bor i Bergen. | My family lives in Bergen.
+s Foreldrene mine bor i Italia. | My parents live in Italy.
+s Jeg har to biler. | I have two cars.
+s Vi har tre barn. | We have three children. | +plural
+s Hun har mange bøker. | She has many books.
+s Han har noen venner. | He has some friends.
+s Har du noen bøker? | Do you have any books?
+s Vi har en hund og to katter. | We have a dog and two cats.
+s Hunden vår er gammel. | Our dog is old.
+s Katten din er her. | Your cat is here.
+s Bilen min er gammel. | My car is old.
+s Boka mi ligger på bordet. | My book is lying on the table.
+s Huset mitt er i Oslo. | My house is in Oslo.
+s Hvor er nøkkelen din? | Where is your key?
+s Broren hans bor i Sverige. | His brother lives in Sweden.
+s Søstera hennes er lærer. | Her sister is a teacher.
+s Mora hans kommer fra England. | His mother comes from England.
+s Huset vårt har fem rom. | Our house has five rooms. | +plural
+s Barna deres snakker norsk. | Their children speak Norwegian.
+s Bilene står her. | The cars are standing here.
+s Bøkene ligger på bordet. | The books are lying on the table.
+s Jentene liker kake. | The girls like cake.
+s Guttene spiser frokost. | The boys are eating breakfast.
+s Mennene drikker kaffe. | The men are drinking coffee.
+s Hvor gammel er du? | How old are you?
+s Jeg er seks år gammel. | I am six years old.
+s Hun er fire år gammel. | She is four years old.
+s Sønnen min er fem år gammel. | My son is five years old.
+s Dattera mi heter Emma. | My daughter is called Emma.
+s Kona hans er fra Norge. | His wife is from Norway.
+s Jeg har en kjæreste. | I have a girlfriend.
+s Er du gift? | Are you married?
+s Vi er gift. | We are married.
+s De bor sammen. | They live together.
+s Vi spiser middag sammen. | We eat dinner together.
+s Hvor mange barn har du? | How many children do you have? | +plural
+s Hvor mange søstre har hun? | How many sisters does she have?
+s Jeg har bare en bror. | I have only one brother.
+s Alle snakker engelsk. | Everyone speaks English.
+s Ingen bor her. | Nobody lives here.
+s Jeg kjenner broren din. | I know your brother.
+s Kjenner du foreldrene mine? | Do you know my parents?
+s Hun kjenner alle. | She knows everyone.
+s Jeg kjenner ingen i Oslo. | I know nobody in Oslo.
+s Vi har sju stoler. | We have seven chairs.
+s Han har åtte bøker. | He has eight books.
+s Gutten er ni år gammel. | The boy is nine years old.
+s Jeg har ti kroner. | I have ten kroner.
+s Kaffen koster seks kroner. | The coffee costs six kroner.
+s Hun har tre sønner og ei datter. | She has three sons and a daughter.
+s Broren min og kona hans har to barn. | My brother and his wife have two children. | +plural
+s Søstrene mine bor sammen. | My sisters live together.
+s Brødrene hennes er studenter. | Her brothers are students.
+s Hvor mange rom har huset? | How many rooms does the house have? | +plural
+s Katten vår liker fisk. | Our cat likes fish.
+s Vennene deres kommer fra Italia. | Their friends come from Italy.
+s Mora mi og faren min er gift. | My mother and my father are married.
+
+## story Familien min | My family
+Emma: Dette er familien min. | This is my family.
+Emma: Mora mi heter Kari og faren min heter Per. | My mother is called Kari and my father is called Per.
+Jonas: Har du søstre eller brødre? | Do you have sisters or brothers?
+Emma: Ja, jeg har to brødre og ei søster. | Yes, I have two brothers and a sister.
+Jonas: Hvor gammel er søstera di? | How old is your sister?
+Emma: Hun er åtte år gammel. Brødrene mine er studenter. | She is eight years old. My brothers are students.
+Jonas: Bor dere sammen? | Do you live together?
+Emma: Nei. Brødrene mine bor i Bergen. | No. My brothers live in Bergen.
+? How many brothers does Emma have? | *two | three | one
+? Where do the brothers live? | *Bergen | Oslo | with Emma
+
+## story Hunden og kattene | The dog and the cats
+Ola: Har dere en hund? | Do you have a dog?
+Maria: Ja, vi har en hund og tre katter. | Yes, we have a dog and three cats.
+Ola: Tre katter! Liker hunden kattene? | Three cats! Does the dog like the cats?
+Maria: Nei, men kattene liker hunden. | No, but the cats like the dog.
+Ola: Hva heter hunden deres? | What is your dog called?
+Maria: Han heter Tom. Han er ti år gammel. | He is called Tom. He is ten years old.
+Ola: Sønnen min vil også ha en hund. | My son also wants a dog.
+? How many cats does Maria have? | *three | two | ten
+? Who wants a dog? | *Ola's son | Maria | Ola's wife
