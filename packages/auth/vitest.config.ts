@@ -25,5 +25,17 @@ export default defineConfig(async () => ({
       },
     }),
   ],
-  test: { include: ["test/**/*.test.ts"] },
+  test: {
+    // Bundling the libraries once is quicker than transforming their files one by one.
+    deps: {
+      optimizer: {
+        ssr: {
+          enabled: true,
+          rolldownOptions: { external: [/^node:/u, /^cloudflare:/u] },
+          include: ["better-auth", "better-auth/api", "better-auth/plugins"],
+        },
+      },
+    },
+    include: ["test/**/*.test.ts"],
+  },
 }));

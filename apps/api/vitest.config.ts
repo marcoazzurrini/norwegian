@@ -21,5 +21,27 @@ export default defineConfig(async () => ({
       wrangler: { configPath: "./wrangler.jsonc" },
     }),
   ],
-  test: { include: ["test/**/*.test.ts"], setupFiles: ["./test/setup.ts"] },
+  test: {
+    // Bundling the libraries once is quicker than transforming their files one by one.
+    deps: {
+      optimizer: {
+        ssr: {
+          enabled: true,
+          rolldownOptions: { external: [/^node:/u, /^cloudflare:/u] },
+          include: [
+            "better-auth",
+            "better-auth/api",
+            "better-auth/plugins",
+            "drizzle-orm",
+            "drizzle-orm/d1",
+            "drizzle-orm/sqlite-core",
+            "hono",
+            "valibot",
+          ],
+        },
+      },
+    },
+    include: ["test/**/*.test.ts"],
+    setupFiles: ["./test/setup.ts"],
+  },
 }));
