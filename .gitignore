@@ -18,3 +18,5 @@ data/build
 .dev.vars
 .sync-key
 data/audio
+test-results
+playwright-report
