@@ -24,8 +24,7 @@ jobs:
       - run: bun run lint
       - run: bun run typecheck
       # The component tests of packages/ui run in a real browser.
-      - run: bunx playwright install --with-deps chromium
-        working-directory: packages/ui
+      - uses: ./.github/actions/browser
       - run: bun run test
       - run: bun run build
 
@@ -37,8 +36,7 @@ jobs:
         with:
           bun-version: ${{ env.BUN_VERSION }}
       - run: bun install --frozen-lockfile
-      - run: bunx playwright install --with-deps chromium
-        working-directory: apps/web
+      - uses: ./.github/actions/browser
       - run: bun run test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()

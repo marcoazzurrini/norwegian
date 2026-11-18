@@ -1,6 +1,6 @@
 // A simulated month: scheduling, selection, sessions and the task machines, tested together.
 // A learner studies fifteen minutes every day for thirty days and answers right 85% of the time.
-import { describe, expect, setDefaultTimeout, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 
 import { REVIEW_SHARE, isRealItem, simulate } from "./simulation";
 import type { Options, TaskRecord } from "./simulation";
@@ -12,9 +12,6 @@ const BACKLOG = 40;
 
 /** The longest time a single task can add to a session. */
 const MAX_TASK_MS = 3 * MINUTE;
-
-// Each test here simulates a month or more, which takes seconds on a slow machine.
-setDefaultTimeout(60_000);
 
 const month: Options = { accuracy: 0.85, days: 30, minutes: 15, seed: 7 };
 
@@ -152,12 +149,15 @@ describe("a month of daily study", () => {
     expect(Math.max(...recall)).toBeLessThan(0.99);
   });
 
-  test("the same seed gives the same month, another seed a different one", async () => {
-    const again = await simulate(month);
-    const other = await simulate({ ...month, seed: 8 });
+  // Ten days are enough to show this, and cost a tenth of a month.
+  test("the same seed gives the same days, another seed different ones", async () => {
+    const tenDays: Options = { ...month, days: 10 };
+    const first = JSON.stringify(await simulate(tenDays));
+    const again = JSON.stringify(await simulate(tenDays));
+    const other = JSON.stringify(await simulate({ ...tenDays, seed: 8 }));
 
-    expect(JSON.stringify(again)).toBe(JSON.stringify(run));
-    expect(JSON.stringify(other)).not.toBe(JSON.stringify(run));
+    expect(again).toBe(first);
+    expect(other).not.toBe(first);
   });
 });
 

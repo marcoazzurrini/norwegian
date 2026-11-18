@@ -1,0 +1,19 @@
+name: Browser
+description: >
+  Makes the Chromium that Playwright drives available. The download is kept between runs, because fetching it each time took from 20 seconds to 7 minutes.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v4
+      id: cache
+      with:
+        path: ~/.cache/ms-playwright
+        # The lockfile pins the Playwright version, and each version wants its own browser build.
+        key: playwright-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+    # The tests run headless, so the small headless build is enough. The runner image
+    # already has the system libraries it needs.
+    - if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: packages/ui
+      run: bunx playwright install --only-shell chromium

@@ -44,8 +44,7 @@ export const unlockedBy = (index: number): Lesson[] => {
   return lessons.filter((l) => l.needs.includes(lesson.index));
 };
 
-/** Every item a sentence can exercise: words, chunks and patterns. */
-export const sentenceItems = (s: Sentence): string[] => {
+const itemsIn = (s: Sentence): string[] => {
   const out = new Set<string>(s.patterns);
 
   for (const t of s.tokens) {
@@ -64,6 +63,16 @@ export const sentenceItems = (s: Sentence): string[] => {
 
   return [...out];
 };
+
+// The curriculum never changes while the app runs, and choosing a review asks for
+// the items of every sentence, so they are worked out once.
+const itemsBySentence = new Map<Sentence, readonly string[]>(
+  sentences.map((s) => [s, itemsIn(s)])
+);
+
+/** Every item a sentence can exercise: words, chunks and patterns. */
+export const sentenceItems = (s: Sentence): readonly string[] =>
+  itemsBySentence.get(s) ?? itemsIn(s);
 
 // Every item has an entry, so an id that is missing here is an unknown item, not an unused one.
 const bySentenceItem = new Map<string, Sentence[]>(

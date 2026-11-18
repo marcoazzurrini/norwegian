@@ -199,12 +199,17 @@ const bestCover = (
   }
 
   for (const sentence of sentences) {
-    if (!skipSentences.has(sentence.id) && sentenceReady(sentence, mem)) {
-      const covers = exercised(sentence, mem).filter((id) => wanted.has(id));
-      const score = scoreOf(covers, sentence);
+    if (!skipSentences.has(sentence.id)) {
+      // Every wanted item is in memory, so these are the taught items the sentence clears.
+      // Most sentences clear none, and that is cheaper to find out than whether one is usable.
+      const covers = sentenceItems(sentence).filter((id) => wanted.has(id));
 
-      if (covers.length > 0 && (best === null || score > best.score)) {
-        best = { covers, score, sentence };
+      if (covers.length > 0 && sentenceReady(sentence, mem)) {
+        const score = scoreOf(covers, sentence);
+
+        if (best === null || score > best.score) {
+          best = { covers, score, sentence };
+        }
       }
     }
   }
