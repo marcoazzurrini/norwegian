@@ -52,8 +52,6 @@ After the first visit it works offline.
 
 ## Where things are
 
-How the code is organised, and why, is in [docs/architecture.md](docs/architecture.md).
-
 | Path | Contents |
 | --- | --- |
 | `apps/web/` | The app: pages in `src/routes/`, one component per kind of task in `src/components/tasks/`. |
