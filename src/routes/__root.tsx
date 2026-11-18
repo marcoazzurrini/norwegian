@@ -1,7 +1,7 @@
 import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { load, useApp } from '../engine/store'
-import { SignIn } from '../components/SignIn'
+import { Bare, SignIn } from '../components/SignIn'
 import { startSync, useSync } from '../engine/sync'
 import appCss from '../styles.css?url'
 
@@ -12,8 +12,11 @@ export const Route = createRootRoute({
       { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
       { title: 'Norsk' },
       { name: 'description', content: 'Learn Norwegian with spaced, compressed recall.' },
-      { name: 'theme-color', content: '#f5f2ec' },
+      { name: 'theme-color', content: '#212121' },
+      { name: 'color-scheme', content: 'dark' },
       { name: 'apple-mobile-web-app-capable', content: 'yes' },
+      // The app draws under the status bar, as in the design.
+      { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
       { name: 'apple-mobile-web-app-title', content: 'Norsk' },
     ],
     links: [
@@ -57,7 +60,7 @@ function App() {
 
   // `bun run dev` serves the app without the sign-in server, so it skips the sign-in screen.
   const open = sync.linked || import.meta.env.DEV
-  if (!ready || (!open && !sync.checked)) return <div className="flex min-h-dvh items-center justify-center text-2xl font-bold text-fjord">norsk</div>
+  if (!ready || (!open && !sync.checked)) return <Bare />
   if (!open) return <SignIn />
   return <Outlet />
 }

@@ -10,5 +10,5 @@ function StoryPage() {
   const story = storyById(id)
   if (!story) return <Navigate to="/stories" />
   const back = () => void navigate({ to: '/stories' })
-  return <StoryTask story={story} frame={{ label: 'Story', progress: 0, onClose: back }} onDone={back} />
+  return <StoryTask story={story} frame={{ block: 'story', title: 'Story', label: '', progress: 0, onClose: back }} onDone={back} />
 }

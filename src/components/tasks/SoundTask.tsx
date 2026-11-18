@@ -1,11 +1,11 @@
-import { Volume2 } from 'lucide-react'
+import { Check, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { SoundPair } from '../../content/types'
 import { getState, updateMeta } from '../../engine/store'
 import { speak, useVoices } from '../../lib/speech'
-import { Focus } from '../Focus'
-import { Button, Heading, Note } from '../ui'
-import { EMPTY_RESULT, type Frame, type TaskResult } from './shared'
+import { DockRow, Focus } from '../Focus'
+import { AudioButton, Button, Key } from '../ui'
+import { EMPTY_RESULT, Remark, type Frame, type TaskResult } from './shared'
 
 interface Props {
   pair: SoundPair
@@ -49,33 +49,30 @@ export function SoundTask({ pair, target, index, frame, onDone }: Props) {
   return (
     <Focus
       {...frame}
-      footer={
-        <>
+      scrollKey={picked}
+      dock={
+        <DockRow>
           <Button variant="secondary" onClick={play}>
             Play again
           </Button>
           {picked ? (
-            <Button autoFocus onClick={() => onDone({ ...EMPTY_RESULT, right: right ? 1 : 0, wrong: right ? 0 : 1 })} hint="Enter">
+            <Button autoFocus onClick={() => onDone({ ...EMPTY_RESULT, right: right ? 1 : 0, wrong: right ? 0 : 1 })} hint="↵">
               Continue
             </Button>
           ) : (
             <span />
           )}
-        </>
+        </DockRow>
       }
     >
-      <Heading title="Which word do you hear?" sub={pair.hint} />
-      {voices.length === 0 && (
-        <Note tone="lingon" title="No Norwegian voice found.">
-          This device has no Norwegian voice installed. Add one in the system settings, under spoken content or text-to-speech.
-        </Note>
-      )}
-      <div className="flex justify-center py-2">
-        <button type="button" onClick={play} aria-label="Play the word" className="flex h-24 w-24 items-center justify-center rounded-full bg-fjord text-white">
-          <Volume2 size={40} />
-        </button>
+      <div className="flex flex-col items-center gap-1.5 text-center lg:gap-3">
+        <h1 className="m-0 text-[clamp(1.875rem,2.8125vw,4.5rem)] leading-none font-medium tracking-[-0.035em]">Which word do you hear?</h1>
+        <p className="m-0 max-w-[20.625rem] text-15 text-fg2 lg:max-w-[38.75rem] lg:text-22">{pair.hint}</p>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex justify-center py-[1.125rem] lg:py-10">
+        <AudioButton onClick={play} label="Play the word" className="size-[4.75rem] lg:size-[6.5rem] [&>svg]:size-[37%]" />
+      </div>
+      <div className="flex gap-2.5 lg:gap-4">
         {(['a', 'b'] as const).map((side, i) => {
           const isTarget = picked && side === target
           const isWrongPick = picked === side && side !== target
@@ -84,21 +81,35 @@ export function SoundTask({ pair, target, index, frame, onDone }: Props) {
               key={side}
               type="button"
               onClick={() => (picked ? void speak(pair[side].word, { voiceIndex: index, rate: 0.8 }) : void pick(side))}
-              className={`flex flex-col items-center gap-1 rounded-2xl border-2 px-4 py-6 ${
-                isTarget ? 'border-moss bg-moss-soft' : isWrongPick ? 'border-lingon bg-lingon-soft' : 'border-line bg-surface'
+              className={`press flex min-w-0 flex-1 flex-col items-center gap-1 rounded-[1.375rem] border border-line bg-inset px-3 pt-[1.625rem] pb-[1.125rem] lg:gap-2 lg:rounded-[2rem] lg:px-8 lg:pt-[3.25rem] lg:pb-8 ${
+                isTarget ? 'shadow-[inset_0_0_0_2px_var(--color-green)]' : isWrongPick ? 'shadow-[inset_0_0_0_2px_var(--color-red)]' : ''
               }`}
             >
-              <span className="text-4xl font-bold text-ink sm:text-5xl">{pair[side].word}</span>
-              <span className="text-muted">{pair[side].gloss}</span>
-              {!picked && <kbd className="mt-2 hidden rounded-md border border-line px-2.5 text-sm text-muted sm:block">{i + 1}</kbd>}
+              <span className="max-w-full text-word leading-none font-medium tracking-[-0.035em] break-words">{pair[side].word}</span>
+              <span className="pt-1 text-16 text-fg2 lg:pt-3 lg:text-22">{pair[side].gloss}</span>
+              <span className="flex h-[2.125rem] items-center pt-2.5 text-14 text-fg2 lg:h-[3.375rem] lg:pt-[1.375rem] lg:text-16">
+                {!picked && <Key className="lg:h-8 lg:min-w-8 lg:text-15">{i + 1}</Key>}
+                {isTarget && (
+                  <span className="flex items-center gap-1.5">
+                    <Check className="size-[1.125rem] text-green" />
+                    The word
+                  </span>
+                )}
+                {isWrongPick && (
+                  <span className="flex items-center gap-1.5">
+                    <X className="size-[1.125rem] text-red" />
+                    Your pick
+                  </span>
+                )}
+              </span>
             </button>
           )
         })}
       </div>
       {picked && (
-        <Note tone={right ? 'moss' : 'lingon'} title={right ? 'Correct.' : `It was “${pair[target].word}”.`}>
+        <Remark center className="mt-1 lg:mt-3" lead={right ? 'Correct.' : `It was “${pair[target].word}”.`}>
           Tap each word to hear the difference.
-        </Note>
+        </Remark>
       )}
     </Focus>
   )

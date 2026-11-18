@@ -1,20 +1,20 @@
+import { ArrowUp } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
 interface AnswerInputProps {
   value: string
   onChange: (value: string) => void
   onSubmit: () => void
-  disabled?: boolean
   placeholder?: string
 }
 
-/** Text field for Norwegian answers, with buttons for the three letters missing on most keyboards. */
-export function AnswerInput({ value, onChange, onSubmit, disabled, placeholder = 'Type in Norwegian' }: AnswerInputProps) {
+/** The composer: a field for Norwegian answers, buttons for the three letters missing on most keyboards, and send. */
+export function AnswerInput({ value, onChange, onSubmit, placeholder = 'Type in Norwegian' }: AnswerInputProps) {
   const ref = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (!disabled) ref.current?.focus()
-  }, [disabled])
+    ref.current?.focus()
+  }, [])
 
   const insert = (letter: string) => {
     const el = ref.current
@@ -27,12 +27,23 @@ export function AnswerInput({ value, onChange, onSubmit, disabled, placeholder =
     })
   }
 
+  const send = () => {
+    if (value.trim()) onSubmit()
+    ref.current?.focus()
+  }
+
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex h-14 w-full items-center gap-2.5 rounded-full border border-strong bg-panel pr-2 pl-2.5 focus-within:border-fg3 lg:h-[4.5rem] lg:gap-4 lg:px-3.5">
+      <div className="flex shrink-0 gap-1">
+        {['æ', 'ø', 'å'].map((l) => (
+          <button key={l} type="button" tabIndex={-1} onClick={() => insert(l)} className="press flex size-9 items-center justify-center rounded-full border-0 bg-control text-16 font-medium" aria-label={`Insert ${l}`}>
+            {l}
+          </button>
+        ))}
+      </div>
       <input
         ref={ref}
         value={value}
-        disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && value.trim()) {
@@ -43,28 +54,16 @@ export function AnswerInput({ value, onChange, onSubmit, disabled, placeholder =
         placeholder={placeholder}
         aria-label={placeholder}
         lang="nb"
+        enterKeyHint="send"
         autoCapitalize="off"
         autoCorrect="off"
         autoComplete="off"
         spellCheck={false}
-        className="w-full rounded-2xl border-2 border-line bg-surface px-5 py-4 text-2xl outline-none focus:border-fjord disabled:bg-paper"
+        className="min-w-0 flex-1 border-0 bg-transparent p-0 text-17 text-fg placeholder:text-fg3 lg:text-20"
       />
-      {!disabled && (
-        <div className="flex gap-2">
-          {['æ', 'ø', 'å'].map((l) => (
-            <button
-              key={l}
-              type="button"
-              tabIndex={-1}
-              onClick={() => insert(l)}
-              className="h-11 w-12 rounded-xl border border-line bg-surface text-xl text-ink"
-              aria-label={`Insert ${l}`}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-      )}
+      <button type="button" onClick={send} disabled={!value.trim()} aria-label="Check the answer" className="press flex size-10 shrink-0 items-center justify-center rounded-full border-0 bg-inverse text-on-inverse disabled:opacity-40">
+        <ArrowUp className="size-[1.125rem]" />
+      </button>
     </div>
   )
 }

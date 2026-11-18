@@ -57,7 +57,7 @@ After the first visit it works offline.
 | `src/routes/` | Pages. |
 | `src/sync/` | Sync rules shared by the app and the server. |
 | `worker/`, `migrations/` | The sync server and its database tables. |
-| `.penna/` | The screen designs. |
+| `.penna/` | The design system (Foundations, Components, Patterns) and the screen designs for desktop and phone. The app's styles in `src/styles.css` and `src/components/ui.tsx` follow it. |
 | `data/raw/` | Downloaded language data. Not in git. See below. |
 
 ## Recorded audio
@@ -91,6 +91,10 @@ With several voices, a text keeps one voice for a day and changes voice over tim
 The app opens on a sign-in screen and cannot be used until you press **Sign in with Google**. Progress is stored in the browser on each device (IndexedDB), so a device that has signed in once works offline, and it is shared between all signed-in devices. Sign out in Settings. On an iPhone, sign in inside the installed app, not in Safari: the two keep separate data. A device stays signed in as long as it is used at least once every six months.
 
 Sign-in is handled by [Better Auth](https://better-auth.com) in the Worker (`worker/auth.ts`). Only the addresses in the Worker secret `ALLOWED_EMAILS` (separated by commas) can sign in. The other secrets are `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; set each with `bunx wrangler secret put NAME`. The Google OAuth client lives in the Google Cloud project "Norsk" and must list `https://norwegian.marcoazzurrini.com/api/auth/callback/google` as a redirect URI.
+
+## Explanations
+
+The app decides by itself whether an answer is right. After a wrong sentence, it also asks a language model for a short hint or explanation (`worker/explain.ts`, model Claude Haiku through [OpenRouter](https://openrouter.ai)). The text is labelled "written by AI" in the app and can be wrong. It needs a connection and the Worker secret `OPENROUTER_API_KEY`; without either, the app works as before, without the extra text.
 
 `SYNC_KEY` is now used only by the audio build script. A copy is in `.sync-key`, which is not in git.
 

@@ -1,19 +1,21 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Ruler, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Shell } from '../components/Shell'
-import { AudioButton, Bar, Card, Heading, Pill } from '../components/ui'
+import { hasArticle } from '../components/tasks/shared'
+import { AudioButton, Card, Display, Label, ListCard, PageTitle, Progress, Tag, useDesktop, type TagTone } from '../components/ui'
 import { items, lessons, sentencesWith, units } from '../content'
 import type { Item } from '../content/types'
 import { retrievability } from '../engine/memory'
-import { itemState, sentenceReady, type ItemState } from '../engine/select'
+import { itemState, sentenceReady, type ItemState, type Memory } from '../engine/select'
 import { getScheduler, useApp } from '../engine/store'
 
 export const Route = createFileRoute('/items')({ component: ItemsPage })
 
-const STATE: Record<ItemState, { label: string; tone: 'moss' | 'sun' | 'fjord' | 'neutral' }> = {
-  stable: { label: 'Stable', tone: 'moss' },
-  learning: { label: 'Learning', tone: 'sun' },
-  ready: { label: 'Ready', tone: 'fjord' },
+const STATE: Record<ItemState, { label: string; tone: TagTone }> = {
+  stable: { label: 'Stable', tone: 'good' },
+  learning: { label: 'Learning', tone: 'progress' },
+  ready: { label: 'Ready', tone: 'new' },
   locked: { label: 'Locked', tone: 'neutral' },
 }
 const TONE_NAME = { 1: 'Melody 1: low, then rising', 2: 'Melody 2: dips, then rises' }
@@ -26,149 +28,154 @@ function ItemDetail({ it }: { it: Item }) {
     .slice(0, 4)
   const recall = m ? retrievability(getScheduler(), m, Date.now()) : 0
   const due = m ? new Date(m.card.dueAt) : null
+  const state = STATE[itemState(it, memory)]
+  const rowClass = 'flex justify-between gap-4 border-t border-line py-[0.5625rem] text-16 lg:py-3 lg:text-18'
   return (
-    <Card>
-      <div className="flex items-center gap-4">
-        {it.kind !== 'pattern' && <AudioButton text={it.text} size={52} />}
+    <Card className="rise lg:!p-8">
+      <div className="flex items-center gap-3.5 lg:gap-5">
+        {it.kind !== 'pattern' && <AudioButton text={it.text} className="size-12 lg:size-[3.75rem]" />}
         <div className="min-w-0">
-          <div className="text-3xl leading-tight font-bold">{it.display}</div>
-          {it.kind !== 'pattern' && <div className="text-lg text-muted">{it.gloss}</div>}
+          <div className="text-30 leading-[1.1] font-medium tracking-[-0.03em] break-words lg:text-44">{it.kind === 'pattern' ? it.title : <Display text={it.display} split={hasArticle(it)} />}</div>
+          {it.kind !== 'pattern' && <div className="text-16 text-fg2 lg:text-20">{it.gloss}</div>}
         </div>
       </div>
-      <div className="mt-3 flex flex-wrap items-center gap-2.5">
-        <Pill tone={STATE[itemState(it, memory)].tone}>{STATE[itemState(it, memory)].label}</Pill>
-        {it.ipa && <span className="text-muted">/{it.ipa.replace(/ˈ/g, '')}/</span>}
-        {it.tone && <span className="text-muted">{TONE_NAME[it.tone]}</span>}
+      <div className="flex flex-wrap items-center gap-2.5 pt-3.5 pb-1 lg:pt-[1.375rem] lg:pb-1.5">
+        <Tag tone={state.tone}>{state.label}</Tag>
+        {it.ipa && <span className="text-16 text-fg2">/{it.ipa.replace(/ˈ/g, '')}/</span>}
+        {it.tone && <span className="text-14 text-fg3">{TONE_NAME[it.tone]}</span>}
       </div>
 
       {it.forms && it.forms.length > 1 && (
-        <div className="mt-5">
-          <div className="text-sm font-bold text-muted">Forms</div>
+        <>
+          <Label className="pt-3 pb-2 lg:pt-[1.375rem]">Forms</Label>
           {it.forms.map((f) => (
-            <div key={f.label} className="flex justify-between border-t border-line py-2">
-              <span className="text-muted">{f.label}</span>
-              <span className="font-bold">{f.form}</span>
+            <div key={f.label} className={rowClass}>
+              <span className="text-fg2">{f.label}</span>
+              <span className="font-medium">{f.form}</span>
             </div>
           ))}
-        </div>
+        </>
       )}
 
       {it.rule && (
-        <div className="mt-5">
-          <div className="text-sm font-bold text-muted">The rule</div>
+        <>
+          <Label className="pt-3 pb-2 lg:pt-[1.375rem]">The rule</Label>
           {it.rule.map((r) => (
-            <p key={r} className="m-0 mt-1.5">
+            <p key={r} className="m-0 pb-2 text-16 text-fg2 lg:text-18">
               {r}
             </p>
           ))}
           {it.examples?.map((e) => (
-            <div key={e.no} className="mt-2 border-t border-line pt-2">
-              <span className="font-bold">{e.no.replace('>', '→')}</span> <span className="text-muted">{e.en}</span>
+            <div key={e.no} className={rowClass}>
+              <span className="font-medium">{e.no.replace('>', '→')}</span>
+              <span className="text-right text-fg2">{e.en}</span>
             </div>
           ))}
-        </div>
+        </>
       )}
 
       {m && (
-        <div className="mt-5">
-          <div className="text-sm font-bold text-muted">Memory</div>
-          <div className="mt-2 flex items-center gap-3.5">
-            <Bar value={recall} tone="moss" />
-            <span className="font-bold">{Math.round(recall * 100)}%</span>
+        <>
+          <Label className="pt-3.5 pb-2 lg:pt-[1.625rem]">Memory</Label>
+          <div className="flex items-center gap-3.5">
+            <Progress value={recall} fill="bg-green" className="flex-1" />
+            <span className="text-16 font-medium">{Math.round(recall * 100)}%</span>
           </div>
-          <p className="m-0 mt-1.5 text-muted">
+          <p className="m-0 pt-2.5 text-14 leading-[1.45] text-fg2 lg:text-16">
             Chance you recall it now. Lasts about {m.card.stability < 1 ? 'less than a day' : `${Math.round(m.card.stability)} days`}.
             {due && ` Next review: ${due.getTime() <= Date.now() ? 'now' : due.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}.`}
           </p>
-        </div>
+        </>
       )}
 
       {examples.length > 0 && (
-        <div className="mt-5">
-          <div className="text-sm font-bold text-muted">Sentences you can read</div>
+        <>
+          <Label className="pt-3.5 pb-2 lg:pt-[1.625rem]">Sentences you can read</Label>
           {examples.map((s) => (
-            <div key={s.id} className="flex items-center gap-3 border-t border-line py-2.5">
-              <AudioButton text={s.no} size={36} />
-              <div>
-                <div className="text-lg">{s.no}</div>
-                <div className="text-muted">{s.en}</div>
+            <div key={s.id} className="flex items-center gap-3.5 border-t border-line py-2.5 lg:py-3">
+              <AudioButton text={s.no} className="size-9" />
+              <div className="min-w-0">
+                <div className="text-16 font-medium lg:text-18">{s.no}</div>
+                <div className="text-14 leading-[1.45] text-fg2">{s.en}</div>
               </div>
             </div>
           ))}
-        </div>
+        </>
       )}
     </Card>
   )
 }
 
+function ItemRow({ it, memory, selected, onPick }: { it: Item; memory: Memory; selected: boolean; onPick: () => void }) {
+  const s = itemState(it, memory)
+  return (
+    <button type="button" onClick={onPick} aria-expanded={selected} className="press flex w-full items-center gap-4 border-x-0 border-b-0 bg-transparent px-0 py-[0.8125rem] text-left lg:py-[1.125rem]">
+      <span className={`min-w-0 flex-1 text-17 lg:text-20 ${selected ? 'font-semibold' : 'font-medium'}`}>
+        {it.kind === 'pattern' ? it.title : it.display}
+        {it.kind !== 'pattern' && <span className="pl-2.5 font-normal text-fg2">{it.gloss}</span>}
+      </span>
+      {it.kind === 'pattern' ? <Tag icon={Ruler}>Pattern</Tag> : <Tag tone={STATE[s].tone}>{STATE[s].label}</Tag>}
+    </button>
+  )
+}
+
 function ItemsPage() {
   const { memory } = useApp()
+  const desktop = useDesktop()
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const q = query.trim().toLowerCase()
 
   const groups = useMemo(
     () =>
-      units.map((u) => ({
-        unit: u,
-        list: u.lessons
-          .flatMap((li) => lessons[li].items)
-          .map((id) => items[id])
-          .filter((it) => !q || it.text.toLowerCase().includes(q) || it.gloss.toLowerCase().includes(q)),
-      })),
+      units
+        .map((u) => ({
+          unit: u,
+          list: u.lessons
+            .flatMap((li) => lessons[li].items)
+            .map((id) => items[id])
+            .filter((it) => !q || it.text.toLowerCase().includes(q) || it.gloss.toLowerCase().includes(q)),
+        }))
+        .filter((g) => g.list.length),
     [q],
   )
 
+  const rows = (list: Item[]) => list.map((it) => <ItemRow key={it.id} it={it} memory={memory} selected={selected === it.id} onPick={() => setSelected(selected === it.id ? null : it.id)} />)
+
   return (
     <Shell>
-      <div className="flex flex-col gap-7 xl:flex-row xl:items-start">
-        <div className="flex min-w-0 flex-1 flex-col gap-5">
-          <Heading title="Items" sub={`${memory.size} of ${Object.keys(items).length} learned.`} />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search Norwegian or English"
-            aria-label="Search items"
-            className="w-full rounded-2xl border-2 border-line bg-surface px-5 py-3 text-lg outline-none focus:border-fjord"
-          />
-          {groups
-            .filter((g) => g.list.length)
-            .map(({ unit, list }) => (
-              <section key={unit.index}>
-                <h2 className="m-0 mb-2 text-xl font-bold">
+      <PageTitle title="Items" sub={`${memory.size} of ${Object.keys(items).length} learned.`}>
+        <label className="flex h-12 w-full items-center gap-3 rounded-full bg-control px-[1.125rem] text-16 focus-within:shadow-[inset_0_0_0_1px_var(--color-strong)] lg:h-[3.25rem] lg:w-[32.5rem]">
+          <Search className="size-[1.125rem] shrink-0 text-fg3" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search Norwegian or English" aria-label="Search items" className="min-w-0 flex-1 border-0 bg-transparent p-0 text-16 text-fg placeholder:text-fg3" />
+        </label>
+      </PageTitle>
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_35rem]">
+        <div className="flex min-w-0 flex-col gap-5 lg:gap-7">
+          {groups.length === 0 && <p className="m-0 text-16 text-fg2 lg:text-18">No item matches “{query.trim()}”.</p>}
+          {groups.map(({ unit, list }) => {
+            // On a phone the details open right under the chosen row, so the list is cut in two around them.
+            const at = desktop ? -1 : list.findIndex((it) => it.id === selected)
+            return (
+              <section key={unit.index} className="flex flex-col gap-2.5">
+                <h2 className="m-0 px-1 text-14 leading-[1.45] font-medium text-fg3 lg:text-16">
                   Unit {unit.index}: {unit.name}
                 </h2>
-                <Card className="!py-1">
-                  {list.map((it) => {
-                    const s = itemState(it, memory)
-                    return (
-                      <div key={it.id}>
-                        <button
-                          type="button"
-                          onClick={() => setSelected(selected === it.id ? null : it.id)}
-                          aria-expanded={selected === it.id}
-                          className={`flex w-full items-center gap-3 border-0 border-t border-line bg-transparent px-0 py-3 text-left text-ink first:border-t-0 ${selected === it.id ? 'font-bold' : ''}`}
-                        >
-                          <span className="min-w-0 flex-1">
-                            <span className="text-lg">{it.kind === 'pattern' ? it.title : it.display}</span>
-                            {it.kind !== 'pattern' && <span className="ml-3 font-normal text-muted">{it.gloss}</span>}
-                          </span>
-                          <Pill tone={STATE[s].tone}>{it.kind === 'pattern' ? 'Pattern' : STATE[s].label}</Pill>
-                        </button>
-                        {selected === it.id && (
-                          <div className="pb-4 xl:hidden">
-                            <ItemDetail it={it} />
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })}
-                </Card>
+                {at < 0 ? (
+                  <ListCard>{rows(list)}</ListCard>
+                ) : (
+                  <>
+                    <ListCard>{rows(list.slice(0, at + 1))}</ListCard>
+                    <ItemDetail key={selected} it={list[at]} />
+                    {at + 1 < list.length && <ListCard>{rows(list.slice(at + 1))}</ListCard>}
+                  </>
+                )}
               </section>
-            ))}
+            )
+          })}
         </div>
-        <div className="hidden xl:sticky xl:top-8 xl:mt-[6.5rem] xl:block xl:w-[24rem] xl:shrink-0">
-          {selected ? <ItemDetail it={items[selected]} /> : <Card className="text-muted">Choose an item to see its forms, sound and memory.</Card>}
+        <div className="sticky top-0 hidden lg:block">
+          {selected ? <ItemDetail key={selected} it={items[selected]} /> : <Card className="text-18 text-fg2 lg:!p-8">Choose an item to see its forms, sound and memory.</Card>}
         </div>
       </div>
     </Shell>

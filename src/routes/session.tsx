@@ -8,7 +8,7 @@ import { SentenceTask } from '../components/tasks/SentenceTask'
 import type { Frame, TaskResult } from '../components/tasks/shared'
 import { SoundTask } from '../components/tasks/SoundTask'
 import { StoryTask } from '../components/tasks/StoryTask'
-import { Card, Heading } from '../components/ui'
+import { Chip, buttonClass } from '../components/ui'
 import { lessons } from '../content'
 import { lessonState } from '../engine/select'
 import { Session, blockOf, type Task } from '../engine/session'
@@ -22,7 +22,7 @@ export const Route = createFileRoute('/session')({
 
 /** Time counted for one task is capped, so a break in the middle does not inflate study time. */
 const MAX_TASK_MS = 3 * 60_000
-const BLOCK_LABEL = { sounds: 'Sounds', review: 'Review', new: 'New', story: 'Story' }
+const BLOCK_TITLE = { sounds: 'Sounds', review: 'Review', new: 'New', story: 'Story' } as const
 
 function SessionPage() {
   const { minutes } = Route.useSearch()
@@ -61,19 +61,64 @@ function SessionPage() {
     advance()
   }
 
-  if (!task) return null
+  if (!task) return <div className="h-dvh bg-panel lg:bg-base" />
 
   const s = session.current
-  const left = Math.max(0, Math.ceil((s.budgetMs - s.elapsedMs) / 60_000))
-  const frame: Frame = {
-    label: task.type === 'done' ? 'Done' : `${BLOCK_LABEL[blockOf(task)]} · ${left} min left`,
-    progress: s.progress,
-    onClose: () => void navigate({ to: '/' }),
+  const onClose = () => void navigate({ to: '/' })
+
+  if (task.type === 'done') {
+    const answered = s.stats.right + s.stats.wrong
+    const timeUp = s.elapsedMs >= s.budgetMs
+    const spent = Math.max(1, Math.round(s.elapsedMs / 60_000))
+    const days = getState().meta.days.length
+    return (
+      <Focus
+        block="recall"
+        title="Done"
+        label={`${spent} min`}
+        progress={1}
+        onClose={onClose}
+        wide
+        dock={
+          <div className="flex justify-center">
+            <Link to="/" className={buttonClass('primary', 'large', 'w-full lg:w-auto')}>
+              Back to Today
+            </Link>
+          </div>
+        }
+      >
+        <div className="flex flex-col items-center gap-3 pb-3.5 text-center lg:gap-[1.375rem] lg:pb-7">
+          <Chip strong="Session complete.">{days ? `Day ${days}` : undefined}</Chip>
+          <h1 className="m-0 text-display leading-none font-medium tracking-[-0.035em]">Ferdig!</h1>
+          <p className="m-0 text-17 text-fg2 lg:text-22">{timeUp ? 'Finished. Your time is up.' : 'Finished. Nothing more is due right now.'}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 lg:gap-4">
+          {[
+            [spent, spent === 1 ? 'minute' : 'minutes'],
+            [s.stats.taught, 'new items'],
+            [s.stats.reviewed, 'items reviewed'],
+            [answered ? `${Math.round((s.stats.right / answered) * 100)}%` : '–', 'right first time'],
+          ].map(([n, label]) => (
+            <div key={label} className="flex flex-col rounded-[1.25rem] border border-line bg-inset p-4 lg:rounded-[1.625rem] lg:p-7">
+              <div className="text-34 leading-[1.1] font-medium tracking-[-0.03em] lg:text-56">{n}</div>
+              <div className="text-14 text-fg2 lg:text-18">{label}</div>
+            </div>
+          ))}
+        </div>
+        {s.stats.taught > 0 && (
+          <p className="m-0 max-w-[20.625rem] self-center pt-2 text-center text-14 text-fg3 lg:max-w-[38.75rem] lg:pt-5 lg:text-18">New items come back within minutes at first. Open the app again later today, or tomorrow.</p>
+        )}
+      </Focus>
+    )
   }
+
+  const block = blockOf(task)
+  const left = Math.max(0, Math.ceil((s.budgetMs - s.elapsedMs) / 60_000))
+  const frame: Frame = { block, title: BLOCK_TITLE[block], label: `${left} min left`, progress: s.progress, onClose }
 
   switch (task.type) {
     case 'sound':
-      return <SoundTask key={count} pair={task.pair} target={task.target} index={task.index} frame={{ ...frame, label: `Sounds · ${task.index + 1} of ${task.total}` }} onDone={onDone} />
+      return <SoundTask key={count} pair={task.pair} target={task.target} index={task.index} frame={{ ...frame, label: `${task.index + 1} of ${task.total}` }} onDone={onDone} />
     case 'intro':
       return <IntroTask key={count} items={task.items} frame={frame} onDone={onDone} />
     case 'pattern':
@@ -84,33 +129,5 @@ function SessionPage() {
       return <SentenceTask key={count} sentence={task.sentence} frame={frame} onDone={onDone} />
     case 'story':
       return <StoryTask key={count} story={task.story} frame={frame} onDone={onDone} />
-    case 'done': {
-      const answered = s.stats.right + s.stats.wrong
-      const timeUp = s.elapsedMs >= s.budgetMs
-      return (
-        <Focus {...frame} progress={1}>
-          <Heading title="Ferdig!" sub={timeUp ? 'Finished. Your time is up.' : 'Finished. Nothing more is due right now.'} />
-          <Card>
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
-              {[
-                [Math.max(1, Math.round(s.elapsedMs / 60_000)), 'minutes'],
-                [s.stats.taught, 'new items'],
-                [s.stats.reviewed, 'items reviewed'],
-                [answered ? `${Math.round((s.stats.right / answered) * 100)}%` : '–', 'right first time'],
-              ].map(([n, label]) => (
-                <div key={label}>
-                  <div className="text-3xl font-bold text-fjord">{n}</div>
-                  <div className="text-muted">{label}</div>
-                </div>
-              ))}
-            </div>
-          </Card>
-          {s.stats.taught > 0 && <p className="m-0 text-lg text-muted">New items come back within minutes at first. Open the app again later today, or tomorrow.</p>}
-          <Link to="/" className="self-start rounded-2xl bg-fjord px-6 py-3.5 text-lg font-bold text-white no-underline">
-            Back to Today
-          </Link>
-        </Focus>
-      )
-    }
   }
 }

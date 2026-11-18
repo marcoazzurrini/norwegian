@@ -1,39 +1,17 @@
-import { Check } from 'lucide-react'
+import { Tag as TagIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { sentencesWith } from '../../content'
-import type { Item } from '../../content/types'
+import type { Item, Sentence } from '../../content/types'
 import { gradeCard } from '../../engine/grade'
 import type { Mem } from '../../engine/memory'
 import { sentenceReady } from '../../engine/select'
 import { getState, teach } from '../../engine/store'
 import { speak } from '../../lib/speech'
 import { AnswerInput } from '../AnswerInput'
-import { Focus } from '../Focus'
-import { AudioButton, Button, Card, Note, Pill } from '../ui'
+import { DockHint, Focus } from '../Focus'
+import { AudioButton, Button, Display, Tag } from '../ui'
 import { cueKind } from './CardTask'
-import type { Frame, TaskResult } from './shared'
-
-const STEPS = ['Hear and see', 'Recall']
-
-export function Steps({ steps, active }: { steps: string[]; active: number }) {
-  return (
-    <ol className="m-0 flex list-none flex-wrap items-center gap-x-2.5 gap-y-2 p-0">
-      {steps.map((s, i) => (
-        <li key={s} className={`flex items-center gap-2 ${i === active ? 'font-bold text-fjord' : 'text-muted'}`}>
-          <span
-            className={`flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${
-              i < active ? 'bg-fjord text-white' : i === active ? 'bg-fjord-soft' : 'border border-line'
-            }`}
-          >
-            {i < active ? <Check size={15} /> : i + 1}
-          </span>
-          {s}
-          {i < steps.length - 1 && <span className="ml-1 hidden h-px w-7 bg-line sm:block" />}
-        </li>
-      ))}
-    </ol>
-  )
-}
+import { Answer, Ask, Mine, Remark, Stamp, hasArticle, type Frame, type TaskResult } from './shared'
 
 /** The shortest taught sentence that uses the item, as its first example. */
 function exampleFor(it: Item) {
@@ -44,15 +22,42 @@ function exampleFor(it: Item) {
     .sort((a, b) => a.tokens.length - b.tokens.length)[0]
 }
 
+/** The example sentence, with the words of the new item in a heavier weight. */
+function Marked({ sentence, id }: { sentence: Sentence; id: string }) {
+  const parts: Array<{ text: string; strong: boolean }> = []
+  let at = 0
+  for (const token of sentence.tokens) {
+    const found = sentence.no.indexOf(token.t, at)
+    if (found < 0) continue
+    if (found > at) parts.push({ text: sentence.no.slice(at, found), strong: false })
+    parts.push({ text: token.t, strong: token.w === id || token.c === id })
+    at = found + token.t.length
+  }
+  if (at < sentence.no.length) parts.push({ text: sentence.no.slice(at), strong: false })
+  return (
+    <>
+      {parts.map((p, i) => (
+        <span key={i} className={p.strong ? 'font-semibold' : ''}>
+          {p.text}
+        </span>
+      ))}
+    </>
+  )
+}
+
 function WordFacts({ it }: { it: Item }) {
   const present = it.forms?.find((f) => f.label === 'now')?.form
+  const fact =
+    it.pos === 'noun' && it.gender && it.gender !== 'pl' ? `${it.gender} word` : it.gender === 'pl' ? 'always plural' : it.pos === 'verb' && present && present !== it.text ? `now: ${present}` : it.kind === 'chunk' ? 'phrase' : null
+  if (!it.ipa && !fact) return null
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-2.5">
-      {it.ipa && <span className="text-lg text-muted">/{it.ipa.replace(/ˈ/g, '')}/</span>}
-      {it.pos === 'noun' && it.gender && it.gender !== 'pl' && <Pill>{it.gender} word</Pill>}
-      {it.gender === 'pl' && <Pill>always plural</Pill>}
-      {it.pos === 'verb' && present && present !== it.text && <Pill>now: {present}</Pill>}
-      {it.kind === 'chunk' && <Pill>phrase</Pill>}
+    <div className="flex flex-wrap items-center gap-2.5 pt-3.5 lg:pt-5">
+      {it.ipa && <span className="text-16 text-fg2 lg:text-22">/{it.ipa.replace(/ˈ/g, '')}/</span>}
+      {fact && (
+        <Tag icon={TagIcon} className="lg:h-8 lg:pr-3.5 lg:pl-2.5 lg:text-15">
+          {fact}
+        </Tag>
+      )}
     </div>
   )
 }
@@ -72,25 +77,32 @@ export function IntroTask({ items, frame, onDone }: Props) {
   const [phase, setPhase] = useState<'show' | 'recall'>('show')
   const [index, setIndex] = useState(0)
   const [input, setInput] = useState('')
+  const [typed, setTyped] = useState('')
+  const [wrongArticle, setWrongArticle] = useState(false)
   const [misses, setMisses] = useState(0)
   const [recalled, setRecalled] = useState(false)
   const [missed, setMissed] = useState(0)
   const item = items[index]
   const example = useMemo(() => exampleFor(item), [item])
-  const [article, word] = item.pos === 'noun' && item.display.includes(' ') ? item.display.split(' ') : ['', item.display]
+  const count = items.length > 1 ? ` · ${index + 1} of ${items.length}` : ''
+  // A phrase is too long for the largest type.
+  const long = item.display.length > 9
 
   useEffect(() => {
     if (phase === 'show') void speak(item.text)
   }, [item, phase])
 
   const check = async () => {
-    if (gradeCard(item, input).correct) {
+    const g = gradeCard(item, input)
+    setTyped(input.trim())
+    setInput('')
+    if (g.correct) {
       setRecalled(true)
       await teach([item.id])
       void speak(item.text)
     } else {
+      setWrongArticle(g.wrongArticle)
       setMisses((m) => m + 1)
-      setInput('')
     }
   }
 
@@ -112,111 +124,85 @@ export function IntroTask({ items, frame, onDone }: Props) {
     setMissed(wrong)
     setIndex(index + 1)
     setInput('')
+    setTyped('')
     setMisses(0)
     setRecalled(false)
+  }
+
+  if (phase === 'show') {
+    return (
+      <Focus
+        {...frame}
+        dock={
+          <DockHint hint={index + 1 < items.length ? 'Another new one comes next.' : 'You will type this in a moment.'}>
+            <Button key={index} autoFocus onClick={next} hint="↵">
+              Continue
+            </Button>
+          </DockHint>
+        }
+      >
+        <Stamp>Step 1 of 2 · Hear and see{count}</Stamp>
+        <div key={item.id} className="rise flex flex-col rounded-[1.375rem] border border-line bg-inset p-5 lg:rounded-[2rem] lg:p-11">
+          <div className="flex items-center gap-4 lg:gap-9">
+            <AudioButton text={item.text} className="size-16 lg:size-[6.5rem]" />
+            <div className={`min-w-0 leading-none font-medium tracking-[-0.035em] break-words ${long ? 'text-34 lg:text-[clamp(2.5rem,3.2vw,4.5rem)]' : 'text-word'}`}>
+              <Display text={item.display} split={hasArticle(item)} />
+            </div>
+          </div>
+          <WordFacts it={item} />
+          <div className="mt-[1.125rem] mb-4 h-px bg-line lg:mt-8 lg:mb-7" />
+          <div className="text-24 leading-[1.1] font-medium tracking-[-0.03em] lg:text-40">{item.gloss}</div>
+        </div>
+        {example && (
+          <div key={example.id} className="rise flex max-w-full items-center gap-3 self-start rounded-[1.125rem] bg-raised py-2.5 pr-4 pl-2.5 lg:gap-4 lg:rounded-[1.375rem] lg:py-3.5 lg:pr-6 lg:pl-3.5">
+            <AudioButton text={example.no} label="Play the example" className="size-8 lg:size-11" />
+            <div className="min-w-0">
+              <div className="text-18 lg:text-24">
+                <Marked sentence={example} id={item.id} />
+              </div>
+              <div className="text-14 text-fg2 lg:text-16">{example.en}</div>
+            </div>
+          </div>
+        )}
+      </Focus>
+    )
   }
 
   return (
     <Focus
       {...frame}
-      footer={
-        phase === 'show' ? (
-          <>
-            <span className="text-muted">{index + 1 < items.length ? 'Another new one comes next.' : 'You will type this in a moment.'}</span>
-            <Button key={index} autoFocus onClick={next} hint="Enter">
+      scrollKey={`${index}-${misses}-${recalled}`}
+      dock={
+        recalled ? (
+          <DockHint>
+            <Button key="continue" autoFocus onClick={nextRecall} hint="↵">
               Continue
             </Button>
-          </>
+          </DockHint>
         ) : (
-          <>
-            <span />
-            {recalled ? (
-              <Button key="continue" autoFocus onClick={nextRecall} hint="Enter">
-                Continue
-              </Button>
-            ) : (
-              <Button key="check" onClick={() => void check()} disabled={!input.trim()} hint="Enter">
-                Check
-              </Button>
-            )}
-          </>
+          <AnswerInput key={index} value={input} onChange={setInput} onSubmit={() => void check()} />
         )
       }
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Steps steps={STEPS} active={phase === 'show' ? 0 : 1} />
-        {items.length > 1 && (
-          <span className="text-muted">
-            {index + 1} of {items.length}
-          </span>
-        )}
-      </div>
-
-      {phase === 'show' && (
-        <>
-          <Card className="!p-6 sm:!p-8">
-            <div className="flex items-center gap-5">
-              <AudioButton text={item.text} size={64} />
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-baseline gap-x-3">
-                  {article && <span className="text-3xl text-muted">{article}</span>}
-                  <span className={`leading-tight font-bold tracking-wide ${item.kind === 'chunk' ? 'text-4xl' : 'text-5xl sm:text-6xl'}`}>{word}</span>
-                </div>
-                <WordFacts it={item} />
-              </div>
-            </div>
-            <div className="mt-6 border-t border-line pt-5">
-              <div className="text-3xl font-bold">{item.gloss}</div>
-            </div>
-          </Card>
-          {example && (
-            <Card>
-              <div className="mb-2 text-sm font-bold text-muted">Example</div>
-              <div className="flex items-center gap-4">
-                <AudioButton text={example.no} size={40} label="Play the example" />
-                <div>
-                  <div className="text-2xl">{example.no}</div>
-                  <div className="text-lg text-muted">{example.en}</div>
-                </div>
-              </div>
-            </Card>
-          )}
-        </>
-      )}
-
-      {phase === 'recall' && (
-        <>
-          <div>
-            <div className="font-bold text-muted">{cueKind(item)}. Type it in Norwegian.</div>
-            <div className="mt-1.5 text-3xl leading-tight font-bold sm:text-4xl">{item.gloss}</div>
+      <Stamp>Step 2 of 2 · Recall{count}</Stamp>
+      <Ask key={item.id} note={`${cueKind(item)}. Type it in Norwegian.`}>
+        {item.gloss}
+      </Ask>
+      {typed && <Mine key={`${misses}-${recalled}`}>{typed}</Mine>}
+      {recalled ? (
+        <Answer audio={<AudioButton text={item.text} className="size-12 lg:size-[3.75rem]" />} good note="Correct. It comes back in a few minutes.">
+          <Display text={item.display} split={hasArticle(item)} />
+        </Answer>
+      ) : misses === 1 ? (
+        <Remark lead="Not yet.">{wrongArticle ? 'Is it an en, ei or et word?' : `It starts with “${item.text.slice(0, item.kind === 'chunk' ? 3 : 1)}…”. Try again.`}</Remark>
+      ) : misses >= 2 ? (
+        <div key={misses} className="rise flex min-w-[13.75rem] flex-col self-start rounded-[1.25rem] border border-line bg-inset p-[1.125rem] lg:min-w-[22.5rem] lg:rounded-[1.625rem] lg:p-7">
+          <div className="text-15 text-fg3 lg:text-18">Copy it once</div>
+          <div className="pt-1 text-32 leading-[1.1] font-medium tracking-[-0.03em] lg:text-56">
+            <Display text={item.answers[0]} split={hasArticle(item)} />
           </div>
-          {recalled ? (
-            <Card className="!border-moss">
-              <div className="flex items-center gap-4">
-                <AudioButton text={item.text} size={48} />
-                <div>
-                  <div className="text-3xl font-bold">{item.display}</div>
-                  <div className="text-muted">Correct. It comes back in a few minutes.</div>
-                </div>
-              </div>
-            </Card>
-          ) : (
-            <>
-              <AnswerInput key={index} value={input} onChange={setInput} onSubmit={() => void check()} />
-              {misses === 1 && (
-                <Note tone="lingon" title="Not yet.">
-                  {gradeCard(item, input).wrongArticle ? 'Is it an en, ei or et word?' : `It starts with “${item.text.slice(0, item.kind === 'chunk' ? 3 : 1)}…”. Try again.`}
-                </Note>
-              )}
-              {misses >= 2 && (
-                <Note tone="sun" title="Copy it once.">
-                  <span className="text-2xl font-bold">{item.answers[0]}</span>
-                </Note>
-              )}
-            </>
-          )}
-        </>
-      )}
+        </div>
+      ) : null}
     </Focus>
   )
 }

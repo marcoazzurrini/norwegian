@@ -1,15 +1,16 @@
-import { Check, CircleAlert, CircleCheck, MessageCircleQuestion, X } from 'lucide-react'
+import { Check, CircleAlert, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { items } from '../../content'
 import type { Sentence } from '../../content/types'
 import { gradeSentence, type SentenceGrade } from '../../engine/grade'
 import { exercised } from '../../engine/select'
 import { applyReviews, getState, updateMeta, type ReviewInput } from '../../engine/store'
+import { useExplain, type ExplainRequest } from '../../lib/explain'
 import { speak } from '../../lib/speech'
 import { AnswerInput } from '../AnswerInput'
-import { Focus } from '../Focus'
-import { AudioButton, Button, Card, Note } from '../ui'
-import { itemName, type Frame, type TaskResult } from './shared'
+import { DockRow, Focus } from '../Focus'
+import { AudioButton, Button } from '../ui'
+import { AiNote, Answer, Ask, Remark, Stamp, itemName, type Frame, type TaskResult } from './shared'
 
 /** Items behind the words the learner got wrong on the first try. */
 function failedItems(s: Sentence, g: SentenceGrade): Set<string> {
@@ -47,28 +48,32 @@ function hintFor(s: Sentence, g: SentenceGrade): string {
 interface Props {
   sentence: Sentence
   frame: Frame
+  /** The line above the exchange. */
+  stamp?: string
   onDone: (result: TaskResult) => void
 }
 
 type Phase = { step: 'ask' } | { step: 'retry'; first: SentenceGrade } | { step: 'result'; passed: boolean; failed: Set<string>; last: SentenceGrade }
 
-export function SentenceTask({ sentence, frame, onDone }: Props) {
+/** A whole sentence: English shown, Norwegian typed. One sentence reviews every item in it. */
+export function SentenceTask({ sentence, frame, stamp = 'Say it in Norwegian', onDone }: Props) {
   const [input, setInput] = useState('')
   const [phase, setPhase] = useState<Phase>({ step: 'ask' })
   const covered = useMemo(() => exercised(sentence, getState().memory), [sentence])
 
-  const finish = async (failed: Set<string>, last: SentenceGrade, passed: boolean) => {
+  const finish = (failed: Set<string>, last: SentenceGrade, passed: boolean) => {
     setPhase({ step: 'result', passed, failed, last })
     void speak(sentence.no)
   }
 
   const check = () => {
     const g = gradeSentence(sentence, input)
+    setInput('')
     if (phase.step === 'ask') {
-      if (g.correct) void finish(new Set(), g, true)
+      if (g.correct) finish(new Set(), g, true)
       else setPhase({ step: 'retry', first: g })
     } else if (phase.step === 'retry') {
-      void finish(failedItems(sentence, phase.first), g, g.correct)
+      finish(failedItems(sentence, phase.first), g, g.correct)
     }
   }
 
@@ -82,12 +87,22 @@ export function SentenceTask({ sentence, frame, onDone }: Props) {
 
   const shown = phase.step === 'retry' ? phase.first : phase.step === 'result' ? phase.last : null
 
+  // The app has already decided right and wrong. The language model only adds words about the mistake.
+  const ask: ExplainRequest | null = useMemo(() => {
+    const words = (g: SentenceGrade) => g.typed.map((w) => w.word).join(' ')
+    if (phase.step === 'retry') return { kind: 'hint', en: sentence.en, no: sentence.no, answer: words(phase.first), topics: [...failedItems(sentence, phase.first)].map(itemName) }
+    if (phase.step === 'result' && phase.failed.size > 0) return { kind: 'explain', en: sentence.en, no: sentence.no, answer: words(phase.last), topics: [...phase.failed].map(itemName) }
+    return null
+  }, [phase, sentence])
+  const aiText = useExplain(ask)
+
   return (
     <Focus
       {...frame}
-      footer={
+      scrollKey={`${phase.step}-${aiText ? 1 : 0}`}
+      dock={
         phase.step === 'result' ? (
-          <>
+          <DockRow>
             {phase.failed.size > 0 ? (
               <Button variant="secondary" onClick={() => void done(new Set())}>
                 It was a typo
@@ -95,88 +110,75 @@ export function SentenceTask({ sentence, frame, onDone }: Props) {
             ) : (
               <span />
             )}
-            <Button key="continue" autoFocus onClick={() => void done(phase.failed)} hint="Enter">
+            <Button key="continue" autoFocus onClick={() => void done(phase.failed)} hint="↵">
               Continue
             </Button>
-          </>
+          </DockRow>
         ) : (
-          <>
-            {phase.step === 'retry' ? (
-              <Button variant="secondary" onClick={() => void finish(failedItems(sentence, phase.first), phase.first, false)}>
-                Show answer
-              </Button>
-            ) : (
-              <span />
-            )}
-            <Button onClick={check} disabled={!input.trim()} hint="Enter">
-              {phase.step === 'retry' ? 'Try again' : 'Check'}
-            </Button>
-          </>
+          <AnswerInput key={phase.step} value={input} onChange={setInput} onSubmit={check} placeholder={phase.step === 'retry' ? 'Try again' : 'Type in Norwegian'} />
         )
       }
     >
-      <div>
-        <div className="font-bold text-muted">Say it in Norwegian</div>
-        <div className="mt-1.5 text-3xl leading-tight font-bold sm:text-4xl">{sentence.en}</div>
-      </div>
+      <Stamp>{stamp}</Stamp>
+      <Ask>{sentence.en}</Ask>
 
-      {phase.step !== 'result' && <AnswerInput value={input} onChange={setInput} onSubmit={check} />}
-
-      {shown && !shown.correct && (
-        <Card>
-          <div className="mb-3 font-bold text-muted">Your answer</div>
-          <div className="flex flex-wrap gap-2.5">
-            {shown.typed.map((w, i) => (
-              <span
-                key={i}
-                className={`inline-flex items-center gap-2 rounded-xl border-2 px-3.5 py-1.5 text-2xl font-bold ${
-                  w.ok ? 'border-transparent bg-moss-soft text-moss' : 'border-lingon bg-lingon-soft text-lingon'
-                }`}
-              >
-                {w.word}
-                {w.ok ? <Check size={20} aria-label="right" /> : <X size={20} aria-label="wrong" />}
-              </span>
-            ))}
-          </div>
-        </Card>
+      {shown && (
+        <div key={phase.step} className="rise flex flex-wrap justify-end gap-1.5 self-end lg:gap-2">
+          {shown.typed.map((w, i) => (
+            <span
+              key={i}
+              className={`inline-flex h-[2.875rem] items-center gap-1.5 rounded-2xl bg-inverse pr-3 pl-4 text-24 font-medium tracking-[-0.02em] text-on-inverse lg:h-[4.5rem] lg:gap-2.5 lg:rounded-3xl lg:pr-[1.375rem] lg:pl-[1.625rem] lg:text-40 ${
+                w.ok ? '' : 'shadow-[inset_0_0_0_2px_var(--color-red)] lg:shadow-[inset_0_0_0_3px_var(--color-red)]'
+              }`}
+            >
+              {w.word}
+              {w.ok ? <Check className="size-4 text-green-ink lg:size-[1.375rem]" aria-label="right" /> : <X className="size-4 text-red-ink lg:size-[1.375rem]" aria-label="wrong" />}
+            </span>
+          ))}
+        </div>
       )}
 
       {phase.step === 'retry' && (
-        <Note tone="lingon" icon={<MessageCircleQuestion size={22} />} title={phase.first.missed.length + phase.first.typed.filter((t) => !t.ok).length <= 2 ? 'Almost.' : 'Not yet.'}>
-          {hintFor(sentence, phase.first)}
-        </Note>
+        <>
+          <Remark className="mt-1 lg:mt-2.5" lead={phase.first.missed.length + phase.first.typed.filter((t) => !t.ok).length <= 2 ? 'Almost.' : 'Not yet.'}>
+            {hintFor(sentence, phase.first)}
+          </Remark>
+          {aiText && <AiNote label="Hint">{aiText}</AiNote>}
+          <Button variant="outline" size="medium" className="rise self-start" onClick={() => finish(failedItems(sentence, phase.first), phase.first, false)}>
+            Show answer
+          </Button>
+        </>
       )}
 
       {phase.step === 'result' && (
         <>
-          <Card className={phase.passed && !phase.failed.size ? '!border-moss' : ''}>
-            <div className="flex items-center gap-4">
-              <AudioButton text={sentence.no} size={48} />
-              <div>
-                <div className="text-2xl font-bold">{sentence.no}</div>
-                <div className="text-muted">{phase.failed.size === 0 ? 'Correct.' : phase.passed ? 'Correct on the second try.' : 'This is the answer.'}</div>
-              </div>
-            </div>
-          </Card>
+          <Answer
+            audio={<AudioButton text={sentence.no} className="size-12 lg:size-[3.75rem]" />}
+            good={phase.passed}
+            note={phase.failed.size === 0 ? 'Correct.' : phase.passed ? 'Correct on the second try.' : 'This is the answer.'}
+          >
+            {sentence.no}
+          </Answer>
+          {aiText && <AiNote label="Explanation">{aiText}</AiNote>}
           {covered.length > 0 && (
-            <Card>
-              <div className="mb-1.5 flex items-baseline justify-between gap-3">
-                <span className="text-lg font-bold">
+            <div className="rise flex flex-col self-stretch rounded-[1.25rem] border border-line bg-inset px-4 py-3.5 lg:rounded-[1.625rem] lg:px-7 lg:py-[1.375rem]">
+              <div className="flex justify-between gap-3 pb-2 lg:pb-3">
+                <span className="text-15 font-medium lg:text-18">
                   This sentence reviews {covered.length} {covered.length === 1 ? 'item' : 'items'}
                 </span>
-                {phase.failed.size > 0 && <span className="text-muted">{covered.filter((id) => phase.failed.has(id)).length} to repeat</span>}
+                {phase.failed.size > 0 && <span className="shrink-0 text-14 text-fg2 lg:text-16">{covered.filter((id) => phase.failed.has(id)).length} to repeat</span>}
               </div>
               {covered.map((id) => {
                 const bad = phase.failed.has(id)
                 return (
-                  <div key={id} className="flex items-center gap-2.5 py-1.5">
-                    {bad ? <CircleAlert size={20} className="shrink-0 text-lingon" /> : <CircleCheck size={20} className="shrink-0 text-moss" />}
+                  <div key={id} className="flex items-center gap-3 border-t border-line py-2 text-15 lg:py-[0.6875rem] lg:text-18">
+                    {bad ? <CircleAlert className="size-[1.125rem] shrink-0 text-red" /> : <Check className="size-[1.125rem] shrink-0 text-green" />}
                     <span className="flex-1">{itemName(id)}</span>
-                    <span className={`text-sm font-bold ${bad ? 'text-lingon' : 'text-moss'}`}>{bad ? 'needs work' : 'reviewed'}</span>
+                    <span className="text-14 text-fg2">{bad ? 'needs work' : 'reviewed'}</span>
                   </div>
                 )
               })}
-            </Card>
+            </div>
           )}
         </>
       )}

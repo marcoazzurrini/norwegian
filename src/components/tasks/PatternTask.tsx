@@ -1,12 +1,11 @@
-import { ArrowRight, Ruler } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import type { Example, Item, Sentence } from '../../content/types'
 import { teach } from '../../engine/store'
-import { Focus } from '../Focus'
-import { AudioButton, Button, Card, Heading, Note } from '../ui'
-import { Steps } from './IntroTask'
+import { DockHint, Focus } from '../Focus'
+import { AudioButton, Button, Display } from '../ui'
 import { SentenceTask } from './SentenceTask'
-import { Choices, type Frame, type TaskResult } from './shared'
+import { Choices, Remark, Stamp, type Frame, type TaskResult } from './shared'
 
 /** Splits "en bil > bilen" and marks the part of the second form that is new. */
 function contrast(no: string): { from?: string; to: string; added: string } {
@@ -21,23 +20,35 @@ function contrast(no: string): { from?: string; to: string; added: string } {
   return i > 2 && i < b.length ? { from: a, to: b.slice(0, i), added: b.slice(i) } : { from: a, to: b, added: '' }
 }
 
+const ARTICLE = /^(en|ei|et) \S+$/
+
 function ExampleRow({ ex }: { ex: Example }) {
   const c = contrast(ex.no)
   const spoken = ex.no.split('>').pop()!.trim()
-  return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line py-3.5 first:border-t-0">
-      <AudioButton text={spoken} size={40} />
-      {c.from && (
-        <>
-          <span className="text-2xl text-muted">{c.from}</span>
-          <ArrowRight size={20} className="text-muted" aria-label="becomes" />
-        </>
-      )}
-      <span className="flex-1 text-2xl font-bold">
-        {c.to}
-        {c.added && <span className="rounded-md bg-lingon-soft px-1 text-lingon">{c.added}</span>}
+  const form = (
+    <span className="min-w-0">
+      <span className="block text-20 font-medium tracking-[-0.02em] break-words lg:text-36">
+        <span className={c.added ? 'text-fg2' : ''}>{c.to}</span>
+        {c.added && <span className="underline decoration-2 underline-offset-[6px] lg:decoration-[3px] lg:underline-offset-[9px]">{c.added}</span>}
       </span>
-      <span className="text-lg text-muted">{ex.en}</span>
+      <span className="block text-14 text-fg3 lg:hidden">{ex.en}</span>
+    </span>
+  )
+  return (
+    <div className="grid grid-cols-[2.25rem_1fr_1.25rem_1fr] items-center gap-2.5 px-0.5 py-3.5 lg:grid-cols-[3.25rem_1fr_2rem_1fr_8.75rem] lg:gap-6 lg:px-3 lg:py-[1.375rem]">
+      <AudioButton text={spoken} className="size-8 lg:size-11" />
+      {c.from ? (
+        <>
+          <span className="min-w-0 text-20 font-medium tracking-[-0.02em] break-words lg:text-36">
+            <Display text={c.from} split={ARTICLE.test(c.from)} />
+          </span>
+          <ArrowRight className="size-4 text-fg3 lg:size-6" aria-label="becomes" />
+          {form}
+        </>
+      ) : (
+        <span className="col-span-3 lg:col-span-2">{form}</span>
+      )}
+      <span className={`hidden text-right text-18 text-fg3 lg:block ${c.from ? '' : 'lg:col-span-2'}`}>{ex.en}</span>
     </div>
   )
 }
@@ -56,7 +67,7 @@ export function PatternTask({ item, practice, frame, onDone }: Props) {
   const [practiceIndex, setPracticeIndex] = useState(0)
   const [result, setResult] = useState<TaskResult>({ itemIds: [item.id], right: 0, wrong: 0, taught: 1 })
   const quiz = item.quiz ?? []
-  const steps = ['See it', 'Read it', ...(practice.length ? ['Produce it'] : [])]
+  const steps = 2 + (practice.length ? 1 : 0)
 
   const afterQuiz = async () => {
     await teach([item.id])
@@ -69,7 +80,8 @@ export function PatternTask({ item, practice, frame, onDone }: Props) {
       <SentenceTask
         key={practice[practiceIndex].id}
         sentence={practice[practiceIndex]}
-        frame={{ ...frame, label: `${item.title} · ${practiceIndex + 1} of ${practice.length}` }}
+        frame={frame}
+        stamp={`Step 3 of 3 · Produce it · ${practiceIndex + 1} of ${practice.length}`}
         onDone={(r) => {
           const merged = { ...result, right: result.right + r.right, wrong: result.wrong + r.wrong }
           if (practiceIndex + 1 < practice.length) {
@@ -81,48 +93,49 @@ export function PatternTask({ item, practice, frame, onDone }: Props) {
     )
   }
 
-  return (
-    <Focus
-      {...frame}
-      footer={
-        step === 0 ? (
-          <>
-            <span className="text-muted">Next: {quiz.length} quick {quiz.length === 1 ? 'question' : 'questions'}.</span>
-            <Button autoFocus onClick={() => (quiz.length ? setStep(1) : void afterQuiz())} hint="Enter">
+  if (step === 0) {
+    return (
+      <Focus
+        {...frame}
+        dock={
+          <DockHint hint={`Next: ${quiz.length} quick ${quiz.length === 1 ? 'question' : 'questions'}.`}>
+            <Button autoFocus onClick={() => (quiz.length ? setStep(1) : void afterQuiz())} hint="↵">
               Continue
             </Button>
-          </>
-        ) : undefined
-      }
-    >
-      <Steps steps={steps} active={step} />
-      {step === 0 && (
+          </DockHint>
+        }
+      >
+        <Stamp>Step 1 of {steps} · See it</Stamp>
+        <h1 className="m-0 text-[clamp(2.125rem,2.8125vw,4.5rem)] leading-none font-medium tracking-[-0.035em]">{item.title}</h1>
+        <p className="m-0 pt-0.5 pb-2.5 text-16 text-fg2 lg:pt-1.5 lg:pb-[1.375rem] lg:text-22">Watch what changes.</p>
+        <div className="flex flex-col rounded-[1.25rem] border border-line bg-inset px-3.5 py-1 lg:rounded-[2rem] lg:px-6 lg:py-2.5 [&>*+*]:border-t [&>*+*]:border-line">
+          {item.examples!.map((ex) => (
+            <ExampleRow key={ex.no} ex={ex} />
+          ))}
+        </div>
+        <Remark lead="The rule." className="mt-1.5">
+          {item.rule!.join(' ')}
+        </Remark>
+      </Focus>
+    )
+  }
+
+  const q = quiz[quizIndex]
+  return (
+    <Focus {...frame}>
+      <Stamp>
+        Step 2 of {steps} · Read it{quiz.length > 1 ? ` · ${quizIndex + 1} of ${quiz.length}` : ''}
+      </Stamp>
+      {q && (
         <>
-          <Heading title={item.title!} sub="Watch what changes." />
-          <Card className="!py-2">
-            {item.examples!.map((ex) => (
-              <ExampleRow key={ex.no} ex={ex} />
-            ))}
-          </Card>
-          <Note tone="fjord" icon={<Ruler size={22} />} title="The rule">
-            {item.rule!.map((r) => (
-              <p key={r} className="m-0 mt-1 first:mt-0">
-                {r}
-              </p>
-            ))}
-          </Note>
-        </>
-      )}
-      {step === 1 && quiz[quizIndex] && (
-        <>
-          <div>
-            <div className="font-bold text-muted">What does it mean?</div>
-            <div className="mt-1.5 flex items-center gap-4">
-              <AudioButton text={quiz[quizIndex].prompt} size={48} />
-              <span className="text-3xl font-bold sm:text-4xl">{quiz[quizIndex].prompt}</span>
+          <div key={quizIndex} className="rise flex max-w-full items-center gap-3 self-start rounded-[1.25rem] bg-raised py-2.5 pr-[1.125rem] pl-2.5 lg:gap-5 lg:rounded-[1.75rem] lg:py-[1.125rem] lg:pr-8 lg:pl-[1.125rem]">
+            <AudioButton text={q.prompt} className="size-10 lg:size-14" />
+            <div className="min-w-0">
+              <div className="text-13 text-fg2 lg:text-16">What does it mean?</div>
+              <div className="text-30 leading-[1.1] font-medium tracking-[-0.03em] break-words lg:text-56">{q.prompt}</div>
             </div>
           </div>
-          <Choices key={quizIndex} quiz={quiz[quizIndex]} onRight={() => (quizIndex + 1 < quiz.length ? setQuizIndex(quizIndex + 1) : void afterQuiz())} />
+          <Choices key={`c${quizIndex}`} quiz={q} onRight={() => (quizIndex + 1 < quiz.length ? setQuizIndex(quizIndex + 1) : void afterQuiz())} />
         </>
       )}
     </Focus>

@@ -1,0 +1,1730 @@
+{
+ "version": 2,
+ "name": "Patterns",
+ "children": [
+  {
+   "id": "FfA6h",
+   "type": "frame",
+   "name": "Patterns",
+   "x": 0,
+   "y": 0,
+   "style": {
+    "width": 1440,
+    "background": "var(--canvas)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": "96px 120px 120px",
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 96
+   },
+   "children": [
+    {
+     "id": "mGs8X",
+     "type": "frame",
+     "name": "Header",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 24,
+      "alignItems": "center",
+      "textAlign": "center",
+      "padding": "24px 0 8px"
+     },
+     "children": [
+      {
+       "id": "FUyhs",
+       "type": "frame",
+       "style": {
+        "display": "inline-flex",
+        "alignItems": "center",
+        "gap": 6,
+        "padding": "6px 12px",
+        "borderRadius": 999,
+        "background": "var(--base)",
+        "border": "1px solid var(--line)",
+        "fontSize": 13
+       },
+       "children": [
+        {
+         "id": "TL22H",
+         "type": "text",
+         "text": "Norsk design system.",
+         "style": {
+          "fontWeight": 500
+         },
+         "name": "Norsk design system."
+        },
+        {
+         "id": "UctHC",
+         "type": "text",
+         "text": "Part 3 of 3",
+         "style": {
+          "color": "var(--text-2)"
+         },
+         "name": "Part 3 of 3"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "YWuvY",
+       "type": "text",
+       "text": "Patterns",
+       "style": {
+        "fontSize": 64,
+        "lineHeight": 1,
+        "letterSpacing": "-0.035em",
+        "fontWeight": 500
+       },
+       "name": "Patterns"
+      },
+      {
+       "id": "urSpu",
+       "type": "text",
+       "text": "How components combine into the parts every screen repeats: the window, the exchange, the dock and the plan.",
+       "style": {
+        "fontSize": 18,
+        "lineHeight": 1.5,
+        "fontWeight": 400,
+        "color": "var(--text-2)",
+        "maxWidth": 620
+       },
+       "name": "How components combine …"
+      }
+     ]
+    },
+    {
+     "id": "FbuPZ",
+     "type": "frame",
+     "name": "Window",
+     "style": {
+      "display": "grid",
+      "gridTemplateColumns": "300px 1fr",
+      "gap": 60,
+      "borderTop": "1px solid var(--line)",
+      "paddingTop": 40
+     },
+     "children": [
+      {
+       "id": "JKj6n",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 12
+       },
+       "children": [
+        {
+         "id": "sb85r",
+         "type": "text",
+         "text": "Window",
+         "style": {
+          "fontSize": 28,
+          "lineHeight": 1.15,
+          "letterSpacing": "-0.02em",
+          "fontWeight": 500
+         },
+         "name": "Window"
+        },
+        {
+         "id": "PQpjX",
+         "type": "text",
+         "text": "Desktop is designed for a 27-inch Studio Display: 2560 by 1440 points. A dark sidebar and one lighter panel. Content never runs wider than 1280.",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 400,
+          "color": "var(--text-2)"
+         },
+         "name": "Desktop. A dark sidebar…"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "BDFF2",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 32,
+        "minWidth": 0
+       },
+       "children": [
+        {
+         "id": "iQbMY",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": 16,
+          "alignItems": "flex-start",
+          "width": "100%"
+         },
+         "children": [
+          {
+           "id": "Db86s",
+           "type": "frame",
+           "style": {
+            "background": "var(--base)",
+            "border": "1px solid var(--line)",
+            "borderRadius": 24,
+            "overflow": "hidden",
+            "width": "100%"
+           },
+           "children": [
+            {
+             "id": "w2TPF",
+             "type": "frame",
+             "style": {
+              "display": "flex",
+              "height": 420,
+              "padding": 8
+             },
+             "children": [
+              {
+               "id": "ZRfje",
+               "type": "frame",
+               "name": "Sidebar",
+               "style": {
+                "width": 256,
+                "flexShrink": 0,
+                "padding": "16px 12px 12px",
+                "display": "flex",
+                "flexDirection": "column",
+                "gap": 2
+               },
+               "children": [
+                {
+                 "id": "z2y2D",
+                 "type": "frame",
+                 "style": {
+                  "display": "flex",
+                  "alignItems": "center",
+                  "justifyContent": "space-between",
+                  "padding": "0 4px 20px 12px"
+                 },
+                 "children": [
+                  {
+                   "id": "W6GxW",
+                   "type": "text",
+                   "text": "norsk",
+                   "style": {
+                    "fontSize": 22,
+                    "fontWeight": 500,
+                    "letterSpacing": "-0.03em"
+                   },
+                   "name": "norsk"
+                  },
+                  {
+                   "id": "XHa8X",
+                   "type": "frame",
+                   "style": {
+                    "display": "flex",
+                    "gap": 6
+                   },
+                   "children": [
+                    {
+                     "id": "FJMhx",
+                     "type": "ref",
+                     "ref": "KK5p6",
+                     "overrides": {
+                      "Icon": {
+                       "icon": "search"
+                      }
+                     },
+                     "style": {
+                      "width": 34,
+                      "height": 34
+                     },
+                     "name": "Icon Button"
+                    },
+                    {
+                     "id": "hjbXH",
+                     "type": "ref",
+                     "ref": "KK5p6",
+                     "overrides": {
+                      "Icon": {
+                       "icon": "plus"
+                      }
+                     },
+                     "style": {
+                      "width": 34,
+                      "height": 34
+                     },
+                     "name": "Icon Button"
+                    }
+                   ],
+                   "name": "Frame"
+                  }
+                 ],
+                 "name": "Frame"
+                },
+                {
+                 "id": "akbTh",
+                 "type": "ref",
+                 "ref": "4qQNs",
+                 "overrides": {
+                  "Icon": {
+                   "icon": "sun"
+                  },
+                  "Label": {
+                   "text": "Today"
+                  }
+                 },
+                 "style": {
+                  "width": "100%"
+                 },
+                 "name": "Nav Row Selected"
+                },
+                {
+                 "id": "HDuw7",
+                 "type": "ref",
+                 "ref": "j4XjN",
+                 "overrides": {
+                  "Icon": {
+                   "icon": "waypoints"
+                  },
+                  "Label": {
+                   "text": "Map"
+                  }
+                 },
+                 "style": {
+                  "width": "100%"
+                 },
+                 "name": "Nav Row"
+                },
+                {
+                 "id": "tDm4U",
+                 "type": "ref",
+                 "ref": "j4XjN",
+                 "overrides": {
+                  "Icon": {
+                   "icon": "book-open"
+                  },
+                  "Label": {
+                   "text": "Stories"
+                  }
+                 },
+                 "style": {
+                  "width": "100%"
+                 },
+                 "name": "Nav Row"
+                },
+                {
+                 "id": "2EX3V",
+                 "type": "ref",
+                 "ref": "j4XjN",
+                 "overrides": {
+                  "Icon": {
+                   "icon": "ear"
+                  },
+                  "Label": {
+                   "text": "Sounds"
+                  }
+                 },
+                 "style": {
+                  "width": "100%"
+                 },
+                 "name": "Nav Row"
+                },
+                {
+                 "id": "7QiFg",
+                 "type": "ref",
+                 "ref": "j4XjN",
+                 "overrides": {
+                  "Icon": {
+                   "icon": "library"
+                  },
+                  "Label": {
+                   "text": "Items"
+                  }
+                 },
+                 "style": {
+                  "width": "100%"
+                 },
+                 "name": "Nav Row"
+                },
+                {
+                 "id": "W4mE2",
+                 "type": "frame",
+                 "style": {
+                  "flex": 1
+                 },
+                 "name": "Frame"
+                },
+                {
+                 "id": "YgAHJ",
+                 "type": "frame",
+                 "name": "Account",
+                 "style": {
+                  "display": "flex",
+                  "alignItems": "center",
+                  "gap": 10,
+                  "padding": "8px 12px",
+                  "borderRadius": 12
+                 },
+                 "children": [
+                  {
+                   "id": "fAE8E",
+                   "type": "frame",
+                   "style": {
+                    "width": 28,
+                    "height": 28,
+                    "borderRadius": 999,
+                    "background": "var(--control)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "justifyContent": "center",
+                    "fontSize": 11,
+                    "fontWeight": 500,
+                    "color": "var(--text-2)"
+                   },
+                   "children": [
+                    {
+                     "id": "UZuWL",
+                     "type": "text",
+                     "text": "MA",
+                     "name": "MA"
+                    }
+                   ],
+                   "name": "Frame"
+                  },
+                  {
+                   "id": "XD9B6",
+                   "type": "text",
+                   "text": "Marco",
+                   "style": {
+                    "fontSize": 14,
+                    "fontWeight": 500,
+                    "flex": 1
+                   },
+                   "name": "Marco"
+                  },
+                  {
+                   "id": "JkMQZ",
+                   "type": "icon",
+                   "icon": "settings",
+                   "style": {
+                    "width": 16,
+                    "height": 16,
+                    "color": "var(--text-3)"
+                   },
+                   "name": "settings"
+                  }
+                 ]
+                }
+               ]
+              },
+              {
+               "id": "P6XGY",
+               "type": "frame",
+               "style": {
+                "flex": 1,
+                "background": "var(--panel)",
+                "borderRadius": 20,
+                "display": "flex",
+                "alignItems": "center",
+                "justifyContent": "center"
+               },
+               "children": [
+                {
+                 "id": "TzHq4",
+                 "type": "text",
+                 "text": "Panel",
+                 "style": {
+                  "fontSize": 12,
+                  "lineHeight": 1.4,
+                  "fontWeight": 500,
+                  "color": "var(--text-3)"
+                 },
+                 "name": "Panel"
+                }
+               ],
+               "name": "Frame"
+              }
+             ],
+             "name": "Frame"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "ejndc",
+           "type": "frame",
+           "children": [
+            {
+             "id": "wngCL",
+             "type": "text",
+             "text": "App window",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 500
+             },
+             "name": "App window"
+            },
+            {
+             "id": "mtfPC",
+             "type": "text",
+             "text": "Sidebar 256px on base. Panel on the panel tone with a 20px radius and an 8px gap to the edge.",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 400,
+              "color": "var(--text-2)",
+              "maxWidth": 440
+             },
+             "name": "Sidebar 256px on base. …"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    },
+    {
+     "id": "Pfwci",
+     "type": "frame",
+     "name": "Hero",
+     "style": {
+      "display": "grid",
+      "gridTemplateColumns": "300px 1fr",
+      "gap": 60,
+      "borderTop": "1px solid var(--line)",
+      "paddingTop": 40
+     },
+     "children": [
+      {
+       "id": "n2dHw",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 12
+       },
+       "children": [
+        {
+         "id": "d9U9J",
+         "type": "text",
+         "text": "Hero",
+         "style": {
+          "fontSize": 28,
+          "lineHeight": 1.15,
+          "letterSpacing": "-0.02em",
+          "fontWeight": 500
+         },
+         "name": "Hero"
+        },
+        {
+         "id": "aXCA2",
+         "type": "text",
+         "text": "The top of a home screen. A chip, one display line, one sentence and at most two pills, centred.",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 400,
+          "color": "var(--text-2)"
+         },
+         "name": "The top of a home scree…"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "AMNWY",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 32,
+        "minWidth": 0
+       },
+       "children": [
+        {
+         "id": "Z3eFA",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": 16,
+          "alignItems": "flex-start",
+          "width": "100%"
+         },
+         "children": [
+          {
+           "id": "Gqz3M",
+           "type": "frame",
+           "style": {
+            "background": "var(--panel)",
+            "borderRadius": 24,
+            "padding": "56px 40px",
+            "width": "100%"
+           },
+           "children": [
+            {
+             "id": "Gn7nC",
+             "type": "frame",
+             "name": "Hero",
+             "style": {
+              "display": "flex",
+              "flexDirection": "column",
+              "alignItems": "center",
+              "textAlign": "center",
+              "gap": 20
+             },
+             "children": [
+              {
+               "id": "kb4B4",
+               "type": "ref",
+               "ref": "wKXTG",
+               "name": "Chip"
+              },
+              {
+               "id": "pMckM",
+               "type": "text",
+               "text": "God morgen",
+               "style": {
+                "fontSize": 64,
+                "lineHeight": 1,
+                "letterSpacing": "-0.035em",
+                "fontWeight": 500
+               },
+               "name": "God morgen"
+              },
+              {
+               "id": "RFW9G",
+               "type": "text",
+               "text": "34 reviews and one new pattern. About 25 minutes.",
+               "style": {
+                "fontSize": 18,
+                "lineHeight": 1.5,
+                "fontWeight": 400,
+                "color": "var(--text-2)",
+                "maxWidth": 520
+               },
+               "name": "34 reviews and one new …"
+              },
+              {
+               "id": "xhwvE",
+               "type": "frame",
+               "style": {
+                "display": "flex",
+                "gap": 10,
+                "paddingTop": 8
+               },
+               "children": [
+                {
+                 "id": "ZktWH",
+                 "type": "ref",
+                 "ref": "wBzVt",
+                 "name": "Button Icon"
+                },
+                {
+                 "id": "vmnKL",
+                 "type": "ref",
+                 "ref": "eDu6C",
+                 "overrides": {
+                  "Label": {
+                   "text": "25 min"
+                  }
+                 },
+                 "name": "Button Secondary"
+                }
+               ],
+               "name": "Frame"
+              }
+             ]
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "rqDN3",
+           "type": "frame",
+           "children": [
+            {
+             "id": "9mLBs",
+             "type": "text",
+             "text": "Hero",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 500
+             },
+             "name": "Hero"
+            },
+            {
+             "id": "XYpUP",
+             "type": "text",
+             "text": "The white pill starts the main task. The grey pill changes one setting.",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 400,
+              "color": "var(--text-2)",
+              "maxWidth": 440
+             },
+             "name": "The white pill starts t…"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    },
+    {
+     "id": "BNpts",
+     "type": "frame",
+     "name": "Plan",
+     "style": {
+      "display": "grid",
+      "gridTemplateColumns": "300px 1fr",
+      "gap": 60,
+      "borderTop": "1px solid var(--line)",
+      "paddingTop": 40
+     },
+     "children": [
+      {
+       "id": "7ViiC",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 12
+       },
+       "children": [
+        {
+         "id": "5zaau",
+         "type": "text",
+         "text": "Plan",
+         "style": {
+          "fontSize": 28,
+          "lineHeight": 1.15,
+          "letterSpacing": "-0.02em",
+          "fontWeight": 500
+         },
+         "name": "Plan"
+        },
+        {
+         "id": "mZjmR",
+         "type": "text",
+         "text": "A list of activities. One row per activity, each with its blob, one line of detail and a duration.",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 400,
+          "color": "var(--text-2)"
+         },
+         "name": "A list of activities. O…"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "PLLrL",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 32,
+        "minWidth": 0
+       },
+       "children": [
+        {
+         "id": "4nMhA",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": 16,
+          "alignItems": "flex-start"
+         },
+         "children": [
+          {
+           "id": "CJg79",
+           "type": "frame",
+           "style": {
+            "width": 520
+           },
+           "children": [
+            {
+             "id": "d6ZBw",
+             "type": "frame",
+             "name": "Plan",
+             "style": {
+              "background": "var(--inset)",
+              "border": "1px solid var(--line)",
+              "borderRadius": 24,
+              "padding": 8,
+              "display": "flex",
+              "flexDirection": "column",
+              "gap": 2
+             },
+             "children": [
+              {
+               "id": "Bt8SK",
+               "type": "ref",
+               "ref": "3ngin",
+               "overrides": {
+                "Blob": {
+                 "ref": "54qF9"
+                },
+                "Title": {
+                 "text": "Sounds"
+                },
+                "Detail": {
+                 "text": "y or i? Four voices"
+                },
+                "Meta": {
+                 "text": "2 min"
+                }
+               },
+               "style": {
+                "width": "100%"
+               },
+               "name": "Row"
+              },
+              {
+               "id": "gXr32",
+               "type": "ref",
+               "ref": "3ngin",
+               "overrides": {
+                "Blob": {
+                 "ref": "mbx7G"
+                },
+                "Title": {
+                 "text": "Review"
+                },
+                "Detail": {
+                 "text": "34 items in 9 sentences"
+                },
+                "Meta": {
+                 "text": "8 min"
+                }
+               },
+               "style": {
+                "width": "100%"
+               },
+               "name": "Row"
+              },
+              {
+               "id": "G7Hvy",
+               "type": "ref",
+               "ref": "3ngin",
+               "overrides": {
+                "Blob": {
+                 "ref": "By2wD"
+                },
+                "Title": {
+                 "text": "New"
+                },
+                "Detail": {
+                 "text": "The definite ending: hus becomes huset"
+                },
+                "Meta": {
+                 "text": "8 min"
+                }
+               },
+               "style": {
+                "width": "100%"
+               },
+               "name": "Row"
+              },
+              {
+               "id": "AkLyF",
+               "type": "ref",
+               "ref": "3ngin",
+               "overrides": {
+                "Blob": {
+                 "ref": "6qNCK"
+                },
+                "Title": {
+                 "text": "Story"
+                },
+                "Detail": {
+                 "text": "På kafeen. You know 97% of the words"
+                },
+                "Meta": {
+                 "text": "5 min"
+                }
+               },
+               "style": {
+                "width": "100%"
+               },
+               "name": "Row"
+              },
+              {
+               "id": "CQzkW",
+               "type": "ref",
+               "ref": "3ngin",
+               "overrides": {
+                "Blob": {
+                 "ref": "u9dzC"
+                },
+                "Title": {
+                 "text": "Recall again"
+                },
+                "Detail": {
+                 "text": "Today's new items, once more"
+                },
+                "Meta": {
+                 "text": "2 min"
+                }
+               },
+               "style": {
+                "width": "100%"
+               },
+               "name": "Row"
+              }
+             ]
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "ERhJH",
+           "type": "frame",
+           "children": [
+            {
+             "id": "yNhud",
+             "type": "text",
+             "text": "Plan",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 500
+             },
+             "name": "Plan"
+            },
+            {
+             "id": "7xJ3f",
+             "type": "text",
+             "text": "An inset card with 8px padding. Rows have a 16px radius so a hover tone fits inside.",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 400,
+              "color": "var(--text-2)",
+              "maxWidth": 440
+             },
+             "name": "An inset card with 8px …"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    },
+    {
+     "id": "73Mha",
+     "type": "frame",
+     "name": "Exchange",
+     "style": {
+      "display": "grid",
+      "gridTemplateColumns": "300px 1fr",
+      "gap": 60,
+      "borderTop": "1px solid var(--line)",
+      "paddingTop": 40
+     },
+     "children": [
+      {
+       "id": "mqmDB",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 12
+       },
+       "children": [
+        {
+         "id": "SG3kU",
+         "type": "text",
+         "text": "Exchange",
+         "style": {
+          "fontSize": 28,
+          "lineHeight": 1.15,
+          "letterSpacing": "-0.02em",
+          "fontWeight": 500
+         },
+         "name": "Exchange"
+        },
+        {
+         "id": "UiBEb",
+         "type": "text",
+         "text": "Session screens. A top bar, a short exchange, and a dock. Only the current task is shown, never a history.",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 400,
+          "color": "var(--text-2)"
+         },
+         "name": "Session screens. A top …"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "nTM4J",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 32,
+        "minWidth": 0
+       },
+       "children": [
+        {
+         "id": "eseDT",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": 16,
+          "alignItems": "flex-start",
+          "width": "100%"
+         },
+         "children": [
+          {
+           "id": "evjLx",
+           "type": "frame",
+           "style": {
+            "background": "var(--base)",
+            "border": "1px solid var(--line)",
+            "borderRadius": 24,
+            "overflow": "hidden",
+            "width": "100%"
+           },
+           "children": [
+            {
+             "id": "WgpBj",
+             "type": "frame",
+             "style": {
+              "background": "var(--panel)",
+              "margin": 8,
+              "borderRadius": 20,
+              "display": "flex",
+              "flexDirection": "column",
+              "height": 640
+             },
+             "children": [
+              {
+               "id": "cJkhq",
+               "type": "frame",
+               "name": "Top Bar",
+               "style": {
+                "display": "grid",
+                "gridTemplateColumns": "1fr auto 1fr",
+                "alignItems": "center",
+                "padding": "14px 16px"
+               },
+               "children": [
+                {
+                 "id": "WjKK4",
+                 "type": "frame",
+                 "style": {
+                  "display": "flex"
+                 },
+                 "children": [
+                  {
+                   "id": "aztZm",
+                   "type": "ref",
+                   "ref": "KK5p6",
+                   "name": "Icon Button"
+                  }
+                 ],
+                 "name": "Frame"
+                },
+                {
+                 "id": "jvVez",
+                 "type": "ref",
+                 "ref": "57whY",
+                 "overrides": {
+                  "Instance": {
+                   "ref": "mbx7G"
+                  },
+                  "Label": {
+                   "text": "Review"
+                  }
+                 },
+                 "name": "Title Pill"
+                },
+                {
+                 "id": "n6apQ",
+                 "type": "frame",
+                 "style": {
+                  "display": "flex",
+                  "alignItems": "center",
+                  "justifyContent": "flex-end",
+                  "gap": 12,
+                  "paddingRight": 8
+                 },
+                 "children": [
+                  {
+                   "id": "ZS5VQ",
+                   "type": "ref",
+                   "ref": "3dFRX",
+                   "overrides": {
+                    "Fill": {
+                     "style": {
+                      "width": "44%"
+                     }
+                    }
+                   },
+                   "style": {
+                    "width": 96
+                   },
+                   "name": "Progress"
+                  },
+                  {
+                   "id": "heUSK",
+                   "type": "text",
+                   "text": "4 of 9",
+                   "style": {
+                    "fontSize": 13,
+                    "fontWeight": 500,
+                    "color": "var(--text-2)"
+                   },
+                   "name": "4 of 9"
+                  }
+                 ],
+                 "name": "Frame"
+                }
+               ]
+              },
+              {
+               "id": "gefrL",
+               "type": "frame",
+               "style": {
+                "flex": 1,
+                "width": 560,
+                "alignSelf": "center",
+                "display": "flex",
+                "flexDirection": "column",
+                "gap": 10,
+                "paddingTop": 16
+               },
+               "children": [
+                {
+                 "id": "HnDiz",
+                 "type": "ref",
+                 "ref": "GAkSc",
+                 "overrides": {
+                  "Label": {
+                   "text": "Say it in Norwegian"
+                  }
+                 },
+                 "name": "Stamp"
+                },
+                {
+                 "id": "6BTUC",
+                 "type": "ref",
+                 "ref": "VcjtQ",
+                 "overrides": {
+                  "Text": {
+                   "text": "The house is big."
+                  }
+                 },
+                 "name": "Bubble"
+                },
+                {
+                 "id": "x4w9V",
+                 "type": "ref",
+                 "ref": "wXNES",
+                 "name": "Bubble Mine"
+                },
+                {
+                 "id": "PPqSf",
+                 "type": "ref",
+                 "ref": "8pusp",
+                 "name": "Checks"
+                },
+                {
+                 "id": "v4jff",
+                 "type": "ref",
+                 "ref": "BpBdr",
+                 "name": "Decision"
+                }
+               ],
+               "name": "Frame"
+              },
+              {
+               "id": "u7wGz",
+               "type": "frame",
+               "style": {
+                "width": 560,
+                "alignSelf": "center",
+                "paddingBottom": 20
+               },
+               "children": [
+                {
+                 "id": "pGFK2",
+                 "type": "ref",
+                 "ref": "dWF76",
+                 "style": {
+                  "width": "100%"
+                 },
+                 "name": "Composer"
+                }
+               ],
+               "name": "Frame"
+              }
+             ],
+             "name": "Frame"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "P2MzE",
+           "type": "frame",
+           "children": [
+            {
+             "id": "MqhAs",
+             "type": "text",
+             "text": "Session",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 500
+             },
+             "name": "Session"
+            },
+            {
+             "id": "LMjUW",
+             "type": "text",
+             "text": "Close on the left, the activity in the centre, position on the right. The dock holds the composer or one white pill.",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 400,
+              "color": "var(--text-2)",
+              "maxWidth": 440
+             },
+             "name": "Close on the left, the …"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    },
+    {
+     "id": "Ww25J",
+     "type": "frame",
+     "name": "Dock",
+     "style": {
+      "display": "grid",
+      "gridTemplateColumns": "300px 1fr",
+      "gap": 60,
+      "borderTop": "1px solid var(--line)",
+      "paddingTop": 40
+     },
+     "children": [
+      {
+       "id": "B4y55",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 12
+       },
+       "children": [
+        {
+         "id": "RXJ7p",
+         "type": "text",
+         "text": "Dock",
+         "style": {
+          "fontSize": 28,
+          "lineHeight": 1.15,
+          "letterSpacing": "-0.02em",
+          "fontWeight": 500
+         },
+         "name": "Dock"
+        },
+        {
+         "id": "GNjEK",
+         "type": "text",
+         "text": "The bottom of a session. It holds exactly one of three things.",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 400,
+          "color": "var(--text-2)"
+         },
+         "name": "The bottom of a session…"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "Z69pq",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 32,
+        "minWidth": 0
+       },
+       "children": [
+        {
+         "id": "AEWxa",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": 28
+         },
+         "children": [
+          {
+           "id": "CL9FL",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": 16,
+            "alignItems": "flex-start"
+           },
+           "children": [
+            {
+             "id": "8ch7z",
+             "type": "ref",
+             "ref": "dWF76",
+             "name": "Composer"
+            },
+            {
+             "id": "FTr8V",
+             "type": "frame",
+             "children": [
+              {
+               "id": "jVDUH",
+               "type": "text",
+               "text": "Composer",
+               "style": {
+                "fontSize": 14,
+                "lineHeight": 1.45,
+                "fontWeight": 500
+               },
+               "name": "Composer"
+              },
+              {
+               "id": "QYKvA",
+               "type": "text",
+               "text": "When the learner types an answer.",
+               "style": {
+                "fontSize": 14,
+                "lineHeight": 1.45,
+                "fontWeight": 400,
+                "color": "var(--text-2)",
+                "maxWidth": 440
+               },
+               "name": "When the learner types …"
+              }
+             ],
+             "name": "Frame"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "gkapn",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": 16,
+            "alignItems": "flex-start"
+           },
+           "children": [
+            {
+             "id": "TQaAA",
+             "type": "frame",
+             "style": {
+              "width": 560
+             },
+             "children": [
+              {
+               "id": "VcAMN",
+               "type": "frame",
+               "name": "Dock",
+               "style": {
+                "display": "flex",
+                "alignItems": "center",
+                "justifyContent": "space-between",
+                "gap": 16,
+                "width": "100%"
+               },
+               "children": [
+                {
+                 "id": "3WrsL",
+                 "type": "text",
+                 "text": "You will type this word in a moment.",
+                 "style": {
+                  "fontSize": 14,
+                  "lineHeight": 1.45,
+                  "fontWeight": 400,
+                  "color": "var(--text-2)"
+                 },
+                 "name": "You will type this word…"
+                },
+                {
+                 "id": "bLvLn",
+                 "type": "ref",
+                 "ref": "sYjG2",
+                 "name": "Button Key"
+                }
+               ]
+              }
+             ],
+             "name": "Frame"
+            },
+            {
+             "id": "57mun",
+             "type": "frame",
+             "children": [
+              {
+               "id": "ij9vF",
+               "type": "text",
+               "text": "Hint and action",
+               "style": {
+                "fontSize": 14,
+                "lineHeight": 1.45,
+                "fontWeight": 500
+               },
+               "name": "Hint and action"
+              },
+              {
+               "id": "psG3h",
+               "type": "text",
+               "text": "When the learner only needs to continue. The key hint shows the shortcut.",
+               "style": {
+                "fontSize": 14,
+                "lineHeight": 1.45,
+                "fontWeight": 400,
+                "color": "var(--text-2)",
+                "maxWidth": 440
+               },
+               "name": "When the learner only n…"
+              }
+             ],
+             "name": "Frame"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "jkZX4",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "gap": 16,
+            "alignItems": "flex-start"
+           },
+           "children": [
+            {
+             "id": "ux5EP",
+             "type": "frame",
+             "style": {
+              "width": 560
+             },
+             "children": [
+              {
+               "id": "vkLh5",
+               "type": "frame",
+               "name": "Dock",
+               "style": {
+                "display": "flex",
+                "alignItems": "center",
+                "justifyContent": "space-between",
+                "gap": 16,
+                "width": "100%"
+               },
+               "children": [
+                {
+                 "id": "QWHf2",
+                 "type": "ref",
+                 "ref": "eDu6C",
+                 "overrides": {
+                  "Label": {
+                   "text": "Shadow this line"
+                  }
+                 },
+                 "name": "Button Secondary"
+                },
+                {
+                 "id": "d5LyQ",
+                 "type": "ref",
+                 "ref": "sYjG2",
+                 "overrides": {
+                  "Label": {
+                   "text": "Questions"
+                  }
+                 },
+                 "name": "Button Key"
+                }
+               ]
+              }
+             ],
+             "name": "Frame"
+            },
+            {
+             "id": "pve4X",
+             "type": "frame",
+             "children": [
+              {
+               "id": "nPfWE",
+               "type": "text",
+               "text": "Two actions",
+               "style": {
+                "fontSize": 14,
+                "lineHeight": 1.45,
+                "fontWeight": 500
+               },
+               "name": "Two actions"
+              },
+              {
+               "id": "x4qm3",
+               "type": "text",
+               "text": "Secondary on the left, primary on the right.",
+               "style": {
+                "fontSize": 14,
+                "lineHeight": 1.45,
+                "fontWeight": 400,
+                "color": "var(--text-2)",
+                "maxWidth": 440
+               },
+               "name": "Secondary on the left, …"
+              }
+             ],
+             "name": "Frame"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    },
+    {
+     "id": "gnw27",
+     "type": "frame",
+     "name": "Tab bar",
+     "style": {
+      "display": "grid",
+      "gridTemplateColumns": "300px 1fr",
+      "gap": 60,
+      "borderTop": "1px solid var(--line)",
+      "paddingTop": 40
+     },
+     "children": [
+      {
+       "id": "d2jRd",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 12
+       },
+       "children": [
+        {
+         "id": "gDaJ6",
+         "type": "text",
+         "text": "Tab bar",
+         "style": {
+          "fontSize": 28,
+          "lineHeight": 1.15,
+          "letterSpacing": "-0.02em",
+          "fontWeight": 500
+         },
+         "name": "Tab bar"
+        },
+        {
+         "id": "bXBqp",
+         "type": "text",
+         "text": "Phones are designed for an iPhone 14 Pro: 393 by 852 points, with 59 points kept clear at the top and 34 at the bottom. A floating pill sits above the content, with five destinations.",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 400,
+          "color": "var(--text-2)"
+         },
+         "name": "Phones. A floating pill…"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "XtGs6",
+       "type": "frame",
+       "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": 32,
+        "minWidth": 0
+       },
+       "children": [
+        {
+         "id": "nnywZ",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": 16,
+          "alignItems": "flex-start"
+         },
+         "children": [
+          {
+           "id": "pXwxj",
+           "type": "frame",
+           "name": "Tab Bar",
+           "component": true,
+           "style": {
+            "display": "inline-flex",
+            "gap": 2,
+            "padding": 6,
+            "borderRadius": 999,
+            "background": "var(--base)",
+            "border": "1px solid var(--line)"
+           },
+           "children": [
+            {
+             "id": "XR3sq",
+             "type": "ref",
+             "ref": "CGHwa",
+             "overrides": {
+              "Icon": {
+               "icon": "sun"
+              },
+              "Label": {
+               "text": "Today"
+              }
+             },
+             "name": "Tab Selected"
+            },
+            {
+             "id": "URgK2",
+             "type": "ref",
+             "ref": "rivtR",
+             "overrides": {
+              "Icon": {
+               "icon": "waypoints"
+              },
+              "Label": {
+               "text": "Map"
+              }
+             },
+             "name": "Tab"
+            },
+            {
+             "id": "7YqCk",
+             "type": "ref",
+             "ref": "rivtR",
+             "overrides": {
+              "Icon": {
+               "icon": "book-open"
+              },
+              "Label": {
+               "text": "Stories"
+              }
+             },
+             "name": "Tab"
+            },
+            {
+             "id": "b45yQ",
+             "type": "ref",
+             "ref": "rivtR",
+             "overrides": {
+              "Icon": {
+               "icon": "ear"
+              },
+              "Label": {
+               "text": "Sounds"
+              }
+             },
+             "name": "Tab"
+            },
+            {
+             "id": "RGwBS",
+             "type": "ref",
+             "ref": "rivtR",
+             "overrides": {
+              "Icon": {
+               "icon": "library"
+              },
+              "Label": {
+               "text": "Items"
+              }
+             },
+             "name": "Tab"
+            }
+           ]
+          },
+          {
+           "id": "H3dKV",
+           "type": "frame",
+           "children": [
+            {
+             "id": "pNwDp",
+             "type": "text",
+             "text": "Tab bar",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 500
+             },
+             "name": "Tab bar"
+            },
+            {
+             "id": "Ac6SA",
+             "type": "text",
+             "text": "The selected tab is one tone up. Labels are always visible.",
+             "style": {
+              "fontSize": 14,
+              "lineHeight": 1.45,
+              "fontWeight": 400,
+              "color": "var(--text-2)",
+              "maxWidth": 440
+             },
+             "name": "The selected tab is one…"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

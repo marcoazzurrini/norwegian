@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Play } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Shell } from '../components/Shell'
 import { SoundTask } from '../components/tasks/SoundTask'
 import { shuffle } from '../components/tasks/shared'
-import { Bar, Button, Card, Heading } from '../components/ui'
+import { Button, Card, PageTitle, Progress } from '../components/ui'
 import { sounds } from '../content'
 import type { SoundPair } from '../content/types'
 import { useApp } from '../engine/store'
@@ -39,7 +40,7 @@ function SoundsPage() {
         pair={drill.pairs[drill.at]}
         target={drill.targets[drill.at]}
         index={drill.at}
-        frame={{ label: `Sounds · ${drill.at + 1} of ${DRILL_LENGTH}`, progress: drill.at / DRILL_LENGTH, onClose: () => setDrill(null) }}
+        frame={{ block: 'sounds', title: 'Sounds', label: `${drill.at + 1} of ${DRILL_LENGTH}`, progress: drill.at / DRILL_LENGTH, onClose: () => setDrill(null) }}
         onDone={() => setDrill(drill.at + 1 < DRILL_LENGTH ? { ...drill, at: drill.at + 1 } : null)}
       />
     )
@@ -47,43 +48,50 @@ function SoundsPage() {
 
   return (
     <Shell>
-      <div className="flex max-w-[44rem] flex-col gap-5">
-        <Heading title="Sounds" sub="Train your ear on the sounds that English does not have." />
-        <div>
-          <Button onClick={() => start(sounds)}>Practise all sounds</Button>
+      <PageTitle title="Sounds" sub="Train your ear on the sounds that English does not have.">
+        <Button onClick={() => start(sounds)} className="w-full lg:w-auto">
+          <Play className="size-[1.125rem]" />
+          Practise all sounds
+        </Button>
+      </PageTitle>
+      <div className="flex flex-col gap-5">
+        <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
+          {groups.map(([id, g]) => {
+            const s = meta.sounds[id]
+            return (
+              <Card key={id}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-19 leading-[1.15] font-medium tracking-[-0.02em] lg:text-26">{g.title}</div>
+                    <div className="pt-1 text-14 text-fg2 lg:text-16">{g.hint}</div>
+                  </div>
+                  <Button variant="secondary" size="small" onClick={() => start(g.pairs)}>
+                    Practise
+                  </Button>
+                </div>
+                <div className="pt-3 text-16 font-medium lg:pt-5 lg:text-20">{g.pairs.map((p) => `${p.a.word} / ${p.b.word}`).join('  ·  ')}</div>
+                <div className="flex-1" />
+                {s && s.total > 0 ? (
+                  <div className="flex items-center gap-3.5 pt-3 lg:pt-5">
+                    <Progress value={s.right / s.total} className="flex-1" />
+                    <span className="shrink-0 text-14 leading-[1.45] text-fg2">
+                      {s.right} of {s.total} right
+                    </span>
+                  </div>
+                ) : (
+                  <div className="pt-3 text-14 leading-[1.45] text-fg3 lg:pt-5">Not practised yet</div>
+                )}
+              </Card>
+            )
+          })}
         </div>
-        <p className="m-0 text-muted">
+        <p className="m-0 text-14 text-fg3 lg:text-18">
           {voices.length === 0
             ? 'No Norwegian voice is installed on this device. Add one in the system settings.'
             : voices.length === 1
               ? `This device has one Norwegian voice (${voices[0].name}). Ear training works best with several voices.`
               : `This device has ${voices.length} Norwegian voices. The drill switches between them.`}
         </p>
-        {groups.map(([id, g]) => {
-          const s = meta.sounds[id]
-          return (
-            <Card key={id}>
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="text-xl font-bold">{g.title}</div>
-                  <div className="text-muted">{g.hint}</div>
-                </div>
-                <Button variant="secondary" className="shrink-0 !px-4 !py-2" onClick={() => start(g.pairs)}>
-                  Practise
-                </Button>
-              </div>
-              <div className="mt-3 text-lg">{g.pairs.map((p) => `${p.a.word} / ${p.b.word}`).join('   ·   ')}</div>
-              {s && s.total > 0 && (
-                <div className="mt-3 flex items-center gap-3.5">
-                  <Bar value={s.right / s.total} tone="moss" />
-                  <span className="shrink-0 text-muted">
-                    {s.right} of {s.total} right
-                  </span>
-                </div>
-              )}
-            </Card>
-          )
-        })}
       </div>
     </Shell>
   )

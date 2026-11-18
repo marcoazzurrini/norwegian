@@ -1,11 +1,12 @@
 // Sync and audio server. Static files are served by Cloudflare directly; this code handles /api/* and /audio/*.
-// It stores one learner's data in D1 and recorded audio in R2. The app signs in with Google (see auth.ts);
+// It stores one learner's data in D1 and recorded audio in R2, and asks a language model for short explanations (explain.ts). The app signs in with Google (see auth.ts);
 // the audio build script uses a secret key.
 import { getAuth, isAllowed, type AuthEnv } from './auth'
+import { explain, type ExplainEnv } from './explain'
 import { mergeMeta, type SyncedMeta } from '../src/sync/merge'
 import { LOG_PAGE, stampOf, type SyncRequest, type SyncResponse, type WireLog, type WireMem } from '../src/sync/protocol'
 
-interface Env extends AuthEnv {
+interface Env extends AuthEnv, ExplainEnv {
   AUDIO: R2Bucket
   /** For the audio build script. Set with `wrangler secret put SYNC_KEY`. */
   SYNC_KEY: string
@@ -184,6 +185,10 @@ export default {
 
     if (pathname === '/api/sync') return json(await sync(env.DB, body as SyncRequest))
     if (pathname === '/api/reset') return reset(env.DB, (body as { epoch: number }).epoch)
+    if (pathname === '/api/explain') {
+      const { status, ...rest } = await explain(env, body)
+      return json(rest, status)
+    }
     return json({ error: 'Not found' }, 404)
   },
 } satisfies ExportedHandler<Env>

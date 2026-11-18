@@ -1,23 +1,33 @@
 {
  "version": 2,
  "pages": [
-  "page-1",
+  "foundations",
+  "components",
+  "patterns",
   "desktop",
   "mobile"
  ],
  "variables": {
-  "paper": "#F5F2EC",
-  "surface": "#FFFFFF",
-  "ink": "#172126",
-  "muted": "#58656A",
-  "line": "#E2DCD0",
-  "fjord": "#1E5A62",
-  "fjord-soft": "#DCE9E8",
-  "lingon": "#B93A2B",
-  "lingon-soft": "#F6E1DC",
-  "moss": "#3F6B3A",
-  "moss-soft": "#E1ECDD",
-  "sun": "#8A5E06",
-  "sun-soft": "#F6EACD"
+  "line": "rgba(255,255,255,0.08)",
+  "raised": "#2D2D2D",
+  "line-strong": "rgba(255,255,255,0.16)",
+  "canvas": "#0A0A0A",
+  "base": "#161616",
+  "panel": "#212121",
+  "inset": "#1A1A1A",
+  "control": "#2A2A2A",
+  "text": "#F2F2F2",
+  "text-2": "#9B9B9B",
+  "text-3": "#6B6B6B",
+  "inverse": "#FFFFFF",
+  "on-inverse": "#0A0A0A",
+  "teal": "#4DB8A4",
+  "indigo": "#5B5FEF",
+  "violet": "#8B5CF6",
+  "blue": "#3B82F6",
+  "orange": "#F0752E",
+  "green": "#58C878",
+  "red": "#F2634B",
+  "link": "#7AA2F7"
  }
 }
