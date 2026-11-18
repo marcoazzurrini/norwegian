@@ -16,8 +16,8 @@ import {
 } from "../components/sound-drill";
 import type { DrillQuestion, SoundGroup } from "../components/sound-drill";
 import { SoundTask } from "../components/tasks/sound-task";
-import { useApp } from "../engine/store";
-import { useVoices } from "../lib/speech";
+import { useProgress } from "../learner";
+import { useVoices } from "../speech";
 
 const styles = stylex.create({
   start: {
@@ -148,7 +148,7 @@ interface Drill {
 }
 
 const SoundsPage = () => {
-  const { meta } = useApp();
+  const progress = useProgress();
   const voices = useVoices();
   const [drill, setDrill] = useState<Drill | null>(null);
   const groups = useMemo(() => soundGroups(sounds), []);
@@ -205,7 +205,7 @@ const SoundsPage = () => {
             <GroupCard
               key={group.id}
               group={group}
-              score={meta.sounds[group.id]}
+              score={progress.sounds[group.id]}
               onPractise={start}
             />
           ))}

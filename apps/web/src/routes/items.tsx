@@ -24,8 +24,8 @@ import { AppShell } from "../components/app-shell";
 import { itemGroups, memoryNote, splitAt } from "../components/item-list";
 import { ITEM_LOOK } from "../components/looks";
 import { hasArticle, soundOf } from "../components/tasks/items";
-import { getScheduler, useApp } from "../engine/store";
-import { speak } from "../lib/speech";
+import { useMemory, useScheduler } from "../learner";
+import { speak } from "../speech";
 
 const TONE_NAME = {
   1: "Melody 1: low, then rising",
@@ -275,7 +275,8 @@ interface ItemDetailProps {
 }
 
 const ItemDetail = ({ shown, now }: ItemDetailProps) => {
-  const { memory } = useApp();
+  const memory = useMemory();
+  const scheduler = useScheduler();
   const mem = memory.get(shown.id);
   const isPattern = shown.kind === "pattern";
 
@@ -283,8 +284,7 @@ const ItemDetail = ({ shown, now }: ItemDetailProps) => {
     .filter((sentence) => sentenceReady(sentence, memory))
     .slice(0, EXAMPLES);
 
-  const recall =
-    mem === undefined ? 0 : retrievability(getScheduler(), mem, now);
+  const recall = mem === undefined ? 0 : retrievability(scheduler, mem, now);
 
   const look = ITEM_LOOK[itemState(shown, memory)];
   const forms = shown.forms ?? [];
@@ -452,7 +452,7 @@ const Rows = ({ list, memory, selected, onPick }: RowsProps) => (
 );
 
 const ItemsPage = () => {
-  const { memory } = useApp();
+  const memory = useMemory();
   const { openedAt } = Route.useLoaderData();
   const desktop = useDesktop();
   const searchId = useId();

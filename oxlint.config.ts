@@ -5,14 +5,6 @@ import playwright from "ultracite/oxlint/playwright";
 import react from "ultracite/oxlint/react";
 import tanstack from "ultracite/oxlint/tanstack";
 
-// Code that the refactor has not reached yet (docs/refactor-plan.md).
-// Each step removes its folder from this list; the list is empty when the plan is done.
-const notYetRefactored = [
-  "apps/web/src/engine/**",
-  "apps/web/src/lib/**",
-  "apps/web/public/sw.js",
-];
-
 export default defineConfig({
   env: core.env,
   extends: [core, react, tanstack, playwright, antiSlop],
@@ -22,7 +14,6 @@ export default defineConfig({
     ".penna/**",
     "**/routeTree.gen.ts",
     "**/data/**",
-    ...notYetRefactored,
   ],
   options: { typeAware: true },
 });

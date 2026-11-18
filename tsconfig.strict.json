@@ -1,9 +1,0 @@
-{
-  // For code the refactor has reached. tsconfig.base.json is for the rest, and goes away at the end.
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "noPropertyAccessFromIndexSignature": false
-  }
-}

@@ -1,3 +1,4 @@
+import type { SyncStatus } from "@norsk/learner";
 import { Button, ListCard, PageTitle, Segmented, effects } from "@norsk/ui";
 import { color, radius, text } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
@@ -7,16 +8,8 @@ import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 import { AppShell } from "../components/app-shell";
-import { exportData, updateSettings, useApp } from "../engine/store";
-import {
-  restoreBackup,
-  signOut,
-  startOver,
-  syncNow,
-  useSync,
-} from "../engine/sync";
-import type { SyncStatus } from "../engine/sync";
-import { speak, useVoices } from "../lib/speech";
+import { learner, useMemory, useSettings, useSyncStatus } from "../learner";
+import { speak, useVoices } from "../speech";
 
 const LENGTHS = [
   [5, "5 min"],
@@ -168,7 +161,10 @@ const syncLine = ({ error, busy, lastOkAt }: SyncStatus): string => {
 
 /** Hands the learner a file with all their progress. */
 const saveBackup = async () => {
-  const backup = new Blob([await exportData()], { type: "application/json" });
+  const backup = new Blob([await learner.exportBackup()], {
+    type: "application/json",
+  });
+
   const link = document.createElement("a");
 
   link.href = URL.createObjectURL(backup);
@@ -180,7 +176,7 @@ const saveBackup = async () => {
 /** Replaces all progress with a backup file. Returns what to tell the learner. */
 const restoreFrom = async (backup: File): Promise<string> => {
   try {
-    await restoreBackup(await backup.text());
+    await learner.restoreBackup(await backup.text());
 
     return "Backup restored.";
   } catch (error) {
@@ -192,19 +188,19 @@ const restoreFrom = async (backup: File): Promise<string> => {
 
 /** Saves the speaking speed and lets the learner hear it. */
 const changeRate = async (rate: number) => {
-  await updateSettings({ rate });
+  await learner.updateSettings({ rate });
   await speak("Hei! Hvordan går det?");
 };
 
 const SettingsPage = () => {
-  const { meta, memory } = useApp();
-  const { settings } = meta;
+  const memory = useMemory();
+  const settings = useSettings();
   const voices = useVoices();
   const [firstVoice] = voices;
   const fileInput = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
   const [confirmReset, setConfirmReset] = useState(false);
-  const sync = useSync();
+  const sync = useSyncStatus();
 
   const restore = async (backup: File | undefined) => {
     if (backup !== undefined) {
@@ -213,7 +209,7 @@ const SettingsPage = () => {
   };
 
   const deleteEverything = async () => {
-    await startOver();
+    await learner.startOver();
     setConfirmReset(false);
     setMessage("All progress deleted.");
   };
@@ -232,7 +228,7 @@ const SettingsPage = () => {
               value={settings.minutes}
               options={LENGTHS}
               onPick={(minutes) => {
-                updateSettings({ minutes }).catch(reportError);
+                learner.updateSettings({ minutes }).catch(reportError);
               }}
             />
           </Row>
@@ -245,7 +241,7 @@ const SettingsPage = () => {
               value={settings.desiredRetention}
               options={TARGETS}
               onPick={(desiredRetention) => {
-                updateSettings({ desiredRetention }).catch(reportError);
+                learner.updateSettings({ desiredRetention }).catch(reportError);
               }}
             />
           </Row>
@@ -255,7 +251,7 @@ const SettingsPage = () => {
               value={settings.textScale}
               options={SIZES}
               onPick={(textScale) => {
-                updateSettings({ textScale }).catch(reportError);
+                learner.updateSettings({ textScale }).catch(reportError);
               }}
             />
           </Row>
@@ -275,9 +271,9 @@ const SettingsPage = () => {
                 <select
                   value={settings.voice ?? firstVoice.voiceURI}
                   onChange={(event) => {
-                    updateSettings({ voice: event.target.value }).catch(
-                      reportError
-                    );
+                    learner
+                      .updateSettings({ voice: event.target.value })
+                      .catch(reportError);
                   }}
                   aria-label="Voice"
                   {...stylex.props(effects.press, styles.voiceSelect)}
@@ -315,7 +311,7 @@ const SettingsPage = () => {
                   variant="secondary"
                   size="small"
                   onClick={() => {
-                    syncNow().catch(reportError);
+                    learner.syncNow().catch(reportError);
                   }}
                 >
                   Sync now
@@ -324,7 +320,7 @@ const SettingsPage = () => {
                   variant="secondary"
                   size="small"
                   onClick={() => {
-                    signOut().catch(reportError);
+                    learner.signOut().catch(reportError);
                   }}
                 >
                   Sign out

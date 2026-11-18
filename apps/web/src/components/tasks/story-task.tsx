@@ -30,8 +30,8 @@ import { Play, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
-import { useApp } from "../../engine/store";
-import { speak, stopSpeaking } from "../../lib/speech";
+import { useMemory } from "../../learner";
+import { speak, stopSpeaking } from "../../speech";
 import { say } from "../say";
 import type { Frame } from "./frame";
 import { hasArticle } from "./items";
@@ -291,7 +291,7 @@ interface MeaningProps {
 
 /** What a tapped word means, and how well the learner knows it. */
 const Meaning = ({ meaning }: MeaningProps) => {
-  const { memory } = useApp();
+  const memory = useMemory();
   const known = meaning.item;
   const look = known === null ? null : KNOWN[itemState(known, memory)];
 

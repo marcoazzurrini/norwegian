@@ -5,7 +5,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { BookOpen, Ear, Library, Sun, Waypoints } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { useSync } from "../engine/sync";
+import { useSyncStatus } from "../learner";
 
 const DESTINATIONS: readonly ShellDestination[] = [
   { icon: Sun, label: "Today", to: "/" },
@@ -35,7 +35,7 @@ export const AppShell = ({ children, width, fill }: AppShellProps) => {
     select: (state) => state.location.pathname,
   });
 
-  const { account } = useSync();
+  const { account } = useSyncStatus();
 
   return (
     <Shell

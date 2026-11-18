@@ -9,8 +9,7 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { SignInScreen } from "../components/sign-in-screen";
-import { load, useApp } from "../engine/store";
-import { startSync, useSync } from "../engine/sync";
+import { learner, useReady, useSettings, useSyncStatus } from "../learner";
 
 import baseCss from "@norsk/ui/base.css?url";
 
@@ -41,18 +40,14 @@ const RootDocument = ({ children }: RootDocumentProps) => (
   </html>
 );
 
-const startApp = async () => {
-  await load();
-  await startSync();
-};
-
 /** Loads the learner's data from this device before any page renders, and shows the sign-in screen until the learner is signed in. */
 const App = () => {
-  const { ready, meta } = useApp();
-  const sync = useSync();
+  const ready = useReady();
+  const { textScale } = useSettings();
+  const sync = useSyncStatus();
 
   useEffect(() => {
-    startApp().catch(reportError);
+    learner.start().catch(reportError);
 
     if ("serviceWorker" in navigator && import.meta.env.PROD) {
       navigator.serviceWorker.register("/sw.js").catch(reportError);
@@ -62,9 +57,9 @@ const App = () => {
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--text-scale",
-      String(meta.settings.textScale)
+      String(textScale)
     );
-  }, [meta.settings.textScale]);
+  }, [textScale]);
 
   // `bun run dev` serves the app without the sign-in server, so it skips the sign-in screen.
   const open = sync.linked || import.meta.env.DEV;

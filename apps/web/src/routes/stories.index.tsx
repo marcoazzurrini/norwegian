@@ -8,7 +8,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 
 import { AppShell } from "../components/app-shell";
-import { useApp } from "../engine/store";
+import { useMemory, useProgress } from "../learner";
 
 const styles = stylex.create({
   columns: {
@@ -118,7 +118,8 @@ const StoryRow = ({ story, ready, read }: StoryRowProps) => {
 };
 
 const StoriesPage = () => {
-  const { memory, meta } = useApp();
+  const memory = useMemory();
+  const { storiesDone } = useProgress();
   const half = Math.ceil(stories.length / 2);
 
   const rows = (list: Story[]) =>
@@ -127,7 +128,7 @@ const StoriesPage = () => {
         key={story.id}
         story={story}
         ready={storyReady(story, memory)}
-        read={meta.storiesDone.includes(story.id)}
+        read={storiesDone.includes(story.id)}
       />
     ));
 

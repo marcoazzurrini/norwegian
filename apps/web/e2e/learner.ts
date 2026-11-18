@@ -67,7 +67,7 @@ export const asked = async <Question extends string>(
     )
   );
 
-  const found = questions.find((_, at) => shown[at]);
+  const found = questions.find((_, at) => shown[at] === true);
 
   if (found === undefined) {
     throw new Error(`The page asks none of: ${questions.join(" / ")}`);

@@ -1,0 +1,10 @@
+{
+  // The service worker runs outside any page, so it gets the worker's globals instead of the page's.
+  "extends": "../../../tsconfig.base.json",
+  "include": ["sw.ts"],
+  "compilerOptions": {
+    "lib": ["ES2023", "WebWorker"],
+    // The file has no imports or exports; this keeps its names out of the global scope all the same.
+    "moduleDetection": "force"
+  }
+}

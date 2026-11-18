@@ -104,7 +104,8 @@ const pinPage = ({ random, voices }: { random: number; voices: number }) => {
 
   Object.defineProperty(window, "SpeechSynthesisUtterance", {
     configurable: true,
-    value: class {
+    // A real utterance takes listeners for its end. This one never ends.
+    value: class extends EventTarget {
       text: string;
       lang = "";
       rate = 1;
@@ -113,6 +114,7 @@ const pinPage = ({ random, voices }: { random: number; voices: number }) => {
       onerror = null;
 
       constructor(text: string) {
+        super();
         this.text = text;
       }
     },

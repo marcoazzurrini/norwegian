@@ -19,8 +19,8 @@ import * as stylex from "@stylexjs/stylex";
 import { Check, CircleAlert, X } from "lucide-react";
 import { useState } from "react";
 
-import { getState } from "../../engine/store";
-import { useExplain } from "../../lib/explain";
+import { useExplain } from "../../explain";
+import { learner } from "../../learner";
 import { say } from "../say";
 import type { Frame } from "./frame";
 import { itemName } from "./items";
@@ -326,7 +326,7 @@ export const SentenceTask = ({
 }: SentenceTaskProps) => {
   const [state, send] = useTask(
     sentenceTask,
-    () => ({ known: new Set(getState().memory.keys()), sentence }),
+    () => ({ known: new Set(learner.memory().keys()), sentence }),
     onDone
   );
 

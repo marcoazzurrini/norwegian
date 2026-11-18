@@ -21,7 +21,7 @@ import * as stylex from "@stylexjs/stylex";
 import { Check, X } from "lucide-react";
 import { useEffect } from "react";
 
-import { useVoices } from "../../lib/speech";
+import { useVoices } from "../../speech";
 import type { Frame } from "./frame";
 import { taskStyles } from "./task-styles";
 import { useTask } from "./use-task";

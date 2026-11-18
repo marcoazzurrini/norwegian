@@ -38,8 +38,8 @@ export const WireCardSchema = v.looseObject({
 
 export type WireCard = v.InferOutput<typeof WireCardSchema>;
 
-/** What the learner remembers of one item. */
-export const WireMemSchema = v.object({
+/** What the learner remembers of one item. Fields this version does not know are kept. */
+export const WireMemSchema = v.looseObject({
   card: WireCardSchema,
   id: v.pipe(v.string(), v.minLength(1), v.maxLength(MAX_ID)),
   /** When the item was first learned, in milliseconds. */
@@ -48,8 +48,8 @@ export const WireMemSchema = v.object({
 
 export type WireMem = v.InferOutput<typeof WireMemSchema>;
 
-/** One review, or the first learning of an item ("new"). */
-export const WireLogSchema = v.object({
+/** One review, or the first learning of an item ("new"). Fields this version does not know are kept. */
+export const WireLogSchema = v.looseObject({
   at: v.number(),
   /** True if the item was recalled inside a sentence. */
   carrier: v.boolean(),

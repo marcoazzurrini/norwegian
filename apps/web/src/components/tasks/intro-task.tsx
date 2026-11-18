@@ -28,7 +28,7 @@ import * as stylex from "@stylexjs/stylex";
 import { Tag as TagIcon } from "lucide-react";
 import { useState } from "react";
 
-import { getState } from "../../engine/store";
+import { learner } from "../../learner";
 import { say } from "../say";
 import { cueKind, introHint, wordFact } from "./card-text";
 import type { Frame } from "./frame";
@@ -204,7 +204,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
 
   const [state, send] = useTask(
     introTask,
-    () => ({ items, known: new Set(getState().memory.keys()) }),
+    () => ({ items, known: new Set(learner.memory().keys()) }),
     onDone
   );
 

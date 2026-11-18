@@ -53,7 +53,7 @@ const whichOf = async <Text extends string>(
     )
   );
 
-  const found = texts.find((_, at) => shown[at]);
+  const found = texts.find((_, at) => shown[at] === true);
 
   if (found !== undefined) {
     return found;

@@ -16,7 +16,7 @@ import { color, radius, text, tracking } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
 import { ArrowRight } from "lucide-react";
 
-import { getState } from "../../engine/store";
+import { learner } from "../../learner";
 import { say } from "../say";
 import { contrast, spokenForm } from "./contrast";
 import type { Frame } from "./frame";
@@ -202,7 +202,7 @@ export const PatternTask = ({
 }: PatternTaskProps) => {
   const [state, send] = useTask(
     patternTask,
-    () => ({ item, known: new Set(getState().memory.keys()), practice }),
+    () => ({ item, known: new Set(learner.memory().keys()), practice }),
     onDone
   );
 

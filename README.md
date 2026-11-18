@@ -11,30 +11,34 @@ bun install
 bun run dev        # http://localhost:3000
 ```
 
-Other commands:
+Other commands, all run from the repository root:
 
-| Command             | What it does                            |
-| ------------------- | --------------------------------------- |
-| `bun run build`     | Builds static files into `dist/client`  |
-| `bun run preview`   | Serves the built app                    |
-| `bun run test`      | Runs the learning-engine tests          |
-| `bun run typecheck` | Checks types                            |
-| `bun run content`   | Rebuilds the curriculum from `content/` |
+| Command             | What it does                                          |
+| ------------------- | ----------------------------------------------------- |
+| `bun run build`     | Builds the app into `apps/web/dist/client`            |
+| `bun run test`      | Runs the tests of every package                       |
+| `bun run test:e2e`  | Runs the end-to-end tests in a browser                |
+| `bun run typecheck` | Checks types                                          |
+| `bun run lint`      | Checks formatting and lint rules                      |
+| `bun run fix`       | Formats and applies the safe lint fixes               |
+| `bun run content`   | Rebuilds the curriculum from `packages/content/text/` |
+
+The tests of `packages/ui` and the end-to-end tests need a browser: run `bunx playwright install chromium` once.
 
 ## Deploy
 
-The app runs at https://norwegian.marcoazzurrini.com as a Cloudflare Worker. Static files come from `dist/client`; the Worker in `worker/` answers `/api/*` and stores progress in a D1 database.
+The app runs at https://norwegian.marcoazzurrini.com as a Cloudflare Worker. Static files come from `apps/web/dist/client`; the Worker in `apps/api/` answers `/api/*` and stores progress in a D1 database.
 
 Every push to `main` runs the checks in `.github/workflows/ci.yml`, then applies new database migrations and publishes. The workflow uses the GitHub secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 
 To publish by hand instead:
 
 ```bash
-bun run deploy                                    # build and publish
-bunx wrangler d1 migrations apply norsk --remote  # only after adding a file to migrations/
+bun run deploy                          # build and publish
+bun run --filter @norsk/api migrate     # only after adding a file to apps/api/migrations/
 ```
 
-To try the server on your own machine, put `SYNC_KEY`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=http://localhost:8787`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `ALLOWED_EMAILS` in `.dev.vars`, then run `bun run build`, `bunx wrangler d1 migrations apply norsk --local` and `bunx wrangler dev`. `bun run dev` serves the app without the sync server and skips the sign-in screen.
+To try the server on your own machine, put `SYNC_KEY`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=http://localhost:8787`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `ALLOWED_EMAILS` in `apps/api/.dev.vars`, then run `bun run build`, `bun run --filter @norsk/api migrate:local` and `bun run --filter @norsk/api dev`. `bun run dev` serves the app without the sync server and skips the sign-in screen.
 
 ## Install it as an app
 
@@ -48,17 +52,21 @@ After the first visit it works offline.
 
 ## Where things are
 
+How the code is organised, and why, is in [docs/architecture.md](docs/architecture.md).
+
 | Path | Contents |
 | --- | --- |
-| `content/` | The curriculum as plain text: units, lessons, sentences, stories, sound pairs. Format in `content/README.md`. |
-| `scripts/build-content.ts` | Checks the curriculum and builds `src/content/curriculum.json`. |
-| `src/engine/` | Memory model, grading, task choice and session flow. No UI. |
-| `src/components/tasks/` | One component per kind of task. |
-| `src/routes/` | Pages. |
-| `src/sync/` | Sync rules shared by the app and the server. |
-| `worker/`, `migrations/` | The sync server and its database tables. |
-| `.penna/` | The design system (Foundations, Components, Patterns) and the screen designs for desktop and phone. The app's styles in `src/styles.css` and `src/components/ui.tsx` follow it. |
-| `data/raw/` | Downloaded language data. Not in git. See below. |
+| `apps/web/` | The app: pages in `src/routes/`, one component per kind of task in `src/components/tasks/`. |
+| `apps/api/` | The server (a Cloudflare Worker) and the database migrations. |
+| `packages/content/` | The curriculum. `text/` holds it as plain text (format in `text/README.md`); `scripts/build-content.ts` checks it and builds `src/curriculum.json`. |
+| `packages/engine/` | Memory model, grading, task choice and session flow. No UI. |
+| `packages/learner/` | The learner's data on a device, and sync. |
+| `packages/protocol/` | The messages between the app and the server. |
+| `packages/db/`, `packages/auth/` | The database and sign-in, used by the server. |
+| `packages/speech/` | Playing Norwegian audio. |
+| `packages/ui/` | The component library. It follows the design in `.penna/`. |
+| `.penna/` | The design system (Foundations, Components, Patterns) and the screen designs for desktop and phone. |
+| `packages/content/data/raw/` | Downloaded language data. Not in git. See below. |
 
 ## Recorded audio
 
@@ -72,13 +80,13 @@ bun run audio build --dry             # count what would be recorded
 bun run audio build                   # record what is missing, upload it, switch the app over
 ```
 
-This needs `ELEVENLABS_API_KEY` in `.env` and the sync key in `.sync-key`. Recordings are kept in `data/audio`, so a text is never paid for twice. After `build`, commit `content/audio.json` and `src/content/audio.json` and push. Run `build` again after the curriculum changes.
+This needs `ELEVENLABS_API_KEY` in `packages/content/.env` and the sync key in `packages/content/.sync-key`. Recordings are kept in `packages/content/data/audio`, so a text is never paid for twice. After `build`, commit `packages/content/text/audio.json` and `packages/content/src/audio.json` and push. Run `build` again after the curriculum changes.
 
 With several voices, a text keeps one voice for a day and changes voice over time.
 
 ## Language data
 
-`bun run content` needs three downloads in `data/raw/`. They are only needed to rebuild the curriculum; the built `curriculum.json` is in the repository.
+`bun run content` needs three downloads in `packages/content/data/raw/`. They are only needed to rebuild the curriculum; the built `curriculum.json` is in the repository.
 
 | Folder | Source | Licence |
 | --- | --- | --- |
@@ -90,13 +98,13 @@ With several voices, a text keeps one voice for a day and changes voice over tim
 
 The app opens on a sign-in screen and cannot be used until you press **Sign in with Google**. Progress is stored in the browser on each device (IndexedDB), so a device that has signed in once works offline, and it is shared between all signed-in devices. Sign out in Settings. On an iPhone, sign in inside the installed app, not in Safari: the two keep separate data. A device stays signed in as long as it is used at least once every six months.
 
-Sign-in is handled by [Better Auth](https://better-auth.com) in the Worker (`worker/auth.ts`). Only the addresses in the Worker secret `ALLOWED_EMAILS` (separated by commas) can sign in. The other secrets are `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; set each with `bunx wrangler secret put NAME`. The Google OAuth client lives in the Google Cloud project "Norsk" and must list `https://norwegian.marcoazzurrini.com/api/auth/callback/google` as a redirect URI.
+Sign-in is handled by [Better Auth](https://better-auth.com) in the Worker (`packages/auth`). Only the addresses in the Worker secret `ALLOWED_EMAILS` (separated by commas) can sign in. The other secrets are `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; set each with `bunx wrangler secret put NAME`. The Google OAuth client lives in the Google Cloud project "Norsk" and must list `https://norwegian.marcoazzurrini.com/api/auth/callback/google` as a redirect URI.
 
 ## Explanations
 
-The app decides by itself whether an answer is right. After a wrong sentence, it also asks a language model for a short hint or explanation (`worker/explain.ts`, model Claude Haiku through [OpenRouter](https://openrouter.ai)). The text is labelled "written by AI" in the app and can be wrong. It needs a connection and the Worker secret `OPENROUTER_API_KEY`; without either, the app works as before, without the extra text.
+The app decides by itself whether an answer is right. After a wrong sentence, it also asks a language model for a short hint or explanation (`apps/api/src/explain.ts`, model Claude Haiku through [OpenRouter](https://openrouter.ai)). The text is labelled "written by AI" in the app and can be wrong. It needs a connection and the Worker secret `OPENROUTER_API_KEY`; without either, the app works as before, without the extra text.
 
-`SYNC_KEY` is now used only by the audio build script. A copy is in `.sync-key`, which is not in git.
+`SYNC_KEY` is now used only by the audio build script. A copy is in `packages/content/.sync-key`, which is not in git.
 
 How sync decides:
 

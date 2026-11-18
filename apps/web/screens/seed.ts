@@ -3,8 +3,8 @@
 import { lessons } from "@norsk/content";
 import { createScheduler, introduce, review } from "@norsk/engine";
 import type { Mem } from "@norsk/engine";
+import type { Progress, Settings } from "@norsk/learner";
 
-import type { Meta, SyncState } from "../src/engine/store";
 import { NOW } from "./learner-data";
 import type { Seed } from "./learner-data";
 
@@ -42,7 +42,14 @@ const learned = (lessonCount: number): Mem[] =>
     .slice(0, lessonCount)
     .flatMap((lesson) => lesson.items.map((id) => practised(id, 30, 0)));
 
-const settings = (textScale: number) => ({
+/** The row of settings and counters, as the learner keeps it on the device. */
+interface Meta extends Progress {
+  settings: Settings;
+  /** When the session length, recall target or chosen lesson was last changed. */
+  prefsAt: number;
+}
+
+const settings = (textScale: number): Settings => ({
   desiredRetention: 0.9,
   minutes: 15,
   rate: 0.9,
@@ -63,7 +70,7 @@ const meta = (textScale: number, patch: Partial<Meta> = {}): Meta => ({
 });
 
 /** A device that signed in before. A production build shows nothing else until the learner is signed in. */
-export const signedIn: SyncState = {
+export const signedIn = {
   account: "kari.nordmann@example.com",
   epoch: 1,
   lastOkAt: null,

@@ -666,6 +666,46 @@ describe("signing in and out", () => {
   });
 });
 
+describe("what is sent", () => {
+  // The server keeps every field it is sent, so a field that belongs to one device must not travel.
+  test("holds no field that this device adds to its own rows", async () => {
+    const world = createWorld();
+    const phone = world.device("phone");
+    const learner = await phone.launch();
+
+    await learner.teach(["w:hus"]);
+    await learner.syncNow();
+    world.clock.now += DAY;
+    await learner.applyReviews([{ grade: "good", id: "w:hus" }]);
+    await learner.syncNow();
+
+    const sent = world.server.syncs();
+    const mems = sent.flatMap((request) => request.memory);
+    const entries = sent.flatMap((request) => request.log);
+
+    expect(mems.length).toBeGreaterThan(0);
+    expect(entries.length).toBeGreaterThan(0);
+
+    for (const mem of mems) {
+      expect(Object.keys(mem).toSorted()).toEqual([
+        "card",
+        "id",
+        "introducedAt",
+      ]);
+    }
+
+    for (const entry of entries) {
+      expect(Object.keys(entry).toSorted()).toEqual([
+        "at",
+        "carrier",
+        "grade",
+        "id",
+        "uid",
+      ]);
+    }
+  });
+});
+
 /** The text of a backup file with `count` log entries for one item. */
 const longBackup = (count: number): string =>
   JSON.stringify({

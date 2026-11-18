@@ -268,6 +268,27 @@ describe("/api/sync", () => {
     });
   });
 
+  test("fields a newer version of the app added come back as they were sent", async () => {
+    const cookie = await signIn();
+    const newerEntry = { ...logEntry, future: { deep: [1, 2] } };
+
+    const newerMemory = {
+      ...memory,
+      card: { ...memory.card, future: 1 },
+      future: "kept",
+    };
+
+    await post(
+      "/api/sync",
+      { ...EMPTY_SYNC, log: [newerEntry], memory: [newerMemory] },
+      cookie
+    );
+
+    expect(await result(post("/api/sync", EMPTY_SYNC, cookie))).toMatchObject({
+      body: { log: [newerEntry], memory: [newerMemory] },
+    });
+  });
+
   test("an item that does not fit is left out; the rest is stored", async () => {
     const cookie = await signIn();
     const warned = vi.spyOn(console, "warn").mockImplementation(() => {});

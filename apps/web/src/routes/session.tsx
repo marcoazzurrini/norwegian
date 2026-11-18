@@ -13,8 +13,8 @@ import {
   summaryOf,
 } from "../components/session-summary";
 import { TaskScreen } from "../components/tasks/task-screen";
-import { addStudyTime, getState, updateMeta } from "../engine/store";
-import { stopSpeaking } from "../lib/speech";
+import { learner } from "../learner";
+import { stopSpeaking } from "../speech";
 
 const BLOCK_TITLE = {
   new: "New",
@@ -91,7 +91,7 @@ interface DoneProps {
 /** The end of a session: what was done in it. */
 const Done = ({ session, onClose }: DoneProps) => {
   const { spent, closing, tiles, taughtNew } = summaryOf(session);
-  const days = getState().meta.days.length;
+  const days = learner.progress().days.length;
 
   return (
     <Focus
@@ -139,13 +139,14 @@ const Done = ({ session, onClose }: DoneProps) => {
 
 /** A lesson picked on the Map stops being "chosen" once it is finished. */
 const forgetFinishedChoice = async () => {
-  const { memory, meta } = getState();
+  const { chosenLesson } = learner.progress();
+  const chosen = chosenLesson === null ? undefined : lessons[chosenLesson];
 
-  const chosen =
-    meta.chosenLesson === null ? undefined : lessons[meta.chosenLesson];
-
-  if (chosen !== undefined && lessonState(chosen, memory) === "done") {
-    await updateMeta({ chosenLesson: null });
+  if (
+    chosen !== undefined &&
+    lessonState(chosen, learner.memory()) === "done"
+  ) {
+    await learner.chooseLesson(null);
   }
 };
 
@@ -160,14 +161,14 @@ interface Run {
 
 /** Asks the session for its next task, given what the learner knows at this moment. */
 const nextRun = (session: Session, count: number, now: number): Run => {
-  const { memory, meta } = getState();
+  const { chosenLesson, sounds, storiesDone } = learner.progress();
 
   const task = session.next(
     {
-      chosenLesson: meta.chosenLesson,
-      memory,
-      soundStats: meta.sounds,
-      storiesDone: new Set(meta.storiesDone),
+      chosenLesson,
+      memory: learner.memory(),
+      soundStats: sounds,
+      storiesDone: new Set(storiesDone),
     },
     now
   );
@@ -204,7 +205,7 @@ const SessionPage = () => {
     // The session decides how much of the time counts and keeps the statistics.
     const counted = session.complete(task, result, Date.now() - run.startedAt);
 
-    await addStudyTime(counted);
+    await learner.addStudyTime(counted);
     await forgetFinishedChoice();
     setRun(nextRun(session, run.count + 1, Date.now()));
   };

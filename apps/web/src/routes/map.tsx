@@ -23,7 +23,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AppShell } from "../components/app-shell";
 import { ITEM_LOOK, LESSON_LOOK } from "../components/looks";
 import { MAP_SIZES, layoutMap } from "../components/map-layout";
-import { updateMeta, useApp } from "../engine/store";
+import { learner, useMemory, useProgress } from "../learner";
 
 const STATES = ["done", "started", "ready", "locked"] as const;
 
@@ -329,7 +329,7 @@ const Detail = ({ lesson, memory, chosen }: DetailProps) => {
             <Button
               style={styles.full}
               onClick={() => {
-                updateMeta({ chosenLesson: lesson.index }).catch(reportError);
+                learner.chooseLesson(lesson.index).catch(reportError);
               }}
             >
               Learn this next
@@ -367,7 +367,8 @@ const centreChosen = (frame: HTMLElement | null) => {
 };
 
 const MapPage = () => {
-  const { memory, meta } = useApp();
+  const memory = useMemory();
+  const { chosenLesson } = useProgress();
   const desktop = useDesktop();
   const size = desktop ? MAP_SIZES.desktop : MAP_SIZES.phone;
 
@@ -377,7 +378,7 @@ const MapPage = () => {
   );
 
   const [selected, setSelected] = useState(
-    () => nextLesson(memory, meta.chosenLesson)?.index ?? 0
+    () => nextLesson(memory, chosenLesson)?.index ?? 0
   );
 
   const lesson = lessons[selected];
@@ -470,11 +471,7 @@ const MapPage = () => {
         </div>
         <div {...stylex.props(styles.side)}>
           {lesson === undefined ? null : (
-            <Detail
-              lesson={lesson}
-              memory={memory}
-              chosen={meta.chosenLesson}
-            />
+            <Detail lesson={lesson} memory={memory} chosen={chosenLesson} />
           )}
         </div>
       </div>

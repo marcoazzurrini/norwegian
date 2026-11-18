@@ -14,7 +14,13 @@ import { useMemo } from "react";
 
 import { AppShell } from "../components/app-shell";
 import { HOURS_TO_A1, greetingAt, todayOf } from "../components/today-plan";
-import { getScheduler, updateSettings, useApp } from "../engine/store";
+import {
+  learner,
+  useMemory,
+  useProgress,
+  useScheduler,
+  useSettings,
+} from "../learner";
 
 const LENGTHS = [5, 15, 25, 40] as const;
 
@@ -173,22 +179,31 @@ const Stat = ({ value, label }: StatProps) => (
 );
 
 const Today = () => {
-  const { memory, meta } = useApp();
-  const { minutes } = meta.settings;
+  const memory = useMemory();
+  const progress = useProgress();
+  const scheduler = useScheduler();
+  const { minutes } = useSettings();
   const { openedAt: now } = Route.useLoaderData();
   const greeting = greetingAt(new Date(now).getHours());
 
   const view = useMemo(
     () =>
       todayOf({
-        chosenLesson: meta.chosenLesson,
+        chosenLesson: progress.chosenLesson,
         memory,
         now,
-        scheduler: getScheduler(),
-        storiesDone: meta.storiesDone,
-        totalMs: meta.totalMs,
+        scheduler,
+        storiesDone: progress.storiesDone,
+        totalMs: progress.totalMs,
       }),
-    [memory, meta.chosenLesson, meta.storiesDone, meta.totalMs, now]
+    [
+      memory,
+      now,
+      progress.chosenLesson,
+      progress.storiesDone,
+      progress.totalMs,
+      scheduler,
+    ]
   );
 
   const extras = minutes >= MIN_MINUTES_FOR_EXTRAS;
@@ -197,7 +212,7 @@ const Today = () => {
     <AppShell>
       <div {...stylex.props(styles.hero)}>
         <Chip strong={`${greeting.english}.`}>
-          {meta.days.length > 0 ? `Day ${meta.days.length}` : undefined}
+          {progress.days.length > 0 ? `Day ${progress.days.length}` : undefined}
         </Chip>
         <h1 {...stylex.props(styles.greeting)}>{greeting.norwegian}</h1>
         <p {...stylex.props(styles.summary)}>{view.summary}</p>
@@ -216,7 +231,7 @@ const Today = () => {
             value={minutes}
             options={LENGTH_OPTIONS}
             onPick={(picked) => {
-              updateSettings({ minutes: picked }).catch(reportError);
+              learner.updateSettings({ minutes: picked }).catch(reportError);
             }}
           />
         </div>

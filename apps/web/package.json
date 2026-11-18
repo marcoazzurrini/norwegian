@@ -4,27 +4,29 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000",
-    "build": "vite build && cp dist/client/_shell.html dist/client/index.html",
+    "build": "vite build && cp dist/client/_shell.html dist/client/index.html && bun run build:sw",
+    "build:sw": "bun build sw/sw.ts --outfile dist/client/sw.js --target browser",
     "preview": "vite preview",
     "test": "bun test src",
     "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p sw"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
+    "@norsk/auth": "workspace:*",
     "@norsk/content": "workspace:*",
     "@norsk/engine": "workspace:*",
+    "@norsk/learner": "workspace:*",
     "@norsk/protocol": "workspace:*",
+    "@norsk/speech": "workspace:*",
     "@norsk/ui": "workspace:*",
     "@stylexjs/stylex": "^0.19.2",
     "@tanstack/react-router": "1.170.46",
     "@tanstack/react-start": "1.169.5",
-    "better-auth": "catalog:",
-    "idb": "^8.0.4",
     "lucide-react": "^1.74.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "ts-fsrs": "^6.0.0"
+    "valibot": "^1.5.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",

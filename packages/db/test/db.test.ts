@@ -98,6 +98,19 @@ describe("a first sync", () => {
 
     expect(held.memory).toEqual([sent]);
   });
+
+  test("fields a newer version of the app added are kept", async () => {
+    const sentMem = { ...mem("a", 1000), future: "kept" };
+    const sentEntry = { ...entry("u1"), future: { deep: [1, 2] } };
+
+    await db.exchange(request({ log: [sentEntry], memory: [sentMem] }));
+
+    const held = await everything();
+
+    expect(held.memory).toEqual([sentMem]);
+    expect(held.log).toEqual([sentEntry]);
+    expect(unreadable).toEqual([]);
+  });
 });
 
 describe("memories", () => {

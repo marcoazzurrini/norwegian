@@ -7,7 +7,7 @@ import {
   WireLogSchema,
   WireMemSchema,
 } from "@norsk/protocol";
-import type { WireLog, WireMem } from "@norsk/protocol";
+import type { WireMem } from "@norsk/protocol";
 import * as v from "valibot";
 
 import type { Settings } from "./types";
@@ -93,8 +93,17 @@ export const MemSchema = v.object({
   introducedAt: v.number(),
 });
 
+/**
+ * A memory and a log entry as this device takes them from the server. The server keeps fields
+ * that a newer version of the app added; this version drops them here, so nothing the server
+ * sends can pass for one of the fields this device adds to its own rows (`seq`, `local`).
+ */
+export const RemoteMemSchema = v.object(WireMemSchema.entries);
+
+export const RemoteLogSchema = v.object(WireLogSchema.entries);
+
 /** One review, or the first learning of an item. */
-export type LogEntry = WireLog;
+export type LogEntry = v.InferOutput<typeof RemoteLogSchema>;
 
 const EntrySchema = v.object({
   ...WireLogSchema.entries,

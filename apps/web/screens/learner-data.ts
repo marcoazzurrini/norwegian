@@ -6,7 +6,7 @@ export const NOW = new Date("2026-03-10T09:30:00+01:00").getTime();
 
 /**
  * What is written into the browser's database (named `norsk`) before the app starts: plain rows
- * in the layout of `src/engine/store.ts`. A date may be text; the app reads it as a date when it loads.
+ * in the layout that `@norsk/learner` keeps. A date may be text; the app reads it as a date when it loads.
  */
 export interface Seed {
   /** Rows of the `memory` store, one per learned item. */

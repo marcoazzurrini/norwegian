@@ -6,14 +6,13 @@ import {
   ROUTES,
   SyncedMetaSchema,
   SyncResponseSchema,
-  WireLogSchema,
-  WireMemSchema,
 } from "@norsk/protocol";
 import type { ResetRequest, SyncRequest } from "@norsk/protocol";
 import { Store } from "@tanstack/store";
 import * as v from "valibot";
 
 import type { Data, RemotePage } from "./data";
+import { RemoteLogSchema, RemoteMemSchema } from "./records";
 import type { SyncRecord } from "./records";
 import type { Account, Fetch, Host, SyncStatus } from "./types";
 
@@ -52,8 +51,8 @@ const AnswerSchema = v.pipe(
     meta: v.unknown(),
   }),
   v.transform(({ log, memory, meta, reset, ...cursors }) => {
-    const mems = memory.map((mem) => v.safeParse(WireMemSchema, mem));
-    const entries = log.map((entry) => v.safeParse(WireLogSchema, entry));
+    const mems = memory.map((mem) => v.safeParse(RemoteMemSchema, mem));
+    const entries = log.map((entry) => v.safeParse(RemoteLogSchema, entry));
     const settings = v.safeParse(MetaSchema, meta);
     const read = [...mems, ...entries, settings];
 

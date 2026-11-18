@@ -8,6 +8,7 @@ import {
   stampOf,
   SyncedMetaSchema,
   SyncRequestSchema,
+  WireLogSchema,
   WireMemSchema,
 } from "./index";
 import type { SyncedMetaInput } from "./index";
@@ -55,6 +56,12 @@ describe("memories on the wire", () => {
     expect(v.parse(WireMemSchema, mem).card).toHaveProperty("future", 1);
   });
 
+  test("fields of a newer version beside the card are kept", () => {
+    const mem = { card, future: "x", id: "a", introducedAt: 1 };
+
+    expect(v.parse(WireMemSchema, mem)).toEqual(mem);
+  });
+
   test("a memory without a real date is refused", () => {
     const mem = { card: { ...card, dueAt: "soon" }, id: "a", introducedAt: 1 };
 
@@ -99,6 +106,31 @@ describe("the sync request", () => {
     };
 
     expect(v.is(SyncRequestSchema, request)).toBe(false);
+  });
+
+  test("fields of a newer version survive in a whole request", () => {
+    const entry = {
+      at: 1,
+      carrier: false,
+      future: { deep: [1, 2] },
+      grade: "good",
+      id: "a",
+      uid: "u",
+    } as const;
+
+    const mem = { card: { ...card, future: 1 }, future: 2, id: "a" };
+
+    const request = {
+      epoch: 1,
+      log: [entry],
+      logSeq: 0,
+      memRev: 0,
+      memory: [{ ...mem, introducedAt: 1 }],
+      meta: null,
+    };
+
+    expect(v.parse(SyncRequestSchema, request)).toEqual(request);
+    expect(v.parse(WireLogSchema, entry)).toEqual(entry);
   });
 
   test("a log entry with an unknown grade is refused", () => {

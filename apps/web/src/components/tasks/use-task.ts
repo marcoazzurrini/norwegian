@@ -1,12 +1,12 @@
 // Runs a task machine from the engine inside a component.
 // The machine decides; this hook keeps its state and carries out the effects it asks for.
 import type { Effect, TaskMachine, TaskResult } from "@norsk/engine";
+import type { SpeakOptions } from "@norsk/speech";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 
-import { applyReviews, getState, teach, updateMeta } from "../../engine/store";
-import { speak } from "../../lib/speech";
-import type { SpeakOptions } from "../../lib/speech";
+import { learner } from "../../learner";
+import { speak } from "../../speech";
 
 type OnDone = (result: TaskResult) => void | Promise<void>;
 
@@ -26,39 +26,16 @@ const speakOptions = ({ rate, voiceIndex }: SpeakEffect): SpeakOptions => {
   return options;
 };
 
-const countSoundAnswer = async (group: string, right: boolean) => {
-  const { sounds } = getState().meta;
-  const before = sounds[group] ?? { right: 0, total: 0 };
-
-  await updateMeta({
-    sounds: {
-      ...sounds,
-      [group]: {
-        right: before.right + (right ? 1 : 0),
-        total: before.total + 1,
-      },
-    },
-  });
-};
-
-const markStoryRead = async (id: string) => {
-  const read = getState().meta.storiesDone;
-
-  if (!read.includes(id)) {
-    await updateMeta({ storiesDone: [...read, id] });
-  }
-};
-
 /** Carries out one effect. Everything that is saved is awaited, so effects are stored in the order given. */
 const perform = async (effect: Effect, onDone: OnDone): Promise<void> => {
   switch (effect.type) {
     case "teach": {
-      await teach(effect.ids);
+      await learner.teach(effect.ids);
       break;
     }
 
     case "review": {
-      await applyReviews(effect.inputs);
+      await learner.applyReviews(effect.inputs);
       break;
     }
 
@@ -69,22 +46,17 @@ const perform = async (effect: Effect, onDone: OnDone): Promise<void> => {
     }
 
     case "sentenceSeen": {
-      await updateMeta({
-        sentenceSeen: {
-          ...getState().meta.sentenceSeen,
-          [effect.id]: effect.at,
-        },
-      });
+      await learner.markSentenceSeen(effect.id, effect.at);
       break;
     }
 
     case "soundAnswered": {
-      await countSoundAnswer(effect.group, effect.right);
+      await learner.recordSound(effect.group, effect.right);
       break;
     }
 
     case "storyDone": {
-      await markStoryRead(effect.id);
+      await learner.markStoryDone(effect.id);
       break;
     }
 
