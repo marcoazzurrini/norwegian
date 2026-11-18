@@ -1,5 +1,5 @@
-// Keeps this device and the sync server in step. Until you sign in, nothing here runs
-// and the app works from local data alone.
+// Keeps this device and the sync server in step. The app is only usable when signed in;
+// a device that has signed in once keeps working from local data without a connection.
 import { useSyncExternalStore } from 'react'
 import { LOG_PAGE, type SyncRequest, type SyncResponse } from '../sync/protocol'
 import { authClient } from '../lib/auth'
@@ -10,12 +10,14 @@ export interface SyncStatus {
   /** True if this device is signed in, as far as it knows. */
   linked: boolean
   account: string | null
+  /** False until this device knows whether it is signed in. */
+  checked: boolean
   busy: boolean
   error: string | null
   lastOkAt: number | null
 }
 
-let status: SyncStatus = { linked: false, account: null, busy: false, error: null, lastOkAt: null }
+let status: SyncStatus = { linked: false, account: null, checked: false, busy: false, error: null, lastOkAt: null }
 const listeners = new Set<() => void>()
 function setStatus(patch: Partial<SyncStatus>) {
   status = { ...status, ...patch }
@@ -146,19 +148,21 @@ async function checkAccount() {
 /** Call once, after the store has loaded. */
 export async function startSync() {
   const s = await readSync()
-  setStatus({ linked: !!s.account, account: s.account, lastOkAt: s.lastOkAt })
+  // A device that signed in before does not wait for the server: it may be offline.
+  setStatus({ linked: !!s.account, account: s.account, checked: !!s.account, lastOkAt: s.lastOkAt })
   onLocalChange(syncSoon)
   window.addEventListener('online', () => void syncNow())
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') void syncNow()
   })
   await checkAccount()
+  setStatus({ checked: true })
   void syncNow()
 }
 
-/** Sends the browser to Google. It comes back to the Settings page, signed in. */
+/** Sends the browser to Google. It comes back to the start page, signed in, or with ?error=... if Google or the allowlist refused. */
 export async function signIn() {
-  const { error } = await authClient.signIn.social({ provider: 'google', callbackURL: '/settings', errorCallbackURL: '/settings' }).catch(() => ({ error: true }))
+  const { error } = await authClient.signIn.social({ provider: 'google', callbackURL: '/', errorCallbackURL: '/' }).catch(() => ({ error: true }))
   if (error) setStatus({ error: 'Sign-in could not start. Check your connection and try again.' })
 }
 

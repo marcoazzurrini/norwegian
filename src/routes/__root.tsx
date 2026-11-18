@@ -1,7 +1,8 @@
 import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { load, useApp } from '../engine/store'
-import { startSync } from '../engine/sync'
+import { SignIn } from '../components/SignIn'
+import { startSync, useSync } from '../engine/sync'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
@@ -40,9 +41,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   )
 }
 
-/** Loads the learner's data from this device before any page renders. */
+/** Loads the learner's data from this device before any page renders, and shows the sign-in screen until the learner is signed in. */
 function App() {
   const { ready, meta } = useApp()
+  const sync = useSync()
 
   useEffect(() => {
     void load().then(startSync)
@@ -53,6 +55,9 @@ function App() {
     document.documentElement.style.setProperty('--text-scale', String(meta.settings.textScale))
   }, [meta.settings.textScale])
 
-  if (!ready) return <div className="flex min-h-dvh items-center justify-center text-2xl font-bold text-fjord">norsk</div>
+  // `bun run dev` serves the app without the sign-in server, so it skips the sign-in screen.
+  const open = sync.linked || import.meta.env.DEV
+  if (!ready || (!open && !sync.checked)) return <div className="flex min-h-dvh items-center justify-center text-2xl font-bold text-fjord">norsk</div>
+  if (!open) return <SignIn />
   return <Outlet />
 }
