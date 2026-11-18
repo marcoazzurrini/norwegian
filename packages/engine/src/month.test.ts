@@ -1,6 +1,6 @@
 // A simulated month: scheduling, selection, sessions and the task machines, tested together.
 // A learner studies fifteen minutes every day for thirty days and answers right 85% of the time.
-import { describe, expect, test } from "bun:test";
+import { describe, expect, setDefaultTimeout, test } from "bun:test";
 
 import { REVIEW_SHARE, isRealItem, simulate } from "./simulation";
 import type { Options, TaskRecord } from "./simulation";
@@ -12,6 +12,9 @@ const BACKLOG = 40;
 
 /** The longest time a single task can add to a session. */
 const MAX_TASK_MS = 3 * MINUTE;
+
+// Each test here simulates a month or more, which takes seconds on a slow machine.
+setDefaultTimeout(60_000);
 
 const month: Options = { accuracy: 0.85, days: 30, minutes: 15, seed: 7 };
 
