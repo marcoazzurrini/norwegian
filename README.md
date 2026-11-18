@@ -13,13 +13,13 @@ bun run dev        # http://localhost:3000
 
 Other commands:
 
-| Command | What it does |
-|---|---|
-| `bun run build` | Builds static files into `dist/client` |
-| `bun run preview` | Serves the built app |
-| `bun run test` | Runs the learning-engine tests |
-| `bun run typecheck` | Checks types |
-| `bun run content` | Rebuilds the curriculum from `content/` |
+| Command             | What it does                            |
+| ------------------- | --------------------------------------- |
+| `bun run build`     | Builds static files into `dist/client`  |
+| `bun run preview`   | Serves the built app                    |
+| `bun run test`      | Runs the learning-engine tests          |
+| `bun run typecheck` | Checks types                            |
+| `bun run content`   | Rebuilds the curriculum from `content/` |
 
 ## Deploy
 
@@ -49,7 +49,7 @@ After the first visit it works offline.
 ## Where things are
 
 | Path | Contents |
-|---|---|
+| --- | --- |
 | `content/` | The curriculum as plain text: units, lessons, sentences, stories, sound pairs. Format in `content/README.md`. |
 | `scripts/build-content.ts` | Checks the curriculum and builds `src/content/curriculum.json`. |
 | `src/engine/` | Memory model, grading, task choice and session flow. No UI. |
@@ -81,7 +81,7 @@ With several voices, a text keeps one voice for a day and changes voice over tim
 `bun run content` needs three downloads in `data/raw/`. They are only needed to rebuild the curriculum; the built `curriculum.json` is in the repository.
 
 | Folder | Source | Licence |
-|---|---|---|
+| --- | --- | --- |
 | `freq/no_50k.txt` | [FrequencyWords](https://github.com/hermitdave/FrequencyWords), `content/2018/no/no_50k.txt` | CC BY-SA 4.0 |
 | `ordbank/` | [Norsk Ordbank, Bokmål 2005](https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-5/), National Library of Norway | CC BY 4.0 |
 | `uttale/nb_uttale_leksika/e_written_pronunciation_lexicon.csv` | [NB Uttale](https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-79/), National Library of Norway | CC0 |

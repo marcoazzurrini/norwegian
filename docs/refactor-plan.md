@@ -34,18 +34,18 @@ packages/
 
 ### Which package may import which
 
-| Package    | May import                                              |
-| ---------- | ------------------------------------------------------- |
-| `content`  | nothing                                                 |
-| `protocol` | nothing                                                 |
-| `ui`       | nothing                                                 |
-| `engine`   | `content`                                               |
-| `speech`   | `content`                                               |
-| `db`       | `protocol`                                              |
-| `auth`     | `db`                                                    |
-| `learner`  | `engine`, `protocol`                                    |
-| `api`      | `db`, `auth`, `protocol`                                |
-| `web`      | `ui`, `engine`, `learner`, `content`, `speech`, `auth`  |
+| Package    | May import                                             |
+| ---------- | ------------------------------------------------------ |
+| `content`  | nothing                                                |
+| `protocol` | nothing                                                |
+| `ui`       | nothing                                                |
+| `engine`   | `content`                                              |
+| `speech`   | `content`                                              |
+| `db`       | `protocol`                                             |
+| `auth`     | `db`                                                   |
+| `learner`  | `engine`, `protocol`                                   |
+| `api`      | `db`, `auth`, `protocol`                               |
+| `web`      | `ui`, `engine`, `learner`, `content`, `speech`, `auth` |
 
 A lint rule enforces this table. Each package exposes only what its `exports` field in `package.json` lists; deep imports into another package are an error.
 
@@ -145,13 +145,13 @@ Routes and screens. A screen reads from `learner` hooks, runs a task machine fro
 
 ## Tests
 
-| What                                   | Runner                                   | Why this runner                                   |
-| -------------------------------------- | ---------------------------------------- | ------------------------------------------------- |
-| `content`, `engine`, `protocol`        | `bun test`                               | Pure code, fastest runner                         |
-| `learner`                              | `bun test` with `fake-indexeddb`         | Needs IndexedDB but no browser                    |
-| `db`, `auth`, `api`                    | Vitest with Cloudflare's Workers pool    | Runs in the real Worker runtime with a real D1    |
-| `ui`                                   | Vitest browser mode                      | StyleX needs the Vite plugin and a real browser   |
-| Whole app                              | Playwright                               | Real browser, both screen sizes                   |
+| What | Runner | Why this runner |
+| --- | --- | --- |
+| `content`, `engine`, `protocol` | `bun test` | Pure code, fastest runner |
+| `learner` | `bun test` with `fake-indexeddb` | Needs IndexedDB but no browser |
+| `db`, `auth`, `api` | Vitest with Cloudflare's Workers pool | Runs in the real Worker runtime with a real D1 |
+| `ui` | Vitest browser mode | StyleX needs the Vite plugin and a real browser |
+| Whole app | Playwright | Real browser, both screen sizes |
 
 Tests go through the public interface of a package. Examples of what they must cover:
 

@@ -13,10 +13,10 @@ __unconfig*
 todos.json
 
 # Downloaded language data (see docs/spec.md, section 5) and build reports
-data/raw
-data/build
+packages/content/data/raw
+packages/content/data/build
 .dev.vars
 .sync-key
-data/audio
+packages/content/data/audio
 test-results
 playwright-report

@@ -4,7 +4,7 @@ Status: draft 1, 2026-11-17. Target: Bokmål, Urban East Norwegian pronunciation
 
 Decided: explanations are in English; session length varies and is chosen at the start of each session (5, 15, 25 or 40 minutes), with blocks scaled to fit and review taking priority when time is short; the app is for personal use only; answers are typed at first.
 
-Word testing: the scheduled test is always a meaning cue followed by typed Norwegian. The cue is the English word by default, with a short disambiguating hint where English is ambiguous ("know (a fact)" for *vite*). Concrete nouns may use an image. Later stages use a Norwegian sentence with a gap. Recognition (Norwegian to meaning) appears once, at first exposure. Comprehension is not scheduled with its own cards: it is credited from production passes, stories and listening.
+Word testing: the scheduled test is always a meaning cue followed by typed Norwegian. The cue is the English word by default, with a short disambiguating hint where English is ambiguous ("know (a fact)" for _vite_). Concrete nouns may use an image. Later stages use a Norwegian sentence with a gap. Recognition (Norwegian to meaning) appears once, at first exposure. Comprehension is not scheduled with its own cards: it is credited from production passes, stories and listening.
 
 ## 1. What the research says
 
@@ -13,12 +13,12 @@ Evidence tags: **strong**, **mixed**, **weak**, **vendor** (claimed by the compa
 ### Memory and practice
 
 | Finding | Evidence | Consequence for the app |
-|---|---|---|
+| --- | --- | --- |
 | Retrieving an answer beats re-reading it. | strong | Every item is tested within a minute of being shown. |
 | Spaced reviews beat massed reviews. | strong | FSRS schedules every item. |
 | FSRS predicts recall better than SM-2 and Duolingo's HLR. | strong (727M Anki reviews) | Use `ts-fsrs` (MIT), desired retention 0.90, tunable 0.85 to 0.92. |
 | Recall beats recognition. Multiple choice can teach the wrong options. | mixed to strong | Multiple choice only at first exposure. After that, typed or spoken recall. |
-| You get the skill you practise. English to Norwegian builds production and transfers to comprehension better than the reverse. | strong | Track two memories per item: *understand* and *produce*. |
+| You get the skill you practise. English to Norwegian builds production and transfers to comprehension better than the reverse. | strong | Track two memories per item: _understand_ and _produce_. |
 | Deliberate word study is far faster per hour than picking words up from input (77% vs 13 to 17% immediate recall). | strong | Teach words directly. Use input to consolidate, not to introduce. |
 | Learning related words together (colours, days) causes cross-confusion. | mixed | Never introduce two items from one set in one session. |
 | Interleaving helps confusable rules but hurts word lists. | mixed | Mix grammar patterns in review. Do not shuffle unrelated new words. |
@@ -37,7 +37,7 @@ Beliefs the evidence does not support: "N exposures and you know it", "input alo
 
 Math Academy's model (vendor, but the mechanism is published):
 
-- **Two graphs.** *Prerequisite* edges decide what unlocks. *Encompassing* edges decide where review credit flows. An advanced topic encompasses a simpler one if practising it also exercises the simpler one. Each encompassing edge has a weight from 0 to 1.
+- **Two graphs.** _Prerequisite_ edges decide what unlocks. _Encompassing_ edges decide where review credit flows. An advanced topic encompasses a simpler one if practising it also exercises the simpler one. Each encompassing edge has a weight from 0 to 1.
 - **Fractional implicit repetition.** Passing an advanced task gives partial review credit to the topics it encompasses. Failing a simple topic penalises the topics that encompass it. Early credit (memory still high) is discounted.
 - **Repetition compression.** Pick the task whose implicit credit clears the most due reviews. Never delay a due review to wait for a better cover.
 - **Lessons.** Worked example, then 2 to 5 questions, per knowledge point. After two failures at one point, review its prerequisites.
@@ -48,36 +48,36 @@ Khan Academy uses coarse levels (familiar, proficient, mastered). Each question 
 
 No study shows that recalling a sentence strengthens every word in it. Retrieval theory predicts that only what is actually retrieved benefits. Words carried by context get exposure, not retrieval.
 
-Design answer: **credit follows evidence**. A typed English-to-Norwegian sentence makes the learner retrieve every word, form and word-order choice, and the typed answer shows exactly which token failed. So production sentences can carry full credit. A cloze credits only the blank. Reading or listening gives *understand* credit only.
+Design answer: **credit follows evidence**. A typed English-to-Norwegian sentence makes the learner retrieve every word, form and word-order choice, and the typed answer shows exactly which token failed. So production sentences can carry full credit. A cloze credits only the blank. Reading or listening gives _understand_ credit only.
 
 ## 2. Learning model
 
 ### Items (atoms)
 
 | Type | Example | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Sound | y vs i, kj vs skj, tone 1 vs tone 2 | Trained by minimal pairs |
-| Word | *hus* (et), house | Lemma with gender, forms, IPA, tone |
-| Form | *huset*, *husene* | Word plus a grammar pattern |
-| Chunk | *ha det bra* | Learned whole |
+| Word | _hus_ (et), house | Lemma with gender, forms, IPA, tone |
+| Form | _huset_, _husene_ | Word plus a grammar pattern |
+| Chunk | _ha det bra_ | Learned whole |
 | Pattern | definite suffix, V2 inversion | Grammar |
 
-Each item holds two FSRS memories: **understand** (Norwegian to meaning) and **produce** (meaning to Norwegian). *Understand* is a prerequisite of *produce*.
+Each item holds two FSRS memories: **understand** (Norwegian to meaning) and **produce** (meaning to Norwegian). _Understand_ is a prerequisite of _produce_.
 
 ### Chunks (formulaic sequences)
 
 A chunk is an item with its own memory, tested like a word: meaning cue, then the whole chunk typed.
 
 | Kind | Example | Notes |
-|---|---|---|
-| Fixed formula | *ha det bra*, *takk for sist* | Often cannot be translated word for word |
-| Frame with a slot | *Jeg vil gjerne ha ___*, *Kan jeg få ___?* | The slot takes any known noun, so one frame carries many word reviews |
-| Collocation | *ta en dusj*, *gå på jobb* | The verb choice differs from English |
-| Verb plus preposition | *vente på*, *se på* | Prepositions are learned inside chunks, not alone |
+| --- | --- | --- |
+| Fixed formula | _ha det bra_, _takk for sist_ | Often cannot be translated word for word |
+| Frame with a slot | _Jeg vil gjerne ha \_\_\__, _Kan jeg få \_\_\_?_ | The slot takes any known noun, so one frame carries many word reviews |
+| Collocation | _ta en dusj_, _gå på jobb_ | The verb choice differs from English |
+| Verb plus preposition | _vente på_, _se på_ | Prepositions are learned inside chunks, not alone |
 
 Rules:
 
-- A chunk is taught whole. It does **not** need its words or its grammar as prerequisites. *Hva heter du?* comes in week one, long before question word order is taught.
+- A chunk is taught whole. It does **not** need its words or its grammar as prerequisites. _Hva heter du?_ comes in week one, long before question word order is taught.
 - When the grammar pattern is taught later, known chunks are used as its first examples. The learner already says the pattern correctly and now sees why.
 - A chunk gives review credit to a component word only if that word is also a learned item.
 - A chunk is graded as one unit. A wrong word inside it fails the chunk, not the word.
@@ -94,19 +94,19 @@ Sentences, dialogues and short texts are not items. They are **carriers**: revie
 1. **Direct review** of an item: normal FSRS update. This is the ground truth.
 2. **Carrier passed**: each item the learner had to retrieve gets a review. The credit is scaled by the edge weight and discounted when the item's recall probability is still high.
 3. **Carrier failed**: token-level diff of the typed answer finds the failing items. Only those items lapse. Correct tokens still get credit.
-4. **Listening or reading carrier**: *understand* credit only.
+4. **Listening or reading carrier**: _understand_ credit only.
 5. An item that has failed twice inside carriers gets a direct review next.
 
 ### Compression ladder
 
 As an item's stability grows, its reviews move to larger carriers.
 
-| Stability | Review vehicle |
-|---|---|
-| New | Direct card, both directions |
-| Days | Chunk or 3 to 5 word sentence |
-| Weeks | Full sentence, typed or spoken |
-| Months | Dialogue turn, dictation, story with questions |
+| Stability | Review vehicle                                 |
+| --------- | ---------------------------------------------- |
+| New       | Direct card, both directions                   |
+| Days      | Chunk or 3 to 5 word sentence                  |
+| Weeks     | Full sentence, typed or spoken                 |
+| Months    | Dialogue turn, dictation, story with questions |
 
 This is the compression: 40 due items can be cleared by about 8 sentences.
 
@@ -127,7 +127,7 @@ Do not show a backlog. Run a short adaptive check (10 to 15 carriers) that propa
 ### A word or chunk (about 40 seconds)
 
 1. **Hear and see**: audio plays, then spelling, meaning, gender, and one short example. For English cognates, say so. Flag false friends.
-2. **Notice**: one line on a spelling or sound trap, only if there is one (*de* is said "di").
+2. **Notice**: one line on a spelling or sound trap, only if there is one (_de_ is said "di").
 3. **Recall**: type the Norwegian from the English. New items are shown in groups of up to three, and only then typed back, so that other items sit between seeing a word and recalling it.
 4. **Recall again** later in the same session at growing gaps: about 1 minute, 4 minutes, end of session.
 
@@ -142,7 +142,7 @@ Do not show a backlog. Run a short adaptive check (10 to 15 carriers) that propa
 ### Session shape (25 minutes)
 
 | Block | Minutes | Content |
-|---|---|---|
+| --- | --- | --- |
 | Sounds | 2 | Minimal pairs, several voices |
 | Review | 8 | Compressed carriers, then leftovers |
 | New | 8 | One pattern or 6 to 10 words and chunks |
@@ -159,44 +159,44 @@ Vocabulary order: frequency in spoken Norwegian (subtitle corpus), cognates firs
 
 ### Stage 0: sounds (about 4 hours, continues as a daily 2-minute drill)
 
-- Nine vowels, long and short: i, y, e, ø, æ, a, o, u, å. The letter *o* is often [uː]. The letter *u* is [ʉ].
-- Length: *tak* vs *takk*.
+- Nine vowels, long and short: i, y, e, ø, æ, a, o, u, å. The letter _o_ is often [uː]. The letter _u_ is [ʉ].
+- Length: _tak_ vs _takk_.
 - Hard contrasts: y / i / u, ø, kj [ç] vs skj [ʃ].
 - Retroflexes: rt, rd, rn, rl, rs.
-- Silent letters: *det*, *god*, *og*, *hva*, *jeg*.
-- Pitch accent: perception first (*bønder* vs *bønner*), production later.
+- Silent letters: _det_, _god_, _og_, _hva_, _jeg_.
+- Pitch accent: perception first (_bønder_ vs _bønner_), production later.
 
 ### A1 (built: 379 words and forms, 61 chunks)
 
 | Unit | Theme | Patterns |
-|---|---|---|
-| 1 Hei! | Greetings, who you are | Present tense; *ikke*; yes/no questions; question words |
-| 2 Hjemme | Things and people | *en / ei / et*; the definite ending |
-| 3 Mat og kafé | Food, ordering | *vil, kan, må*; *å* before a verb |
-| 4 Familie | Family, numbers | Plural; possessives (*bilen min*); definite plural |
+| --- | --- | --- |
+| 1 Hei! | Greetings, who you are | Present tense; _ikke_; yes/no questions; question words |
+| 2 Hjemme | Things and people | _en / ei / et_; the definite ending |
+| 3 Mat og kafé | Food, ordering | _vil, kan, må_; _å_ before a verb |
+| 4 Familie | Family, numbers | Plural; possessives (_bilen min_); definite plural |
 | 5 Dagen min | Daily life, the clock, weekdays | Verb in second place |
-| 6 I byen | Town, directions, travel | *meg, deg, ham*; orders (*kom!*) |
+| 6 I byen | Town, directions, travel | _meg, deg, ham_; orders (_kom!_) |
 | 7 Å beskrive | Describing things and people | Adjective agreement |
 | 8 I går | The past | Past tense; irregular past forms as words |
-| 9 Har gjort | Work, health | Perfect; *at, fordi, hvis* |
-| 10 Planer | Plans, weather, invitations | *skal*; *det* as subject |
+| 9 Har gjort | Work, health | Perfect; _at, fordi, hvis_ |
+| 10 Planer | Plans, weather, invitations | _skal_; _det_ as subject |
 
 The order follows NTNU's "Norwegian on the Web" where the two differed. Weekdays, numbers and colours are spread over several lessons to avoid mixing them up.
 
 ### A2 (about 1,200 lemmas, not written yet)
 
-Double definiteness (*den store bilen*); reflexive pronouns and *sin*; word order with *ikke* in subordinate clauses; comparison; *da* versus *når*; time prepositions; strong participles.
+Double definiteness (_den store bilen_); reflexive pronouns and _sin_; word order with _ikke_ in subordinate clauses; comparison; _da_ versus _når_; time prepositions; strong participles.
 
 ### B1 (about 2,000 lemmas, not written yet)
 
-Relative clauses with *som*; s-passive and *bli*-passive; pluperfect; particle verbs and adverb placement; indirect speech; compounds; conditionals.
+Relative clauses with _som_; s-passive and _bli_-passive; pluperfect; particle verbs and adverb placement; indirect speech; compounds; conditionals.
 
-Hard for most learners and given extra interleaved practice: V2 inversion, double definiteness, subordinate word order, *sin*, prepositions.
+Hard for most learners and given extra interleaved practice: V2 inversion, double definiteness, subordinate word order, _sin_, prepositions.
 
 ## 5. Content sources
 
 | Layer | Source | Licence |
-|---|---|---|
+| --- | --- | --- |
 | Frequency | OpenSubtitles word list (hermitdave), lemmatised with Norsk Ordbank, cross-checked with the Kelly list | CC BY-SA 4.0 |
 | Forms and gender | Norsk Ordbank | CC BY 4.0 |
 | English glosses | Wiktionary via kaikki.org | CC BY-SA 4.0 |
@@ -204,7 +204,7 @@ Hard for most learners and given extra interleaved practice: V2 inversion, doubl
 | Sentences and stories | Generated to fit known items, validated against Norsk Ordbank; reviewed by sampling | Own |
 | Audio | Pre-generated neural TTS, at least three voices (Azure Pernille, Finn, Iselin); Piper as offline fallback | Check Azure storage terms before any public release |
 | Speech check | NB-Whisper | Apache 2.0 |
-| Sequencing reference | NTNU "Norwegian on the Web", *Læreplan i norsk for voksne innvandrere* | Mirror the order only; do not copy content |
+| Sequencing reference | NTNU "Norwegian on the Web", _Læreplan i norsk for voksne innvandrere_ | Mirror the order only; do not copy content |
 
 Risk: generated sentences can be unnatural. Mitigation: validate every token against Norsk Ordbank, prefer short sentences, and add a "report this sentence" button.
 
@@ -218,7 +218,7 @@ Risk: generated sentences can be unnatural. Mitigation: validate every token aga
 - **Sounds**: minimal-pair drill with several voices.
 - **Story**: generated mini text with audio, tap a word for its meaning, comprehension questions.
 - **Map**: the knowledge graph. Shows locked, ready, learning and stable items, and what a selected item encompasses.
-- **Item page**: forms, IPA, audio, memory strength for *understand* and *produce*, sentences seen.
+- **Item page**: forms, IPA, audio, memory strength for _understand_ and _produce_, sentences seen.
 - **Settings**: daily minutes, desired retention, typing or speaking answers, text size.
 - Offline first. Installable PWA. Desktop and phone layouts. Keyboard shortcuts on desktop.
 
@@ -242,14 +242,14 @@ Built and tested:
 Differences from the plan above, and known gaps:
 
 | Topic | Planned | Built | Why |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Levels | To B1 | A1 only | A2 and B1 are outlined in section 4 but not written. |
 | Unit order | As in section 4 | Checked against NTNU "Norwegian on the Web" and adjusted: object pronouns earlier, adjectives before the past tense, double definiteness and comparison moved to A2. | The NTNU order differed from the first draft. |
 | Audio | Pre-generated, three neural voices | The browser's own Norwegian voice | No cloud voice account was set up. macOS and iOS have one voice, "Nora". The sound drill therefore has one speaker on those devices, which weakens ear training. |
 | Word melody (tone 1 and 2) | Perception drill | Shown on the item page only | Computer voices do not produce tone reliably. |
 | Sentences per item | At least three | Many items appear in only one or two sentences | These items are reviewed mostly on their own cards. More sentences would raise compression. |
 | Sentence quality | Sampled review | Written by an AI model, checked by rule only | No native speaker has read them. Some may be stiff. |
-| Images as cues | For concrete nouns | Not built | |
+| Images as cues | For concrete nouns | Not built |  |
 | After a long break | Short adaptive check | Not built | A backlog of 40 or more due items pauses new material instead. |
 | Sync between devices | Later | Built: Cloudflare Worker and D1, sign-in with Google (Better Auth) | Two devices that both study offline at the same moment can lose a little study-time count |
 | First review after learning | Inside a short sentence | On the item's own card | An item moves into sentences once its stability reaches 3 days. This keeps one clean, context-free check before compression starts. |

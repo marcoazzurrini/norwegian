@@ -1,0 +1,29 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "norsk",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  // Better Auth uses Node's AsyncLocalStorage.
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": { "BETTER_AUTH_URL": "https://norwegian.marcoazzurrini.com" },
+  // The built app. Unknown paths get index.html, so the app's own router handles them.
+  "assets": {
+    "directory": "../web/dist/client",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/audio/*"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "norsk",
+      "database_id": "6fc80e9a-0d82-4155-aa32-fa5ad22a86a2",
+      "migrations_dir": "migrations",
+    },
+  ],
+  // Recorded Norwegian audio, made by scripts/build-audio.ts.
+  "r2_buckets": [{ "binding": "AUDIO", "bucket_name": "norsk-audio" }],
+  "routes": [
+    { "pattern": "norwegian.marcoazzurrini.com", "custom_domain": true },
+  ],
+  "observability": { "enabled": true },
+}
