@@ -14,9 +14,6 @@
   "dependencies": {
     "@norsk/engine": "workspace:*",
     "@norsk/protocol": "workspace:*",
-    "@tanstack/db": "1.0.0-rc.1.5",
-    "@tanstack/react-db": "1.0.0-rc.1.5",
-    "@tanstack/react-store": "^0.11.2",
     "@tanstack/store": "^0.11.2",
     "idb": "^8.0.4",
     "valibot": "^1.5.0"

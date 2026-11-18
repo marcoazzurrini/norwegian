@@ -1,32 +1,34 @@
 import { storyById } from "@norsk/content";
 import { Navigate, createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import { StoryTask } from "../components/tasks/StoryTask";
+import { StoryTask } from "../components/tasks/story-task";
 
-export const Route = createFileRoute("/stories/$id")({ component: StoryPage });
-
-function StoryPage() {
+const StoryPage = () => {
   const { id } = Route.useParams();
   const navigate = useNavigate();
   const story = storyById(id);
 
-  if (!story) {
+  if (story === undefined) {
     return <Navigate to="/stories" />;
   }
 
-  const back = () => void navigate({ to: "/stories" });
+  const back = () => {
+    navigate({ to: "/stories" }).catch(reportError);
+  };
 
   return (
     <StoryTask
       story={story}
       frame={{
         block: "story",
-        title: "Story",
         label: "",
-        progress: 0,
         onClose: back,
+        progress: 0,
+        title: "Story",
       }}
       onDone={back}
     />
   );
-}
+};
+
+export const Route = createFileRoute("/stories/$id")({ component: StoryPage });

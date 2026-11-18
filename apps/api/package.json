@@ -7,15 +7,21 @@
     "deploy": "wrangler deploy",
     "migrate": "wrangler d1 migrations apply norsk --remote",
     "migrate:local": "wrangler d1 migrations apply norsk --local",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@norsk/auth": "workspace:*",
+    "@norsk/db": "workspace:*",
     "@norsk/protocol": "workspace:*",
-    "better-auth": "catalog:"
+    "hono": "^4.13.19",
+    "valibot": "^1.5.0"
   },
   "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.8.4",
     "@cloudflare/workers-types": "^5.20261117.1",
     "typescript": "catalog:",
+    "vitest": "^5.1.1",
     "wrangler": "^4.164.0"
   }
 }

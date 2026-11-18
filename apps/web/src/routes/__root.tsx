@@ -1,3 +1,4 @@
+import { Bare } from "@norsk/ui";
 import {
   HeadContent,
   Outlet,
@@ -5,71 +6,56 @@ import {
   createRootRoute,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 
-import { Bare, SignIn } from "../components/SignIn";
+import { SignInScreen } from "../components/sign-in-screen";
 import { load, useApp } from "../engine/store";
 import { startSync, useSync } from "../engine/sync";
 
-import appCss from "../styles.css?url";
+import baseCss from "@norsk/ui/base.css?url";
 
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1, viewport-fit=cover",
-      },
-      { title: "Norsk" },
-      {
-        name: "description",
-        content: "Learn Norwegian with spaced, compressed recall.",
-      },
-      { name: "theme-color", content: "#212121" },
-      { name: "color-scheme", content: "dark" },
-      { name: "apple-mobile-web-app-capable", content: "yes" },
-      // The app draws under the status bar, as in the design.
-      {
-        name: "apple-mobile-web-app-status-bar-style",
-        content: "black-translucent",
-      },
-      { name: "apple-mobile-web-app-title", content: "Norsk" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "icon", href: "/icon.svg", type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: "/icon-192.png" },
-    ],
-  }),
-  shellComponent: RootDocument,
-  component: App,
-});
+// In development the StyleX plugin serves the compiled rules at this address, and the module
+// below replaces them after an edit. A build writes the rules into the base stylesheet instead,
+// so the page that is prerendered already has every style it needs.
+const DEV_STYLES = import.meta.env.DEV
+  ? [{ href: "/virtual:stylex.css", rel: "stylesheet" }]
+  : [];
 
-function RootDocument({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
+if (import.meta.env.DEV && !import.meta.env.SSR) {
+  import("virtual:stylex:runtime").catch(reportError);
 }
 
+interface RootDocumentProps {
+  children: ReactNode;
+}
+
+const RootDocument = ({ children }: RootDocumentProps) => (
+  <html lang="en">
+    <head>
+      <HeadContent />
+    </head>
+    <body>
+      {children}
+      <Scripts />
+    </body>
+  </html>
+);
+
+const startApp = async () => {
+  await load();
+  await startSync();
+};
+
 /** Loads the learner's data from this device before any page renders, and shows the sign-in screen until the learner is signed in. */
-function App() {
+const App = () => {
   const { ready, meta } = useApp();
   const sync = useSync();
 
   useEffect(() => {
-    void load().then(startSync);
+    startApp().catch(reportError);
 
     if ("serviceWorker" in navigator && import.meta.env.PROD) {
-      void navigator.serviceWorker.register("/sw.js");
+      navigator.serviceWorker.register("/sw.js").catch(reportError);
     }
   }, []);
 
@@ -88,8 +74,43 @@ function App() {
   }
 
   if (!open) {
-    return <SignIn />;
+    return <SignInScreen />;
   }
 
   return <Outlet />;
-}
+};
+
+export const Route = createRootRoute({
+  component: App,
+  head: () => ({
+    links: [
+      { href: baseCss, rel: "stylesheet" },
+      ...DEV_STYLES,
+      { href: "/manifest.webmanifest", rel: "manifest" },
+      { href: "/icon.svg", rel: "icon", type: "image/svg+xml" },
+      { href: "/icon-192.png", rel: "apple-touch-icon" },
+    ],
+    meta: [
+      { charSet: "utf-8" },
+      {
+        content: "width=device-width, initial-scale=1, viewport-fit=cover",
+        name: "viewport",
+      },
+      { title: "Norsk" },
+      {
+        content: "Learn Norwegian with spaced, compressed recall.",
+        name: "description",
+      },
+      { content: "#212121", name: "theme-color" },
+      { content: "dark", name: "color-scheme" },
+      { content: "yes", name: "apple-mobile-web-app-capable" },
+      // The app draws under the status bar, as in the design.
+      {
+        content: "black-translucent",
+        name: "apple-mobile-web-app-status-bar-style",
+      },
+      { content: "Norsk", name: "apple-mobile-web-app-title" },
+    ],
+  }),
+  shellComponent: RootDocument,
+});

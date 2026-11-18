@@ -11,6 +11,8 @@
 export const env = {
   /** Phone values are the base; this applies from 64rem, where the sidebar appears. */
   desktop: "@media (min-width: 64rem)",
+  /** A very wide window, where a grid of cards gets one more column. */
+  desktopWide: "@media (min-width: 96rem)",
   /** Entrances may move; without it they only fade. */
   motionOk: "@media (prefers-reduced-motion: no-preference)",
   /** A screen without a keyboard, where key hints are useless. */

@@ -23,11 +23,11 @@ export { Chip } from "./components/chip";
 
 export { Display } from "./components/display";
 
+export { GroupLabel } from "./components/group-label";
+
 export { IconButton } from "./components/icon-button";
 
 export { Key } from "./components/key";
-
-export { Label } from "./components/label";
 
 export { ListCard } from "./components/list-card";
 

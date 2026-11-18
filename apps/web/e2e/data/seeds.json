@@ -1,0 +1,2392 @@
+{
+  "beforeThe": {
+    "memory": [
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hei",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hei",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:ha-det-bra",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:ha-det-bra",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:takk:interj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:takk:interj",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:ja:interj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:ja:interj",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:nei:interj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:nei:interj",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:god-morgen",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:god-morgen",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:present",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:present",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:jeg:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:jeg:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:du:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:du:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:er:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:er:verb",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hete:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hete:verb",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:jeg-heter",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:jeg-heter",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hva-heter-du",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hva-heter-du",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:komme:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:komme:verb",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:fra:prep",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:fra:prep",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hvor:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hvor:adv",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hvor-kommer-du-fra",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hvor-kommer-du-fra",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bo:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:bo:verb",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:i:prep",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:i:prep",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:og:conj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:og:conj",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:neg",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:neg",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:ikke:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:ikke:adv",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:snakke:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:snakke:verb",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:norsk:adj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:norsk:adj",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:engelsk:adj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:engelsk:adj",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:forstå:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:forstå:verb",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:litt:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:litt:adv",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:han:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:han:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hun:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hun:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:vi:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:vi:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:de:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:de:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:dere:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:dere:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:også:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:også:adv",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:men:conj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:men:conj",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:q-yn",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:q-yn",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:q-wh",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:q-wh",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hva:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hva:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hvem:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hvem:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hvordan:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hvordan:adv",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hvordan-går-det",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hvordan-går-det",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:bare-bra",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:bare-bra",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:unnskyld",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:unnskyld",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:tusen-takk",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:tusen-takk",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:vær-så-god",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:vær-så-god",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hyggelig-å-møte-deg",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hyggelig-å-møte-deg",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:jeg-vet-ikke",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:jeg-vet-ikke",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:student:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:student:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:lærer:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:lærer:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:gender",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:gender",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hus:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hus:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bil:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:bil:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bok:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:bok:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:har:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:har:verb",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:det:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:det:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:dette:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:dette:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:rom:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:rom:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:kjøkken:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:kjøkken:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:seng:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:seng:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bord:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:bord:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:stol:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:stol:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:dør:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:dør:noun",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:vindu:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:vindu:noun",
+        "introducedAt": 1770539400000
+      }
+    ],
+    "meta": {
+      "chosenLesson": null,
+      "days": [
+        "2026-02-20",
+        "2026-02-21",
+        "2026-02-22",
+        "2026-02-23",
+        "2026-02-24",
+        "2026-02-25",
+        "2026-02-26",
+        "2026-02-27",
+        "2026-02-28",
+        "2026-03-01",
+        "2026-03-02",
+        "2026-03-03",
+        "2026-03-04",
+        "2026-03-05",
+        "2026-03-06",
+        "2026-03-07",
+        "2026-03-08",
+        "2026-03-09"
+      ],
+      "prefsAt": 0,
+      "sentenceSeen": {},
+      "settings": {
+        "desiredRetention": 0.9,
+        "minutes": 15,
+        "rate": 0.9,
+        "textScale": 1,
+        "voice": null
+      },
+      "sounds": {},
+      "storiesDone": [],
+      "totalMs": 32400000
+    },
+    "sync": {
+      "account": "kari.nordmann@example.com",
+      "epoch": 1,
+      "lastOkAt": null,
+      "logSeq": 0,
+      "memRev": 0,
+      "pendingReset": null,
+      "pushedAt": 0
+    }
+  },
+  "empty": {
+    "memory": [],
+    "meta": null,
+    "sync": null
+  },
+  "progress": {
+    "memory": [
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-09T08:50:00.000Z",
+          "lastReviewAt": "2026-01-22T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hei",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hei",
+        "introducedAt": 1767947400000
+      },
+      {
+        "card": {
+          "stability": 163.13728591,
+          "difficulty": 2.08372413,
+          "dueAt": "2026-08-19T08:50:00.000Z",
+          "lastReviewAt": "2026-03-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:ha-det-bra",
+          "reps": 6,
+          "lapses": 0,
+          "scheduledDays": 163,
+          "learningStep": 0
+        },
+        "id": "c:ha-det-bra",
+        "introducedAt": 1767947400000
+      },
+      {
+        "card": {
+          "stability": 163.13728591,
+          "difficulty": 2.08372413,
+          "dueAt": "2026-08-19T08:50:00.000Z",
+          "lastReviewAt": "2026-03-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:takk:interj",
+          "reps": 6,
+          "lapses": 0,
+          "scheduledDays": 163,
+          "learningStep": 0
+        },
+        "id": "w:takk:interj",
+        "introducedAt": 1767947400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-09T08:50:00.000Z",
+          "lastReviewAt": "2026-01-22T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:ja:interj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:ja:interj",
+        "introducedAt": 1767947400000
+      },
+      {
+        "card": {
+          "stability": 163.13728591,
+          "difficulty": 2.08372413,
+          "dueAt": "2026-08-19T08:50:00.000Z",
+          "lastReviewAt": "2026-03-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:nei:interj",
+          "reps": 6,
+          "lapses": 0,
+          "scheduledDays": 163,
+          "learningStep": 0
+        },
+        "id": "w:nei:interj",
+        "introducedAt": 1767947400000
+      },
+      {
+        "card": {
+          "stability": 163.13728591,
+          "difficulty": 2.08372413,
+          "dueAt": "2026-08-19T08:50:00.000Z",
+          "lastReviewAt": "2026-03-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:god-morgen",
+          "reps": 6,
+          "lapses": 0,
+          "scheduledDays": 163,
+          "learningStep": 0
+        },
+        "id": "c:god-morgen",
+        "introducedAt": 1767947400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-15T08:50:00.000Z",
+          "lastReviewAt": "2026-01-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:present",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:present",
+        "introducedAt": 1768465800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-15T08:50:00.000Z",
+          "lastReviewAt": "2026-01-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:jeg:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:jeg:pron",
+        "introducedAt": 1768465800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-15T08:50:00.000Z",
+          "lastReviewAt": "2026-01-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:du:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:du:pron",
+        "introducedAt": 1768465800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-15T08:50:00.000Z",
+          "lastReviewAt": "2026-01-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:er:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:er:verb",
+        "introducedAt": 1768465800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-15T08:50:00.000Z",
+          "lastReviewAt": "2026-01-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hete:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hete:verb",
+        "introducedAt": 1768465800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-15T08:50:00.000Z",
+          "lastReviewAt": "2026-01-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:jeg-heter",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:jeg-heter",
+        "introducedAt": 1768465800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-15T08:50:00.000Z",
+          "lastReviewAt": "2026-01-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hva-heter-du",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hva-heter-du",
+        "introducedAt": 1768465800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-21T08:50:00.000Z",
+          "lastReviewAt": "2026-02-03T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:komme:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:komme:verb",
+        "introducedAt": 1768984200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-21T08:50:00.000Z",
+          "lastReviewAt": "2026-02-03T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:fra:prep",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:fra:prep",
+        "introducedAt": 1768984200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-21T08:50:00.000Z",
+          "lastReviewAt": "2026-02-03T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hvor:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hvor:adv",
+        "introducedAt": 1768984200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-21T08:50:00.000Z",
+          "lastReviewAt": "2026-02-03T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hvor-kommer-du-fra",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hvor-kommer-du-fra",
+        "introducedAt": 1768984200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-21T08:50:00.000Z",
+          "lastReviewAt": "2026-02-03T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bo:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:bo:verb",
+        "introducedAt": 1768984200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-21T08:50:00.000Z",
+          "lastReviewAt": "2026-02-03T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:i:prep",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:i:prep",
+        "introducedAt": 1768984200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-21T08:50:00.000Z",
+          "lastReviewAt": "2026-02-03T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:og:conj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:og:conj",
+        "introducedAt": 1768984200000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-02-09T08:50:00.000Z",
+          "lastReviewAt": "2026-01-29T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:neg",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "p:neg",
+        "introducedAt": 1769502600000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-27T08:50:00.000Z",
+          "lastReviewAt": "2026-02-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:ikke:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:ikke:adv",
+        "introducedAt": 1769502600000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-27T08:50:00.000Z",
+          "lastReviewAt": "2026-02-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:snakke:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:snakke:verb",
+        "introducedAt": 1769502600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-02-09T08:50:00.000Z",
+          "lastReviewAt": "2026-01-29T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:norsk:adj",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:norsk:adj",
+        "introducedAt": 1769502600000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-27T08:50:00.000Z",
+          "lastReviewAt": "2026-02-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:engelsk:adj",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:engelsk:adj",
+        "introducedAt": 1769502600000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-03-27T08:50:00.000Z",
+          "lastReviewAt": "2026-02-09T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:forstå:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:forstå:verb",
+        "introducedAt": 1769502600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-02-09T08:50:00.000Z",
+          "lastReviewAt": "2026-01-29T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:litt:adv",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:litt:adv",
+        "introducedAt": 1769502600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-02-15T08:50:00.000Z",
+          "lastReviewAt": "2026-02-04T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:han:pron",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:han:pron",
+        "introducedAt": 1770021000000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-02T08:50:00.000Z",
+          "lastReviewAt": "2026-02-15T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hun:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hun:pron",
+        "introducedAt": 1770021000000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-02T08:50:00.000Z",
+          "lastReviewAt": "2026-02-15T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:vi:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:vi:pron",
+        "introducedAt": 1770021000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-02-15T08:50:00.000Z",
+          "lastReviewAt": "2026-02-04T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:de:pron",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:de:pron",
+        "introducedAt": 1770021000000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-02T08:50:00.000Z",
+          "lastReviewAt": "2026-02-15T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:dere:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:dere:pron",
+        "introducedAt": 1770021000000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-02T08:50:00.000Z",
+          "lastReviewAt": "2026-02-15T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:også:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:også:adv",
+        "introducedAt": 1770021000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-02-15T08:50:00.000Z",
+          "lastReviewAt": "2026-02-04T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:men:conj",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:men:conj",
+        "introducedAt": 1770021000000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:q-yn",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:q-yn",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:q-wh",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:q-wh",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hva:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hva:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hvem:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hvem:pron",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hvordan:adv",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hvordan:adv",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hvordan-går-det",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hvordan-går-det",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:bare-bra",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:bare-bra",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:unnskyld",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:unnskyld",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:tusen-takk",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:tusen-takk",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:vær-så-god",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:vær-så-god",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:hyggelig-å-møte-deg",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:hyggelig-å-møte-deg",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:jeg-vet-ikke",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:jeg-vet-ikke",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:student:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:student:noun",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:lærer:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:lærer:noun",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-20T08:50:00.000Z",
+          "lastReviewAt": "2026-03-05T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:gender",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "p:gender",
+        "introducedAt": 1771576200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-20T08:50:00.000Z",
+          "lastReviewAt": "2026-03-05T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:hus:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:hus:noun",
+        "introducedAt": 1771576200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-20T08:50:00.000Z",
+          "lastReviewAt": "2026-03-05T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bil:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:bil:noun",
+        "introducedAt": 1771576200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-20T08:50:00.000Z",
+          "lastReviewAt": "2026-03-05T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bok:noun",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:bok:noun",
+        "introducedAt": 1771576200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-20T08:50:00.000Z",
+          "lastReviewAt": "2026-03-05T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:har:verb",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:har:verb",
+        "introducedAt": 1771576200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-20T08:50:00.000Z",
+          "lastReviewAt": "2026-03-05T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:det:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:det:pron",
+        "introducedAt": 1771576200000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-20T08:50:00.000Z",
+          "lastReviewAt": "2026-03-05T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:dette:pron",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "w:dette:pron",
+        "introducedAt": 1771576200000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-11T08:50:00.000Z",
+          "lastReviewAt": "2026-02-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:rom:noun",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:rom:noun",
+        "introducedAt": 1772094600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-11T08:50:00.000Z",
+          "lastReviewAt": "2026-02-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:kjøkken:noun",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:kjøkken:noun",
+        "introducedAt": 1772094600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-11T08:50:00.000Z",
+          "lastReviewAt": "2026-02-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:seng:noun",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:seng:noun",
+        "introducedAt": 1772094600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-11T08:50:00.000Z",
+          "lastReviewAt": "2026-02-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:bord:noun",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:bord:noun",
+        "introducedAt": 1772094600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-11T08:50:00.000Z",
+          "lastReviewAt": "2026-02-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:stol:noun",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:stol:noun",
+        "introducedAt": 1772094600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-11T08:50:00.000Z",
+          "lastReviewAt": "2026-02-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:dør:noun",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:dør:noun",
+        "introducedAt": 1772094600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-11T08:50:00.000Z",
+          "lastReviewAt": "2026-02-28T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:vindu:noun",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:vindu:noun",
+        "introducedAt": 1772094600000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-17T08:50:00.000Z",
+          "lastReviewAt": "2026-03-06T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "p:definite",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "p:definite",
+        "introducedAt": 1772613000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-17T08:50:00.000Z",
+          "lastReviewAt": "2026-03-06T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:her:adv",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:her:adv",
+        "introducedAt": 1772613000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-17T08:50:00.000Z",
+          "lastReviewAt": "2026-03-06T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:der:adv",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:der:adv",
+        "introducedAt": 1772613000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-17T08:50:00.000Z",
+          "lastReviewAt": "2026-03-06T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:ligge:verb",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:ligge:verb",
+        "introducedAt": 1772613000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-17T08:50:00.000Z",
+          "lastReviewAt": "2026-03-06T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:stå:verb",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:stå:verb",
+        "introducedAt": 1772613000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-17T08:50:00.000Z",
+          "lastReviewAt": "2026-03-06T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "w:på:prep",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "w:på:prep",
+        "introducedAt": 1772613000000
+      },
+      {
+        "card": {
+          "stability": 10.97775707,
+          "difficulty": 2.09745544,
+          "dueAt": "2026-03-17T08:50:00.000Z",
+          "lastReviewAt": "2026-03-06T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:det-er",
+          "reps": 4,
+          "lapses": 0,
+          "scheduledDays": 11,
+          "learningStep": 0
+        },
+        "id": "c:det-er",
+        "introducedAt": 1772613000000
+      },
+      {
+        "card": {
+          "stability": 2.3065,
+          "difficulty": 2.11810397,
+          "dueAt": "2026-03-10T06:35:00.000Z",
+          "lastReviewAt": "2026-03-10T06:30:00.000Z",
+          "state": 1,
+          "scheduleStatus": "learning",
+          "cardId": "w:mann:noun",
+          "reps": 1,
+          "lapses": 0,
+          "scheduledDays": 0,
+          "learningStep": 1
+        },
+        "id": "w:mann:noun",
+        "introducedAt": 1773124200000
+      },
+      {
+        "card": {
+          "stability": 2.3065,
+          "difficulty": 2.11810397,
+          "dueAt": "2026-03-10T06:35:00.000Z",
+          "lastReviewAt": "2026-03-10T06:30:00.000Z",
+          "state": 1,
+          "scheduleStatus": "learning",
+          "cardId": "w:kvinne:noun",
+          "reps": 1,
+          "lapses": 0,
+          "scheduledDays": 0,
+          "learningStep": 1
+        },
+        "id": "w:kvinne:noun",
+        "introducedAt": 1773124200000
+      },
+      {
+        "card": {
+          "stability": 2.3065,
+          "difficulty": 2.11810397,
+          "dueAt": "2026-03-10T06:35:00.000Z",
+          "lastReviewAt": "2026-03-10T06:30:00.000Z",
+          "state": 1,
+          "scheduleStatus": "learning",
+          "cardId": "w:barn:noun",
+          "reps": 1,
+          "lapses": 0,
+          "scheduledDays": 0,
+          "learningStep": 1
+        },
+        "id": "w:barn:noun",
+        "introducedAt": 1773124200000
+      }
+    ],
+    "meta": {
+      "chosenLesson": null,
+      "days": [
+        "2026-02-20",
+        "2026-02-21",
+        "2026-02-22",
+        "2026-02-23",
+        "2026-02-24",
+        "2026-02-25",
+        "2026-02-26",
+        "2026-02-27",
+        "2026-02-28",
+        "2026-03-01",
+        "2026-03-02",
+        "2026-03-03",
+        "2026-03-04",
+        "2026-03-05",
+        "2026-03-06",
+        "2026-03-07",
+        "2026-03-08",
+        "2026-03-09"
+      ],
+      "prefsAt": 0,
+      "sentenceSeen": {},
+      "settings": {
+        "desiredRetention": 0.9,
+        "minutes": 15,
+        "rate": 0.9,
+        "textScale": 1,
+        "voice": null
+      },
+      "sounds": {
+        "u-o": {
+          "right": 3,
+          "total": 4
+        },
+        "y-i": {
+          "right": 7,
+          "total": 10
+        }
+      },
+      "storiesDone": [
+        "st1-0"
+      ],
+      "totalMs": 44640000
+    },
+    "sync": {
+      "account": "kari.nordmann@example.com",
+      "epoch": 1,
+      "lastOkAt": null,
+      "logSeq": 0,
+      "memRev": 0,
+      "pendingReset": null,
+      "pushedAt": 0
+    }
+  }
+}

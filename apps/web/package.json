@@ -6,6 +6,7 @@
     "dev": "vite dev --port 3000",
     "build": "vite build && cp dist/client/_shell.html dist/client/index.html",
     "preview": "vite preview",
+    "test": "bun test src",
     "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit"
   },
@@ -16,7 +17,6 @@
     "@norsk/protocol": "workspace:*",
     "@norsk/ui": "workspace:*",
     "@stylexjs/stylex": "^0.19.2",
-    "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-router": "1.170.46",
     "@tanstack/react-start": "1.169.5",
     "better-auth": "catalog:",
@@ -24,7 +24,6 @@
     "lucide-react": "^1.74.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "tailwindcss": "^4.1.18",
     "ts-fsrs": "^6.0.0"
   },
   "devDependencies": {

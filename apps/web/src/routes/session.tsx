@@ -1,247 +1,235 @@
 import { lessons } from "@norsk/content";
 import { Session, blockOf, lessonState } from "@norsk/engine";
 import type { Task, TaskResult } from "@norsk/engine";
+import { Card, Chip, Focus, buttonStyle } from "@norsk/ui";
+import { color, display, text, tracking } from "@norsk/ui/tokens.stylex";
+import * as stylex from "@stylexjs/stylex";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Focus } from "../components/Focus";
-import { CardTask } from "../components/tasks/CardTask";
-import { IntroTask } from "../components/tasks/IntroTask";
-import { PatternTask } from "../components/tasks/PatternTask";
-import { SentenceTask } from "../components/tasks/SentenceTask";
-import type { Frame } from "../components/tasks/shared";
-import { SoundTask } from "../components/tasks/SoundTask";
-import { StoryTask } from "../components/tasks/StoryTask";
-import { Chip, buttonClass } from "../components/ui";
+import {
+  minutesLeft,
+  sessionMinutes,
+  summaryOf,
+} from "../components/session-summary";
+import { TaskScreen } from "../components/tasks/task-screen";
 import { addStudyTime, getState, updateMeta } from "../engine/store";
 import { stopSpeaking } from "../lib/speech";
 
-export const Route = createFileRoute("/session")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    minutes: Math.min(120, Math.max(1, Number(s.minutes) || 15)),
-  }),
-  component: SessionPage,
-});
-
 const BLOCK_TITLE = {
-  sounds: "Sounds",
-  review: "Review",
   new: "New",
+  review: "Review",
+  sounds: "Sounds",
   story: "Story",
 } as const;
 
-function SessionPage() {
+const styles = stylex.create({
+  dock: {
+    display: "flex",
+    justifyContent: "center",
+  },
+  back: {
+    width: { default: "100%", [stylex.env.desktop]: "auto" },
+  },
+  hero: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: { default: "0.75rem", [stylex.env.desktop]: "1.375rem" },
+    paddingBottom: { default: "0.875rem", [stylex.env.desktop]: "1.75rem" },
+    textAlign: "center",
+  },
+  done: {
+    fontSize: display.display,
+    fontWeight: 500,
+    letterSpacing: tracking.tighter,
+    lineHeight: 1,
+    margin: 0,
+  },
+  closing: {
+    color: color.fg2,
+    fontSize: { default: text.s17, [stylex.env.desktop]: text.s22 },
+    margin: 0,
+  },
+  tiles: {
+    display: "grid",
+    gap: { default: "0.625rem", [stylex.env.desktop]: "1rem" },
+    gridTemplateColumns: {
+      default: "repeat(2, minmax(0, 1fr))",
+      [stylex.env.desktop]: "repeat(4, minmax(0, 1fr))",
+    },
+  },
+  tile: {
+    padding: { default: "1rem", [stylex.env.desktop]: "1.75rem" },
+  },
+  tileValue: {
+    fontSize: { default: text.s34, [stylex.env.desktop]: text.s56 },
+    fontWeight: 500,
+    letterSpacing: tracking.tight,
+    lineHeight: 1.1,
+  },
+  tileLabel: {
+    color: color.fg2,
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s18 },
+  },
+  note: {
+    alignSelf: "center",
+    color: color.fg3,
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s18 },
+    margin: 0,
+    maxWidth: { default: "20.625rem", [stylex.env.desktop]: "38.75rem" },
+    paddingTop: { default: "0.5rem", [stylex.env.desktop]: "1.25rem" },
+    textAlign: "center",
+  },
+});
+
+interface DoneProps {
+  session: Session;
+  onClose: () => void;
+}
+
+/** The end of a session: what was done in it. */
+const Done = ({ session, onClose }: DoneProps) => {
+  const { spent, closing, tiles, taughtNew } = summaryOf(session);
+  const days = getState().meta.days.length;
+
+  return (
+    <Focus
+      block="recall"
+      title="Done"
+      label={`${spent} min`}
+      progress={1}
+      onClose={onClose}
+      wide
+      dock={
+        <div {...stylex.props(styles.dock)}>
+          <Link
+            to="/"
+            {...stylex.props(buttonStyle("primary", "large"), styles.back)}
+          >
+            Back to Today
+          </Link>
+        </div>
+      }
+    >
+      <div {...stylex.props(styles.hero)}>
+        <Chip strong="Session complete.">
+          {days > 0 ? `Day ${days}` : undefined}
+        </Chip>
+        <h1 {...stylex.props(styles.done)}>Ferdig!</h1>
+        <p {...stylex.props(styles.closing)}>{closing}</p>
+      </div>
+      <div {...stylex.props(styles.tiles)}>
+        {tiles.map((tile) => (
+          <Card key={tile.label} style={styles.tile}>
+            <div {...stylex.props(styles.tileValue)}>{tile.value}</div>
+            <div {...stylex.props(styles.tileLabel)}>{tile.label}</div>
+          </Card>
+        ))}
+      </div>
+      {taughtNew ? (
+        <p {...stylex.props(styles.note)}>
+          New items come back within minutes at first. Open the app again later
+          today, or tomorrow.
+        </p>
+      ) : null}
+    </Focus>
+  );
+};
+
+/** A lesson picked on the Map stops being "chosen" once it is finished. */
+const forgetFinishedChoice = async () => {
+  const { memory, meta } = getState();
+
+  const chosen =
+    meta.chosenLesson === null ? undefined : lessons[meta.chosenLesson];
+
+  if (chosen !== undefined && lessonState(chosen, memory) === "done") {
+    await updateMeta({ chosenLesson: null });
+  }
+};
+
+/** A session under way: the task on screen, and when it was put there. */
+interface Run {
+  session: Session;
+  task: Task;
+  /** How many tasks the session has shown. Each task gets a fresh screen. */
+  count: number;
+  startedAt: number;
+}
+
+/** Asks the session for its next task, given what the learner knows at this moment. */
+const nextRun = (session: Session, count: number, now: number): Run => {
+  const { memory, meta } = getState();
+
+  const task = session.next(
+    {
+      chosenLesson: meta.chosenLesson,
+      memory,
+      soundStats: meta.sounds,
+      storiesDone: new Set(meta.storiesDone),
+    },
+    now
+  );
+
+  return { count, session, startedAt: now, task };
+};
+
+const SessionPage = () => {
   const { minutes } = Route.useSearch();
   const navigate = useNavigate();
-  const session = useRef<Session>(null as unknown as Session);
-  session.current ??= new Session(minutes, Math.random);
-  const [task, setTask] = useState<Task | null>(null);
-  const [count, setCount] = useState(0);
-  const startedAt = useRef(Date.now());
 
-  const advance = useCallback(() => {
-    const { memory, meta } = getState();
-    startedAt.current = Date.now();
-    setTask(
-      session.current.next(
-        {
-          memory,
-          storiesDone: new Set(meta.storiesDone),
-          chosenLesson: meta.chosenLesson,
-          soundStats: meta.sounds,
-        },
-        Date.now()
-      )
-    );
-    setCount((c) => c + 1);
-  }, []);
+  const [run, setRun] = useState(() =>
+    nextRun(new Session(minutes, Math.random), 1, Date.now())
+  );
 
-  useEffect(() => {
-    advance();
+  const { session, task } = run;
 
-    return () => {
+  useEffect(
+    () => () => {
       stopSpeaking();
-    };
-  }, [advance]);
+    },
+    []
+  );
 
-  const onDone = async (result: TaskResult) => {
-    if (!task || task.type === "done") {
-      return;
-    }
-
-    // The session decides how much of the time counts and keeps the statistics.
-    const ms = session.current.complete(
-      task,
-      result,
-      Date.now() - startedAt.current
-    );
-
-    await addStudyTime(ms);
-    // A lesson picked on the Map stops being "chosen" once it is finished.
-    const { memory, meta } = getState();
-
-    if (
-      meta.chosenLesson != null &&
-      lessonState(lessons[meta.chosenLesson], memory) === "done"
-    ) {
-      await updateMeta({ chosenLesson: null });
-    }
-
-    advance();
+  const onClose = () => {
+    navigate({ to: "/" }).catch(reportError);
   };
-
-  if (!task) {
-    return <div className="bg-panel lg:bg-base h-dvh" />;
-  }
-
-  const s = session.current;
-  const onClose = () => void navigate({ to: "/" });
 
   if (task.type === "done") {
-    const answered = s.stats.right + s.stats.wrong;
-    const timeUp = s.elapsedMs >= s.budgetMs;
-    const spent = Math.max(1, Math.round(s.elapsedMs / 60_000));
-    const days = getState().meta.days.length;
-
-    return (
-      <Focus
-        block="recall"
-        title="Done"
-        label={`${spent} min`}
-        progress={1}
-        onClose={onClose}
-        wide
-        dock={
-          <div className="flex justify-center">
-            <Link
-              to="/"
-              className={buttonClass("primary", "large", "w-full lg:w-auto")}
-            >
-              Back to Today
-            </Link>
-          </div>
-        }
-      >
-        <div className="flex flex-col items-center gap-3 pb-3.5 text-center lg:gap-[1.375rem] lg:pb-7">
-          <Chip strong="Session complete.">
-            {days ? `Day ${days}` : undefined}
-          </Chip>
-          <h1 className="text-display m-0 leading-none font-medium tracking-[-0.035em]">
-            Ferdig!
-          </h1>
-          <p className="text-17 text-fg2 lg:text-22 m-0">
-            {timeUp
-              ? "Finished. Your time is up."
-              : "Finished. Nothing more is due right now."}
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 lg:gap-4">
-          {[
-            [spent, spent === 1 ? "minute" : "minutes"],
-            [s.stats.taught, "new items"],
-            [s.stats.reviewed, "items reviewed"],
-            [
-              answered
-                ? `${Math.round((s.stats.right / answered) * 100)}%`
-                : "–",
-              "right first time",
-            ],
-          ].map(([n, label]) => (
-            <div
-              key={label}
-              className="border-line bg-inset flex flex-col rounded-[1.25rem] border p-4 lg:rounded-[1.625rem] lg:p-7"
-            >
-              <div className="text-34 lg:text-56 leading-[1.1] font-medium tracking-[-0.03em]">
-                {n}
-              </div>
-              <div className="text-14 text-fg2 lg:text-18">{label}</div>
-            </div>
-          ))}
-        </div>
-        {s.stats.taught > 0 && (
-          <p className="text-14 text-fg3 lg:text-18 m-0 max-w-[20.625rem] self-center pt-2 text-center lg:max-w-[38.75rem] lg:pt-5">
-            New items come back within minutes at first. Open the app again
-            later today, or tomorrow.
-          </p>
-        )}
-      </Focus>
-    );
+    return <Done session={session} onClose={onClose} />;
   }
 
-  const block = blockOf(task);
-  const left = Math.max(0, Math.ceil((s.budgetMs - s.elapsedMs) / 60_000));
+  const onDone = async (result: TaskResult) => {
+    // The session decides how much of the time counts and keeps the statistics.
+    const counted = session.complete(task, result, Date.now() - run.startedAt);
 
-  const frame: Frame = {
-    block,
-    title: BLOCK_TITLE[block],
-    label: `${left} min left`,
-    progress: s.progress,
-    onClose,
+    await addStudyTime(counted);
+    await forgetFinishedChoice();
+    setRun(nextRun(session, run.count + 1, Date.now()));
   };
 
-  switch (task.type) {
-    case "sound": {
-      return (
-        <SoundTask
-          key={count}
-          pair={task.pair}
-          target={task.target}
-          index={task.index}
-          frame={{ ...frame, label: `${task.index + 1} of ${task.total}` }}
-          onDone={onDone}
-        />
-      );
-    }
+  const block = blockOf(task);
 
-    case "intro": {
-      return (
-        <IntroTask
-          key={count}
-          items={task.items}
-          frame={frame}
-          onDone={onDone}
-        />
-      );
-    }
+  return (
+    <TaskScreen
+      key={run.count}
+      task={task}
+      frame={{
+        block,
+        label: `${minutesLeft(session)} min left`,
+        onClose,
+        progress: session.progress,
+        title: BLOCK_TITLE[block],
+      }}
+      onDone={onDone}
+    />
+  );
+};
 
-    case "pattern": {
-      return (
-        <PatternTask
-          key={count}
-          item={task.item}
-          practice={task.practice}
-          frame={frame}
-          onDone={onDone}
-        />
-      );
-    }
-
-    case "card": {
-      return (
-        <CardTask key={count} item={task.item} frame={frame} onDone={onDone} />
-      );
-    }
-
-    case "sentence": {
-      return (
-        <SentenceTask
-          key={count}
-          sentence={task.sentence}
-          frame={frame}
-          onDone={onDone}
-        />
-      );
-    }
-
-    case "story": {
-      return (
-        <StoryTask
-          key={count}
-          story={task.story}
-          frame={frame}
-          onDone={onDone}
-        />
-      );
-    }
-  }
-}
+export const Route = createFileRoute("/session")({
+  component: SessionPage,
+  validateSearch: (search) => ({
+    minutes: sessionMinutes(Number(search.minutes)),
+  }),
+});

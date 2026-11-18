@@ -1,298 +1,554 @@
-import { items, lessons, sentencesWith, units } from "@norsk/content";
+import { item, items, sentencesWith } from "@norsk/content";
 import type { Item } from "@norsk/content";
 import { itemState, retrievability, sentenceReady } from "@norsk/engine";
-import type { ItemState, Memory } from "@norsk/engine";
-import { createFileRoute } from "@tanstack/react-router";
-import { Ruler, Search } from "lucide-react";
-import { useMemo, useState } from "react";
-
-import { Shell } from "../components/Shell";
-import { hasArticle } from "../components/tasks/shared";
+import type { Memory } from "@norsk/engine";
 import {
   AudioButton,
   Card,
   Display,
-  Label,
+  GroupLabel,
   ListCard,
   PageTitle,
   Progress,
   Tag,
+  effects,
   useDesktop,
-} from "../components/ui";
-import type { TagTone } from "../components/ui";
+} from "@norsk/ui";
+import { color, radius, text, tracking } from "@norsk/ui/tokens.stylex";
+import * as stylex from "@stylexjs/stylex";
+import { createFileRoute } from "@tanstack/react-router";
+import { Ruler, Search } from "lucide-react";
+import { useId, useMemo, useState } from "react";
+
+import { AppShell } from "../components/app-shell";
+import { itemGroups, memoryNote, splitAt } from "../components/item-list";
+import { ITEM_LOOK } from "../components/looks";
+import { hasArticle, soundOf } from "../components/tasks/items";
 import { getScheduler, useApp } from "../engine/store";
-
-export const Route = createFileRoute("/items")({ component: ItemsPage });
-
-const STATE: Record<ItemState, { label: string; tone: TagTone }> = {
-  stable: { label: "Stable", tone: "good" },
-  learning: { label: "Learning", tone: "progress" },
-  ready: { label: "Ready", tone: "new" },
-  locked: { label: "Locked", tone: "neutral" },
-};
+import { speak } from "../lib/speech";
 
 const TONE_NAME = {
   1: "Melody 1: low, then rising",
   2: "Melody 2: dips, then rises",
 };
 
-function ItemDetail({ it }: { it: Item }) {
+/** How many example sentences an item shows. */
+const EXAMPLES = 4;
+
+const styles = stylex.create({
+  search: {
+    alignItems: "center",
+    backgroundColor: color.control,
+    borderRadius: radius.pill,
+    // A hairline inside the field while it has the focus.
+    boxShadow: {
+      default: null,
+      ":focus-within": `inset 0 0 0 1px ${color.strong}`,
+    },
+    display: "flex",
+    fontSize: text.s16,
+    gap: "0.75rem",
+    height: { default: "3rem", [stylex.env.desktop]: "3.25rem" },
+    paddingInline: "1.125rem",
+    width: { default: "100%", [stylex.env.desktop]: "32.5rem" },
+  },
+  searchIcon: {
+    color: color.fg3,
+    flexShrink: 0,
+    height: "1.125rem",
+    width: "1.125rem",
+  },
+  searchField: {
+    "::placeholder": { color: color.fg3 },
+    backgroundColor: "transparent",
+    borderWidth: 0,
+    color: color.fg,
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+    fontSize: text.s16,
+    minWidth: 0,
+    padding: 0,
+  },
+  columns: {
+    alignItems: "start",
+    display: "grid",
+    gap: "1.25rem",
+    gridTemplateColumns: {
+      default: null,
+      [stylex.env.desktop]: "minmax(0, 1fr) 35rem",
+    },
+  },
+  groups: {
+    display: "flex",
+    flexDirection: "column",
+    gap: { default: "1.25rem", [stylex.env.desktop]: "1.75rem" },
+    minWidth: 0,
+  },
+  none: {
+    color: color.fg2,
+    fontSize: { default: text.s16, [stylex.env.desktop]: text.s18 },
+    margin: 0,
+  },
+  group: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.625rem",
+  },
+  groupName: {
+    color: color.fg3,
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    fontWeight: 500,
+    lineHeight: 1.45,
+    margin: 0,
+    paddingInline: "0.25rem",
+  },
+  // The hairline above a row comes from the list card, so the row sets no border of its own on top.
+  row: {
+    alignItems: "center",
+    backgroundColor: "transparent",
+    borderBottomWidth: 0,
+    borderInlineWidth: 0,
+    display: "flex",
+    gap: "1rem",
+    paddingBlock: { default: "0.8125rem", [stylex.env.desktop]: "1.125rem" },
+    paddingInline: 0,
+    textAlign: "left",
+    width: "100%",
+  },
+  rowName: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+    fontSize: { default: text.s17, [stylex.env.desktop]: text.s20 },
+    fontWeight: 500,
+    minWidth: 0,
+  },
+  rowNameChosen: {
+    fontWeight: 600,
+  },
+  rowGloss: {
+    color: color.fg2,
+    fontWeight: 400,
+    paddingLeft: "0.625rem",
+  },
+  side: {
+    display: { default: "none", [stylex.env.desktop]: "block" },
+    position: "sticky",
+    top: 0,
+  },
+  roomy: {
+    padding: { default: "1.125rem", [stylex.env.desktop]: "2rem" },
+  },
+  prompt: {
+    color: color.fg2,
+    fontSize: text.s18,
+  },
+  head: {
+    alignItems: "center",
+    display: "flex",
+    gap: { default: "0.875rem", [stylex.env.desktop]: "1.25rem" },
+  },
+  headAudio: {
+    height: { default: "3rem", [stylex.env.desktop]: "3.75rem" },
+    width: { default: "3rem", [stylex.env.desktop]: "3.75rem" },
+  },
+  shrinks: {
+    minWidth: 0,
+  },
+  title: {
+    fontSize: { default: text.s30, [stylex.env.desktop]: text.s44 },
+    fontWeight: 500,
+    letterSpacing: tracking.tight,
+    lineHeight: 1.1,
+    overflowWrap: "break-word",
+  },
+  gloss: {
+    color: color.fg2,
+    fontSize: { default: text.s16, [stylex.env.desktop]: text.s20 },
+  },
+  facts: {
+    alignItems: "center",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "0.625rem",
+    paddingBottom: { default: "0.25rem", [stylex.env.desktop]: "0.375rem" },
+    paddingTop: { default: "0.875rem", [stylex.env.desktop]: "1.375rem" },
+  },
+  sound: {
+    color: color.fg2,
+    fontSize: text.s16,
+  },
+  melody: {
+    color: color.fg3,
+    fontSize: text.s14,
+  },
+  label: {
+    paddingBottom: "0.5rem",
+    paddingTop: { default: "0.75rem", [stylex.env.desktop]: "1.375rem" },
+  },
+  labelLower: {
+    paddingBottom: "0.5rem",
+    paddingTop: { default: "0.875rem", [stylex.env.desktop]: "1.625rem" },
+  },
+  pair: {
+    borderColor: color.line,
+    borderStyle: "solid",
+    borderTopWidth: 1,
+    borderWidth: 0,
+    display: "flex",
+    fontSize: { default: text.s16, [stylex.env.desktop]: text.s18 },
+    gap: "1rem",
+    justifyContent: "space-between",
+    paddingBlock: { default: "0.5625rem", [stylex.env.desktop]: "0.75rem" },
+  },
+  quiet: {
+    color: color.fg2,
+  },
+  quietRight: {
+    color: color.fg2,
+    textAlign: "right",
+  },
+  strong: {
+    fontWeight: 500,
+  },
+  rule: {
+    color: color.fg2,
+    fontSize: { default: text.s16, [stylex.env.desktop]: text.s18 },
+    margin: 0,
+    paddingBottom: "0.5rem",
+  },
+  meter: {
+    alignItems: "center",
+    display: "flex",
+    gap: "0.875rem",
+  },
+  grow: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+  },
+  percent: {
+    fontSize: text.s16,
+    fontWeight: 500,
+  },
+  note: {
+    color: color.fg2,
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    lineHeight: 1.45,
+    margin: 0,
+    paddingTop: "0.625rem",
+  },
+  sentence: {
+    alignItems: "center",
+    borderColor: color.line,
+    borderStyle: "solid",
+    borderTopWidth: 1,
+    borderWidth: 0,
+    display: "flex",
+    gap: "0.875rem",
+    paddingBlock: { default: "0.625rem", [stylex.env.desktop]: "0.75rem" },
+  },
+  sentenceAudio: {
+    height: "2.25rem",
+    width: "2.25rem",
+  },
+  norwegian: {
+    fontSize: { default: text.s16, [stylex.env.desktop]: text.s18 },
+    fontWeight: 500,
+  },
+  english: {
+    color: color.fg2,
+    fontSize: text.s14,
+    lineHeight: 1.45,
+  },
+});
+
+const say = (words: string) => {
+  speak(words).catch(reportError);
+};
+
+interface ItemDetailProps {
+  shown: Item;
+  /** The moment the page was opened: the memory is described as it was then. */
+  now: number;
+}
+
+const ItemDetail = ({ shown, now }: ItemDetailProps) => {
   const { memory } = useApp();
-  const m = memory.get(it.id);
+  const mem = memory.get(shown.id);
+  const isPattern = shown.kind === "pattern";
 
-  const examples = sentencesWith(it.id)
-    .filter((s) => sentenceReady(s, memory))
-    .slice(0, 4);
+  const examples = sentencesWith(shown.id)
+    .filter((sentence) => sentenceReady(sentence, memory))
+    .slice(0, EXAMPLES);
 
-  const recall = m ? retrievability(getScheduler(), m, Date.now()) : 0;
-  const due = m ? new Date(m.card.dueAt) : null;
-  const state = STATE[itemState(it, memory)];
+  const recall =
+    mem === undefined ? 0 : retrievability(getScheduler(), mem, now);
 
-  const rowClass =
-    "flex justify-between gap-4 border-t border-line py-[0.5625rem] text-16 lg:py-3 lg:text-18";
+  const look = ITEM_LOOK[itemState(shown, memory)];
+  const forms = shown.forms ?? [];
 
   return (
-    <Card className="rise lg:!p-8">
-      <div className="flex items-center gap-3.5 lg:gap-5">
-        {it.kind !== "pattern" && (
-          <AudioButton text={it.text} className="size-12 lg:size-[3.75rem]" />
+    <Card style={[effects.rise, styles.roomy]}>
+      <div {...stylex.props(styles.head)}>
+        {isPattern ? null : (
+          <AudioButton
+            onPlay={() => {
+              say(shown.text);
+            }}
+            style={styles.headAudio}
+          />
         )}
-        <div className="min-w-0">
-          <div className="text-30 lg:text-44 leading-[1.1] font-medium tracking-[-0.03em] break-words">
-            {it.kind === "pattern" ? (
-              it.title
+        <div {...stylex.props(styles.shrinks)}>
+          <div {...stylex.props(styles.title)}>
+            {isPattern ? (
+              shown.title
             ) : (
-              <Display text={it.display} split={hasArticle(it)} />
+              <Display text={shown.display} split={hasArticle(shown)} />
             )}
           </div>
-          {it.kind !== "pattern" && (
-            <div className="text-16 text-fg2 lg:text-20">{it.gloss}</div>
+          {isPattern ? null : (
+            <div {...stylex.props(styles.gloss)}>{shown.gloss}</div>
           )}
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-2.5 pt-3.5 pb-1 lg:pt-[1.375rem] lg:pb-1.5">
-        <Tag tone={state.tone}>{state.label}</Tag>
-        {it.ipa && (
-          <span className="text-16 text-fg2">
-            /{it.ipa.replaceAll("ˈ", "")}/
-          </span>
+      <div {...stylex.props(styles.facts)}>
+        <Tag tone={look.tone}>{look.label}</Tag>
+        {shown.ipa === undefined ? null : (
+          <span {...stylex.props(styles.sound)}>/{soundOf(shown.ipa)}/</span>
         )}
-        {it.tone && (
-          <span className="text-14 text-fg3">{TONE_NAME[it.tone]}</span>
+        {shown.tone === undefined ? null : (
+          <span {...stylex.props(styles.melody)}>{TONE_NAME[shown.tone]}</span>
         )}
       </div>
 
-      {it.forms && it.forms.length > 1 && (
+      {forms.length > 1 ? (
         <>
-          <Label className="pt-3 pb-2 lg:pt-[1.375rem]">Forms</Label>
-          {it.forms.map((f) => (
-            <div key={f.label} className={rowClass}>
-              <span className="text-fg2">{f.label}</span>
-              <span className="font-medium">{f.form}</span>
+          <GroupLabel style={styles.label}>Forms</GroupLabel>
+          {forms.map((row) => (
+            <div key={row.label} {...stylex.props(styles.pair)}>
+              <span {...stylex.props(styles.quiet)}>{row.label}</span>
+              <span {...stylex.props(styles.strong)}>{row.form}</span>
             </div>
           ))}
         </>
-      )}
+      ) : null}
 
-      {it.rule && (
+      {shown.rule === undefined ? null : (
         <>
-          <Label className="pt-3 pb-2 lg:pt-[1.375rem]">The rule</Label>
-          {it.rule.map((r) => (
-            <p key={r} className="text-16 text-fg2 lg:text-18 m-0 pb-2">
-              {r}
+          <GroupLabel style={styles.label}>The rule</GroupLabel>
+          {shown.rule.map((line) => (
+            <p key={line} {...stylex.props(styles.rule)}>
+              {line}
             </p>
           ))}
-          {it.examples?.map((e) => (
-            <div key={e.no} className={rowClass}>
-              <span className="font-medium">{e.no.replace(">", "→")}</span>
-              <span className="text-fg2 text-right">{e.en}</span>
+          {shown.examples?.map((example) => (
+            <div key={example.no} {...stylex.props(styles.pair)}>
+              <span {...stylex.props(styles.strong)}>
+                {example.no.replace(">", "→")}
+              </span>
+              <span {...stylex.props(styles.quietRight)}>{example.en}</span>
             </div>
           ))}
         </>
       )}
 
-      {m && (
+      {mem === undefined ? null : (
         <>
-          <Label className="pt-3.5 pb-2 lg:pt-[1.625rem]">Memory</Label>
-          <div className="flex items-center gap-3.5">
-            <Progress value={recall} fill="bg-green" className="flex-1" />
-            <span className="text-16 font-medium">
+          <GroupLabel style={styles.labelLower}>Memory</GroupLabel>
+          <div {...stylex.props(styles.meter)}>
+            <Progress value={recall} tone="good" style={styles.grow} />
+            <span {...stylex.props(styles.percent)}>
               {Math.round(recall * 100)}%
             </span>
           </div>
-          <p className="text-14 text-fg2 lg:text-16 m-0 pt-2.5 leading-[1.45]">
-            Chance you recall it now. Lasts about{" "}
-            {m.card.stability < 1
-              ? "less than a day"
-              : `${Math.round(m.card.stability)} days`}
-            .
-            {due &&
-              ` Next review: ${due.getTime() <= Date.now() ? "now" : due.toLocaleDateString(undefined, { day: "numeric", month: "short" })}.`}
+          <p {...stylex.props(styles.note)}>
+            Chance you recall it now. Lasts about {memoryNote(mem, now).lasts}.
+            {` Next review: ${memoryNote(mem, now).next}.`}
           </p>
         </>
       )}
 
-      {examples.length > 0 && (
+      {examples.length > 0 ? (
         <>
-          <Label className="pt-3.5 pb-2 lg:pt-[1.625rem]">
+          <GroupLabel style={styles.labelLower}>
             Sentences you can read
-          </Label>
-          {examples.map((s) => (
-            <div
-              key={s.id}
-              className="border-line flex items-center gap-3.5 border-t py-2.5 lg:py-3"
-            >
-              <AudioButton text={s.no} className="size-9" />
-              <div className="min-w-0">
-                <div className="text-16 lg:text-18 font-medium">{s.no}</div>
-                <div className="text-14 text-fg2 leading-[1.45]">{s.en}</div>
+          </GroupLabel>
+          {examples.map((sentence) => (
+            <div key={sentence.id} {...stylex.props(styles.sentence)}>
+              <AudioButton
+                onPlay={() => {
+                  say(sentence.no);
+                }}
+                style={styles.sentenceAudio}
+              />
+              <div {...stylex.props(styles.shrinks)}>
+                <div {...stylex.props(styles.norwegian)}>{sentence.no}</div>
+                <div {...stylex.props(styles.english)}>{sentence.en}</div>
               </div>
             </div>
           ))}
         </>
-      )}
+      ) : null}
     </Card>
   );
+};
+
+interface ItemRowProps {
+  shown: Item;
+  memory: Memory;
+  chosen: boolean;
+  onPick: (id: string) => void;
 }
 
-function ItemRow({
-  it,
-  memory,
-  selected,
-  onPick,
-}: {
-  it: Item;
-  memory: Memory;
-  selected: boolean;
-  onPick: () => void;
-}) {
-  const s = itemState(it, memory);
+const ItemRow = ({ shown, memory, chosen, onPick }: ItemRowProps) => {
+  const look = ITEM_LOOK[itemState(shown, memory)];
+  const isPattern = shown.kind === "pattern";
 
   return (
     <button
       type="button"
-      onClick={onPick}
-      aria-expanded={selected}
-      className="press flex w-full items-center gap-4 border-x-0 border-b-0 bg-transparent px-0 py-[0.8125rem] text-left lg:py-[1.125rem]"
+      onClick={() => {
+        onPick(shown.id);
+      }}
+      aria-expanded={chosen}
+      {...stylex.props(effects.press, styles.row)}
     >
-      <span
-        className={`text-17 lg:text-20 min-w-0 flex-1 ${selected ? "font-semibold" : "font-medium"}`}
-      >
-        {it.kind === "pattern" ? it.title : it.display}
-        {it.kind !== "pattern" && (
-          <span className="text-fg2 pl-2.5 font-normal">{it.gloss}</span>
+      <span {...stylex.props(styles.rowName, chosen && styles.rowNameChosen)}>
+        {isPattern ? shown.title : shown.display}
+        {isPattern ? null : (
+          <span {...stylex.props(styles.rowGloss)}>{shown.gloss}</span>
         )}
       </span>
-      {it.kind === "pattern" ? (
+      {isPattern ? (
         <Tag icon={Ruler}>Pattern</Tag>
       ) : (
-        <Tag tone={STATE[s].tone}>{STATE[s].label}</Tag>
+        <Tag tone={look.tone}>{look.label}</Tag>
       )}
     </button>
   );
+};
+
+interface RowsProps {
+  list: Item[];
+  memory: Memory;
+  selected: string | null;
+  onPick: (id: string) => void;
 }
 
-function ItemsPage() {
+const Rows = ({ list, memory, selected, onPick }: RowsProps) => (
+  <ListCard>
+    {list.map((one) => (
+      <ItemRow
+        key={one.id}
+        shown={one}
+        memory={memory}
+        chosen={selected === one.id}
+        onPick={onPick}
+      />
+    ))}
+  </ListCard>
+);
+
+const ItemsPage = () => {
   const { memory } = useApp();
+  const { openedAt } = Route.useLoaderData();
   const desktop = useDesktop();
+  const searchId = useId();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
-  const q = query.trim().toLowerCase();
+  const groups = useMemo(() => itemGroups(query), [query]);
 
-  const groups = useMemo(
-    () =>
-      units
-        .map((u) => ({
-          unit: u,
-          list: u.lessons
-            .flatMap((li) => lessons[li].items)
-            .map((id) => items[id])
-            .filter(
-              (it) =>
-                !q ||
-                it.text.toLowerCase().includes(q) ||
-                it.gloss.toLowerCase().includes(q)
-            ),
-        }))
-        .filter((g) => g.list.length),
-    [q]
-  );
-
-  const rows = (list: Item[]) =>
-    list.map((it) => (
-      <ItemRow
-        key={it.id}
-        it={it}
-        memory={memory}
-        selected={selected === it.id}
-        onPick={() => {
-          setSelected(selected === it.id ? null : it.id);
-        }}
-      />
-    ));
+  const pick = (id: string) => {
+    setSelected(selected === id ? null : id);
+  };
 
   return (
-    <Shell>
+    <AppShell>
       <PageTitle
         title="Items"
         sub={`${memory.size} of ${Object.keys(items).length} learned.`}
       >
-        <label className="bg-control text-16 flex h-12 w-full items-center gap-3 rounded-full px-[1.125rem] focus-within:shadow-[inset_0_0_0_1px_var(--color-strong)] lg:h-[3.25rem] lg:w-[32.5rem]">
-          <Search className="text-fg3 size-[1.125rem] shrink-0" />
+        <label htmlFor={searchId} {...stylex.props(styles.search)}>
+          <Search {...stylex.props(styles.searchIcon)} />
           <input
+            id={searchId}
             value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
+            onChange={(event) => {
+              setQuery(event.target.value);
             }}
             placeholder="Search Norwegian or English"
             aria-label="Search items"
-            className="text-16 text-fg placeholder:text-fg3 min-w-0 flex-1 border-0 bg-transparent p-0"
+            {...stylex.props(styles.searchField)}
           />
         </label>
       </PageTitle>
-      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_35rem]">
-        <div className="flex min-w-0 flex-col gap-5 lg:gap-7">
-          {groups.length === 0 && (
-            <p className="text-16 text-fg2 lg:text-18 m-0">
+      <div {...stylex.props(styles.columns)}>
+        <div {...stylex.props(styles.groups)}>
+          {groups.length === 0 ? (
+            <p {...stylex.props(styles.none)}>
               No item matches “{query.trim()}”.
             </p>
-          )}
+          ) : null}
           {groups.map(({ unit, list }) => {
             // On a phone the details open right under the chosen row, so the list is cut in two around them.
-            const at = desktop
-              ? -1
-              : list.findIndex((it) => it.id === selected);
+            const cut = desktop ? null : splitAt(list, selected);
 
             return (
-              <section key={unit.index} className="flex flex-col gap-2.5">
-                <h2 className="text-14 text-fg3 lg:text-16 m-0 px-1 leading-[1.45] font-medium">
+              <section key={unit.index} {...stylex.props(styles.group)}>
+                <h2 {...stylex.props(styles.groupName)}>
                   Unit {unit.index}: {unit.name}
                 </h2>
-                {at < 0 ? (
-                  <ListCard>{rows(list)}</ListCard>
+                {cut === null ? (
+                  <Rows
+                    list={list}
+                    memory={memory}
+                    selected={selected}
+                    onPick={pick}
+                  />
                 ) : (
                   <>
-                    <ListCard>{rows(list.slice(0, at + 1))}</ListCard>
-                    <ItemDetail key={selected} it={list[at]} />
-                    {at + 1 < list.length && (
-                      <ListCard>{rows(list.slice(at + 1))}</ListCard>
-                    )}
+                    <Rows
+                      list={cut.before}
+                      memory={memory}
+                      selected={selected}
+                      onPick={pick}
+                    />
+                    <ItemDetail
+                      key={cut.chosen.id}
+                      shown={cut.chosen}
+                      now={openedAt}
+                    />
+                    {cut.after.length > 0 ? (
+                      <Rows
+                        list={cut.after}
+                        memory={memory}
+                        selected={selected}
+                        onPick={pick}
+                      />
+                    ) : null}
                   </>
                 )}
               </section>
             );
           })}
         </div>
-        <div className="sticky top-0 hidden lg:block">
-          {selected ? (
-            <ItemDetail key={selected} it={items[selected]} />
-          ) : (
-            <Card className="text-18 text-fg2 lg:!p-8">
+        <div {...stylex.props(styles.side)}>
+          {selected === null ? (
+            <Card style={[styles.roomy, styles.prompt]}>
               Choose an item to see its forms, sound and memory.
             </Card>
+          ) : (
+            <ItemDetail key={selected} shown={item(selected)} now={openedAt} />
           )}
         </div>
       </div>
-    </Shell>
+    </AppShell>
   );
-}
+};
+
+export const Route = createFileRoute("/items")({
+  component: ItemsPage,
+  loader: () => ({ openedAt: Date.now() }),
+});

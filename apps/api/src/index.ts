@@ -1,343 +1,357 @@
-import { mergeMeta, LOG_PAGE, stampOf } from "@norsk/protocol";
-import type { SyncedMeta } from "@norsk/protocol";
-import type {
-  SyncRequest,
-  SyncResponse,
-  WireLog,
-  WireMem,
+// The server: sync, "Start over", explanations, sign-in, and recorded audio.
+//
+// Hides: nothing clever. Each route checks its input against the protocol, calls one package and
+// answers. Static files are served by Cloudflare directly; this code handles /api/* and /audio/*.
+import { createAuth } from "@norsk/auth";
+import type { Auth, AuthEnv } from "@norsk/auth";
+import { createDb } from "@norsk/db";
+import {
+  AUDIO_FILE,
+  AudioListRequestSchema,
+  ExplainRequestSchema,
+  ResetRequestSchema,
+  ROUTES,
+  SyncRequestSchema,
+  WireLogSchema,
+  WireMemSchema,
 } from "@norsk/protocol";
+import type {
+  AudioListResponse,
+  ErrorBody,
+  ExplainResponse,
+  ResetResponse,
+  SyncResponse,
+} from "@norsk/protocol";
+import { Hono } from "hono";
+import type { Context as HonoContext } from "hono";
+import { HTTPException } from "hono/http-exception";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
+import * as v from "valibot";
 
-// Sync and audio server. Static files are served by Cloudflare directly; this code handles /api/* and /audio/*.
-// It stores one learner's data in D1 and recorded audio in R2, and asks a language model for short explanations (explain.ts). The app signs in with Google (see auth.ts);
-// the audio build script uses a secret key.
-import { getAuth, isAllowed } from "./auth";
-import type { AuthEnv } from "./auth";
 import { explain } from "./explain";
-import type { ExplainEnv } from "./explain";
+import { logError, logInfo, logWarning } from "./log";
 
-interface Env extends AuthEnv, ExplainEnv {
+interface Env extends AuthEnv {
   AUDIO: R2Bucket;
+  /** At most 30 explanations a minute for each learner (wrangler.jsonc). */
+  EXPLAIN_LIMIT: RateLimit;
+  /** Set with `wrangler secret put OPENROUTER_API_KEY`. Without it there are no explanations. */
+  OPENROUTER_API_KEY?: string;
   /** For the audio build script. Set with `wrangler secret put SYNC_KEY`. */
   SYNC_KEY: string;
 }
 
-const MAX_BODY = 4_000_000;
+interface Context {
+  Bindings: Env;
+}
 
-const json = (data: unknown, status = 200) =>
-  Response.json(data, { status, headers: { "cache-control": "no-store" } });
+type Call = HonoContext<Context>;
+
+const MAX_BODY = 4_000_000;
+const NO_STORE = { "cache-control": "no-store" };
+
+const refuse = (status: ContentfulStatusCode, message: string) =>
+  new HTTPException(status, { message });
 
 /** Compares two secrets without leaking, through timing, how much of the guess was right. */
-async function sameSecret(a: string, b: string): Promise<boolean> {
-  const enc = new TextEncoder();
+const sameSecret = async (a: string, b: string): Promise<boolean> => {
+  const encoder = new TextEncoder();
 
+  // Hashes have the same length whatever the secrets are, which the comparison needs.
   const [x, y] = await Promise.all([
-    crypto.subtle.digest("SHA-256", enc.encode(a)),
-    crypto.subtle.digest("SHA-256", enc.encode(b)),
+    crypto.subtle.digest("SHA-256", encoder.encode(a)),
+    crypto.subtle.digest("SHA-256", encoder.encode(b)),
   ]);
 
-  const p = new Uint8Array(x);
-  const q = new Uint8Array(y);
-  let diff = 0;
+  return crypto.subtle.timingSafeEqual(x, y);
+};
 
-  for (let i = 0; i < p.length; i++) {
-    diff |= p[i] ^ q[i];
+let auth: Auth | undefined;
+
+/** One instance per Worker instance: the settings never change while it runs. */
+const authOf = (env: Env) => {
+  auth ??= createAuth(env);
+
+  return auth;
+};
+
+/**
+ * The body of a sync request. A memory or log entry that does not fit the protocol is left out and
+ * the rest is kept, as the server has always done: refusing the whole request would leave the
+ * device unable to sync anything again. `dropped` says how many were left out.
+ */
+const SyncBodySchema = v.pipe(
+  v.looseObject({ log: v.array(v.unknown()), memory: v.array(v.unknown()) }),
+  v.transform((body) => {
+    const log = body.log.filter((entry) => v.is(WireLogSchema, entry));
+    const memory = body.memory.filter((mem) => v.is(WireMemSchema, mem));
+
+    return {
+      dropped:
+        body.log.length + body.memory.length - log.length - memory.length,
+      request: { ...body, log, memory },
+    };
+  }),
+  v.object({ dropped: v.number(), request: SyncRequestSchema })
+);
+
+/** Refuses the request unless it carries the audio build script's secret key. */
+const requireKey = async (c: Call) => {
+  const given = c.req.header("authorization")?.replace(/^Bearer /u, "") ?? "";
+
+  if (c.env.SYNC_KEY === "" || !(await sameSecret(given, c.env.SYNC_KEY))) {
+    throw refuse(401, "Wrong key");
+  }
+};
+
+/**
+ * The signed-in learner and the JSON they sent. Everything under /api/ that is not sign-in or
+ * audio starts here, so each of those routes refuses the same things in the same order.
+ */
+const learnerRequest = async (c: Call) => {
+  if (c.req.method !== "POST") {
+    throw refuse(405, "Use POST");
   }
 
-  return diff === 0;
-}
+  const user = await authOf(c.env).requireUser(c.req.raw);
 
-async function counters(
-  db: D1Database
-): Promise<{ rev: number; epoch: number }> {
-  const { results } = await db
-    .prepare("SELECT key, value FROM state")
-    .all<{ key: string; value: number }>();
-
-  const get = (k: string) => results.find((r) => r.key === k)?.value ?? 0;
-
-  return { rev: get("rev"), epoch: get("epoch") };
-}
-
-const validMem = (m: WireMem) =>
-  typeof m?.id === "string" &&
-  m.id.length <= 200 &&
-  typeof m.card === "object" &&
-  m.card !== null &&
-  Number.isFinite(stampOf(m));
-
-const validLog = (l: WireLog) =>
-  typeof l?.uid === "string" &&
-  l.uid.length <= 64 &&
-  typeof l.id === "string" &&
-  Number.isFinite(l.at);
-
-async function sync(db: D1Database, req: SyncRequest): Promise<SyncResponse> {
-  const { epoch } = await counters(db);
-  // A device from an older generation (before a "Start over" elsewhere) must not bring old data back.
-  const stale = req.epoch != null && req.epoch < epoch;
-  const current = req.epoch === epoch;
-  const memRev = current ? req.memRev : 0;
-  const logSeq = current ? req.logSeq : 0;
-
-  const memory = stale ? [] : (req.memory ?? []).filter(validMem);
-  const log = stale ? [] : (req.log ?? []).filter(validLog);
-
-  const saved = await db
-    .prepare("SELECT data FROM meta WHERE id = 1")
-    .first<{ data: string }>();
-
-  const serverMeta = saved ? (JSON.parse(saved.data) as SyncedMeta) : null;
-  const clientMeta = stale ? null : (req.meta as SyncedMeta | null);
-
-  const meta =
-    serverMeta && clientMeta
-      ? mergeMeta(serverMeta, clientMeta)
-      : (clientMeta ?? serverMeta);
-
-  // One batch is one transaction, so the changes and the reads below see the same state.
-  const writes: D1PreparedStatement[] = [];
-
-  if (memory.length) {
-    writes.push(
-      db.prepare("UPDATE state SET value = value + 1 WHERE key = 'rev'"),
-      db
-        .prepare(
-          `INSERT INTO memory (id, data, stamp, rev)
-           SELECT json_extract(value, '$.id'), json_extract(value, '$.data'), json_extract(value, '$.stamp'),
-                  (SELECT value FROM state WHERE key = 'rev')
-           FROM json_each(?1) WHERE true
-           ON CONFLICT (id) DO UPDATE SET data = excluded.data, stamp = excluded.stamp, rev = excluded.rev
-           WHERE excluded.stamp > memory.stamp`
-        )
-        .bind(
-          JSON.stringify(
-            memory.map((m) => ({ id: m.id, stamp: stampOf(m), data: m }))
-          )
-        )
-    );
+  if (user instanceof Response) {
+    // The auth package's refusal (401 or 403) is sent as it is.
+    throw new HTTPException(401, { res: user });
   }
 
-  if (log.length) {
-    writes.push(
-      db
-        .prepare(
-          "INSERT OR IGNORE INTO log (uid, data) SELECT json_extract(value, '$.uid'), value FROM json_each(?1)"
-        )
-        .bind(JSON.stringify(log))
-    );
+  const text = await c.req.text();
+
+  if (text.length > MAX_BODY) {
+    throw refuse(413, "Too much data in one request");
   }
 
-  if (clientMeta && meta) {
-    writes.push(
-      db
-        .prepare(
-          "INSERT INTO meta (id, data) VALUES (1, ?1) ON CONFLICT (id) DO UPDATE SET data = excluded.data"
-        )
-        .bind(JSON.stringify(meta))
-    );
+  try {
+    const body: unknown = JSON.parse(text);
+
+    return { body, user };
+  } catch {
+    throw refuse(400, "Not JSON");
+  }
+};
+
+const app = new Hono<Context>();
+
+// Recorded audio is public and never changes: a new recording gets a new name.
+app.get("/audio/*", async (c) => {
+  const name = c.req.path.slice("/audio/".length);
+  const recording = AUDIO_FILE.test(name) ? await c.env.AUDIO.get(name) : null;
+
+  if (recording === null) {
+    throw refuse(404, "Not found");
   }
 
-  const reads = [
-    db.prepare("SELECT data, rev FROM memory WHERE rev > ?1").bind(memRev),
-    db
-      .prepare("SELECT seq, data FROM log WHERE seq > ?1 ORDER BY seq LIMIT ?2")
-      .bind(logSeq, LOG_PAGE + 1),
-    db.prepare("SELECT value FROM state WHERE key = 'rev'"),
-  ];
-
-  const results = await db.batch([...writes, ...reads]);
-
-  const [memRows, logRows, revRows] = results.slice(writes.length) as [
-    D1Result<{ data: string; rev: number }>,
-    D1Result<{ seq: number; data: string }>,
-    D1Result<{ value: number }>,
-  ];
-
-  // The device already has what it just sent.
-  const sentMem = new Map(memory.map((m) => [m.id, stampOf(m)]));
-  const sentLog = new Set(log.map((l) => l.uid));
-  const page = logRows.results.slice(0, LOG_PAGE);
-
-  const outMem = memRows.results
-    .map((r) => JSON.parse(r.data) as WireMem)
-    .filter((m) => sentMem.get(m.id) !== stampOf(m));
-
-  const outLog = page
-    .map((r) => JSON.parse(r.data) as WireLog)
-    .filter((l) => !sentLog.has(l.uid));
-
-  return {
-    epoch,
-    reset: stale,
-    memRev: revRows.results[0]?.value ?? 0,
-    logSeq: page.at(-1)?.seq ?? logSeq,
-    more: logRows.results.length > LOG_PAGE,
-    memory: outMem,
-    log: outLog,
-    meta,
-  };
-}
-
-/** "Start over": deletes everything and starts a new generation, so other devices drop their copies too. */
-async function reset(db: D1Database, epoch: number): Promise<Response> {
-  const now = await counters(db);
-
-  if (!Number.isFinite(epoch) || epoch < now.epoch) {
-    return json({ error: "A newer reset already happened" }, 409);
-  }
-
-  if (epoch > now.epoch) {
-    await db.batch([
-      db.prepare("DELETE FROM memory"),
-      db.prepare("DELETE FROM log"),
-      db.prepare("DELETE FROM meta"),
-      db.prepare("UPDATE state SET value = ?1 WHERE key = 'epoch'").bind(epoch),
-    ]);
-  }
-
-  return json({ epoch });
-}
-
-const AUDIO_PATH = /^\/audio\/([a-z0-9-]{1,40}\/[0-9a-f]{20}\.mp3)$/;
-
-/** Recorded audio is public and never changes: a new recording gets a new name. */
-async function audio(env: Env, name: string): Promise<Response> {
-  const object = await env.AUDIO.get(name);
-
-  if (!object) {
-    return new Response("Not found", {
-      status: 404,
-      headers: { "cache-control": "no-store" },
-    });
-  }
-
-  return new Response(object.body, {
+  return new Response(recording.body, {
     headers: {
-      "content-type": "audio/mpeg",
       "cache-control": "public, max-age=31536000, immutable",
-      etag: object.httpEtag,
+      "content-type": "audio/mpeg",
+      etag: recording.httpEtag,
     },
   });
-}
+});
+
+app.all("/api/auth/*", async (c) => await authOf(c.env).handler(c.req.raw));
+
+// Recordings are uploaded by the audio build script, which has the secret key and no browser session.
+app.put("/api/audio/*", async (c) => {
+  await requireKey(c);
+
+  const name = c.req.path.slice("/api/audio/".length);
+
+  if (!AUDIO_FILE.test(name)) {
+    throw refuse(404, "Not found");
+  }
+
+  const recording = await c.req.arrayBuffer();
+
+  if (recording.byteLength > MAX_BODY) {
+    throw refuse(413, "File too large");
+  }
+
+  await c.env.AUDIO.put(name, recording, {
+    httpMetadata: { contentType: "audio/mpeg" },
+  });
+
+  return c.json({ ok: true }, 200, NO_STORE);
+});
 
 /** Names of all recordings of one voice, so the build script uploads only what is missing. */
-async function audioList(env: Env, voice: string): Promise<string[]> {
-  const names: string[] = [];
-  let cursor: string | undefined;
+app.post(ROUTES.audioList, async (c) => {
+  await requireKey(c);
 
-  do {
-    const page = await env.AUDIO.list({ prefix: `${voice}/`, cursor });
-    names.push(...page.objects.map((o) => o.key));
-    cursor = page.truncated ? page.cursor : undefined;
-  } while (cursor);
+  const request = v.safeParse(
+    AudioListRequestSchema,
+    await c.req.json().catch(() => null)
+  );
 
-  return names;
-}
+  if (!request.success) {
+    throw refuse(400, "Not a voice");
+  }
 
-export default {
-  async fetch(request, env): Promise<Response> {
-    const { pathname } = new URL(request.url);
-    const file = AUDIO_PATH.exec(pathname)?.[1];
+  const names: AudioListResponse = [];
+  const options: R2ListOptions = { prefix: `${request.output.voice}/` };
+  let more = true;
 
-    if (pathname.startsWith("/audio/")) {
-      return file && request.method === "GET"
-        ? await audio(env, file)
-        : new Response("Not found", { status: 404 });
+  while (more) {
+    // oxlint-disable-next-line no-await-in-loop -- Each page can only be asked for with the cursor from the page before it.
+    const page = await c.env.AUDIO.list(options);
+
+    names.push(...page.objects.map((object) => object.key));
+    more = page.truncated;
+
+    if (page.truncated) {
+      options.cursor = page.cursor;
     }
+  }
 
-    if (!pathname.startsWith("/api/")) {
-      return new Response("Not found", { status: 404 });
-    }
+  return c.json(names, 200, NO_STORE);
+});
 
-    if (pathname.startsWith("/api/auth/")) {
-      return await getAuth(env).handler(request);
-    }
+// With the key, anything else here is simply not there.
+const noSuchUpload = async (c: Call) => {
+  await requireKey(c);
 
-    // Recordings are uploaded by scripts/build-audio.ts, which has the secret key and no browser session.
-    if (pathname.startsWith("/api/audio")) {
-      const given =
-        request.headers.get("authorization")?.replace(/^Bearer /, "") ?? "";
+  throw refuse(404, "Not found");
+};
 
-      if (!env.SYNC_KEY || !(await sameSecret(given, env.SYNC_KEY))) {
-        return json({ error: "Wrong key" }, 401);
-      }
+app.all("/api/audio/*", noSuchUpload);
 
-      const upload = /^\/api(\/audio\/.+)$/
-        .exec(pathname)?.[1]
-        .match(AUDIO_PATH)?.[1];
+app.all(ROUTES.audioList, noSuchUpload);
 
-      if (upload && request.method === "PUT") {
-        const body = await request.arrayBuffer();
+// Everything else under /api/ is for the signed-in learner, and takes JSON by POST.
+app.post(ROUTES.sync, async (c) => {
+  const { body, user } = await learnerRequest(c);
+  const sent = v.safeParse(SyncBodySchema, body);
 
-        if (body.byteLength > MAX_BODY) {
-          return json({ error: "File too large" }, 413);
-        }
+  if (!sent.success) {
+    throw refuse(400, "Not a sync request");
+  }
 
-        await env.AUDIO.put(upload, body, {
-          httpMetadata: { contentType: "audio/mpeg" },
-        });
+  const { dropped, request } = sent.output;
+  const started = Date.now();
 
-        return json({ ok: true });
-      }
+  const db = createDb(c.env.DB, {
+    onUnreadableRow: (row) => {
+      logWarning("sync.unreadable_row", { key: row.key, table: row.table });
+    },
+  });
 
-      if (pathname === "/api/audio-list" && request.method === "POST") {
-        const { voice } = (await request.json().catch(() => ({}))) as {
-          voice?: string;
-        };
+  const answer: SyncResponse = await db.exchange(request);
 
-        return json(await audioList(env, String(voice)));
-      }
+  if (dropped > 0) {
+    logWarning("sync.dropped", { items: dropped, user: user.id });
+  }
 
-      return json({ error: "Not found" }, 404);
-    }
+  logInfo("sync", {
+    logIn: request.log.length,
+    logOut: answer.log.length,
+    memoryIn: request.memory.length,
+    memoryOut: answer.memory.length,
+    metaIn: request.meta !== null,
+    more: answer.more,
+    ms: Date.now() - started,
+    reset: answer.reset,
+    user: user.id,
+  });
 
-    if (request.method !== "POST") {
-      return json({ error: "Use POST" }, 405);
-    }
+  return c.json(answer, 200, NO_STORE);
+});
 
-    // The session is a cookie, so refuse requests that another website made the browser send.
-    const origin = request.headers.get("origin");
+/** "Start over": deletes everything and starts a new generation, so other devices drop their copies too. */
+app.post(ROUTES.reset, async (c) => {
+  const { body, user } = await learnerRequest(c);
+  const request = v.safeParse(ResetRequestSchema, body);
 
-    if (origin && origin !== new URL(request.url).origin) {
-      return json({ error: "Wrong origin" }, 403);
-    }
+  if (!request.success) {
+    throw refuse(400, "Not a reset request");
+  }
 
-    const session = await getAuth(env).api.getSession({
-      headers: request.headers,
+  const { epoch } = request.output;
+
+  if (!(await createDb(c.env.DB).reset(epoch))) {
+    throw refuse(409, "A newer reset already happened");
+  }
+
+  logInfo("reset", { epoch, user: user.id });
+
+  return c.json({ epoch } satisfies ResetResponse, 200, NO_STORE);
+});
+
+app.post(ROUTES.explain, async (c) => {
+  const { body, user } = await learnerRequest(c);
+  const apiKey = c.env.OPENROUTER_API_KEY;
+
+  if (apiKey === undefined || apiKey === "") {
+    throw refuse(503, "Explanations are not set up");
+  }
+
+  const request = v.safeParse(ExplainRequestSchema, body);
+
+  if (!request.success) {
+    throw refuse(400, "Missing fields");
+  }
+
+  const allowed = await c.env.EXPLAIN_LIMIT.limit({ key: user.id });
+
+  if (!allowed.success) {
+    throw refuse(429, "Too many explanations. Try again in a minute.");
+  }
+
+  const explanation = await explain(apiKey, request.output);
+
+  if (!explanation.ok) {
+    throw refuse(explanation.status, explanation.error);
+  }
+
+  return c.json(
+    { text: explanation.text } satisfies ExplainResponse,
+    200,
+    NO_STORE
+  );
+});
+
+// Any other address under /api/ is refused like the ones above, then is not there.
+app.all("/api/*", async (c) => {
+  await learnerRequest(c);
+
+  throw refuse(404, "Not found");
+});
+
+app.notFound((c) =>
+  c.json({ error: "Not found" } satisfies ErrorBody, 404, NO_STORE)
+);
+
+// Every answer that is not a success has the same body: { error }.
+app.onError((problem, c) => {
+  const refused = problem instanceof HTTPException;
+
+  // The auth package's refusals come ready-made, in the same form.
+  if (refused && problem.res !== undefined) {
+    return problem.res;
+  }
+
+  const status = refused ? problem.status : 500;
+
+  if (status >= 500) {
+    logError("error", {
+      message: problem.message,
+      method: c.req.method,
+      name: problem.name,
+      path: c.req.path,
+      status,
     });
+  }
 
-    if (!session || !isAllowed(env, session.user.email)) {
-      return json({ error: "Not signed in" }, 401);
-    }
+  return c.json(
+    { error: refused ? problem.message : "Server error" } satisfies ErrorBody,
+    status,
+    NO_STORE
+  );
+});
 
-    const text = await request.text();
-
-    if (text.length > MAX_BODY) {
-      return json({ error: "Too much data in one request" }, 413);
-    }
-
-    let body: unknown;
-
-    try {
-      body = JSON.parse(text);
-    } catch {
-      return json({ error: "Not JSON" }, 400);
-    }
-
-    if (pathname === "/api/sync") {
-      return json(await sync(env.DB, body as SyncRequest));
-    }
-
-    if (pathname === "/api/reset") {
-      return await reset(env.DB, (body as { epoch: number }).epoch);
-    }
-
-    if (pathname === "/api/explain") {
-      const { status, ...rest } = await explain(env, body);
-
-      return json(rest, status);
-    }
-
-    return json({ error: "Not found" }, 404);
-  },
-} satisfies ExportedHandler<Env>;
+export default app;

@@ -106,4 +106,11 @@
   [data-norsk-list] > * + * {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
+
+  /* On a phone the two actions of a dock row share its width. */
+  @media not all and (min-width: 64rem) {
+    [data-norsk-dock-row] > * {
+      flex: 1 1 0%;
+    }
+  }
 }

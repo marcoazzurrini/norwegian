@@ -1,10 +1,12 @@
+import { Button, ListCard, PageTitle, Segmented, effects } from "@norsk/ui";
+import { color, radius, text } from "@norsk/ui/tokens.stylex";
+import * as stylex from "@stylexjs/stylex";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, ChevronsUpDown, WifiOff } from "lucide-react";
 import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 
-import { Shell } from "../components/Shell";
-import { Button, ListCard, PageTitle, Segmented } from "../components/ui";
+import { AppShell } from "../components/app-shell";
 import { exportData, updateSettings, useApp } from "../engine/store";
 import {
   restoreBackup,
@@ -13,79 +15,213 @@ import {
   syncNow,
   useSync,
 } from "../engine/sync";
+import type { SyncStatus } from "../engine/sync";
 import { speak, useVoices } from "../lib/speech";
 
-export const Route = createFileRoute("/settings")({ component: SettingsPage });
+const LENGTHS = [
+  [5, "5 min"],
+  [15, "15 min"],
+  [25, "25 min"],
+  [40, "40 min"],
+] as const;
 
-function Row({
-  title,
-  help,
-  children,
-}: {
+const TARGETS = [
+  [0.85, "85%"],
+  [0.9, "90%"],
+  [0.92, "92%"],
+] as const;
+
+const SIZES = [
+  [0.9, "Small"],
+  [1, "Normal"],
+  [1.15, "Large"],
+  [1.3, "Larger"],
+] as const;
+
+const SPEEDS = [
+  [0.7, "Slow"],
+  [0.9, "Normal"],
+  [1, "Fast"],
+] as const;
+
+const styles = stylex.create({
+  cards: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.25rem",
+  },
+  row: {
+    alignItems: { default: "flex-start", [stylex.env.desktop]: "center" },
+    display: "flex",
+    flexDirection: { default: "column", [stylex.env.desktop]: "row" },
+    gap: { default: "0.75rem", [stylex.env.desktop]: "1.5rem" },
+    justifyContent: { default: null, [stylex.env.desktop]: "space-between" },
+    paddingBlock: { default: "1rem", [stylex.env.desktop]: "1.375rem" },
+  },
+  rowText: {
+    maxWidth: "32.5rem",
+  },
+  rowTitle: {
+    fontSize: { default: text.s17, [stylex.env.desktop]: text.s20 },
+    fontWeight: 500,
+  },
+  rowHelp: {
+    color: color.fg2,
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    lineHeight: 1.45,
+  },
+  rowControl: {
+    flexShrink: 0,
+    maxWidth: "100%",
+  },
+  voice: {
+    alignItems: "center",
+    display: "inline-flex",
+    maxWidth: "100%",
+    position: "relative",
+  },
+  voiceSelect: {
+    appearance: "none",
+    backgroundColor: color.control,
+    borderRadius: radius.pill,
+    borderWidth: 0,
+    color: color.fg,
+    fontSize: text.s15,
+    fontWeight: 500,
+    height: "2.625rem",
+    maxWidth: "100%",
+    paddingLeft: "1.125rem",
+    paddingRight: "2.5rem",
+  },
+  voiceIcon: {
+    color: color.fg3,
+    height: "1rem",
+    pointerEvents: "none",
+    position: "absolute",
+    right: "0.875rem",
+    width: "1rem",
+  },
+  buttons: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "0.5rem",
+  },
+  status: {
+    alignItems: "center",
+    color: color.fg2,
+    display: "flex",
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    gap: "0.5rem",
+    margin: 0,
+  },
+  statusInCard: {
+    paddingBottom: { default: "1rem", [stylex.env.desktop]: "1.375rem" },
+  },
+  mark: {
+    flexShrink: 0,
+    height: "1rem",
+    width: "1rem",
+  },
+  good: { color: color.green },
+  bad: { color: color.red },
+});
+
+interface RowProps {
   title: string;
   help?: string;
   children: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col items-start gap-3 py-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:py-[1.375rem]">
-      <div className="max-w-[32.5rem]">
-        <div className="text-17 lg:text-20 font-medium">{title}</div>
-        {help && (
-          <div className="text-14 text-fg2 lg:text-16 leading-[1.45]">
-            {help}
-          </div>
-        )}
-      </div>
-      <div className="max-w-full shrink-0">{children}</div>
-    </div>
-  );
 }
 
-function SettingsPage() {
+const Row = ({ title, help, children }: RowProps) => (
+  <div {...stylex.props(styles.row)}>
+    <div {...stylex.props(styles.rowText)}>
+      <div {...stylex.props(styles.rowTitle)}>{title}</div>
+      {help === undefined ? null : (
+        <div {...stylex.props(styles.rowHelp)}>{help}</div>
+      )}
+    </div>
+    <div {...stylex.props(styles.rowControl)}>{children}</div>
+  </div>
+);
+
+/** One line on how the last sync went. */
+const syncLine = ({ error, busy, lastOkAt }: SyncStatus): string => {
+  if (error !== null) {
+    return error;
+  }
+
+  if (busy) {
+    return "Syncing now.";
+  }
+
+  if (lastOkAt === null) {
+    return "Not synced yet.";
+  }
+
+  const time = new Date(lastOkAt).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `Last synced at ${time}.`;
+};
+
+/** Hands the learner a file with all their progress. */
+const saveBackup = async () => {
+  const backup = new Blob([await exportData()], { type: "application/json" });
+  const link = document.createElement("a");
+
+  link.href = URL.createObjectURL(backup);
+  link.download = `norsk-backup-${new Date().toLocaleDateString("sv-SE")}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+};
+
+/** Replaces all progress with a backup file. Returns what to tell the learner. */
+const restoreFrom = async (backup: File): Promise<string> => {
+  try {
+    await restoreBackup(await backup.text());
+
+    return "Backup restored.";
+  } catch (error) {
+    return error instanceof Error
+      ? error.message
+      : "The file could not be read.";
+  }
+};
+
+/** Saves the speaking speed and lets the learner hear it. */
+const changeRate = async (rate: number) => {
+  await updateSettings({ rate });
+  await speak("Hei! Hvordan går det?");
+};
+
+const SettingsPage = () => {
   const { meta, memory } = useApp();
-  const s = meta.settings;
+  const { settings } = meta;
   const voices = useVoices();
-  const file = useRef<HTMLInputElement>(null);
+  const [firstVoice] = voices;
+  const fileInput = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
   const [confirmReset, setConfirmReset] = useState(false);
   const sync = useSync();
 
-  const syncText =
-    sync.error ??
-    (sync.busy
-      ? "Syncing now."
-      : sync.lastOkAt
-        ? `Last synced at ${new Date(sync.lastOkAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}.`
-        : "Not synced yet.");
-
-  const download = async () => {
-    const blob = new Blob([await exportData()], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `norsk-backup-${new Date().toLocaleDateString("sv-SE")}.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
+  const restore = async (backup: File | undefined) => {
+    if (backup !== undefined) {
+      setMessage(await restoreFrom(backup));
+    }
   };
 
-  const restore = async (f: File | undefined) => {
-    if (!f) {
-      return;
-    }
-
-    try {
-      await restoreBackup(await f.text());
-      setMessage("Backup restored.");
-    } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : "The file could not be read."
-      );
-    }
+  const deleteEverything = async () => {
+    await startOver();
+    setConfirmReset(false);
+    setMessage("All progress deleted.");
   };
 
   return (
-    <Shell width="lg:max-w-[60rem]">
+    <AppShell width="narrow">
       <PageTitle title="Settings" />
-      <div className="flex flex-col gap-5">
+      <div {...stylex.props(styles.cards)}>
         <ListCard>
           <Row
             title="Session length"
@@ -93,9 +229,11 @@ function SettingsPage() {
           >
             <Segmented
               label="Session length"
-              value={s.minutes}
-              options={[5, 15, 25, 40].map((m) => [m, `${m} min`])}
-              onPick={(minutes) => void updateSettings({ minutes })}
+              value={settings.minutes}
+              options={LENGTHS}
+              onPick={(minutes) => {
+                updateSettings({ minutes }).catch(reportError);
+              }}
             />
           </Row>
           <Row
@@ -104,28 +242,21 @@ function SettingsPage() {
           >
             <Segmented
               label="Recall target"
-              value={s.desiredRetention}
-              options={[
-                [0.85, "85%"],
-                [0.9, "90%"],
-                [0.92, "92%"],
-              ]}
-              onPick={(desiredRetention) =>
-                void updateSettings({ desiredRetention })
-              }
+              value={settings.desiredRetention}
+              options={TARGETS}
+              onPick={(desiredRetention) => {
+                updateSettings({ desiredRetention }).catch(reportError);
+              }}
             />
           </Row>
           <Row title="Text size">
             <Segmented
               label="Text size"
-              value={s.textScale}
-              options={[
-                [0.9, "Small"],
-                [1, "Normal"],
-                [1.15, "Large"],
-                [1.3, "Larger"],
-              ]}
-              onPick={(textScale) => void updateSettings({ textScale })}
+              value={settings.textScale}
+              options={SIZES}
+              onPick={(textScale) => {
+                updateSettings({ textScale }).catch(reportError);
+              }}
             />
           </Row>
         </ListCard>
@@ -134,45 +265,41 @@ function SettingsPage() {
           <Row
             title="Voice"
             help={
-              voices.length
-                ? "The Norwegian voice used for words and sentences."
-                : "No Norwegian voice is installed on this device. Add one in the system settings."
+              firstVoice === undefined
+                ? "No Norwegian voice is installed on this device. Add one in the system settings."
+                : "The Norwegian voice used for words and sentences."
             }
           >
-            {voices.length > 0 && (
-              <div className="relative inline-flex max-w-full items-center">
+            {firstVoice === undefined ? null : (
+              <div {...stylex.props(styles.voice)}>
                 <select
-                  value={s.voice ?? voices[0].voiceURI}
-                  onChange={(e) =>
-                    void updateSettings({ voice: e.target.value })
-                  }
+                  value={settings.voice ?? firstVoice.voiceURI}
+                  onChange={(event) => {
+                    updateSettings({ voice: event.target.value }).catch(
+                      reportError
+                    );
+                  }}
                   aria-label="Voice"
-                  className="press bg-control text-15 text-fg h-[2.625rem] max-w-full appearance-none rounded-full border-0 pr-10 pl-[1.125rem] font-medium"
+                  {...stylex.props(effects.press, styles.voiceSelect)}
                 >
-                  {voices.map((v) => (
-                    <option key={v.voiceURI} value={v.voiceURI}>
-                      {v.name}
+                  {voices.map((voice) => (
+                    <option key={voice.voiceURI} value={voice.voiceURI}>
+                      {voice.name}
                     </option>
                   ))}
                 </select>
-                <ChevronsUpDown className="text-fg3 pointer-events-none absolute right-3.5 size-4" />
+                <ChevronsUpDown {...stylex.props(styles.voiceIcon)} />
               </div>
             )}
           </Row>
           <Row title="Speaking speed">
             <Segmented
               label="Speaking speed"
-              value={s.rate}
-              options={[
-                [0.7, "Slow"],
-                [0.9, "Normal"],
-                [1, "Fast"],
-              ]}
-              onPick={(rate) =>
-                void updateSettings({ rate }).then(
-                  async () => await speak("Hei! Hvordan går det?")
-                )
-              }
+              value={settings.rate}
+              options={SPEEDS}
+              onPick={(rate) => {
+                changeRate(rate).catch(reportError);
+              }}
             />
           </Row>
         </ListCard>
@@ -181,36 +308,37 @@ function SettingsPage() {
           <div>
             <Row
               title="Account"
-              help={`Signed in as ${sync.account}. This device shares its progress with your other signed-in devices.`}
+              help={`Signed in as ${String(sync.account)}. This device shares its progress with your other signed-in devices.`}
             >
-              <div className="flex flex-wrap gap-2">
+              <div {...stylex.props(styles.buttons)}>
                 <Button
                   variant="secondary"
                   size="small"
-                  onClick={() => void syncNow()}
+                  onClick={() => {
+                    syncNow().catch(reportError);
+                  }}
                 >
                   Sync now
                 </Button>
                 <Button
                   variant="secondary"
                   size="small"
-                  onClick={() => void signOut()}
+                  onClick={() => {
+                    signOut().catch(reportError);
+                  }}
                 >
                   Sign out
                 </Button>
               </div>
             </Row>
-            <p
-              className="text-14 text-fg2 lg:text-16 m-0 flex items-center gap-2 pb-4 lg:pb-[1.375rem]"
-              role="status"
-            >
-              {sync.error ? (
-                <WifiOff className="text-red size-4 shrink-0" />
+            <output {...stylex.props(styles.status, styles.statusInCard)}>
+              {sync.error === null ? (
+                <Check {...stylex.props(styles.mark, styles.good)} />
               ) : (
-                <Check className="text-green size-4 shrink-0" />
+                <WifiOff {...stylex.props(styles.mark, styles.bad)} />
               )}
-              {syncText}
-            </p>
+              {syncLine(sync)}
+            </output>
           </div>
         </ListCard>
 
@@ -219,27 +347,33 @@ function SettingsPage() {
             title="Backup"
             help="Save a copy of your progress as a file. Restoring a file replaces the progress on every signed-in device."
           >
-            <div className="flex flex-wrap gap-2">
+            <div {...stylex.props(styles.buttons)}>
               <Button
                 variant="secondary"
                 size="small"
-                onClick={() => void download()}
+                onClick={() => {
+                  saveBackup().catch(reportError);
+                }}
               >
                 Save backup
               </Button>
               <Button
                 variant="secondary"
                 size="small"
-                onClick={() => file.current?.click()}
+                onClick={() => {
+                  fileInput.current?.click();
+                }}
               >
                 Restore
               </Button>
               <input
-                ref={file}
+                ref={fileInput}
                 type="file"
                 accept="application/json"
                 hidden
-                onChange={(e) => void restore(e.target.files?.[0])}
+                onChange={(event) => {
+                  restore(event.target.files?.[0]).catch(reportError);
+                }}
               />
             </div>
           </Row>
@@ -248,18 +382,13 @@ function SettingsPage() {
             help={`Deletes all progress on every signed-in device: ${memory.size} learned items.`}
           >
             {confirmReset ? (
-              <div className="flex flex-wrap gap-2">
+              <div {...stylex.props(styles.buttons)}>
                 <Button
                   variant="danger"
                   size="small"
-                  onClick={() =>
-                    void startOver().then(
-                      () => (
-                        setConfirmReset(false),
-                        setMessage("All progress deleted.")
-                      )
-                    )
-                  }
+                  onClick={() => {
+                    deleteEverything().catch(reportError);
+                  }}
                 >
                   Delete everything
                 </Button>
@@ -286,16 +415,15 @@ function SettingsPage() {
             )}
           </Row>
         </ListCard>
-        {message && (
-          <p
-            className="text-14 text-fg2 lg:text-16 m-0 flex items-center gap-2"
-            role="status"
-          >
-            <Check className="text-green size-4 shrink-0" />
+        {message === "" ? null : (
+          <output {...stylex.props(styles.status)}>
+            <Check {...stylex.props(styles.mark, styles.good)} />
             {message}
-          </p>
+          </output>
         )}
       </div>
-    </Shell>
+    </AppShell>
   );
-}
+};
+
+export const Route = createFileRoute("/settings")({ component: SettingsPage });

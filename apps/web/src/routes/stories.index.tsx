@@ -1,78 +1,151 @@
 import { stories, units } from "@norsk/content";
 import type { Story } from "@norsk/content";
 import { storyReady } from "@norsk/engine";
+import { ListCard, PageTitle, Tag, effects } from "@norsk/ui";
+import { color, text } from "@norsk/ui/tokens.stylex";
+import * as stylex from "@stylexjs/stylex";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 
-import { Shell } from "../components/Shell";
-import { ListCard, PageTitle, Tag } from "../components/ui";
+import { AppShell } from "../components/app-shell";
 import { useApp } from "../engine/store";
 
-export const Route = createFileRoute("/stories/")({ component: StoriesPage });
+const styles = stylex.create({
+  columns: {
+    alignItems: "start",
+    display: "grid",
+    gap: "1.25rem",
+    gridTemplateColumns: {
+      default: null,
+      [stylex.env.desktop]: "repeat(2, minmax(0, 1fr))",
+    },
+  },
+  // One list on a phone, two columns on a wide screen.
+  phoneOnly: {
+    display: { default: "flex", [stylex.env.desktop]: "none" },
+  },
+  wideOnly: {
+    display: { default: "none", [stylex.env.desktop]: "flex" },
+  },
+  row: {
+    alignItems: "center",
+    display: "flex",
+    gap: "1rem",
+    paddingBlock: { default: "0.8125rem", [stylex.env.desktop]: "1.125rem" },
+  },
+  link: {
+    color: color.fg,
+    textDecoration: "none",
+  },
+  locked: {
+    opacity: 0.5,
+  },
+  names: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+    minWidth: 0,
+  },
+  title: {
+    display: "block",
+    fontSize: { default: text.s17, [stylex.env.desktop]: text.s20 },
+    fontWeight: 500,
+  },
+  about: {
+    color: color.fg2,
+    display: "block",
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    lineHeight: 1.45,
+  },
+  lock: {
+    color: color.fg3,
+    height: "1.125rem",
+    width: "1.125rem",
+  },
+});
 
-function StoriesPage() {
+type StoryState = "read" | "new" | "locked";
+
+interface StoryMarkProps {
+  state: StoryState;
+}
+
+const StoryMark = ({ state }: StoryMarkProps) => {
+  if (state === "read") {
+    return <Tag tone="good">Read</Tag>;
+  }
+
+  if (state === "new") {
+    return <Tag tone="new">New</Tag>;
+  }
+
+  return <Lock aria-label="Locked" {...stylex.props(styles.lock)} />;
+};
+
+interface StoryRowProps {
+  story: Story;
+  /** True if every word of the story has been taught. */
+  ready: boolean;
+  read: boolean;
+}
+
+const StoryRow = ({ story, ready, read }: StoryRowProps) => {
+  const state = ready ? "new" : "locked";
+
+  const body = (
+    <>
+      <span {...stylex.props(styles.names)}>
+        <span {...stylex.props(styles.title)}>{story.title}</span>
+        <span {...stylex.props(styles.about)}>
+          {story.titleEn} · Unit {story.unit}: {units[story.unit - 1]?.name}
+        </span>
+      </span>
+      <StoryMark state={read ? "read" : state} />
+    </>
+  );
+
+  return ready ? (
+    <Link
+      to="/stories/$id"
+      params={{ id: story.id }}
+      {...stylex.props(effects.press, styles.row, styles.link)}
+    >
+      {body}
+    </Link>
+  ) : (
+    <div {...stylex.props(styles.row, styles.locked)}>{body}</div>
+  );
+};
+
+const StoriesPage = () => {
   const { memory, meta } = useApp();
   const half = Math.ceil(stories.length / 2);
 
-  const row = (st: Story) => {
-    const ready = storyReady(st, memory);
-    const read = meta.storiesDone.includes(st.id);
-
-    const body = (
-      <>
-        <span className="min-w-0 flex-1">
-          <span className="text-17 lg:text-20 block font-medium">
-            {st.title}
-          </span>
-          <span className="text-14 text-fg2 lg:text-16 block leading-[1.45]">
-            {st.titleEn} · Unit {st.unit}: {units[st.unit - 1].name}
-          </span>
-        </span>
-        {read ? (
-          <Tag tone="good">Read</Tag>
-        ) : ready ? (
-          <Tag tone="new">New</Tag>
-        ) : (
-          <Lock className="text-fg3 size-[1.125rem]" aria-label="Locked" />
-        )}
-      </>
-    );
-
-    return ready ? (
-      <Link
-        key={st.id}
-        to="/stories/$id"
-        params={{ id: st.id }}
-        className="press text-fg flex items-center gap-4 py-[0.8125rem] no-underline lg:py-[1.125rem]"
-      >
-        {body}
-      </Link>
-    ) : (
-      <div
-        key={st.id}
-        className="flex items-center gap-4 py-[0.8125rem] opacity-50 lg:py-[1.125rem]"
-      >
-        {body}
-      </div>
-    );
-  };
+  const rows = (list: Story[]) =>
+    list.map((story) => (
+      <StoryRow
+        key={story.id}
+        story={story}
+        ready={storyReady(story, memory)}
+        read={meta.storiesDone.includes(story.id)}
+      />
+    ));
 
   return (
-    <Shell>
+    <AppShell>
       <PageTitle
         title="Stories"
         sub="Short texts made only from words you have learned."
       />
-      {/* One list on a phone, two columns on a wide screen. */}
-      <div className="grid items-start gap-5 lg:grid-cols-2">
-        <ListCard className="lg:hidden">{stories.map(row)}</ListCard>
-        <ListCard className="hidden lg:flex">
-          {stories.slice(0, half).map(row)}
+      <div {...stylex.props(styles.columns)}>
+        <ListCard style={styles.phoneOnly}>{rows(stories)}</ListCard>
+        <ListCard style={styles.wideOnly}>
+          {rows(stories.slice(0, half))}
         </ListCard>
-        <ListCard className="hidden lg:flex">
-          {stories.slice(half).map(row)}
-        </ListCard>
+        <ListCard style={styles.wideOnly}>{rows(stories.slice(half))}</ListCard>
       </div>
-    </Shell>
+    </AppShell>
   );
-}
+};
+
+export const Route = createFileRoute("/stories/")({ component: StoriesPage });

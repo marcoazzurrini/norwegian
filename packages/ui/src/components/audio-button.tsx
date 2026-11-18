@@ -33,6 +33,8 @@ interface AudioButtonProps {
   icon?: LucideIcon;
   /** Sets the size: give `width` and `height`. The default is 2.5rem. */
   style?: StyleXStyles;
+  /** Sets the size of the icon inside, as a share of the button. The default is 45%. */
+  iconStyle?: StyleXStyles;
 }
 
 export const AudioButton = ({
@@ -40,6 +42,7 @@ export const AudioButton = ({
   label = "Play audio",
   icon: Icon = Volume2,
   style,
+  iconStyle,
 }: AudioButtonProps) => (
   <button
     type="button"
@@ -47,6 +50,6 @@ export const AudioButton = ({
     onClick={onPlay}
     {...stylex.props(effects.press, styles.button, style)}
   >
-    <Icon strokeWidth={2} {...stylex.props(styles.icon)} />
+    <Icon strokeWidth={2} {...stylex.props(styles.icon, iconStyle)} />
   </button>
 );

@@ -1,0 +1,43 @@
+// How an item is named and shown, wherever a task or a list mentions it.
+import { item } from "@norsk/content";
+import type { Item } from "@norsk/content";
+
+/** The gap in a phrase such as "jeg heter ___", with the spaces around it. */
+const GAP = /\s*___\s*/gu;
+
+/** Short English description of what a pattern or word is, for hints and lists. */
+export const nameOf = (one: Item): string =>
+  one.kind === "pattern"
+    ? (one.title ?? one.text)
+    : `${one.text.replaceAll(GAP, " … ").trim()} (${one.gloss})`;
+
+export const itemName = (id: string): string => nameOf(item(id));
+
+/** True if the item is shown with an article in front, such as "et hus". */
+export const hasArticle = (one: Item): boolean =>
+  one.pos === "noun" && one.display.includes(" ");
+
+/** The sound of a word as shown to the learner: without the stress mark. */
+export const soundOf = (ipa: string): string => ipa.replaceAll("ˈ", "");
+
+/** A copy of the list in a random order. `random` returns a number from 0 up to, but not including, 1. */
+export const shuffled = <Value>(
+  list: readonly Value[],
+  random: () => number
+): Value[] => {
+  const out = [...list];
+
+  // Fisher-Yates, from the end: each place gets one of the values not yet placed.
+  for (let at = out.length - 1; at > 0; at -= 1) {
+    const from = Math.floor(random() * (at + 1));
+    const picked = out[from];
+    const last = out[at];
+
+    if (picked !== undefined && last !== undefined) {
+      out[at] = picked;
+      out[from] = last;
+    }
+  }
+
+  return out;
+};

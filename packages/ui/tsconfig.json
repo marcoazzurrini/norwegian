@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.strict.json",
-  "include": ["src", "test", "parity", "*.ts"],
+  "include": ["src", "test", "*.ts"],
   "compilerOptions": {
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["bun"]

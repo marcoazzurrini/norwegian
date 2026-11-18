@@ -1,75 +1,178 @@
 import { sounds } from "@norsk/content";
 import type { SoundPair } from "@norsk/content";
+import { Button, Card, PageTitle, Progress } from "@norsk/ui";
+import { color, text } from "@norsk/ui/tokens.stylex";
+import * as stylex from "@stylexjs/stylex";
 import { createFileRoute } from "@tanstack/react-router";
 import { Play } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { Shell } from "../components/Shell";
-import { shuffle } from "../components/tasks/shared";
-import { SoundTask } from "../components/tasks/SoundTask";
-import { Button, Card, PageTitle, Progress } from "../components/ui";
+import { AppShell } from "../components/app-shell";
+import {
+  DRILL_LENGTH,
+  drillFrom,
+  soundGroups,
+  voicesNote,
+} from "../components/sound-drill";
+import type { DrillQuestion, SoundGroup } from "../components/sound-drill";
+import { SoundTask } from "../components/tasks/sound-task";
 import { useApp } from "../engine/store";
 import { useVoices } from "../lib/speech";
 
-export const Route = createFileRoute("/sounds")({ component: SoundsPage });
+const styles = stylex.create({
+  start: {
+    width: { default: "100%", [stylex.env.desktop]: "auto" },
+  },
+  startIcon: {
+    height: "1.125rem",
+    width: "1.125rem",
+  },
+  page: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.25rem",
+  },
+  groups: {
+    display: "grid",
+    gap: "1.25rem",
+    gridTemplateColumns: {
+      default: null,
+      [stylex.env.desktop]: "repeat(2, minmax(0, 1fr))",
+      [stylex.env.desktopWide]: "repeat(3, minmax(0, 1fr))",
+    },
+  },
+  head: {
+    alignItems: "flex-start",
+    display: "flex",
+    gap: "0.75rem",
+    justifyContent: "space-between",
+  },
+  names: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+    minWidth: 0,
+  },
+  title: {
+    fontSize: { default: text.s19, [stylex.env.desktop]: text.s26 },
+    fontWeight: 500,
+    letterSpacing: "-0.02em",
+    lineHeight: 1.15,
+  },
+  hint: {
+    color: color.fg2,
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    paddingTop: "0.25rem",
+  },
+  pairs: {
+    fontSize: { default: text.s16, [stylex.env.desktop]: text.s20 },
+    fontWeight: 500,
+    paddingTop: { default: "0.75rem", [stylex.env.desktop]: "1.25rem" },
+  },
+  grow: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+  },
+  score: {
+    alignItems: "center",
+    display: "flex",
+    gap: "0.875rem",
+    paddingTop: { default: "0.75rem", [stylex.env.desktop]: "1.25rem" },
+  },
+  scoreText: {
+    color: color.fg2,
+    flexShrink: 0,
+    fontSize: text.s14,
+    lineHeight: 1.45,
+  },
+  noScore: {
+    color: color.fg3,
+    fontSize: text.s14,
+    lineHeight: 1.45,
+    paddingTop: { default: "0.75rem", [stylex.env.desktop]: "1.25rem" },
+  },
+  note: {
+    color: color.fg3,
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s18 },
+    margin: 0,
+  },
+});
 
-const DRILL_LENGTH = 10;
+interface GroupCardProps {
+  group: SoundGroup;
+  /** Right and total answers so far, if the group was ever practised. */
+  score: { right: number; total: number } | undefined;
+  onPractise: (pairs: SoundPair[]) => void;
+}
 
-function SoundsPage() {
+const GroupCard = ({ group, score, onPractise }: GroupCardProps) => (
+  <Card>
+    <div {...stylex.props(styles.head)}>
+      <div {...stylex.props(styles.names)}>
+        <div {...stylex.props(styles.title)}>{group.title}</div>
+        <div {...stylex.props(styles.hint)}>{group.hint}</div>
+      </div>
+      <Button
+        variant="secondary"
+        size="small"
+        onClick={() => {
+          onPractise(group.pairs);
+        }}
+      >
+        Practise
+      </Button>
+    </div>
+    <div {...stylex.props(styles.pairs)}>
+      {group.pairs
+        .map((pair) => `${pair.a.word} / ${pair.b.word}`)
+        .join("  ·  ")}
+    </div>
+    <div {...stylex.props(styles.grow)} />
+    {score !== undefined && score.total > 0 ? (
+      <div {...stylex.props(styles.score)}>
+        <Progress value={score.right / score.total} style={styles.grow} />
+        <span {...stylex.props(styles.scoreText)}>
+          {score.right} of {score.total} right
+        </span>
+      </div>
+    ) : (
+      <div {...stylex.props(styles.noScore)}>Not practised yet</div>
+    )}
+  </Card>
+);
+
+interface Drill {
+  questions: DrillQuestion[];
+  at: number;
+}
+
+const SoundsPage = () => {
   const { meta } = useApp();
   const voices = useVoices();
+  const [drill, setDrill] = useState<Drill | null>(null);
+  const groups = useMemo(() => soundGroups(sounds), []);
+  const question = drill?.questions[drill.at];
 
-  const [drill, setDrill] = useState<{
-    pairs: SoundPair[];
-    targets: ("a" | "b")[];
-    at: number;
-  } | null>(null);
-
-  const groups = useMemo(() => {
-    const seen = new Map<
-      string,
-      { title: string; hint: string; pairs: SoundPair[] }
-    >();
-
-    for (const p of sounds) {
-      if (!seen.has(p.group)) {
-        seen.set(p.group, { title: p.groupTitle, hint: p.hint, pairs: [] });
-      }
-
-      seen.get(p.group)!.pairs.push(p);
-    }
-
-    return [...seen.entries()];
-  }, []);
-
-  const start = (pairs: SoundPair[]) => {
-    const list = Array.from(
-      { length: DRILL_LENGTH },
-      (_, i) => shuffle(pairs)[i % pairs.length]
-    );
-
-    setDrill({
-      pairs: list,
-      targets: list.map(() => (Math.random() < 0.5 ? "a" : "b")),
-      at: 0,
-    });
+  const start = (pairs: readonly SoundPair[]) => {
+    setDrill({ at: 0, questions: drillFrom(pairs, Math.random) });
   };
 
-  if (drill) {
+  if (drill !== null && question !== undefined) {
     return (
       <SoundTask
         key={drill.at}
-        pair={drill.pairs[drill.at]}
-        target={drill.targets[drill.at]}
+        pair={question.pair}
+        target={question.target}
         index={drill.at}
         frame={{
           block: "sounds",
-          title: "Sounds",
           label: `${drill.at + 1} of ${DRILL_LENGTH}`,
-          progress: drill.at / DRILL_LENGTH,
           onClose: () => {
             setDrill(null);
           },
+          progress: drill.at / DRILL_LENGTH,
+          title: "Sounds",
         }}
         onDone={() => {
           setDrill(
@@ -81,7 +184,7 @@ function SoundsPage() {
   }
 
   return (
-    <Shell>
+    <AppShell>
       <PageTitle
         title="Sounds"
         sub="Train your ear on the sounds that English does not have."
@@ -90,68 +193,29 @@ function SoundsPage() {
           onClick={() => {
             start(sounds);
           }}
-          className="w-full lg:w-auto"
+          style={styles.start}
         >
-          <Play className="size-[1.125rem]" />
+          <Play {...stylex.props(styles.startIcon)} />
           Practise all sounds
         </Button>
       </PageTitle>
-      <div className="flex flex-col gap-5">
-        <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-          {groups.map(([id, g]) => {
-            const s = meta.sounds[id];
-
-            return (
-              <Card key={id}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="text-19 lg:text-26 leading-[1.15] font-medium tracking-[-0.02em]">
-                      {g.title}
-                    </div>
-                    <div className="text-14 text-fg2 lg:text-16 pt-1">
-                      {g.hint}
-                    </div>
-                  </div>
-                  <Button
-                    variant="secondary"
-                    size="small"
-                    onClick={() => {
-                      start(g.pairs);
-                    }}
-                  >
-                    Practise
-                  </Button>
-                </div>
-                <div className="text-16 lg:text-20 pt-3 font-medium lg:pt-5">
-                  {g.pairs
-                    .map((p) => `${p.a.word} / ${p.b.word}`)
-                    .join("  ·  ")}
-                </div>
-                <div className="flex-1" />
-                {s && s.total > 0 ? (
-                  <div className="flex items-center gap-3.5 pt-3 lg:pt-5">
-                    <Progress value={s.right / s.total} className="flex-1" />
-                    <span className="text-14 text-fg2 shrink-0 leading-[1.45]">
-                      {s.right} of {s.total} right
-                    </span>
-                  </div>
-                ) : (
-                  <div className="text-14 text-fg3 pt-3 leading-[1.45] lg:pt-5">
-                    Not practised yet
-                  </div>
-                )}
-              </Card>
-            );
-          })}
+      <div {...stylex.props(styles.page)}>
+        <div {...stylex.props(styles.groups)}>
+          {groups.map((group) => (
+            <GroupCard
+              key={group.id}
+              group={group}
+              score={meta.sounds[group.id]}
+              onPractise={start}
+            />
+          ))}
         </div>
-        <p className="text-14 text-fg3 lg:text-18 m-0">
-          {voices.length === 0
-            ? "No Norwegian voice is installed on this device. Add one in the system settings."
-            : voices.length === 1
-              ? `This device has one Norwegian voice (${voices[0].name}). Ear training works best with several voices.`
-              : `This device has ${voices.length} Norwegian voices. The drill switches between them.`}
+        <p {...stylex.props(styles.note)}>
+          {voicesNote(voices.map((voice) => voice.name))}
         </p>
       </div>
-    </Shell>
+    </AppShell>
   );
-}
+};
+
+export const Route = createFileRoute("/sounds")({ component: SoundsPage });
