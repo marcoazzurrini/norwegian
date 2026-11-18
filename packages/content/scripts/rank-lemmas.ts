@@ -1,7 +1,7 @@
 // Ranks dictionary words (lemmas) by how often their forms occur in subtitles.
 // Output: data/build/lemma-rank.tsv, used as the guide when choosing curriculum vocabulary.
 import { mkdirSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import path from "node:path";
 
 import { loadFrequency, loadOrdbank } from "./lib/sources";
 
@@ -13,7 +13,7 @@ for (const [form, count] of loadFrequency()) {
   // A bare imperative reading (e.g. "hus!" from "huse") is rarely the intended one.
   const nonImp = analyses.filter((a) => !a.tag.includes(" imp"));
 
-  if (nonImp.length) {
+  if (nonImp.length > 0) {
     analyses = nonImp;
   }
 
@@ -24,22 +24,23 @@ for (const [form, count] of loadFrequency()) {
   }
 }
 
+const GENDER = /\b(?<gender>mask|fem|nøyt)\b/u;
+
 const rows = [...score.entries()]
-  .sort((a, b) => b[1] - a[1])
+  .toSorted((a, b) => b[1] - a[1])
   .slice(0, 6000)
   .map(([key, s], i) => {
-    const [id, pos] = key.split("|");
-
-    const gender =
-      ob.byLemma.get(id)?.[0]?.tag.match(/\b(mask|fem|nøyt)\b/)?.[1] ?? "";
+    const [id = "", pos = ""] = key.split("|");
+    const [first] = ob.byLemma.get(id) ?? [];
+    const gender = GENDER.exec(first?.tag ?? "")?.groups?.gender ?? "";
 
     return [i + 1, ob.lemma.get(id), pos, gender, Math.round(s)].join("\t");
   });
 
-const out = join(import.meta.dir, "../data/build");
+const out = path.join(import.meta.dir, "../data/build");
 
 mkdirSync(out, { recursive: true });
 
-writeFileSync(join(out, "lemma-rank.tsv"), `${rows.join("\n")}\n`);
+writeFileSync(path.join(out, "lemma-rank.tsv"), `${rows.join("\n")}\n`);
 
 console.log(`wrote ${rows.length} lemmas`);

@@ -1,11 +1,10 @@
+import { createScheduler, introduce, review } from "@norsk/engine";
+import type { Grade, Mem, Scheduler } from "@norsk/engine";
 import { mergeMeta, stampOf } from "@norsk/protocol";
 // Learner state: memories, review log and settings, kept in IndexedDB on this device.
 import { openDB } from "idb";
 import type { IDBPDatabase } from "idb";
 import { useSyncExternalStore } from "react";
-
-import { createScheduler, introduce, review } from "./memory";
-import type { Grade, Mem, Scheduler } from "./memory";
 
 export interface Settings {
   minutes: number;

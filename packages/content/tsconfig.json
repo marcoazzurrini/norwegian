@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.strict.json",
   "include": ["src", "scripts"],
   "compilerOptions": {
     "types": ["bun"]

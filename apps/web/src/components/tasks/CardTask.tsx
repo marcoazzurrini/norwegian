@@ -1,14 +1,14 @@
 import type { Item } from "@norsk/content";
+import { cardTask } from "@norsk/engine";
+import type { CardHint, TaskResult } from "@norsk/engine";
 import { useState } from "react";
 
-import { gradeCard } from "../../engine/grade";
-import { applyReviews } from "../../engine/store";
-import { speak } from "../../lib/speech";
 import { AnswerInput } from "../AnswerInput";
 import { DockRow, Focus } from "../Focus";
 import { AudioButton, Button, Display } from "../ui";
 import { Answer, Ask, Mine, Remark, Stamp, hasArticle } from "./shared";
-import type { Frame, TaskResult } from "./shared";
+import type { Frame } from "./shared";
+import { useTask } from "./use-task";
 
 /** What the learner is asked to type, in words. */
 export function cueKind(it: Item): string {
@@ -28,8 +28,8 @@ export function cueKind(it: Item): string {
 }
 
 /** A prompt that points at the problem without giving the answer. */
-export function cardHint(it: Item, wrongArticle: boolean): string {
-  if (wrongArticle) {
+export function cardHint(it: Item, hint: CardHint): string {
+  if (hint === "article") {
     return "The word is right. Is it an en, ei or et word?";
   }
 
@@ -44,46 +44,15 @@ interface Props {
   onDone: (result: TaskResult) => void;
 }
 
-type Phase =
-  | { step: "ask" }
-  | { step: "retry"; wrongArticle: boolean }
-  | { step: "result"; firstTry: boolean; correct: boolean };
-
 /** A single item on its own: meaning shown, Norwegian typed. */
 export function CardTask({ item, frame, onDone }: Props) {
   const [input, setInput] = useState("");
-  const [typed, setTyped] = useState("");
-  const [phase, setPhase] = useState<Phase>({ step: "ask" });
-
-  const reveal = (firstTry: boolean, correct: boolean) => {
-    setPhase({ step: "result", firstTry, correct });
-    void speak(item.text);
-  };
+  const [state, send] = useTask(cardTask, () => ({ item }), onDone);
+  const { phase, typed } = state;
 
   const check = () => {
-    const g = gradeCard(item, input);
-    setTyped(input.trim());
+    send({ type: "answer", text: input });
     setInput("");
-
-    if (phase.step === "ask") {
-      if (g.correct) {
-        reveal(true, true);
-      } else {
-        setPhase({ step: "retry", wrongArticle: g.wrongArticle });
-      }
-    } else if (phase.step === "retry") {
-      reveal(false, g.correct);
-    }
-  };
-
-  const done = async (good: boolean) => {
-    await applyReviews([{ id: item.id, grade: good ? "good" : "again" }]);
-    onDone({
-      itemIds: [item.id],
-      right: good ? 1 : 0,
-      wrong: good ? 0 : 1,
-      taught: 0,
-    });
   };
 
   return (
@@ -96,14 +65,21 @@ export function CardTask({ item, frame, onDone }: Props) {
             {phase.firstTry ? (
               <span />
             ) : (
-              <Button variant="secondary" onClick={() => void done(true)}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  send({ type: "typo" });
+                }}
+              >
                 It was a typo
               </Button>
             )}
             <Button
               key="continue"
               autoFocus
-              onClick={() => void done(phase.firstTry)}
+              onClick={() => {
+                send({ type: "continue" });
+              }}
               hint="↵"
             >
               Continue
@@ -128,13 +104,13 @@ export function CardTask({ item, frame, onDone }: Props) {
 
       {phase.step === "retry" && (
         <>
-          <Remark lead="Not yet.">{cardHint(item, phase.wrongArticle)}</Remark>
+          <Remark lead="Not yet.">{cardHint(item, phase.hint)}</Remark>
           <Button
             variant="outline"
             size="medium"
             className="rise self-start"
             onClick={() => {
-              reveal(false, false);
+              send({ type: "reveal" });
             }}
           >
             Show answer

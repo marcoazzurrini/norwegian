@@ -11,8 +11,6 @@ const notYetRefactored = [
   "apps/web/src/**",
   "apps/web/public/sw.js",
   "apps/api/src/**",
-  "packages/content/scripts/**",
-  "packages/content/src/**",
   "packages/protocol/src/**",
 ];
 

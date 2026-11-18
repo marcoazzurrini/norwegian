@@ -1,30 +1,56 @@
 import { describe, expect, test } from "bun:test";
 
-import { items, lessons, sentences } from "@norsk/content";
+import { item, lessons, sentences } from "@norsk/content";
+import type { Sentence } from "@norsk/content";
 
-import { gradeCard, gradeSentence } from "./grade";
 import {
-  createScheduler,
-  introduce,
-  isLearning,
-  retrievability,
-  review,
-} from "./memory";
-import type { Mem } from "./memory";
-import {
+  Session,
   compression,
+  createScheduler,
   dueItems,
+  gradeCard,
+  gradeSentence,
+  introduce,
   lessonState,
   nextLesson,
   pickReview,
+  retrievability,
+  review,
   sentenceReady,
-} from "./select";
-import { Session } from "./session";
-import type { SessionView } from "./session";
+} from "./index";
+import type { Mem, SessionView } from "./index";
 
 const DAY = 86_400_000;
 const T0 = new Date("2026-01-01T08:00:00Z").getTime();
-const find = (no: string) => sentences.find((s) => s.no === no)!;
+
+const find = (no: string): Sentence => {
+  const found = sentences.find((s) => s.no === no);
+
+  if (found === undefined) {
+    throw new Error(`No sentence "${no}"`);
+  }
+
+  return found;
+};
+
+const lessonAt = (index: number) => {
+  const found = lessons[index];
+
+  if (found === undefined) {
+    throw new Error(`No lesson ${index}`);
+  }
+
+  return found;
+};
+
+const isLearning = (m: Mem): boolean => m.card.scheduleStatus !== "review";
+
+const view = (memory: Map<string, Mem>): SessionView => ({
+  chosenLesson: null,
+  memory,
+  soundStats: {},
+  storiesDone: new Set(),
+});
 
 describe("grading a sentence", () => {
   const s = find("Huset er stort.");
@@ -81,7 +107,7 @@ describe("grading a sentence", () => {
 
 describe("grading a single card", () => {
   test("a noun needs its en, ei or et", () => {
-    const hus = items["w:hus:noun"];
+    const hus = item("w:hus:noun");
     expect(gradeCard(hus, "et hus").correct).toBe(true);
     expect(gradeCard(hus, "en hus")).toEqual({
       correct: false,
@@ -94,12 +120,12 @@ describe("grading a single card", () => {
   });
 
   test("a verb is accepted with or without å", () => {
-    expect(gradeCard(items["w:snakke:verb"], "å snakke").correct).toBe(true);
-    expect(gradeCard(items["w:snakke:verb"], "snakke").correct).toBe(true);
+    expect(gradeCard(item("w:snakke:verb"), "å snakke").correct).toBe(true);
+    expect(gradeCard(item("w:snakke:verb"), "snakke").correct).toBe(true);
   });
 
   test("a chunk with a slot is typed without the slot", () => {
-    expect(gradeCard(items["c:jeg-heter"], "Jeg heter").correct).toBe(true);
+    expect(gradeCard(item("c:jeg-heter"), "Jeg heter").correct).toBe(true);
   });
 });
 
@@ -147,15 +173,15 @@ describe("memory", () => {
 });
 
 /** Teaches every item of the given lessons and reviews each once on its own card, three days later. */
-async function taught(
+const taught = async (
   lessonIndexes: number[],
   at: number
-): Promise<Map<string, Mem>> {
+): Promise<Map<string, Mem>> => {
   const s = await createScheduler(0.9);
   const mem = new Map<string, Mem>();
 
   for (const li of lessonIndexes) {
-    for (const id of lessons[li].items) {
+    for (const id of lessonAt(li).items) {
       let m = introduce(s, id, at);
       m = review(s, m, "good", at + 5 * 60_000);
       m = review(s, m, "good", at + 20 * 60_000);
@@ -165,13 +191,13 @@ async function taught(
   }
 
   return mem;
-}
+};
 
 describe("choosing what to do", () => {
   test("lessons unlock in order of their needs", () => {
     const mem = new Map<string, Mem>();
-    expect(lessonState(lessons[0], mem)).toBe("ready");
-    expect(lessonState(lessons[1], mem)).toBe("locked");
+    expect(lessonState(lessonAt(0), mem)).toBe("ready");
+    expect(lessonState(lessonAt(1), mem)).toBe("locked");
     expect(nextLesson(mem)?.index).toBe(0);
   });
 
@@ -200,13 +226,6 @@ describe("choosing what to do", () => {
 });
 
 describe("a session", () => {
-  const view = (memory: Map<string, Mem>): SessionView => ({
-    memory,
-    storiesDone: new Set(),
-    chosenLesson: null,
-    soundStats: {},
-  });
-
   test("a short first session starts teaching straight away", () => {
     const session = new Session(5, () => 0.3);
     const task = session.next(view(new Map()), T0);
@@ -214,7 +233,7 @@ describe("a session", () => {
 
     if (task.type === "intro") {
       expect(task.items.map((i) => i.id)).toEqual(
-        lessons[0].items.slice(0, task.items.length)
+        lessonAt(0).items.slice(0, task.items.length)
       );
     }
   });

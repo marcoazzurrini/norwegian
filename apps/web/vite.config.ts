@@ -1,3 +1,4 @@
+import { norskUi } from "@norsk/ui/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -8,6 +9,11 @@ import { defineConfig } from "vite";
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
+    // StyleX compiles the styles of @norsk/ui, which the app imports as TypeScript source.
+    // In a build its rules are appended to the app's own stylesheet, after Tailwind's.
+    norskUi({
+      stylesheet: (fileName) => /(?:^|\/)styles-[\w-]+\.css$/u.test(fileName),
+    }),
     tailwindcss(),
     tanstackStart({ spa: { enabled: true } }),
     viteReact(),

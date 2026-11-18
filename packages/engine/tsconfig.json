@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.strict.json",
+  "include": ["src"],
+  "compilerOptions": {
+    "types": ["bun"]
+  }
+}

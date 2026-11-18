@@ -1,6 +1,6 @@
 # Curriculum source files
 
-`bun scripts/build-content.ts` reads these files, checks them, adds forms and pronunciation from the raw data, and writes `src/content/curriculum.json`.
+`bun scripts/build-content.ts` reads these files, checks them, adds forms and pronunciation from the raw data, and writes `src/curriculum.json`.
 
 ## Unit files (`units/uNN.txt`)
 

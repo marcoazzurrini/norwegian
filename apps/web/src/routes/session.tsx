@@ -1,4 +1,6 @@
 import { lessons } from "@norsk/content";
+import { Session, blockOf, lessonState } from "@norsk/engine";
+import type { Task, TaskResult } from "@norsk/engine";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -7,13 +9,10 @@ import { CardTask } from "../components/tasks/CardTask";
 import { IntroTask } from "../components/tasks/IntroTask";
 import { PatternTask } from "../components/tasks/PatternTask";
 import { SentenceTask } from "../components/tasks/SentenceTask";
-import type { Frame, TaskResult } from "../components/tasks/shared";
+import type { Frame } from "../components/tasks/shared";
 import { SoundTask } from "../components/tasks/SoundTask";
 import { StoryTask } from "../components/tasks/StoryTask";
 import { Chip, buttonClass } from "../components/ui";
-import { lessonState } from "../engine/select";
-import { Session, blockOf } from "../engine/session";
-import type { Task } from "../engine/session";
 import { addStudyTime, getState, updateMeta } from "../engine/store";
 import { stopSpeaking } from "../lib/speech";
 
@@ -23,9 +22,6 @@ export const Route = createFileRoute("/session")({
   }),
   component: SessionPage,
 });
-
-/** Time counted for one task is capped, so a break in the middle does not inflate study time. */
-const MAX_TASK_MS = 3 * 60_000;
 
 const BLOCK_TITLE = {
   sounds: "Sounds",
@@ -38,7 +34,7 @@ function SessionPage() {
   const { minutes } = Route.useSearch();
   const navigate = useNavigate();
   const session = useRef<Session>(null as unknown as Session);
-  session.current ??= new Session(minutes);
+  session.current ??= new Session(minutes, Math.random);
   const [task, setTask] = useState<Task | null>(null);
   const [count, setCount] = useState(0);
   const startedAt = useRef(Date.now());
@@ -73,16 +69,12 @@ function SessionPage() {
       return;
     }
 
-    const ms = Math.min(MAX_TASK_MS, Date.now() - startedAt.current);
-    const s = session.current;
-    s.record(ms, blockOf(task), result.itemIds);
-    s.stats.right += result.right;
-    s.stats.wrong += result.wrong;
-    s.stats.taught += result.taught;
-
-    if (blockOf(task) === "review") {
-      s.stats.reviewed += result.itemIds.length;
-    }
+    // The session decides how much of the time counts and keeps the statistics.
+    const ms = session.current.complete(
+      task,
+      result,
+      Date.now() - startedAt.current
+    );
 
     await addStudyTime(ms);
     // A lesson picked on the Map stops being "chosen" once it is finished.

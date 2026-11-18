@@ -1,34 +1,16 @@
-import { items } from "@norsk/content";
 import type { Story, Token } from "@norsk/content";
+import { itemState, storyTask } from "@norsk/engine";
+import type { TaskResult } from "@norsk/engine";
 import { Play, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { itemState } from "../../engine/select";
-import { getState, updateMeta, useApp } from "../../engine/store";
+import { useApp } from "../../engine/store";
 import { speak, stopSpeaking } from "../../lib/speech";
 import { DockRow, Focus } from "../Focus";
 import { AudioButton, Button, Display, Tag } from "../ui";
-import { Choices, EMPTY_RESULT, Stamp, hasArticle } from "./shared";
-import type { Frame, TaskResult } from "./shared";
-
-interface Picked {
-  line: number;
-  index: number;
-  token: Token;
-}
-
-/** What a tapped word means: its taught item, or the story's own gloss for a new word. */
-function lookup(story: Story, t: Token) {
-  const id = t.w ?? t.c;
-
-  if (id) {
-    return { text: items[id].display, gloss: items[id].gloss, item: items[id] };
-  }
-
-  const gloss = story.glosses[t.t.toLowerCase()];
-
-  return gloss ? { text: t.t, gloss, item: null } : null;
-}
+import { Choices, Stamp, hasArticle } from "./shared";
+import type { Frame } from "./shared";
+import { useTask } from "./use-task";
 
 interface Props {
   story: Story;
@@ -39,10 +21,10 @@ interface Props {
 /** A short text built from known words: listen while reading, tap a word for its meaning, then answer questions. */
 export function StoryTask({ story, frame, onDone }: Props) {
   const { memory } = useApp();
-  const [picked, setPicked] = useState<Picked | null>(null);
+  const [state, send] = useTask(storyTask, () => ({ story }), onDone);
+  const { phase, picked, showEnglish } = state;
+  // Which line is being read aloud. Playback follows the audio, so it lives here and not in the machine.
   const [playing, setPlaying] = useState<number | null>(null);
-  const [question, setQuestion] = useState<number | null>(null);
-  const [showEnglish, setShowEnglish] = useState(false);
   const stop = useRef(false);
 
   useEffect(
@@ -71,20 +53,11 @@ export function StoryTask({ story, frame, onDone }: Props) {
     setPlaying(null);
   };
 
-  const finish = async () => {
-    const done = getState().meta.storiesDone;
+  const meaning = picked?.meaning;
 
-    if (!done.includes(story.id)) {
-      await updateMeta({ storiesDone: [...done, story.id] });
-    }
-
-    onDone(EMPTY_RESULT);
-  };
-
-  const meaning = picked && lookup(story, picked.token);
-
-  if (question !== null) {
-    const q = story.questions[question];
+  if (phase.step === "questions") {
+    const q = phase.quiz.question;
+    const question = phase.quiz.index;
 
     return (
       <Focus {...frame}>
@@ -99,11 +72,12 @@ export function StoryTask({ story, frame, onDone }: Props) {
         </h1>
         <Choices
           key={`c${question}`}
-          quiz={q}
-          onRight={() => {
-            question + 1 < story.questions.length
-              ? setQuestion(question + 1)
-              : void finish();
+          quiz={phase.quiz}
+          onPick={(option) => {
+            send({ type: "pick", option });
+          }}
+          onNext={() => {
+            send({ type: "next" });
           }}
         />
       </Focus>
@@ -122,7 +96,7 @@ export function StoryTask({ story, frame, onDone }: Props) {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            setPicked({ line: li, index: part.index!, token: part.token! });
+            send({ type: "tapWord", line: li, index: part.index! });
           }}
           className={`rounded-md border-0 p-0 [font-weight:inherit] text-inherit ${
             picked?.line === li && picked.index === part.index
@@ -147,14 +121,14 @@ export function StoryTask({ story, frame, onDone }: Props) {
           <Button
             variant="secondary"
             onClick={() => {
-              setShowEnglish((s) => !s);
+              send({ type: "toggleEnglish" });
             }}
           >
             {showEnglish ? "Hide English" : "Show English"}
           </Button>
           <Button
             onClick={() => {
-              story.questions.length ? setQuestion(0) : void finish();
+              send({ type: "continue" });
             }}
           >
             Questions
@@ -193,7 +167,9 @@ export function StoryTask({ story, frame, onDone }: Props) {
             >
               <button
                 type="button"
-                onClick={() => void speak(line.no)}
+                onClick={() => {
+                  send({ type: "hearLine", line: li });
+                }}
                 className="press text-12 text-fg3 lg:text-15 border-0 bg-transparent px-2 py-0 font-medium"
                 aria-label={`Play ${line.who}'s line`}
               >
@@ -225,7 +201,9 @@ export function StoryTask({ story, frame, onDone }: Props) {
               <div
                 key={li}
                 className="flex cursor-pointer items-stretch gap-3 lg:gap-5"
-                onClick={() => void speak(line.no)}
+                onClick={() => {
+                  send({ type: "hearLine", line: li });
+                }}
               >
                 <span
                   className={`w-[3px] shrink-0 rounded-full transition-colors duration-200 ${active ? "bg-fg" : "bg-transparent"}`}
@@ -248,7 +226,7 @@ export function StoryTask({ story, frame, onDone }: Props) {
         </div>
       )}
 
-      {meaning ? (
+      {picked && meaning ? (
         <div
           key={`${picked.line}-${picked.index}`}
           className="rise border-line bg-inset sticky bottom-0 mt-1 flex items-center gap-3.5 self-stretch rounded-[1.25rem] border px-3.5 py-3 lg:mt-3.5 lg:rounded-[1.625rem] lg:px-[1.375rem] lg:py-[1.125rem]"

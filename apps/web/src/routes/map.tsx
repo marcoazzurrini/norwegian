@@ -1,5 +1,7 @@
 import { items, lessons, units, unlockedBy } from "@norsk/content";
 import type { Lesson } from "@norsk/content";
+import { itemState, lessonState, nextLesson } from "@norsk/engine";
+import type { LessonState, Memory } from "@norsk/engine";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Check, CircleDashed, Lock, Ruler, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -16,8 +18,6 @@ import {
   useDesktop,
 } from "../components/ui";
 import type { TagTone } from "../components/ui";
-import { itemState, lessonState, nextLesson } from "../engine/select";
-import type { LessonState, Memory } from "../engine/select";
 import { updateMeta, useApp } from "../engine/store";
 
 export const Route = createFileRoute("/map")({ component: MapPage });

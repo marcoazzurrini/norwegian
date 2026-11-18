@@ -1,13 +1,15 @@
 import type { Example, Item, Sentence } from "@norsk/content";
+import { patternTask } from "@norsk/engine";
+import type { TaskResult } from "@norsk/engine";
 import { ArrowRight } from "lucide-react";
-import { useState } from "react";
 
-import { teach } from "../../engine/store";
+import { getState } from "../../engine/store";
 import { DockHint, Focus } from "../Focus";
 import { AudioButton, Button, Display } from "../ui";
-import { SentenceTask } from "./SentenceTask";
+import { SentenceView } from "./SentenceTask";
 import { Choices, Remark, Stamp } from "./shared";
-import type { Frame, TaskResult } from "./shared";
+import type { Frame } from "./shared";
+import { useTask } from "./use-task";
 
 /** Splits "en bil > bilen" and marks the part of the second form that is new. */
 function contrast(no: string): { from?: string; to: string; added: string } {
@@ -91,56 +93,27 @@ interface Props {
 
 /** Teaches a grammar pattern: contrasting examples and a short rule, reading questions, then typed sentences. */
 export function PatternTask({ item, practice, frame, onDone }: Props) {
-  const [step, setStep] = useState(0);
-  const [quizIndex, setQuizIndex] = useState(0);
-  const [practiceIndex, setPracticeIndex] = useState(0);
+  const [state, send] = useTask(
+    patternTask,
+    () => ({ item, practice, known: new Set(getState().memory.keys()) }),
+    onDone
+  );
 
-  const [result, setResult] = useState<TaskResult>({
-    itemIds: [item.id],
-    right: 0,
-    wrong: 0,
-    taught: 1,
-  });
+  const { phase, quiz, steps } = state;
 
-  const quiz = item.quiz ?? [];
-  const steps = 2 + (practice.length ? 1 : 0);
-
-  const afterQuiz = async () => {
-    await teach([item.id]);
-
-    if (practice.length) {
-      setStep(2);
-    } else {
-      onDone(result);
-    }
-  };
-
-  if (step === 2) {
+  if (phase.step === "produce") {
     return (
-      <SentenceTask
-        key={practice[practiceIndex].id}
-        sentence={practice[practiceIndex]}
+      <SentenceView
+        key={phase.sentence.sentence.id}
+        state={phase.sentence}
+        send={send}
         frame={frame}
-        stamp={`Step 3 of 3 · Produce it · ${practiceIndex + 1} of ${practice.length}`}
-        onDone={(r) => {
-          const merged = {
-            ...result,
-            right: result.right + r.right,
-            wrong: result.wrong + r.wrong,
-          };
-
-          if (practiceIndex + 1 < practice.length) {
-            setResult(merged);
-            setPracticeIndex(practiceIndex + 1);
-          } else {
-            onDone(merged);
-          }
-        }}
+        stamp={`Step 3 of 3 · Produce it · ${phase.index + 1} of ${practice.length}`}
       />
     );
   }
 
-  if (step === 0) {
+  if (phase.step === "see") {
     return (
       <Focus
         {...frame}
@@ -151,7 +124,7 @@ export function PatternTask({ item, practice, frame, onDone }: Props) {
             <Button
               autoFocus
               onClick={() => {
-                quiz.length ? setStep(1) : void afterQuiz();
+                send({ type: "continue" });
               }}
               hint="↵"
             >
@@ -179,7 +152,8 @@ export function PatternTask({ item, practice, frame, onDone }: Props) {
     );
   }
 
-  const q = quiz[quizIndex];
+  const q = phase.quiz.question;
+  const quizIndex = phase.quiz.index;
 
   return (
     <Focus {...frame}>
@@ -187,33 +161,28 @@ export function PatternTask({ item, practice, frame, onDone }: Props) {
         Step 2 of {steps} · Read it
         {quiz.length > 1 ? ` · ${quizIndex + 1} of ${quiz.length}` : ""}
       </Stamp>
-      {q && (
-        <>
-          <div
-            key={quizIndex}
-            className="rise bg-raised flex max-w-full items-center gap-3 self-start rounded-[1.25rem] py-2.5 pr-[1.125rem] pl-2.5 lg:gap-5 lg:rounded-[1.75rem] lg:py-[1.125rem] lg:pr-8 lg:pl-[1.125rem]"
-          >
-            <AudioButton text={q.prompt} className="size-10 lg:size-14" />
-            <div className="min-w-0">
-              <div className="text-13 text-fg2 lg:text-16">
-                What does it mean?
-              </div>
-              <div className="text-30 lg:text-56 leading-[1.1] font-medium tracking-[-0.03em] break-words">
-                {q.prompt}
-              </div>
-            </div>
+      <div
+        key={quizIndex}
+        className="rise bg-raised flex max-w-full items-center gap-3 self-start rounded-[1.25rem] py-2.5 pr-[1.125rem] pl-2.5 lg:gap-5 lg:rounded-[1.75rem] lg:py-[1.125rem] lg:pr-8 lg:pl-[1.125rem]"
+      >
+        <AudioButton text={q.prompt} className="size-10 lg:size-14" />
+        <div className="min-w-0">
+          <div className="text-13 text-fg2 lg:text-16">What does it mean?</div>
+          <div className="text-30 lg:text-56 leading-[1.1] font-medium tracking-[-0.03em] break-words">
+            {q.prompt}
           </div>
-          <Choices
-            key={`c${quizIndex}`}
-            quiz={q}
-            onRight={() => {
-              quizIndex + 1 < quiz.length
-                ? setQuizIndex(quizIndex + 1)
-                : void afterQuiz();
-            }}
-          />
-        </>
-      )}
+        </div>
+      </div>
+      <Choices
+        key={`c${quizIndex}`}
+        quiz={phase.quiz}
+        onPick={(option) => {
+          send({ type: "pick", option });
+        }}
+        onNext={() => {
+          send({ type: "next" });
+        }}
+      />
     </Focus>
   );
 }

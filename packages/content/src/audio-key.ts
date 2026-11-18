@@ -2,16 +2,16 @@
 
 /** The words actually spoken: blanks in phrases such as "se ___ ut" are left out. */
 export const spokenText = (text: string) =>
-  text.replaceAll(/_+/g, " ").replaceAll(/\s+/g, " ").trim();
+  text.replaceAll(/_+/gu, " ").replaceAll(/\s+/gu, " ").trim();
 
 const cache = new Map<string, string>();
 
 /** File name for a text: the start of its SHA-256 hash, so any text maps to a safe, stable name. */
-export async function audioKey(text: string): Promise<string> {
+export const audioKey = async (text: string): Promise<string> => {
   const spoken = spokenText(text);
   const known = cache.get(spoken);
 
-  if (known) {
+  if (known !== undefined) {
     return known;
   }
 
@@ -27,7 +27,7 @@ export async function audioKey(text: string): Promise<string> {
   cache.set(spoken, key);
 
   return key;
-}
+};
 
 export const audioPath = (voice: string, key: string) =>
   `/audio/${voice}/${key}.mp3`;

@@ -1,29 +1,17 @@
-import { sentencesWith } from "@norsk/content";
 import type { Item, Sentence } from "@norsk/content";
+import { introTask } from "@norsk/engine";
+import type { TaskResult } from "@norsk/engine";
 import { Tag as TagIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
-import { gradeCard } from "../../engine/grade";
-import type { Mem } from "../../engine/memory";
-import { sentenceReady } from "../../engine/select";
-import { getState, teach } from "../../engine/store";
-import { speak } from "../../lib/speech";
+import { getState } from "../../engine/store";
 import { AnswerInput } from "../AnswerInput";
 import { DockHint, Focus } from "../Focus";
 import { AudioButton, Button, Display, Tag } from "../ui";
 import { cueKind } from "./CardTask";
 import { Answer, Ask, Mine, Remark, Stamp, hasArticle } from "./shared";
-import type { Frame, TaskResult } from "./shared";
-
-/** The shortest taught sentence that uses the item, as its first example. */
-function exampleFor(it: Item) {
-  const mem = new Map(getState().memory);
-  mem.set(it.id, undefined as unknown as Mem);
-
-  return sentencesWith(it.id)
-    .filter((s) => sentenceReady(s, mem) && s.tokens.length > 1)
-    .sort((a, b) => a.tokens.length - b.tokens.length)[0];
-}
+import type { Frame } from "./shared";
+import { useTask } from "./use-task";
 
 /** The example sentence, with the words of the new item in a heavier weight. */
 function Marked({ sentence, id }: { sentence: Sentence; id: string }) {
@@ -106,72 +94,27 @@ interface Props {
  * and showing the whole group first keeps the first recall from being a copy.
  */
 export function IntroTask({ items, frame, onDone }: Props) {
-  const [phase, setPhase] = useState<"show" | "recall">("show");
-  const [index, setIndex] = useState(0);
   const [input, setInput] = useState("");
-  const [typed, setTyped] = useState("");
-  const [wrongArticle, setWrongArticle] = useState(false);
-  const [misses, setMisses] = useState(0);
-  const [recalled, setRecalled] = useState(false);
-  const [missed, setMissed] = useState(0);
-  const item = items[index];
-  const example = useMemo(() => exampleFor(item), [item]);
+
+  const [state, send] = useTask(
+    introTask,
+    () => ({ items, known: new Set(getState().memory.keys()) }),
+    onDone
+  );
+
+  const { phase, index, item, example, typed, misses, help, recalled } = state;
   const count = items.length > 1 ? ` · ${index + 1} of ${items.length}` : "";
   // A phrase is too long for the largest type.
   const long = item.display.length > 9;
 
-  useEffect(() => {
-    if (phase === "show") {
-      void speak(item.text);
-    }
-  }, [item, phase]);
-
-  const check = async () => {
-    const g = gradeCard(item, input);
-    setTyped(input.trim());
+  const check = () => {
+    send({ type: "answer", text: input });
     setInput("");
-
-    if (g.correct) {
-      setRecalled(true);
-      await teach([item.id]);
-      void speak(item.text);
-    } else {
-      setWrongArticle(g.wrongArticle);
-      setMisses((m) => m + 1);
-    }
   };
 
   const next = () => {
-    if (index + 1 < items.length) {
-      setIndex(index + 1);
-
-      return;
-    }
-
-    setIndex(0);
-    setPhase("recall");
-  };
-
-  const nextRecall = () => {
-    const wrong = missed + (misses ? 1 : 0);
-
-    if (index + 1 === items.length) {
-      onDone({
-        itemIds: items.map((i) => i.id),
-        right: items.length - wrong,
-        wrong,
-        taught: items.length,
-      });
-
-      return;
-    }
-
-    setMissed(wrong);
-    setIndex(index + 1);
+    send({ type: "continue" });
     setInput("");
-    setTyped("");
-    setMisses(0);
-    setRecalled(false);
   };
 
   if (phase === "show") {
@@ -243,7 +186,7 @@ export function IntroTask({ items, frame, onDone }: Props) {
       dock={
         recalled ? (
           <DockHint>
-            <Button key="continue" autoFocus onClick={nextRecall} hint="↵">
+            <Button key="continue" autoFocus onClick={next} hint="↵">
               Continue
             </Button>
           </DockHint>
@@ -252,7 +195,7 @@ export function IntroTask({ items, frame, onDone }: Props) {
             key={index}
             value={input}
             onChange={setInput}
-            onSubmit={() => void check()}
+            onSubmit={check}
           />
         )
       }
@@ -275,13 +218,13 @@ export function IntroTask({ items, frame, onDone }: Props) {
         >
           <Display text={item.display} split={hasArticle(item)} />
         </Answer>
-      ) : misses === 1 ? (
+      ) : help === "article" || help === "start" ? (
         <Remark lead="Not yet.">
-          {wrongArticle
+          {help === "article"
             ? "Is it an en, ei or et word?"
             : `It starts with “${item.text.slice(0, item.kind === "chunk" ? 3 : 1)}…”. Try again.`}
         </Remark>
-      ) : misses >= 2 ? (
+      ) : help === "copy" ? (
         <div
           key={misses}
           className="rise border-line bg-inset flex min-w-[13.75rem] flex-col self-start rounded-[1.25rem] border p-[1.125rem] lg:min-w-[22.5rem] lg:rounded-[1.625rem] lg:p-7"

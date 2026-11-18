@@ -1,13 +1,15 @@
 import type { SoundPair } from "@norsk/content";
+import { soundTask } from "@norsk/engine";
+import type { TaskResult } from "@norsk/engine";
 import { Check, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { getState, updateMeta } from "../../engine/store";
-import { speak, useVoices } from "../../lib/speech";
+import { useVoices } from "../../lib/speech";
 import { DockRow, Focus } from "../Focus";
 import { AudioButton, Button, Key } from "../ui";
-import { EMPTY_RESULT, Remark } from "./shared";
-import type { Frame, TaskResult } from "./shared";
+import { Remark } from "./shared";
+import type { Frame } from "./shared";
+import { useTask } from "./use-task";
 
 interface Props {
   pair: SoundPair;
@@ -21,10 +23,18 @@ interface Props {
 /** Minimal-pair listening: one of two similar words is played, and the learner picks which. */
 export function SoundTask({ pair, target, index, frame, onDone }: Props) {
   const voices = useVoices();
-  const [picked, setPicked] = useState<"a" | "b" | null>(null);
 
-  const play = () =>
-    void speak(pair[target].word, { voiceIndex: index, rate: 0.8 });
+  const [state, send] = useTask(
+    soundTask,
+    () => ({ pair, target, index }),
+    onDone
+  );
+
+  const { picked, right } = state;
+
+  const play = () => {
+    send({ type: "play" });
+  };
 
   useEffect(() => {
     const t = setTimeout(play, 350);
@@ -35,32 +45,14 @@ export function SoundTask({ pair, target, index, frame, onDone }: Props) {
     // Play once per question; the voices arrive asynchronously on some browsers.
   }, [pair.id, target, voices.length]);
 
-  const pick = async (side: "a" | "b") => {
-    if (picked) {
-      return;
-    }
-
-    setPicked(side);
-    const s = getState().meta.sounds[pair.group] ?? { right: 0, total: 0 };
-    await updateMeta({
-      sounds: {
-        ...getState().meta.sounds,
-        [pair.group]: {
-          right: s.right + (side === target ? 1 : 0),
-          total: s.total + 1,
-        },
-      },
-    });
-  };
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "1") {
-        void pick("a");
+        send({ type: "key", side: "a" });
       }
 
       if (e.key === "2") {
-        void pick("b");
+        send({ type: "key", side: "b" });
       }
     };
 
@@ -70,8 +62,6 @@ export function SoundTask({ pair, target, index, frame, onDone }: Props) {
       window.removeEventListener("keydown", onKey);
     };
   });
-
-  const right = picked === target;
 
   return (
     <Focus
@@ -86,11 +76,7 @@ export function SoundTask({ pair, target, index, frame, onDone }: Props) {
             <Button
               autoFocus
               onClick={() => {
-                onDone({
-                  ...EMPTY_RESULT,
-                  right: right ? 1 : 0,
-                  wrong: right ? 0 : 1,
-                });
+                send({ type: "continue" });
               }}
               hint="↵"
             >
@@ -126,14 +112,9 @@ export function SoundTask({ pair, target, index, frame, onDone }: Props) {
             <button
               key={side}
               type="button"
-              onClick={() =>
-                picked
-                  ? void speak(pair[side].word, {
-                      voiceIndex: index,
-                      rate: 0.8,
-                    })
-                  : void pick(side)
-              }
+              onClick={() => {
+                send({ type: "tap", side });
+              }}
               className={`press border-line bg-inset flex min-w-0 flex-1 flex-col items-center gap-1 rounded-[1.375rem] border px-3 pt-[1.625rem] pb-[1.125rem] lg:gap-2 lg:rounded-[2rem] lg:px-8 lg:pt-[3.25rem] lg:pb-8 ${
                 isTarget
                   ? "shadow-[inset_0_0_0_2px_var(--color-green)]"

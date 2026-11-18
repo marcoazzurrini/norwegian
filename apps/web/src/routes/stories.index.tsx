@@ -1,11 +1,11 @@
 import { stories, units } from "@norsk/content";
 import type { Story } from "@norsk/content";
+import { storyReady } from "@norsk/engine";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 
 import { Shell } from "../components/Shell";
 import { ListCard, PageTitle, Tag } from "../components/ui";
-import { storyReady } from "../engine/select";
 import { useApp } from "../engine/store";
 
 export const Route = createFileRoute("/stories/")({ component: StoriesPage });

@@ -2,38 +2,81 @@
 //
 //   bun scripts/build-audio.ts voices                 list Norwegian voices in the ElevenLabs library
 //   bun scripts/build-audio.ts sample <voice-id>...   record a few texts per voice into data/audio/samples
-//   bun scripts/build-audio.ts add <slug> <voice-id>  add a voice to content/audio.json
+//   bun scripts/build-audio.ts add <slug> <voice-id>  add a voice to text/audio.json
 //   bun scripts/build-audio.ts build [--dry]          record what is missing, upload it, switch the app over
 //
 // Needs ELEVENLABS_API_KEY in .env. Uploading needs the sync key in .sync-key.
 // Recordings are kept in data/audio (not in git), so nothing is ever paid for twice.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import path from "node:path";
 
-import { audioKey, spokenText } from "../src/audio-key";
-import curriculum from "../src/curriculum.json";
-import type { Curriculum } from "../src/types";
+import * as v from "valibot";
 
-const ROOT = join(import.meta.dir, "..");
-const CONFIG = join(ROOT, "text/audio.json");
-const LIVE = join(ROOT, "src/audio.json");
-const STORE = join(ROOT, "data/audio");
+import {
+  audioKey,
+  items,
+  sentences,
+  sounds,
+  spokenText,
+  stories,
+} from "../src/index";
+
+const ROOT = path.join(import.meta.dir, "..");
+const CONFIG = path.join(ROOT, "text/audio.json");
+const LIVE = path.join(ROOT, "src/audio.json");
+const STORE = path.join(ROOT, "data/audio");
 const SITE = process.env.SITE ?? "https://norwegian.marcoazzurrini.com";
 const API = "https://api.elevenlabs.io";
 
-interface Voice {
+const VoiceSchema = v.object({
   /** Folder name in R2: lower-case letters, digits and hyphens. */
-  slug: string;
-  id: string;
-  name: string;
-}
+  slug: v.string(),
+  id: v.string(),
+  name: v.string(),
+});
 
-interface Config {
-  model: string;
-  voices: Voice[];
-}
+type Voice = v.InferOutput<typeof VoiceSchema>;
 
-const config = JSON.parse(readFileSync(CONFIG, "utf-8")) as Config;
+const ConfigSchema = v.object({
+  model: v.string(),
+  voices: v.array(VoiceSchema),
+});
+
+/** A detail of a library voice that is only printed. One that is missing or not a plain value is left empty. */
+const PrintedSchema = v.fallback(
+  v.optional(
+    v.pipe(v.union([v.string(), v.number(), v.boolean()]), v.transform(String)),
+    ""
+  ),
+  ""
+);
+
+/** A voice of the ElevenLabs library. Only the id is relied on. */
+const SharedVoiceSchema = v.object({
+  voice_id: v.string(),
+  name: PrintedSchema,
+  gender: PrintedSchema,
+  age: PrintedSchema,
+  accent: PrintedSchema,
+  language: PrintedSchema,
+  locale: PrintedSchema,
+  category: PrintedSchema,
+  usage_character_count_1y: PrintedSchema,
+  cloned_by_count: PrintedSchema,
+  free_users_allowed: PrintedSchema,
+  public_owner_id: PrintedSchema,
+  description: PrintedSchema,
+  preview_url: PrintedSchema,
+});
+
+type SharedVoice = v.InferOutput<typeof SharedVoiceSchema>;
+
+const SharedVoicesSchema = v.object({ voices: v.array(SharedVoiceSchema) });
+
+/** The audio server lists the files it has as "voice/key.mp3". */
+const AudioListSchema = v.array(v.string());
+
+const config = v.parse(ConfigSchema, JSON.parse(readFileSync(CONFIG, "utf-8")));
 const flag = (name: string) => process.argv.includes(`--${name}`);
 
 const option = (name: string) => {
@@ -42,35 +85,56 @@ const option = (name: string) => {
   return i > 0 ? process.argv[i + 1] : undefined;
 };
 
-function apiKey(): string {
+const apiKey = (): string => {
   const key = process.env.ELEVENLABS_API_KEY;
 
-  if (!key) {
+  if (key === undefined || key === "") {
     throw new Error("Set ELEVENLABS_API_KEY in .env");
   }
 
   return key;
-}
+};
 
-/** Every text the app can speak. */
-function texts(): string[] {
-  const c = curriculum as unknown as Curriculum;
-  const all = new Set<string>();
+/**
+ * Does every job, with at most `atOnce` of them running at the same time.
+ * With `atOnce` 1 the jobs run one after the other, in order.
+ */
+const runJobs = async <Job>(
+  jobs: readonly Job[],
+  atOnce: number,
+  work: (job: Job) => Promise<void>
+) => {
+  const queue = [...jobs];
 
-  const add = (t: string | undefined) => {
-    const s = t && spokenText(t);
-
-    if (s) {
-      all.add(s);
+  const worker = async () => {
+    for (let job = queue.shift(); job !== undefined; job = queue.shift()) {
+      // oxlint-disable-next-line no-await-in-loop -- a worker must finish one job before it takes the next: the number of workers is the limit on requests in flight
+      await work(job);
     }
   };
 
-  for (const it of Object.values(c.items)) {
+  await Promise.all(Array.from({ length: atOnce }, worker));
+};
+
+/** Every text the app can speak. */
+const texts = (): string[] => {
+  const all = new Set<string>();
+
+  const add = (text: string | undefined) => {
+    const spoken = spokenText(text ?? "");
+
+    if (spoken !== "") {
+      all.add(spoken);
+    }
+  };
+
+  for (const it of Object.values(items)) {
     if (it.kind !== "pattern") {
       add(it.text);
     }
 
     for (const ex of it.examples ?? []) {
+      // "en bil > bilen" shows a change: only the result is spoken.
       add(ex.no.split(">").pop());
     }
 
@@ -79,11 +143,11 @@ function texts(): string[] {
     }
   }
 
-  for (const s of Object.values(c.sentences)) {
+  for (const s of sentences) {
     add(s.no);
   }
 
-  for (const st of Object.values(c.stories)) {
+  for (const st of stories) {
     for (const line of st.lines) {
       add(line.no);
     }
@@ -93,27 +157,23 @@ function texts(): string[] {
     }
   }
 
-  for (const p of c.sounds) {
+  for (const p of sounds) {
     add(p.a.word);
     add(p.b.word);
   }
 
   return [...all];
-}
+};
 
 /** A lone word needs its full stop: without it the voice can trail off or sound like a question. */
-const forSpeech = (text: string) => (/[.!?]$/.test(text) ? text : `${text}.`);
+const forSpeech = (text: string) => (/[.!?]$/u.test(text) ? text : `${text}.`);
 
-async function record(
+const record = async (
   voiceId: string,
   text: string,
-  model: string
-): Promise<Buffer> {
-  const headers = {
-    "xi-api-key": apiKey(),
-    "content-type": "application/json",
-  };
-
+  model: string,
+  attempt = 1
+): Promise<Buffer> => {
   // The v4 models are only offered through the dialogue endpoint.
   const dialogue = model.startsWith("eleven_v4");
 
@@ -129,33 +189,53 @@ async function record(
       }
     : { text: forSpeech(text), model_id: model, language_code: "no" };
 
-  for (let attempt = 1; ; attempt++) {
-    const response = await fetch(url, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "xi-api-key": apiKey(), "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
 
-    if (response.ok) {
-      return Buffer.from(await response.arrayBuffer());
-    }
-
-    const detail = (await response.text()).slice(0, 400);
-
-    // Too many requests or a server fault: wait and try again. Anything else will not fix itself.
-    if ((response.status === 429 || response.status >= 500) && attempt < 8) {
-      await Bun.sleep(attempt * 3000);
-      continue;
-    }
-
-    throw new Error(
-      `ElevenLabs answered ${response.status} for "${text}": ${detail}`
-    );
+  if (response.ok) {
+    return Buffer.from(await response.arrayBuffer());
   }
-}
 
-async function listVoices() {
-  const found = new Map<string, Record<string, string>>();
+  const answer = await response.text();
+
+  // Too many requests or a server fault: wait and try again. Anything else will not fix itself.
+  if ((response.status === 429 || response.status >= 500) && attempt < 8) {
+    await Bun.sleep(attempt * 3000);
+
+    return await record(voiceId, text, model, attempt + 1);
+  }
+
+  throw new Error(
+    `ElevenLabs answered ${response.status} for "${text}": ${answer.slice(0, 400)}`
+  );
+};
+
+const printVoice = (voice: SharedVoice) => {
+  console.log(
+    [
+      voice.voice_id,
+      voice.name,
+      voice.gender,
+      voice.age,
+      voice.accent,
+      voice.language,
+      voice.locale,
+      voice.category,
+      `uses:${voice.usage_character_count_1y}`,
+      `clones:${voice.cloned_by_count}`,
+      `free:${voice.free_users_allowed}`,
+      `owner:${voice.public_owner_id}`,
+    ].join(" | ")
+  );
+  console.log(`    ${voice.description.slice(0, 160)}`);
+  console.log(`    ${voice.preview_url}`);
+};
+
+const listVoices = async () => {
+  const found = new Map<string, SharedVoice>();
 
   // The voice library answers without a key, but then only the first three voices of a search.
   // Many narrow searches are used on purpose, so a key limited to speech generation is enough for this script.
@@ -179,51 +259,38 @@ async function listVoices() {
     "sort=created_date",
   ];
 
-  for (const base of ["language=no", "search=norwegian", "search=norsk"]) {
-    for (const filter of filters) {
-      for (const sort of sorts) {
-        const response = await fetch(
-          `${API}/v1/shared-voices?page_size=3&${[base, filter, sort].filter(Boolean).join("&")}`
-        );
+  const searches = ["language=no", "search=norwegian", "search=norsk"].flatMap(
+    (base) =>
+      filters.flatMap((filter) =>
+        sorts.map((sort) =>
+          [base, filter, sort].filter((part) => part !== "").join("&")
+        )
+      )
+  );
 
-        if (!response.ok) {
-          continue;
-        }
-
-        const { voices } = (await response.json()) as {
-          voices: Record<string, string>[];
-        };
-
-        for (const v of voices) {
-          found.set(v.voice_id, v);
-        }
-      }
-    }
-  }
-
-  for (const v of found.values()) {
-    console.log(
-      [
-        v.voice_id,
-        v.name,
-        v.gender,
-        v.age,
-        v.accent,
-        v.language,
-        v.locale,
-        v.category,
-        `uses:${v.usage_character_count_1y}`,
-        `clones:${v.cloned_by_count}`,
-        `free:${v.free_users_allowed}`,
-        `owner:${v.public_owner_id}`,
-      ].join(" | ")
+  // One search at a time, so the library is not flooded.
+  await runJobs(searches, 1, async (search) => {
+    const response = await fetch(
+      `${API}/v1/shared-voices?page_size=3&${search}`
     );
-    console.log(`    ${v.description?.slice(0, 160) ?? ""}`);
-    console.log(`    ${v.preview_url ?? ""}`);
+
+    if (!response.ok) {
+      return;
+    }
+
+    const { voices } = v.parse(SharedVoicesSchema, await response.json());
+
+    for (const voice of voices) {
+      found.set(voice.voice_id, voice);
+    }
+  });
+
+  for (const voice of found.values()) {
+    printVoice(voice);
   }
 
   console.log(`${found.size} voices`);
-}
+};
 
 const SAMPLE = [
   "hei",
@@ -240,129 +307,153 @@ const SAMPLE = [
   "Kan du snakke litt saktere?",
 ];
 
-async function sample(voiceIds: string[]) {
+const sample = async (voiceIds: string[]) => {
   const models = (option("model") ?? config.model).split(",");
 
-  for (const id of voiceIds) {
-    for (const model of models) {
-      const dir = join(STORE, "samples", `${id}-${model}`);
-      mkdirSync(dir, { recursive: true });
+  const folders = voiceIds.flatMap((id) =>
+    models.map((model) => ({ id, model }))
+  );
 
-      for (const [i, text] of SAMPLE.entries()) {
-        const file = join(
-          dir,
-          `${String(i + 1).padStart(2, "0")} ${text.replaceAll(/[?.,!]/g, "")}.mp3`
-        );
+  // One recording at a time: samples are few, and the order of the log stays readable.
+  await runJobs(folders, 1, async ({ id, model }) => {
+    const dir = path.join(STORE, "samples", `${id}-${model}`);
 
-        if (!existsSync(file)) {
-          writeFileSync(file, await record(id, text, model));
-        }
+    mkdirSync(dir, { recursive: true });
+
+    await runJobs([...SAMPLE.entries()], 1, async ([i, text]) => {
+      const file = path.join(
+        dir,
+        `${String(i + 1).padStart(2, "0")} ${text.replaceAll(/[?.,!]/gu, "")}.mp3`
+      );
+
+      if (!existsSync(file)) {
+        writeFileSync(file, await record(id, text, model));
       }
+    });
 
-      console.log(`Samples in ${dir}`);
-    }
+    console.log(`Samples in ${dir}`);
+  });
+};
+
+const addVoice = (slug: string | undefined, id: string | undefined) => {
+  if (slug === undefined || id === undefined) {
+    throw new Error("Usage: bun scripts/build-audio.ts add <slug> <voice-id>");
   }
-}
 
-function addVoice(slug: string, id: string) {
-  if (!/^[a-z0-9-]{1,40}$/.test(slug)) {
+  if (!/^[a-z0-9-]{1,40}$/u.test(slug)) {
     throw new Error("The slug may use lower-case letters, digits and hyphens");
   }
 
   config.voices = [
-    ...config.voices.filter((v) => v.slug !== slug),
+    ...config.voices.filter((voice) => voice.slug !== slug),
     { slug, id, name: option("name") ?? slug },
   ];
   writeFileSync(CONFIG, `${JSON.stringify(config, null, 2)}\n`);
-  console.log(`Voices: ${config.voices.map((v) => v.slug).join(", ")}`);
+  console.log(`Voices: ${config.voices.map((voice) => voice.slug).join(", ")}`);
+};
+
+/** A text to record, with the name of its file. */
+interface Recording {
+  text: string;
+  key: string;
 }
 
-async function build() {
-  if (!config.voices.length) {
+const charactersOf = (recordings: Recording[]) =>
+  recordings.reduce((n, r) => n + forSpeech(r.text).length, 0);
+
+/** Records what one voice is missing, then uploads what the audio server does not have. */
+const buildVoice = async (
+  voice: Voice,
+  recordings: Recording[],
+  auth: { authorization: string }
+) => {
+  // The model is part of the local folder, so changing it records everything again.
+  const local = (key: string) =>
+    path.join(STORE, config.model, voice.slug, `${key}.mp3`);
+
+  const toRecord = recordings.filter((r) => !existsSync(local(r.key)));
+
+  console.log(
+    `${voice.slug}: ${toRecord.length} to record (${charactersOf(toRecord)} characters)`
+  );
+
+  if (flag("dry")) {
+    return;
+  }
+
+  let done = 0;
+
+  // Two at a time: the smallest ElevenLabs plans allow three parallel requests.
+  await runJobs(toRecord, 2, async (recording) => {
+    const file = local(recording.key);
+
+    mkdirSync(path.dirname(file), { recursive: true });
+    writeFileSync(file, await record(voice.id, recording.text, config.model));
+    done += 1;
+
+    if (done % 50 === 0) {
+      console.log(`  recorded ${done} of ${toRecord.length}`);
+    }
+  });
+
+  const listed = await fetch(`${SITE}/api/audio-list`, {
+    method: "POST",
+    headers: { ...auth, "content-type": "application/json" },
+    body: JSON.stringify({ voice: voice.slug }),
+  });
+
+  if (!listed.ok) {
+    throw new Error(`The audio server answered ${listed.status}`);
+  }
+
+  const online = new Set(v.parse(AudioListSchema, await listed.json()));
+
+  const toUpload = recordings.filter(
+    (r) => !online.has(`${voice.slug}/${r.key}.mp3`)
+  );
+
+  console.log(`${voice.slug}: ${toUpload.length} to upload`);
+
+  await runJobs(toUpload, 8, async (recording) => {
+    const response = await fetch(
+      `${SITE}/api/audio/${voice.slug}/${recording.key}.mp3`,
+      {
+        method: "PUT",
+        headers: auth,
+        body: readFileSync(local(recording.key)),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Upload failed with ${response.status} for "${recording.text}"`
+      );
+    }
+  });
+};
+
+const build = async () => {
+  if (config.voices.length === 0) {
     throw new Error(
       "No voices yet. Run: bun scripts/build-audio.ts add <slug> <voice-id>"
     );
   }
 
-  const all = texts();
-  const chars = all.reduce((n, t) => n + forSpeech(t).length, 0);
-  console.log(
-    `${all.length} texts, ${chars} characters per voice, model ${config.model}`
+  const recordings = await Promise.all(
+    texts().map(async (text) => ({ text, key: await audioKey(text) }))
   );
 
-  const syncKey = readFileSync(join(ROOT, ".sync-key"), "utf-8").trim();
+  console.log(
+    `${recordings.length} texts, ${charactersOf(recordings)} characters per voice, model ${config.model}`
+  );
+
+  const syncKey = readFileSync(path.join(ROOT, ".sync-key"), "utf-8").trim();
   const auth = { authorization: `Bearer ${syncKey}` };
 
-  for (const voice of config.voices) {
-    // The model is part of the local folder, so changing it records everything again.
-    const local = (key: string) =>
-      join(STORE, config.model, voice.slug, `${key}.mp3`);
-
-    const jobs = await Promise.all(
-      all.map(async (text) => ({ text, key: await audioKey(text) }))
-    );
-
-    const toRecord = jobs.filter((j) => !existsSync(local(j.key)));
-    console.log(
-      `${voice.slug}: ${toRecord.length} to record (${toRecord.reduce((n, j) => n + forSpeech(j.text).length, 0)} characters)`
-    );
-
-    if (flag("dry")) {
-      continue;
-    }
-
-    let done = 0;
-    const queue = [...toRecord];
-    // Two at a time: the smallest ElevenLabs plans allow three parallel requests.
-    await Promise.all(
-      Array.from({ length: 2 }, async () => {
-        for (let job = queue.shift(); job; job = queue.shift()) {
-          const file = local(job.key);
-          mkdirSync(dirname(file), { recursive: true });
-          writeFileSync(file, await record(voice.id, job.text, config.model));
-
-          if (++done % 50 === 0) {
-            console.log(`  recorded ${done} of ${toRecord.length}`);
-          }
-        }
-      })
-    );
-
-    const listed = await fetch(`${SITE}/api/audio-list`, {
-      method: "POST",
-      headers: { ...auth, "content-type": "application/json" },
-      body: JSON.stringify({ voice: voice.slug }),
-    });
-
-    if (!listed.ok) {
-      throw new Error(`The audio server answered ${listed.status}`);
-    }
-
-    const online = new Set((await listed.json()) as string[]);
-
-    const toUpload = jobs.filter(
-      (j) => !online.has(`${voice.slug}/${j.key}.mp3`)
-    );
-
-    console.log(`${voice.slug}: ${toUpload.length} to upload`);
-    const uploads = [...toUpload];
-    await Promise.all(
-      Array.from({ length: 8 }, async () => {
-        for (let job = uploads.shift(); job; job = uploads.shift()) {
-          const response = await fetch(
-            `${SITE}/api/audio/${voice.slug}/${job.key}.mp3`,
-            { method: "PUT", headers: auth, body: readFileSync(local(job.key)) }
-          );
-
-          if (!response.ok) {
-            throw new Error(
-              `Upload failed with ${response.status} for "${job.text}"`
-            );
-          }
-        }
-      })
-    );
-  }
+  // One voice after the other, so the limits on parallel requests hold.
+  await runJobs(config.voices, 1, async (voice) => {
+    await buildVoice(voice, recordings, auth);
+  });
 
   if (flag("dry")) {
     return;
@@ -371,12 +462,12 @@ async function build() {
   // Only now does the app start asking for recordings of these voices.
   writeFileSync(
     LIVE,
-    `${JSON.stringify({ voices: config.voices.map((v) => v.slug) })}\n`
+    `${JSON.stringify({ voices: config.voices.map((voice) => voice.slug) })}\n`
   );
   console.log(
-    `Done. Commit src/content/audio.json and content/audio.json, then push to publish.`
+    "Done. Commit src/audio.json and text/audio.json, then push to publish."
   );
-}
+};
 
 const [command, ...rest] = process.argv
   .slice(2)

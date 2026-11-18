@@ -1,3 +1,4 @@
+import type { Mem } from "@norsk/engine";
 import { LOG_PAGE } from "@norsk/protocol";
 import type { SyncRequest, SyncResponse } from "@norsk/protocol";
 // Keeps this device and the sync server in step. The app is only usable when signed in;
@@ -5,7 +6,6 @@ import type { SyncRequest, SyncResponse } from "@norsk/protocol";
 import { useSyncExternalStore } from "react";
 
 import { authClient } from "../lib/auth";
-import type { Mem } from "./memory";
 import {
   applyRemote,
   importData,

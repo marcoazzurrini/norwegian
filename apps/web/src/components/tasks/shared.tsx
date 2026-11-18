@@ -1,7 +1,8 @@
-import { items } from "@norsk/content";
-import type { Item, Quiz } from "@norsk/content";
+import { item } from "@norsk/content";
+import type { Item } from "@norsk/content";
+import type { QuizState } from "@norsk/engine";
 import { Check, Sparkles, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import type { ReactNode } from "react";
 
 import { Key } from "../ui";
@@ -15,21 +16,6 @@ export interface Frame {
   progress: number;
   onClose: () => void;
 }
-
-/** What a finished task reports back to the session. */
-export interface TaskResult {
-  itemIds: string[];
-  right: number;
-  wrong: number;
-  taught: number;
-}
-
-export const EMPTY_RESULT: TaskResult = {
-  itemIds: [],
-  right: 0,
-  wrong: 0,
-  taught: 0,
-};
 
 export function shuffle<T>(list: T[]): T[] {
   const out = [...list];
@@ -49,7 +35,7 @@ export const nameOf = (it: Item) =>
     ? it.title!
     : `${it.text.replaceAll(/\s*___\s*/g, " … ").trim()} (${it.gloss})`;
 
-export const itemName = (id: string) => nameOf(items[id]);
+export const itemName = (id: string) => nameOf(item(id));
 
 /** True if the item is shown with an article in front, such as "et hus". */
 export const hasArticle = (it: Item) =>
@@ -168,38 +154,38 @@ export function Answer({
 }
 
 interface ChoicesProps {
-  quiz: Quiz;
-  onRight: () => void;
-  /** Called with the option when the learner picks a wrong one. */
-  onWrong?: (option: string) => void;
+  /** The question and what has been picked so far, from the task machine. */
+  quiz: QuizState;
+  onPick: (option: string) => void;
+  /** Called a moment after the right option was picked. */
+  onNext: () => void;
 }
 
 /** Multiple choice. A wrong pick is marked and the learner tries again; nothing is recorded. */
-export function Choices({ quiz, onRight, onWrong }: ChoicesProps) {
-  const options = useMemo(() => shuffle(quiz.options), [quiz]);
-  const [wrong, setWrong] = useState<string[]>([]);
-  const [done, setDone] = useState(false);
+export function Choices({ quiz, onPick, onNext }: ChoicesProps) {
+  const { question, wrong, answered } = quiz;
+  const options = useMemo(() => shuffle(question.options), [question]);
 
-  const pick = (o: string) => {
-    if (done || wrong.includes(o)) {
+  // A short pause on the right answer, so the learner sees it marked before the screen changes.
+  useEffect(() => {
+    if (!answered) {
       return;
     }
 
-    if (o === quiz.options[0]) {
-      setDone(true);
-      setTimeout(onRight, 450);
-    } else {
-      setWrong((w) => [...w, o]);
-      onWrong?.(o);
-    }
-  };
+    const t = setTimeout(onNext, 450);
+
+    return () => {
+      clearTimeout(t);
+    };
+    // Only the answer starts the pause; onNext is a new function on every render.
+  }, [answered]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const n = Number(e.key);
 
       if (n >= 1 && n <= options.length) {
-        pick(options[n - 1]);
+        onPick(options[n - 1]);
       }
     };
 
@@ -213,7 +199,7 @@ export function Choices({ quiz, onRight, onWrong }: ChoicesProps) {
   return (
     <div className="flex flex-col gap-2 pt-2 lg:gap-3 lg:pt-4">
       {options.map((o, i) => {
-        const isRight = done && o === quiz.options[0];
+        const isRight = answered && o === question.options[0];
         const isWrong = wrong.includes(o);
 
         return (
@@ -222,7 +208,7 @@ export function Choices({ quiz, onRight, onWrong }: ChoicesProps) {
             type="button"
             disabled={isWrong}
             onClick={() => {
-              pick(o);
+              onPick(o);
             }}
             className={`press border-line bg-inset text-18 lg:text-24 flex min-h-[3.75rem] w-full items-center gap-3.5 rounded-[1.125rem] border py-3 pr-5 pl-4 text-left font-medium lg:min-h-20 lg:gap-[1.125rem] lg:rounded-3xl lg:pr-7 lg:pl-[1.375rem] ${
               isRight
