@@ -8,10 +8,9 @@ import tanstack from "ultracite/oxlint/tanstack";
 // Code that the refactor has not reached yet (docs/refactor-plan.md).
 // Each step removes its folder from this list; the list is empty when the plan is done.
 const notYetRefactored = [
-  "apps/web/src/**",
+  "apps/web/src/engine/**",
+  "apps/web/src/lib/**",
   "apps/web/public/sw.js",
-  "apps/api/src/**",
-  "packages/protocol/src/**",
 ];
 
 export default defineConfig({

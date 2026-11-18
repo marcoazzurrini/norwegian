@@ -1,0 +1,33 @@
+{
+  "name": "@norsk/learner",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./react": "./src/react.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@norsk/engine": "workspace:*",
+    "@norsk/protocol": "workspace:*",
+    "@tanstack/db": "1.0.0-rc.1.5",
+    "@tanstack/react-db": "1.0.0-rc.1.5",
+    "@tanstack/react-store": "^0.11.2",
+    "@tanstack/store": "^0.11.2",
+    "idb": "^8.0.4",
+    "valibot": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:",
+    "fake-indexeddb": "^6.0.0",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  }
+}
