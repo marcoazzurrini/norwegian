@@ -80,6 +80,16 @@ export const isDue = (m: Mem, now: number): boolean => dueTime(m) <= now;
 export const isStable = (m: Mem): boolean =>
   !isLearning(m) && m.card.stability >= STABLE_DAYS;
 
+/**
+ * How well an item is known, from 0 to 1. A stable item counts in full. Before that the
+ * credit follows the logarithm of the stability, because memory grows by multiplying:
+ * going from one day to three is as much of a step as going from a week to three weeks.
+ */
+export const strength = (m: Mem): number =>
+  isStable(m)
+    ? 1
+    : Math.min(1, Math.log1p(m.card.stability) / Math.log1p(STABLE_DAYS));
+
 /** Chance, from 0 to 1, that the item would be recalled right now. */
 export const retrievability = (s: Scheduler, m: Mem, now: number): number => {
   if (m.card.lastReviewAt === null) {

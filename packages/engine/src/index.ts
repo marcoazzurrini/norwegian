@@ -16,6 +16,7 @@ export {
   isStable,
   retrievability,
   review,
+  strength,
 } from "./memory";
 
 export type { Card, Grade, Mem, ReviewInput, Scheduler } from "./memory";

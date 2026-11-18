@@ -21,6 +21,7 @@ export const color = stylex.defineVars({
   violet: "#8b5cf6",
   blue: "#3b82f6",
   orange: "#f0752e",
+  yellow: "#e5c04b",
   green: "#58c878",
   red: "#f2634b",
   link: "#7aa2f7",

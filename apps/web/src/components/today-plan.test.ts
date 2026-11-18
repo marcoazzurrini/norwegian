@@ -1,6 +1,8 @@
 import { expect, test } from "bun:test";
 
-import { item } from "@norsk/content";
+import { item, items } from "@norsk/content";
+import { createScheduler, introduce, review } from "@norsk/engine";
+import type { Mem } from "@norsk/engine";
 
 import {
   greetingAt,
@@ -8,6 +10,7 @@ import {
   reviewDetail,
   storyDetail,
   summaryOf,
+  todayOf,
 } from "./today-plan";
 
 test("the greeting follows the hour", () => {
@@ -38,4 +41,45 @@ test("the review line says how few reviews cover the due items", () => {
 test("the other lines say what comes next, or that nothing does", () => {
   expect(newDetail(null, null)).toBe("You have learned every lesson.");
   expect(storyDetail(null)).toBe("A story unlocks after a few more lessons.");
+});
+
+test("progress to A1 counts every item seen, and counts it more the better it is known", async () => {
+  const scheduler = await createScheduler(0.9);
+  const start = new Date("2026-01-01T08:00:00Z").getTime();
+  const total = Object.keys(items).length;
+
+  const viewOf = (mems: Mem[], now: number) =>
+    todayOf({
+      chosenLesson: null,
+      memory: new Map(mems.map((mem) => [mem.id, mem])),
+      now,
+      scheduler,
+      storiesDone: [],
+    });
+
+  const empty = viewOf([], start);
+
+  expect(empty.progress).toBe(0);
+  expect(empty.seen).toBe(0);
+  expect(empty.total).toBe(total);
+
+  const fresh = introduce(scheduler, "c:hei", start);
+  const one = viewOf([fresh], start);
+
+  expect(one.seen).toBe(1);
+  expect(one.stable).toBe(0);
+  expect(one.progress).toBeGreaterThan(0);
+  // Seen once is far from known: the item has only a part of its credit.
+  expect(one.progress).toBeLessThan(0.5 / total);
+
+  // The passes of the first minutes finish the learning steps. A pass days later adds credit.
+  const day = 86_400_000;
+
+  let practised = fresh;
+
+  for (const after of [5 * 60_000, 20 * 60_000, 4 * day]) {
+    practised = review(scheduler, practised, "good", start + after);
+  }
+
+  expect(viewOf([practised], start).progress).toBeGreaterThan(one.progress);
 });

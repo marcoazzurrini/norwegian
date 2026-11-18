@@ -13,7 +13,7 @@ import { Play } from "lucide-react";
 import { useMemo } from "react";
 
 import { AppShell } from "../components/app-shell";
-import { HOURS_TO_A1, greetingAt, todayOf } from "../components/today-plan";
+import { greetingAt, todayOf } from "../components/today-plan";
 import {
   learner,
   useMemory,
@@ -137,6 +137,27 @@ const styles = stylex.create({
     fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
     lineHeight: 1.45,
   },
+  legend: {
+    color: color.fg2,
+    display: "flex",
+    flexDirection: "column",
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    gap: "0.375rem",
+    lineHeight: 1.45,
+  },
+  legendRow: {
+    alignItems: "center",
+    display: "flex",
+    gap: "0.5rem",
+  },
+  dot: {
+    borderRadius: radius.pill,
+    flexShrink: 0,
+    height: "0.5rem",
+    width: "0.5rem",
+  },
+  dotSeen: { backgroundColor: color.yellow },
+  dotKnown: { backgroundColor: color.green },
   meter: {
     display: "flex",
     flexDirection: "column",
@@ -194,16 +215,8 @@ const Today = () => {
         now,
         scheduler,
         storiesDone: progress.storiesDone,
-        totalMs: progress.totalMs,
       }),
-    [
-      memory,
-      now,
-      progress.chosenLesson,
-      progress.storiesDone,
-      progress.totalMs,
-      scheduler,
-    ]
+    [memory, now, progress.chosenLesson, progress.storiesDone, scheduler]
   );
 
   const extras = minutes >= MIN_MINUTES_FOR_EXTRAS;
@@ -260,9 +273,20 @@ const Today = () => {
               {Math.round(view.progress * 100)}%
             </div>
             <div {...stylex.props(styles.meter)}>
-              <Progress value={view.progress} />
-              <div {...stylex.props(styles.caption)}>
-                {view.hours.toFixed(1)} of about {HOURS_TO_A1} hours
+              <Progress
+                value={view.progress}
+                reach={view.seen / view.total}
+                tone="good"
+              />
+              <div {...stylex.props(styles.legend)}>
+                <div {...stylex.props(styles.legendRow)}>
+                  <span {...stylex.props(styles.dot, styles.dotSeen)} />
+                  {view.seen} of {view.total} items seen
+                </div>
+                <div {...stylex.props(styles.legendRow)}>
+                  <span {...stylex.props(styles.dot, styles.dotKnown)} />
+                  {view.stable} of {view.total} items known well
+                </div>
               </div>
             </div>
           </Card>

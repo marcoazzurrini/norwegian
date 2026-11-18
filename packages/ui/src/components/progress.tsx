@@ -13,9 +13,26 @@ const styles = stylex.create({
     borderRadius: radius.pill,
     height: "0.375rem",
     overflow: "hidden",
+    position: "relative",
   },
   fill: {
     borderRadius: radius.pill,
+    // Above the reach, which starts at the same edge and goes further.
+    position: "relative",
+    zIndex: 1,
+    transitionDuration: motion.fill,
+    transitionProperty: "width",
+    transitionTimingFunction: motion.easeOut,
+  },
+});
+
+const reachStyles = stylex.create({
+  reach: {
+    backgroundColor: color.yellow,
+    borderRadius: radius.pill,
+    insetBlock: 0,
+    insetInlineStart: 0,
+    position: "absolute",
     transitionDuration: motion.fill,
     transitionProperty: "width",
     transitionTimingFunction: motion.easeOut,
@@ -31,12 +48,25 @@ interface ProgressProps {
   /** From 0 to 1. Values outside that range are clamped. */
   value: number;
   tone?: ProgressTone;
+  /**
+   * From 0 to 1. A second, paler bar behind the first: how far the learner has gone,
+   * while `value` says how much of that is solid. It is decoration, so the text
+   * next to the bar has to say the number.
+   */
+  reach?: number;
   /** Applies to the track: its height, width, or place in a layout. */
   style?: StyleXStyles;
 }
 
-export const Progress = ({ value, tone = "plain", style }: ProgressProps) => {
-  const part = Math.max(0, Math.min(1, value));
+const clamp = (value: number): number => Math.max(0, Math.min(1, value));
+
+export const Progress = ({
+  value,
+  tone = "plain",
+  reach,
+  style,
+}: ProgressProps) => {
+  const part = clamp(value);
 
   // Assistive technology hears a whole percentage. The fill keeps the exact value, so the
   // bar moves smoothly: its own `style` replaces the rounded width that Base UI gives it.
@@ -49,6 +79,13 @@ export const Progress = ({ value, tone = "plain", style }: ProgressProps) => {
         style={{ width: `${part * 100}%` }}
         {...stylex.props(styles.fill, tones[tone])}
       />
+      {reach === undefined ? null : (
+        <div
+          aria-hidden="true"
+          style={{ width: `${clamp(reach) * 100}%` }}
+          {...stylex.props(reachStyles.reach)}
+        />
+      )}
     </BaseProgress.Root>
   );
 };

@@ -18,6 +18,7 @@ import {
   retrievability,
   review,
   sentenceReady,
+  strength,
 } from "./index";
 import type { Mem, SessionView } from "./index";
 
@@ -170,6 +171,32 @@ describe("memory", () => {
     expect(retrievability(s, m, T0 + 30 * DAY)).toBeLessThan(
       retrievability(s, m, T0 + DAY)
     );
+  });
+
+  test("an item counts a little from its first recall, more with every pass, and in full once it is stable", async () => {
+    const s = await createScheduler(0.9);
+    let m = introduce(s, "w:hus:noun", T0);
+    const first = strength(m);
+
+    expect(first).toBeGreaterThan(0);
+    expect(first).toBeLessThan(0.5);
+
+    m = review(s, m, "good", T0 + 5 * 60_000);
+    m = review(s, m, "good", T0 + 20 * 60_000);
+
+    let now = T0 + 4 * DAY;
+    let before = first;
+
+    // Each review comes when the item is due. A handful of them make the item stable.
+    for (let pass = 0; pass < 6 && strength(m) < 1; pass += 1) {
+      m = review(s, m, "good", now);
+      expect(strength(m)).toBeGreaterThan(before);
+      before = strength(m);
+      now = new Date(m.card.dueAt).getTime();
+    }
+
+    expect(strength(m)).toBe(1);
+    expect(strength(review(s, m, "again", now))).toBeLessThan(1);
   });
 });
 

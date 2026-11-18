@@ -8,13 +8,9 @@ import {
   nextLesson,
   nextStory,
   retrievability,
+  strength,
 } from "@norsk/engine";
 import type { Compression, Memory, Scheduler } from "@norsk/engine";
-
-/** Hours a solo learner needs to reach A1 (docs/spec.md, section 4). */
-export const HOURS_TO_A1 = 100;
-
-const MS_PER_HOUR = 3_600_000;
 
 export interface Greeting {
   norwegian: string;
@@ -102,8 +98,6 @@ export interface TodayInput {
   memory: Memory;
   chosenLesson: number | null;
   storiesDone: readonly string[];
-  /** Active study time so far, in milliseconds. */
-  totalMs: number;
   now: number;
   scheduler: Scheduler;
 }
@@ -113,9 +107,16 @@ export interface TodayView {
   reviewDetail: string;
   newDetail: string;
   storyDetail: string;
-  /** Progress to A1, from 0 up. */
+  /**
+   * Progress to A1, from 0 to 1: how well the items of the course are known. An item
+   * counts from its first recall and in full once it is stable, so the number moves
+   * with every review and reaches 1 only when everything holds.
+   */
   progress: number;
-  hours: number;
+  /** Items met at least once. */
+  seen: number;
+  /** Every item of the course. */
+  total: number;
   stable: number;
   learning: number;
   toLearn: number;
@@ -142,7 +143,6 @@ export const todayOf = ({
   memory,
   chosenLesson,
   storiesDone,
-  totalMs,
   now,
   scheduler,
 }: TodayInput): TodayView => {
@@ -153,13 +153,12 @@ export const todayOf = ({
   const cover = compression(memory, now);
   const due = cover.due + dueItems(memory, now).learning.length;
   const stable = all.filter((mem) => isStable(mem)).length;
-  const hours = totalMs / MS_PER_HOUR;
+  const total = Object.keys(items).length;
 
   return {
-    hours,
     learning: all.length - stable,
     newDetail: newDetail(lesson, firstNew),
-    progress: hours / HOURS_TO_A1,
+    progress: all.reduce((sum, mem) => sum + strength(mem), 0) / total,
     recall:
       all.length === 0
         ? "–"
@@ -167,7 +166,9 @@ export const todayOf = ({
     reviewDetail: reviewDetail(due, cover),
     stable,
     storyDetail: storyDetail(nextStory(memory, new Set(storiesDone))),
+    seen: all.length,
     summary: summaryOf(due, firstNew),
-    toLearn: Object.keys(items).length - memory.size,
+    toLearn: total - memory.size,
+    total,
   };
 };
