@@ -2,6 +2,7 @@
 import * as stylex from "@stylexjs/stylex";
 import { ArrowUp } from "lucide-react";
 import { useEffect, useRef } from "react";
+import type { SyntheticEvent } from "react";
 
 import { effects } from "../tokens/effects";
 import { color, radius, text } from "../tokens/tokens.stylex";
@@ -71,6 +72,10 @@ const styles = stylex.create({
   },
 });
 
+const keepFocus = (event: SyntheticEvent) => {
+  event.preventDefault();
+};
+
 interface AnswerInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -126,6 +131,9 @@ export const AnswerInput = ({
             // The letters are reached by pointer; Tab goes from the field to send.
             tabIndex={-1}
             aria-label={`Insert ${letter}`}
+            // A press must not take focus from the field: on a phone that closes the keyboard for a moment.
+            onPointerDown={keepFocus}
+            onMouseDown={keepFocus}
             onClick={() => {
               insert(letter);
             }}

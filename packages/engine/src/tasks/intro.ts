@@ -44,6 +44,10 @@ export interface IntroState {
 
 export type IntroEvent =
   | { type: "answer"; text: string }
+  /** Ask for the hint without trying first. */
+  | { type: "hint" }
+  /** "I don't know": see the answer to copy. */
+  | { type: "reveal" }
   | { type: "continue" };
 
 /** Moves to the item at `index`, with a clean slate for its recall. */
@@ -161,11 +165,28 @@ const step = (state: IntroState, event: IntroEvent): Step<IntroState> => {
     return event.type === "continue" ? show(state) : stay(state);
   }
 
-  if (event.type === "answer") {
-    return state.recalled ? stay(state) : answer(state, event.text);
+  if (event.type === "continue") {
+    return state.recalled ? afterRecall(state) : stay(state);
   }
 
-  return state.recalled ? afterRecall(state) : stay(state);
+  if (state.recalled) {
+    return stay(state);
+  }
+
+  if (event.type === "answer") {
+    return answer(state, event.text);
+  }
+
+  // Either kind of help counts as a miss: the item was not recalled unaided.
+  if (event.type === "hint") {
+    return state.help === "none"
+      ? stay({ ...state, help: "start", misses: state.misses + 1 })
+      : stay(state);
+  }
+
+  return state.help === "copy"
+    ? stay(state)
+    : stay({ ...state, help: "copy", misses: state.misses + 1 });
 };
 
 export const introTask: TaskMachine<IntroInput, IntroState, IntroEvent> = {

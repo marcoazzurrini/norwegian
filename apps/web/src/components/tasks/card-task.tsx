@@ -13,16 +13,24 @@ import {
   Mine,
   Remark,
   Stamp,
-  effects,
 } from "@norsk/ui";
 import { useState } from "react";
 
 import { say } from "../say";
 import { cardHint, cardNote, cueKind } from "./card-text";
 import type { Frame } from "./frame";
+import { CopyOnce, HelpButtons } from "./help";
 import { hasArticle } from "./items";
 import { taskStyles } from "./task-styles";
 import { useTask } from "./use-task";
+
+/** What the field asks for at each step that has one. */
+const PLACEHOLDER = {
+  ask: "Type in Norwegian",
+  copy: "Copy it once",
+  result: "",
+  retry: "Try again",
+} as const;
 
 interface CardTaskProps {
   item: Item;
@@ -48,7 +56,7 @@ export const CardTask = ({ item, frame, onDone }: CardTaskProps) => {
       dock={
         phase.step === "result" ? (
           <DockRow>
-            {phase.firstTry ? (
+            {phase.firstTry || !phase.answered ? (
               <span />
             ) : (
               <Button
@@ -77,9 +85,7 @@ export const CardTask = ({ item, frame, onDone }: CardTaskProps) => {
             value={input}
             onChange={setInput}
             onSubmit={check}
-            placeholder={
-              phase.step === "retry" ? "Try again" : "Type in Norwegian"
-            }
+            placeholder={PLACEHOLDER[phase.step]}
           />
         )
       }
@@ -89,20 +95,28 @@ export const CardTask = ({ item, frame, onDone }: CardTaskProps) => {
       {typed === "" ? null : <Mine>{typed}</Mine>}
 
       {phase.step === "retry" ? (
-        <>
-          <Remark lead="Not yet.">{cardHint(item, phase.hint)}</Remark>
-          <Button
-            variant="outline"
-            size="medium"
-            style={[effects.rise, taskStyles.showAnswer]}
-            onClick={() => {
-              send({ type: "reveal" });
-            }}
-          >
-            Show answer
-          </Button>
-        </>
+        <Remark lead={typed === "" ? "Hint." : "Not yet."}>
+          {cardHint(item, phase.hint)}
+        </Remark>
       ) : null}
+
+      {phase.step === "ask" || phase.step === "retry" ? (
+        <HelpButtons
+          key={`help-${phase.step}`}
+          onHint={
+            phase.step === "ask"
+              ? () => {
+                  send({ type: "hint" });
+                }
+              : null
+          }
+          onReveal={() => {
+            send({ type: "reveal" });
+          }}
+        />
+      ) : null}
+
+      {phase.step === "copy" ? <CopyOnce item={item} /> : null}
 
       {phase.step === "result" ? (
         <Answer

@@ -66,45 +66,56 @@ test("every page opens from the navigation", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Start session" })).toBeVisible();
 });
 
-test("a first session teaches three words and keeps them after a reload", async ({
+test("a first session teaches a long phrase alone and short words together, and keeps them after a reload", async ({
   page,
 }) => {
   await open(page);
   await page.getByRole("radio", { name: "5 min", exact: true }).click();
   await page.getByRole("link", { name: "Start session" }).click();
 
-  // Step 1: each new word is shown.
-  await inOrder(["hei", "ha det bra", "takk"], async (word) => {
-    await expect(page.getByText("Step 1 of 2", { exact: false })).toBeVisible();
-    await expect(page.getByText(word, { exact: true }).first()).toBeVisible();
-    await page.getByRole("button", { name: "Continue" }).click();
-  });
-
-  // Step 2: each word is typed from its meaning.
   const answer = page.getByRole("textbox", { name: "Type in Norwegian" });
 
-  const words = [
-    { meaning: "hi", word: "hei" },
-    { meaning: "goodbye", word: "ha det bra" },
-    { meaning: "thanks", word: "takk" },
+  // A phrase of three new words asks as much as three words, so it comes on its own.
+  const groups = [
+    [{ meaning: "hi", word: "hei" }],
+    [{ meaning: "goodbye", word: "ha det bra" }],
+    [
+      { meaning: "thanks", word: "takk" },
+      { meaning: "yes", word: "ja" },
+      { meaning: "no", word: "nei" },
+    ],
   ];
 
-  await inOrder(words, async ({ meaning, word }) => {
-    await expect(page.getByText("Step 2 of 2", { exact: false })).toBeVisible();
-    await expect(page.getByText(meaning, { exact: true })).toBeVisible();
-    await answer.fill(word);
-    await answer.press("Enter");
-    await expect(
-      page.getByText("Correct. It comes back in a few minutes.")
-    ).toBeVisible();
-    await page.getByRole("button", { name: "Continue" }).click();
+  await inOrder(groups, async (group) => {
+    // Step 1: each new word of the group is shown.
+    await inOrder(group, async ({ word }) => {
+      await expect(
+        page.getByText("Step 1 of 2", { exact: false })
+      ).toBeVisible();
+      await expect(page.getByText(word, { exact: true }).first()).toBeVisible();
+      await page.getByRole("button", { name: "Continue" }).click();
+    });
+
+    // Step 2: each word is typed from its meaning.
+    await inOrder(group, async ({ meaning, word }) => {
+      await expect(
+        page.getByText("Step 2 of 2", { exact: false })
+      ).toBeVisible();
+      await expect(page.getByText(meaning, { exact: true })).toBeVisible();
+      await answer.fill(word);
+      await answer.press("Enter");
+      await expect(
+        page.getByText("Correct. It comes back in a few minutes.")
+      ).toBeVisible();
+      await page.getByRole("button", { name: "Continue" }).click();
+    });
   });
 
   await page.getByRole("button", { name: "Close" }).click();
-  await expect(stat(page, "Learning")).toHaveText("3");
+  await expect(stat(page, "Learning")).toHaveText("5");
 
   await page.reload();
-  await expect(stat(page, "Learning")).toHaveText("3");
+  await expect(stat(page, "Learning")).toHaveText("5");
 });
 
 test("a wrong answer gets a hint, then the answer to copy", async ({
@@ -113,10 +124,7 @@ test("a wrong answer gets a hint, then the answer to copy", async ({
   await open(page);
   await page.getByRole("radio", { name: "5 min", exact: true }).click();
   await page.getByRole("link", { name: "Start session" }).click();
-
-  await inOrder([1, 2, 3], async () => {
-    await page.getByRole("button", { name: "Continue" }).click();
-  });
+  await page.getByRole("button", { name: "Continue" }).click();
 
   const answer = page.getByRole("textbox", { name: "Type in Norwegian" });
   await answer.fill("nei");
@@ -130,6 +138,23 @@ test("a wrong answer gets a hint, then the answer to copy", async ({
   await expect(
     page.getByText("Correct. It comes back in a few minutes.")
   ).toBeVisible();
+});
+
+test("a learner who draws a blank can ask for a hint, or for the answer", async ({
+  page,
+}) => {
+  await open(page);
+  await page.getByRole("radio", { name: "5 min", exact: true }).click();
+  await page.getByRole("link", { name: "Start session" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  await page.getByRole("button", { name: "Hint" }).click();
+  await expect(page.getByText("It starts with “h…”. Try again.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Hint" })).toBeHidden();
+
+  await page.getByRole("button", { name: "I don’t know" }).click();
+  await expect(page.getByText("Copy it once")).toBeVisible();
+  await expect(page.getByRole("button", { name: "I don’t know" })).toBeHidden();
 });
 
 test("the session length is remembered", async ({ page }) => {

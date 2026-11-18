@@ -57,7 +57,7 @@ export interface SentenceState {
 
 export type SentenceEvent =
   | { type: "answer"; text: string }
-  /** Give up and see the answer. */
+  /** "I don't know": see the answer, before or after a first try. */
   | { type: "reveal" }
   | { type: "continue" }
   /** The learner says the miss was a slip of the fingers: nothing fails. */
@@ -232,16 +232,28 @@ const step = (
       return finish(state, phase.failed, now);
     }
 
-    return event.type === "typo" ? finish(state, [], now) : stay(state);
+    // A typo needs an answer to have been typed.
+    return event.type === "typo" && phase.last.typed.length > 0
+      ? finish(state, [], now)
+      : stay(state);
   }
 
   if (event.type === "answer") {
     return answer(state, event.text);
   }
 
-  return event.type === "reveal" && phase.step === "retry"
-    ? showResult(state, phase.failed, phase.first, false)
-    : stay(state);
+  if (event.type !== "reveal") {
+    return stay(state);
+  }
+
+  if (phase.step === "retry") {
+    return showResult(state, phase.failed, phase.first, false);
+  }
+
+  // Giving up before a first try is graded as an empty answer: every word was missed.
+  const blank = gradeSentence(state.sentence, "");
+
+  return showResult(state, failedItems(state.sentence, blank), blank, false);
 };
 
 export const sentenceTask: TaskMachine<
@@ -270,7 +282,12 @@ export const explainRequest = (state: SentenceState): ExplainRequest | null => {
     };
   }
 
-  if (phase.step === "result" && phase.failed.length > 0) {
+  // After "I don't know" there is no answer of the learner's to explain.
+  if (
+    phase.step === "result" &&
+    phase.failed.length > 0 &&
+    phase.last.typed.length > 0
+  ) {
     return {
       ...about,
       answer: wordsOf(phase.last),

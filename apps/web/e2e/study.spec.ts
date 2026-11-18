@@ -134,7 +134,9 @@ test("a review session asks single words, then whole sentences", async ({
   await expect(
     page.getByText(`It starts with “${NOUNS[second].bare.slice(0, 1)}…”.`)
   ).toBeVisible();
-  await page.getByRole("button", { name: "Show answer" }).click();
+  await page.getByRole("button", { name: "I don’t know" }).click();
+  await expect(page.getByText("Copy it once")).toBeVisible();
+  await answer(page, NOUNS[second].full);
   await expect(
     page.getByText("This is the answer. It will come back soon.")
   ).toBeVisible();
@@ -156,7 +158,9 @@ test("a review session asks single words, then whole sentences", async ({
   const sentence = await asked(page, ENGLISH);
 
   await answer(page, SENTENCES[sentence].short);
-  await expect(page.getByRole("button", { name: "Show answer" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "I don’t know" })
+  ).toBeVisible();
   await expect(page.getByLabel("right").first()).toBeVisible();
   await answer(page, SENTENCES[sentence].full);
   await expect(page.getByText("Correct on the second try.")).toBeVisible();

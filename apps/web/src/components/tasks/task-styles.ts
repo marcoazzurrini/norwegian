@@ -16,9 +16,28 @@ export const taskStyles = stylex.create({
     height: { default: "3rem", [stylex.env.desktop]: "3.75rem" },
     width: { default: "3rem", [stylex.env.desktop]: "3.75rem" },
   },
-  // "Show answer", which comes in under a hint.
-  showAnswer: {
+  // "Hint" and "I don't know", under the question.
+  help: {
     alignSelf: "flex-start",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "0.5rem",
+  },
+  // The answer to copy once, after a second miss or "I don't know".
+  copy: {
+    alignSelf: "flex-start",
+    minWidth: { default: "13.75rem", [stylex.env.desktop]: "22.5rem" },
+  },
+  copyLabel: {
+    color: color.fg3,
+    fontSize: { default: text.s15, [stylex.env.desktop]: text.s18 },
+  },
+  copyWord: {
+    fontSize: { default: text.s32, [stylex.env.desktop]: text.s56 },
+    fontWeight: 500,
+    letterSpacing: tracking.tight,
+    lineHeight: 1.1,
+    paddingTop: "0.25rem",
   },
   shrinks: {
     minWidth: 0,

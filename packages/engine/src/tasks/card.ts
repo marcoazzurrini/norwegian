@@ -1,5 +1,6 @@
 // A single item on its own: meaning shown, Norwegian typed.
-// One hint and a second try on a miss; only a first-try pass counts as remembered.
+// A miss gets one hint and a second try. A second miss, or "I don't know", shows the answer,
+// which the learner copies once. Only a first-try pass without a hint counts as remembered.
 import type { Item } from "@norsk/content";
 
 import { gradeCard } from "../grade";
@@ -16,7 +17,15 @@ export type CardHint = "article" | "start";
 export type CardPhase =
   | { step: "ask" }
   | { step: "retry"; hint: CardHint }
-  | { step: "result"; firstTry: boolean; correct: boolean };
+  /** The answer is on screen and the learner types it once. */
+  | { step: "copy"; answered: boolean }
+  | {
+      step: "result";
+      firstTry: boolean;
+      correct: boolean;
+      /** The learner typed an answer of their own, so the miss can have been a typo. */
+      answered: boolean;
+    };
 
 export interface CardState {
   item: Item;
@@ -28,7 +37,9 @@ export interface CardState {
 
 export type CardEvent =
   | { type: "answer"; text: string }
-  /** Give up and see the answer. */
+  /** Ask for the hint without trying first. */
+  | { type: "hint" }
+  /** "I don't know": see the answer, at any point before the result. */
   | { type: "reveal" }
   | { type: "continue" }
   /** The learner says the miss was a slip of the fingers. */
@@ -40,22 +51,38 @@ const init = ({ item }: CardInput): Step<CardState> =>
 const showResult = (
   state: CardState,
   firstTry: boolean,
-  correct: boolean
+  correct: boolean,
+  answered: boolean
 ): Step<CardState> => ({
   effects: [{ text: state.item.text, type: "speak" }],
-  state: { ...state, phase: { correct, firstTry, step: "result" } },
+  state: {
+    ...state,
+    phase: { answered, correct, firstTry, step: "result" },
+  },
 });
 
+const showAnswer = (state: CardState, answered: boolean): Step<CardState> =>
+  stay({ ...state, phase: { answered, step: "copy" } });
+
 const answer = (state: CardState, text: string): Step<CardState> => {
+  const { phase } = state;
   const grade = gradeCard(state.item, text);
   const next = { ...state, typed: text.trim() };
 
-  if (state.phase.step === "retry") {
-    return showResult(next, false, grade.correct);
+  if (phase.step === "copy") {
+    return grade.correct
+      ? showResult(next, false, false, phase.answered)
+      : stay(next);
+  }
+
+  if (phase.step === "retry") {
+    return grade.correct
+      ? showResult(next, false, true, true)
+      : showAnswer(next, true);
   }
 
   if (grade.correct) {
-    return showResult(next, true, true);
+    return showResult(next, true, true, true);
   }
 
   const hint = grade.wrongArticle ? "article" : "start";
@@ -83,24 +110,33 @@ const finish = (state: CardState, good: boolean): Step<CardState> => ({
 });
 
 const step = (state: CardState, event: CardEvent): Step<CardState> => {
+  const { phase } = state;
+
   if (state.done) {
     return stay(state);
   }
 
-  if (state.phase.step === "result") {
+  if (phase.step === "result") {
     if (event.type === "continue") {
-      return finish(state, state.phase.firstTry);
+      return finish(state, phase.firstTry);
     }
 
-    return event.type === "typo" ? finish(state, true) : stay(state);
+    return event.type === "typo" && phase.answered
+      ? finish(state, true)
+      : stay(state);
   }
 
   if (event.type === "answer") {
     return answer(state, event.text);
   }
 
-  return event.type === "reveal" && state.phase.step === "retry"
-    ? showResult(state, false, false)
+  if (event.type === "hint" && phase.step === "ask") {
+    return stay({ ...state, phase: { hint: "start", step: "retry" } });
+  }
+
+  // Asking for the answer after a try of their own leaves room for "it was a typo".
+  return event.type === "reveal" && phase.step !== "copy"
+    ? showAnswer(state, state.typed !== "")
     : stay(state);
 };
 

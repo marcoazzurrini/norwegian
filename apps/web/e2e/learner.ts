@@ -36,9 +36,11 @@ export const open = async (page: Page, route: string) => {
   ).toBeVisible({ timeout: 30_000 });
 };
 
-/** The field for an answer. Its name changes after a miss. */
+/** The field for an answer. Its name changes after a miss, and when the answer is shown to copy. */
 export const answerField = (page: Page) =>
-  page.getByRole("textbox", { name: /^(?:Type in Norwegian|Try again)$/u });
+  page.getByRole("textbox", {
+    name: /^(?:Type in Norwegian|Try again|Copy it once)$/u,
+  });
 
 export const answer = async (page: Page, text: string) => {
   await answerField(page).fill(text);

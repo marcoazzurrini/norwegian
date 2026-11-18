@@ -37,6 +37,7 @@ describe("a card", () => {
 
     expect(shown.state.typed).toBe("Et hus");
     expect(shown.state.phase).toEqual({
+      answered: true,
       correct: true,
       firstTry: true,
       step: "result",
@@ -68,6 +69,7 @@ describe("a card", () => {
     const shown = run([answer("hytte"), answer("et hus")]);
 
     expect(shown.state.phase).toEqual({
+      answered: true,
       correct: true,
       firstTry: false,
       step: "result",
@@ -83,30 +85,81 @@ describe("a card", () => {
     expect(ended.effects).toEqual([hear, ...recorded("again")]);
   });
 
-  test("wrong twice: the answer is shown and the item is recorded as forgotten", () => {
+  test("wrong twice: the answer is shown to copy, and copying it records the item as forgotten", () => {
     const events = [answer("hytte"), answer("en hus")];
+    const shown = run(events);
 
-    expect(run(events).state.phase).toEqual({
+    expect(shown.state.phase).toEqual({ answered: true, step: "copy" });
+    expect(shown.effects).toEqual([]);
+
+    // A wrong copy changes nothing but what was typed.
+    expect(run([...events, answer("et huz")]).state.phase).toEqual(
+      shown.state.phase
+    );
+
+    const copied = run([...events, answer("et hus")]);
+
+    expect(copied.state.phase).toEqual({
+      answered: true,
       correct: false,
       firstTry: false,
       step: "result",
     });
-    expect(run([...events, { type: "continue" }]).effects).toEqual([
-      hear,
-      ...recorded("again"),
-    ]);
+    expect(
+      run([...events, answer("et hus"), { type: "continue" }]).effects
+    ).toEqual([hear, ...recorded("again")]);
   });
 
-  test("showing the answer after a miss counts as forgotten", () => {
+  test("asking for the hint before trying gives the start of the word, and a right answer after it is still forgotten", () => {
+    const hinted = run([{ type: "hint" }]);
+
+    expect(hinted.state.phase).toEqual({ hint: "start", step: "retry" });
+    expect(hinted.state.typed).toBe("");
+
+    // There is one hint only.
+    expect(run([{ type: "hint" }, { type: "hint" }])).toEqual(hinted);
+    expect(run([answer("hytte"), { type: "hint" }])).toEqual(
+      run([answer("hytte")])
+    );
+
+    const ended = run([
+      { type: "hint" },
+      answer("et hus"),
+      { type: "continue" },
+    ]);
+
+    expect(ended.effects).toEqual([hear, ...recorded("again")]);
+  });
+
+  test("“I don’t know” shows the answer to copy at once, and is recorded as forgotten", () => {
+    const shown = run([{ type: "reveal" }]);
+
+    expect(shown.state.phase).toEqual({ answered: false, step: "copy" });
+    expect(run([{ type: "hint" }, { type: "reveal" }]).state.phase).toEqual(
+      shown.state.phase
+    );
+
+    const ended = run([
+      { type: "reveal" },
+      answer("et hus"),
+      { type: "continue" },
+    ]);
+
+    expect(ended.effects).toEqual([hear, ...recorded("again")]);
+  });
+
+  test("“I don’t know” after a miss keeps what was typed", () => {
     const shown = run([answer("hytte"), { type: "reveal" }]);
 
-    expect(shown.state.phase).toEqual({
-      correct: false,
-      firstTry: false,
-      step: "result",
-    });
+    expect(shown.state.phase).toEqual({ answered: true, step: "copy" });
     expect(shown.state.typed).toBe("hytte");
-    expect(shown.effects).toEqual([hear]);
+    expect(shown.effects).toEqual([]);
+  });
+
+  test("giving up without an answer cannot be called a typo", () => {
+    const copied = [{ type: "reveal" } as const, answer("et hus")];
+
+    expect(run([...copied, { type: "typo" }])).toEqual(run(copied));
   });
 
   test("a miss the learner calls a typo is recorded as remembered", () => {
@@ -118,9 +171,18 @@ describe("a card", () => {
   test("events that do not fit the phase change nothing", () => {
     const asking = run([]);
 
+    expect(run([{ type: "continue" }, { type: "typo" }])).toEqual(asking);
+
+    const copying = run([{ type: "reveal" }]);
+
     expect(
-      run([{ type: "reveal" }, { type: "continue" }, { type: "typo" }])
-    ).toEqual(asking);
+      run([
+        { type: "reveal" },
+        { type: "reveal" },
+        { type: "hint" },
+        { type: "continue" },
+      ])
+    ).toEqual(copying);
 
     const shown = run([answer("et hus")]);
 

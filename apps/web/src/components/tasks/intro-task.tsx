@@ -7,7 +7,6 @@ import {
   Ask,
   AudioButton,
   Button,
-  Card,
   Display,
   DockHint,
   Focus,
@@ -32,6 +31,7 @@ import { learner } from "../../learner";
 import { say } from "../say";
 import { cueKind, introHint, wordFact } from "./card-text";
 import type { Frame } from "./frame";
+import { CopyOnce, HelpButtons } from "./help";
 import { hasArticle, soundOf } from "./items";
 import { taskStyles } from "./task-styles";
 import { belongsTo, splitLine } from "./text-parts";
@@ -128,21 +128,6 @@ const styles = stylex.create({
   },
   strong: {
     fontWeight: 600,
-  },
-  copy: {
-    alignSelf: "flex-start",
-    minWidth: { default: "13.75rem", [stylex.env.desktop]: "22.5rem" },
-  },
-  copyLabel: {
-    color: color.fg3,
-    fontSize: { default: text.s15, [stylex.env.desktop]: text.s18 },
-  },
-  copyWord: {
-    fontSize: { default: text.s32, [stylex.env.desktop]: text.s56 },
-    fontWeight: 500,
-    letterSpacing: tracking.tight,
-    lineHeight: 1.1,
-    paddingTop: "0.25rem",
   },
 });
 
@@ -321,16 +306,28 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
         </Answer>
       ) : null}
       {!recalled && (help === "article" || help === "start") ? (
-        <Remark lead="Not yet.">{introHint(item, help)}</Remark>
+        <Remark lead={typed === "" ? "Hint." : "Not yet."}>
+          {introHint(item, help)}
+        </Remark>
       ) : null}
       {!recalled && help === "copy" ? (
-        <Card key={misses} style={[effects.rise, styles.copy]}>
-          <div {...stylex.props(styles.copyLabel)}>Copy it once</div>
-          <div {...stylex.props(styles.copyWord)}>
-            <Display text={item.answers[0] ?? ""} split={hasArticle(item)} />
-          </div>
-        </Card>
+        <CopyOnce key={misses} item={item} />
       ) : null}
+      {recalled || help === "copy" ? null : (
+        <HelpButtons
+          key={`help-${index}-${help}`}
+          onHint={
+            help === "none"
+              ? () => {
+                  send({ type: "hint" });
+                }
+              : null
+          }
+          onReveal={() => {
+            send({ type: "reveal" });
+          }}
+        />
+      )}
     </Focus>
   );
 };

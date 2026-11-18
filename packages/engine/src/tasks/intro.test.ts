@@ -102,6 +102,24 @@ describe("an intro", () => {
     expect(twice.effects).toHaveLength(3);
   });
 
+  test("the hint and “I don’t know” can be asked for without trying, and each counts as a miss", () => {
+    const hinted = run([...shown, { type: "hint" }]);
+
+    expect(hinted.state).toMatchObject({ help: "start", misses: 1, typed: "" });
+    // There is one hint only.
+    expect(run([...shown, { type: "hint" }, { type: "hint" }])).toEqual(hinted);
+
+    const blank = run([...shown, { type: "reveal" }]);
+
+    expect(blank.state).toMatchObject({ help: "copy", misses: 1 });
+    expect(run([...shown, { type: "reveal" }, { type: "reveal" }])).toEqual(
+      blank
+    );
+    expect(
+      run([...shown, { type: "hint" }, { type: "reveal" }]).state
+    ).toMatchObject({ help: "copy", misses: 2 });
+  });
+
   test("a noun with the wrong article gets a hint at the article", () => {
     const hus = item("w:hus:noun");
     const { state } = run([next, answer("en hus")], [hus]);

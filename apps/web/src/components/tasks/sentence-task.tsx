@@ -23,6 +23,7 @@ import { useExplain } from "../../explain";
 import { learner } from "../../learner";
 import { say } from "../say";
 import type { Frame } from "./frame";
+import { HelpButtons } from "./help";
 import { itemName } from "./items";
 import { hintText, sentenceNote } from "./sentence-text";
 import { taskStyles } from "./task-styles";
@@ -195,7 +196,7 @@ export const SentenceView = ({
       <Stamp>{stamp}</Stamp>
       <Ask>{sentence.en}</Ask>
 
-      {shown === null ? null : (
+      {shown === null || shown.length === 0 ? null : (
         <div key={phase.step} {...stylex.props(effects.rise, styles.typed)}>
           {shown.map((typed, at) => (
             <span
@@ -232,18 +233,18 @@ export const SentenceView = ({
             {hintText(phase.hint)}
           </Remark>
           {aiText === null ? null : <AiNote label="Hint">{aiText}</AiNote>}
-          <Button
-            variant="outline"
-            size="medium"
-            style={[effects.rise, taskStyles.showAnswer]}
-            onClick={() => {
-              send({ type: "reveal" });
-            }}
-          >
-            Show answer
-          </Button>
         </>
       ) : null}
+
+      {phase.step === "result" ? null : (
+        <HelpButtons
+          key={`help-${phase.step}`}
+          onHint={null}
+          onReveal={() => {
+            send({ type: "reveal" });
+          }}
+        />
+      )}
 
       {phase.step === "result" ? (
         <>

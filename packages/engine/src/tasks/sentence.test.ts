@@ -272,8 +272,22 @@ describe("a sentence", () => {
     expect(ended.effects.slice(1)).toEqual(recorded(known, []));
   });
 
+  test("“I don’t know” before a first try shows the answer, and every item is to repeat", () => {
+    const shown = run([{ type: "reveal" }]);
+
+    expect(shown.effects).toEqual([hear(snakker)]);
+    expect(shown.state.phase).toMatchObject({ passed: false, step: "result" });
+    expect(explainRequest(shown.state)).toBeNull();
+
+    // Nothing was typed, so it cannot have been a typo.
+    expect(run([{ type: "reveal" }, { type: "typo" }])).toEqual(shown);
+    expect(run([{ type: "reveal" }, next]).effects.slice(1)).toEqual(
+      recorded(all, all)
+    );
+  });
+
   test("events that do not fit the phase change nothing", () => {
-    expect(run([{ type: "reveal" }, next, { type: "typo" }])).toEqual(run([]));
+    expect(run([next, { type: "typo" }])).toEqual(run([]));
 
     const shown = run([answer("jeg snakker ikke norsk")]);
 

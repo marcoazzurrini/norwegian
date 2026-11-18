@@ -13,6 +13,7 @@ import {
   introduce,
   lessonState,
   nextLesson,
+  nextNewItems,
   pickReview,
   retrievability,
   review,
@@ -259,5 +260,54 @@ describe("a session", () => {
     session.record(3.5 * 60_000, "review");
     const task = session.next(view(mem), now);
     expect(["intro", "pattern"]).toContain(task.type);
+  });
+});
+
+const scheduler = await createScheduler(0.9);
+
+/** The groups a lesson is taught in, for a learner who knows nothing else. */
+const taughtBy = (index: number): string[][] => {
+  const lesson = lessons[index];
+
+  if (lesson === undefined) {
+    throw new Error(`Unknown lesson ${index}`);
+  }
+
+  const mem = new Map<string, Mem>();
+  const groups: string[][] = [];
+
+  for (
+    let group = nextNewItems(lesson, mem);
+    group.length > 0;
+    group = nextNewItems(lesson, mem)
+  ) {
+    groups.push(group.map((it) => it.text));
+
+    for (const it of group) {
+      mem.set(it.id, introduce(scheduler, it.id, T0));
+    }
+  }
+
+  return groups;
+};
+
+describe("how much new material comes together", () => {
+  test("a long phrase of new words is taught alone, short ones and words share a group", () => {
+    expect(taughtBy(6)).toEqual([
+      ["unnskyld", "tusen takk"],
+      ["vær så god"],
+      ["hyggelig å møte deg"],
+      ["jeg vet ikke"],
+      ["student", "lærer"],
+    ]);
+  });
+
+  test("every item of every lesson is still taught, in order, three at most together", () => {
+    for (const lesson of lessons) {
+      const groups = taughtBy(lesson.index);
+
+      expect(groups.flat()).toEqual(lesson.items.map((id) => item(id).text));
+      expect(Math.max(...groups.map((group) => group.length))).toBeLessThan(4);
+    }
   });
 });

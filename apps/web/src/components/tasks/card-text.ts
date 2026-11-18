@@ -15,21 +15,21 @@ export const cueKind = (one: Item): string => {
   return one.pos === "verb" ? "Verb" : "Word";
 };
 
-/** How an item starts: three letters of a phrase, one of a word. */
-const startOf = (one: Item, words: string): string =>
-  words.slice(0, one.kind === "chunk" ? 3 : 1);
+/** How an item starts: three letters of a phrase of several words, one letter of a single word. */
+const startOf = (words: string): string =>
+  words.slice(0, words.trim().includes(" ") ? 3 : 1);
 
 /** A prompt that points at the problem without giving the answer. */
 export const cardHint = (one: Item, hint: CardHint): string =>
   hint === "article"
     ? "The word is right. Is it an en, ei or et word?"
-    : `It starts with “${startOf(one, one.text.replaceAll("_", "").trim())}…”.`;
+    : `It starts with “${startOf(one.text.replaceAll("_", "").trim())}…”.`;
 
 /** The same prompt while a new item is being learned, where the learner tries again at once. */
 export const introHint = (one: Item, help: "article" | "start"): string =>
   help === "article"
     ? "Is it an en, ei or et word?"
-    : `It starts with “${startOf(one, one.text)}…”. Try again.`;
+    : `It starts with “${startOf(one.text)}…”. Try again.`;
 
 /** The line under the answer of a card. */
 export const cardNote = (firstTry: boolean, correct: boolean): string => {

@@ -2,6 +2,7 @@
 // and which review clears the most due items at once ("compression").
 import {
   item,
+  items,
   lessons,
   sentenceItems,
   sentences,
@@ -128,27 +129,80 @@ export const nextLesson = (
   return lessons.find((l) => lessonState(l, mem) === "ready") ?? null;
 };
 
-/** How many new words or phrases are shown together before the learner types them back. */
-const INTRO_BATCH = 3;
+/**
+ * How much new material is shown together before the learner types it back.
+ * A word costs one. A phrase costs one for every word in it the learner has not met,
+ * and a long phrase costs two at least.
+ */
+const INTRO_LOAD = 3;
+
+/** A phrase of this many words is long. */
+const LONG_PHRASE = 3;
+
+/** The words taught on their own, by every form they are written in. */
+const wordItems = new Map<string, string[]>();
+
+for (const it of Object.values(items)) {
+  if (it.kind === "word") {
+    for (const form of [it.text, ...(it.forms ?? []).map((row) => row.form)]) {
+      const key = form.toLowerCase();
+
+      wordItems.set(key, [...(wordItems.get(key) ?? []), it.id]);
+    }
+  }
+}
+
+/** The words of a phrase, without the gap of a phrase such as "jeg heter ___" and without punctuation. */
+const wordsOf = (phrase: string): string[] =>
+  phrase
+    .toLowerCase()
+    .split(/[^\p{L}]+/u)
+    .filter(Boolean);
+
+/** How much a new item asks of the learner. A long phrase of unknown words asks more than a word. */
+const loadOf = (it: Item, known: Known): number => {
+  if (it.kind !== "chunk") {
+    return 1;
+  }
+
+  const words = wordsOf(it.text);
+
+  const unknown = words.filter(
+    (word) => !(wordItems.get(word) ?? []).some((id) => known.has(id))
+  );
+
+  // Known words still have to be kept in order, so a long phrase never counts as a single word.
+  return Math.max(words.length >= LONG_PHRASE ? 2 : 1, unknown.length);
+};
 
 /**
  * The next new material of a lesson: one pattern, or a small group of words and phrases.
  * A group puts other items between seeing a word and typing it, so the first recall
- * comes from memory and is not a copy of what is still in mind.
+ * comes from memory and is not a copy of what is still in mind. The group stops before
+ * it asks too much at once, so a long phrase is taught alone.
  */
 export const nextNewItems = (l: Lesson, mem: Memory): Item[] => {
   const waiting = l.items.filter((id) => !mem.has(id)).map((id) => item(id));
+  const [first] = waiting;
 
-  if (waiting[0]?.kind === "pattern") {
+  if (first === undefined || first.kind === "pattern") {
     return waiting.slice(0, 1);
   }
 
-  const stop = waiting.findIndex((it) => it.kind === "pattern");
+  const group = [first];
+  let load = loadOf(first, mem);
 
-  return waiting.slice(
-    0,
-    Math.min(INTRO_BATCH, stop === -1 ? waiting.length : stop)
-  );
+  for (const next of waiting.slice(1)) {
+    load += loadOf(next, mem);
+
+    if (next.kind === "pattern" || load > INTRO_LOAD) {
+      break;
+    }
+
+    group.push(next);
+  }
+
+  return group;
 };
 
 export interface Due {

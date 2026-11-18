@@ -473,6 +473,11 @@ class Learner {
       return { event: { type: "reveal" }, ms: CONTINUE_MS };
     }
 
+    // With the answer on screen to copy, the learner gets it right.
+    if (phase.step === "copy") {
+      return this.typeItem(state.item, 1);
+    }
+
     return this.typeItem(
       state.item,
       phase.step === "ask" ? this.options.accuracy : SECOND_TRY_ACCURACY
