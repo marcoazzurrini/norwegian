@@ -332,14 +332,9 @@ export const scenarios: Scenario[] = [
     profile: "empty",
     walk: async ({ open, page, shot }) => {
       await open("/session?minutes=5");
-      await seen(page, "1 of 3");
+      // A long phrase and the first word of the course are each taught alone.
+      await seen(page, "Step 1 of 2");
       await shot("show-word");
-      await proceed(page);
-      await seen(page, "2 of 3");
-      await shot("show-phrase");
-      await proceed(page);
-      await seen(page, "3 of 3");
-      await shot("show-last");
       await proceed(page);
       await seen(page, "Step 2 of 2");
       await shot("recall");
@@ -353,7 +348,9 @@ export const scenarios: Scenario[] = [
       await seen(page, "Correct. It comes back in a few minutes.");
       await shot("correct");
       await proceed(page);
-      await seen(page, "2 of 3");
+      await seen(page, "Step 1 of 2");
+      await shot("show-phrase");
+      await proceed(page);
       await answer(page, "ha det bra");
       await seen(page, "Correct. It comes back in a few minutes.");
       await shot("correct-phrase");
@@ -390,9 +387,11 @@ export const scenarios: Scenario[] = [
       await answer(page, "gutt");
       await seen(page, "Not yet.");
       await shot("retry");
-      await press(page, "Show answer");
-      await seen(page, "This is the answer.");
+      await press(page, "I don’t know");
+      await seen(page, "Copy it once");
       await shot("revealed");
+      await answer(page, first.full);
+      await seen(page, "This is the answer.");
       await proceed(page);
       await gone(page, first.full);
 
@@ -441,7 +440,7 @@ export const scenarios: Scenario[] = [
 
       await shot("asked");
       await answer(page, first.missing);
-      await button(page, "Show answer").waitFor();
+      await button(page, "I don’t know").waitFor();
       await shot("retry");
       await answer(page, first.shuffled);
       await seen(page, "This is the answer.");
@@ -461,7 +460,7 @@ export const scenarios: Scenario[] = [
 
       await shot("asked-next");
       await answer(page, third.missing);
-      await press(page, "Show answer");
+      await press(page, "I don’t know");
       await seen(page, "This is the answer.");
       await shot("revealed");
     },
@@ -475,7 +474,7 @@ export const scenarios: Scenario[] = [
       const first = await sentenceAsked(page);
 
       await answer(page, first.shuffled);
-      await button(page, "Show answer").waitFor();
+      await button(page, "I don’t know").waitFor();
       await shot("retry-order");
       await answer(page, first.right);
       await seen(page, "This sentence reviews");
@@ -525,7 +524,7 @@ export const scenarios: Scenario[] = [
       await seen(page, "Step 3 of 3");
       await shot("practice");
       await answer(page, "Hvor er bok?");
-      await button(page, "Show answer").waitFor();
+      await button(page, "I don’t know").waitFor();
       await shot("practice-retry");
       await answer(page, "Hvor er boka?");
       await seen(page, "Correct on the second try.");
@@ -608,13 +607,7 @@ export const scenarios: Scenario[] = [
     walk: async ({ open, page, shot, tick }) => {
       await open("/session?minutes=1");
       await proceed(page);
-      await proceed(page);
-      await proceed(page);
       await answer(page, "hei");
-      await proceed(page);
-      await answer(page, "ha det bra");
-      await proceed(page);
-      await answer(page, "takk");
       await seen(page, "Correct. It comes back in a few minutes.");
       await tick(LONG_MS);
       await proceed(page);

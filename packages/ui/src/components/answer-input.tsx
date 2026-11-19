@@ -6,6 +6,7 @@ import type { SyntheticEvent } from "react";
 
 import { effects } from "../tokens/effects";
 import { color, radius, text } from "../tokens/tokens.stylex";
+import { Key } from "./key";
 
 const LETTERS = ["æ", "ø", "å"] as const;
 
@@ -50,9 +51,18 @@ const styles = stylex.create({
     display: "flex",
     fontSize: text.s16,
     fontWeight: 500,
+    // With a keyboard the button also names its key, so it is wider than the round one of a touch screen.
+    gap: "0.5rem",
     height: "2.25rem",
     justifyContent: "center",
-    width: "2.25rem",
+    paddingInline: { default: "13px 6px", [stylex.env.touch]: 0 },
+    width: { default: null, [stylex.env.touch]: "2.25rem" },
+  },
+  letterKey: {
+    borderRadius: radius.pill,
+    height: "1.375rem",
+    minWidth: "1.375rem",
+    paddingInline: "6px",
   },
   field: {
     "::placeholder": { color: color.fg3 },
@@ -145,7 +155,6 @@ export const AnswerInput = ({
             tabIndex={-1}
             aria-label={`Insert ${letter}`}
             aria-keyshortcuts={keyOf(letter)}
-            title={`Key ${keyOf(letter)}`}
             // A press must not take focus from the field: on a phone that closes the keyboard for a moment.
             onPointerDown={keepFocus}
             onMouseDown={keepFocus}
@@ -155,6 +164,7 @@ export const AnswerInput = ({
             {...stylex.props(effects.press, styles.letter)}
           >
             {letter}
+            <Key style={styles.letterKey}>{keyOf(letter)}</Key>
           </button>
         ))}
       </div>

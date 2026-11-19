@@ -3468,6 +3468,184 @@
      ]
     }
    ]
+  },
+  {
+   "id": "n7utT",
+   "type": "frame",
+   "name": "Composer Keys",
+   "component": true,
+   "style": {
+    "display": "flex",
+    "alignItems": "center",
+    "gap": 12,
+    "width": 640,
+    "height": 56,
+    "padding": "0 8px 0 10px",
+    "borderRadius": 999,
+    "background": "var(--panel)",
+    "border": "1px solid var(--line-strong)"
+   },
+   "children": [
+    {
+     "id": "BBi4g",
+     "type": "frame",
+     "name": "Letters",
+     "style": {
+      "display": "flex",
+      "gap": 4,
+      "flexShrink": 0
+     },
+     "children": [
+      {
+       "id": "LjMXV",
+       "type": "frame",
+       "name": "Letter æ",
+       "style": {
+        "height": 36,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "display": "flex",
+        "alignItems": "center",
+        "gap": 8,
+        "padding": "0 6px 0 13px",
+        "fontSize": 16,
+        "fontWeight": 500
+       },
+       "children": [
+        {
+         "id": "wT7NJ",
+         "type": "text",
+         "text": "æ",
+         "name": "æ"
+        },
+        {
+         "id": "6FeUi",
+         "type": "ref",
+         "ref": "7DiTW",
+         "overrides": {
+          "Label": {
+           "text": "'"
+          }
+         },
+         "style": {
+          "minWidth": 22,
+          "height": 22,
+          "padding": "0 6px",
+          "borderRadius": 999
+         },
+         "name": "Key"
+        }
+       ]
+      },
+      {
+       "id": "wkJ6H",
+       "type": "frame",
+       "name": "Letter ø",
+       "style": {
+        "height": 36,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "display": "flex",
+        "alignItems": "center",
+        "gap": 8,
+        "padding": "0 6px 0 13px",
+        "fontSize": 16,
+        "fontWeight": 500
+       },
+       "children": [
+        {
+         "id": "nGpMy",
+         "type": "text",
+         "text": "ø",
+         "name": "ø"
+        },
+        {
+         "id": "mxpgG",
+         "type": "ref",
+         "ref": "7DiTW",
+         "overrides": {
+          "Label": {
+           "text": ";"
+          }
+         },
+         "style": {
+          "minWidth": 22,
+          "height": 22,
+          "padding": "0 6px",
+          "borderRadius": 999
+         },
+         "name": "Key"
+        }
+       ]
+      },
+      {
+       "id": "GEHBy",
+       "type": "frame",
+       "name": "Letter å",
+       "style": {
+        "height": 36,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "display": "flex",
+        "alignItems": "center",
+        "gap": 8,
+        "padding": "0 6px 0 13px",
+        "fontSize": 16,
+        "fontWeight": 500
+       },
+       "children": [
+        {
+         "id": "vU2kZ",
+         "type": "text",
+         "text": "å",
+         "name": "å"
+        },
+        {
+         "id": "DVt7Q",
+         "type": "ref",
+         "ref": "7DiTW",
+         "overrides": {
+          "Label": {
+           "text": "["
+          }
+         },
+         "style": {
+          "minWidth": 22,
+          "height": 22,
+          "padding": "0 6px",
+          "borderRadius": 999
+         },
+         "name": "Key"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "gDgmj",
+     "type": "text",
+     "name": "Value",
+     "text": "Type in Norwegian",
+     "style": {
+      "flex": 1,
+      "fontSize": 16,
+      "color": "var(--text-3)"
+     }
+    },
+    {
+     "id": "XeHUs",
+     "type": "ref",
+     "ref": "caCgD",
+     "overrides": {
+      "Icon": {
+       "icon": "arrow-up"
+      }
+     },
+     "name": "Audio"
+    }
+   ],
+   "x": 1560,
+   "y": 0
   }
  ]
 }
