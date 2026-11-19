@@ -308,7 +308,7 @@ test("Start over asks first, then deletes all progress", async ({ page }) => {
 
   await startAs(page, "progress");
   await open(page, "/settings");
-  await expect(learned(72)).toBeVisible();
+  await expect(learned(73)).toBeVisible();
 
   // The first press only asks; Cancel leaves everything as it was.
   await page.getByRole("button", { name: "Start over" }).click();
@@ -319,7 +319,7 @@ test("Start over asks first, then deletes all progress", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Delete everything" })
   ).toBeHidden();
-  await expect(learned(72)).toBeVisible();
+  await expect(learned(73)).toBeVisible();
 
   await page.getByRole("button", { name: "Start over" }).click();
   await page.getByRole("button", { name: "Delete everything" }).click();
@@ -328,5 +328,5 @@ test("Start over asks first, then deletes all progress", async ({ page }) => {
 
   // Nothing is left on another page either.
   await page.goto("/items");
-  await expect(page.getByText("0 of 460 learned.")).toBeVisible();
+  await expect(page.getByText("0 of 463 learned.")).toBeVisible();
 });

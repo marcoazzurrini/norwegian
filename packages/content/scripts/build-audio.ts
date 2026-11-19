@@ -131,6 +131,8 @@ const texts = (): string[] => {
   for (const it of Object.values(items)) {
     if (it.kind !== "pattern") {
       add(it.text);
+      // An item is spoken as it is shown: a noun with its article ("et rom"), a verb with "å".
+      add(it.display);
     }
 
     for (const ex of it.examples ?? []) {

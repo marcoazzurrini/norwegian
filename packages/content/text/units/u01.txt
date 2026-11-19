@@ -55,7 +55,7 @@ w hun | pron | she
 w vi | pron | we
 w de | pron | they
 w dere | pron | you (several people)
-w også | adv | also, too
+w også | adv | also
 w men | conj | but
 
 ## lesson Asking
@@ -80,9 +80,10 @@ c hvordan går det? | how are you? (how is it going)
 c bare bra | just fine
 
 ## lesson Polite words
-c unnskyld | excuse me, sorry
+c unnskyld | excuse me
 c tusen takk | thank you very much
-c vær så god | here you are, you are welcome
+c vær så god | here you are
+c vær så god | you are welcome | sense=welcome
 c hyggelig å møte deg | nice to meet you
 c jeg vet ikke | I do not know
 w student | noun en | student

@@ -72,7 +72,7 @@ c på jobb | at work
 c på skolen | at school
 c i byen | in town
 c hos ___ | at ___'s place
-w ved | prep | by, next to
+w ved | prep | by (next to)
 w mellom | prep | between
 w foran | prep | in front of
 w bak | prep | behind

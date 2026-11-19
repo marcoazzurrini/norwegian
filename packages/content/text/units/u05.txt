@@ -5,9 +5,9 @@ c stå opp | to get up
 w opp | adv | up
 w sove | verb | to sleep
 w jobbe | verb | to work
-w gå | verb | to walk, to go (on foot)
+w gå | verb | to walk
 w lese | verb | to read
-w se | verb | to see, to watch
+w se | verb | to see
 
 ## lesson Verb second
 p v2 | The verb comes second | needs: present, neg
@@ -18,7 +18,7 @@ ex: nå jobber jeg | now I am working
 ex: i dag spiser vi fisk | today we are eating fish
 q: i dag jobber hun | *today she is working | is she working today?
 c i dag | today
-w så | adv | then, so
+w så | adv | then (after that)
 w ofte | adv | often
 w alltid | adv | always
 w aldri | adv | never
@@ -38,7 +38,7 @@ w morgen | noun en | morning
 w kveld | noun en | evening
 w natt | noun ei | night
 c om morgenen | in the morning (every morning)
-c i kveld | tonight, this evening
+c i kveld | tonight
 c i morgen | tomorrow
 
 ## lesson The week
@@ -60,7 +60,7 @@ w hjem | adv | home (going there)
 
 ## lesson Start and finish
 w begynne | verb | to begin
-w slutte | verb | to finish, to stop
+w slutte | verb | to finish
 w lørdag | noun en | Saturday
 w søndag | noun en | Sunday
 w først | adv | first
@@ -73,7 +73,7 @@ w tirsdag | noun en | Tuesday
 w onsdag | noun en | Wednesday
 w torsdag | noun en | Thursday
 w vanligvis | adv | usually
-w fri | adj | free, off work
+w fri | adj | free (off work)
 c ha fri | to be off work
 
 ## sentences

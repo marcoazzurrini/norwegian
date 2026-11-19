@@ -73,6 +73,18 @@ const addItem = (reader: Reader, lesson: Lesson, info: ItemInfo, at: Line) => {
   lesson.items.push(id);
 };
 
+/** The meaning named on an item line with "sense=", if any. */
+const senseOf = (opts: string[]): string | undefined =>
+  opts.find((o) => o.startsWith("sense="))?.slice(6);
+
+/**
+ * The id of an item that may be one of several meanings of the same text. The meaning written
+ * first keeps the plain id, so what a learner already knows of the item stays theirs; each
+ * later meaning adds its name.
+ */
+const idWithSense = (reader: Reader, id: string, sense: string | undefined) =>
+  sense !== undefined && reader.draft.info.has(id) ? `${id}:${sense}` : id;
+
 const startUnit = (reader: Reader, line: Line) => {
   const [head = "", name, subtitle] = fields(line.text.slice(2));
 
@@ -330,7 +342,7 @@ const readPattern = (
   addItem(
     reader,
     lesson,
-    { item, forms: new Map(), exact: true, lemma: "" },
+    { item, forms: new Map(), exact: true, lemma: "", sense: undefined },
     line
   );
   reader.pattern = open;
@@ -342,7 +354,7 @@ const readChunk = (
   lesson: Lesson,
   body: string[]
 ) => {
-  const [text, gloss] = body;
+  const [text, gloss, ...opts] = body;
 
   if (!filled(text) || !filled(gloss)) {
     reader.report.errors.push(`${line.where}: chunk needs text and meaning`);
@@ -350,8 +362,10 @@ const readChunk = (
     return;
   }
 
+  const sense = senseOf(opts);
+
   const item: Item = {
-    id: `c:${slug(text)}`,
+    id: idWithSense(reader, `c:${slug(text)}`, sense),
     kind: "chunk",
     lesson: lesson.index,
     text,
@@ -363,7 +377,7 @@ const readChunk = (
   addItem(
     reader,
     lesson,
-    { item, forms: new Map(), exact: true, lemma: "" },
+    { item, forms: new Map(), exact: true, lemma: "", sense },
     line
   );
 };
@@ -501,9 +515,10 @@ const readWord = (
   }
 
   const { display, answers } = wordAnswers(word);
+  const sense = senseOf(opts);
 
   const item: Item = {
-    id: `w:${spelling}:${pos}`,
+    id: idWithSense(reader, `w:${spelling}:${pos}`, sense),
     kind: "word",
     lesson: lesson.index,
     text,
@@ -533,7 +548,7 @@ const readWord = (
   addItem(
     reader,
     lesson,
-    { item, forms, exact: word.exact, lemma: word.lemma },
+    { item, forms, exact: word.exact, lemma: word.lemma, sense },
     line
   );
 };

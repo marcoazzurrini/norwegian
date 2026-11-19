@@ -10,7 +10,7 @@ ex: har du spist? | have you eaten?
 q: hun har kjøpt en bil | *she has bought a car | she bought a car
 q: vi har ikke spist | *we have not eaten | we did not eat
 w allerede | adv | already
-w ennå | adv | yet, still
+w ennå | adv | still
 c noen gang | ever
 w nettopp | adv | just (a moment ago)
 
@@ -18,7 +18,7 @@ w nettopp | adv | just (a moment ago)
 f vært | verb | been | lemma=være
 f gjort | verb | done | lemma=gjøre
 f sett | verb | seen | lemma=se
-f gått | verb | gone, walked | lemma=gå
+f gått | verb | walked (have walked) | lemma=gå
 f kommet | verb | come (have come) | lemma=komme
 f tatt | verb | taken | lemma=ta
 
@@ -51,7 +51,7 @@ w bruke | verb | to use
 w ferdig | adj | finished
 w klar | adj | ready
 w opptatt | adj | busy
-w ledig | adj | free, vacant
+w ledig | adj | vacant
 
 ## lesson Health
 w hode | noun et | head
@@ -145,7 +145,7 @@ s Jeg tror at det er feil. | I think that it is wrong.
 s Hvorfor har du ikke spist? | Why have you not eaten?
 s Er rommet ledig i kveld? | Is the room free tonight?
 s Sjefen har reist til Bergen. | The boss has travelled to Bergen.
-s Hvis du er syk, må du bli hjemme. | If you are ill, you must stay at home.
+s Hvis du er syk, må du bli{stay} hjemme. | If you are ill, you must stay at home.
 s Jeg er glad fordi jeg har fri. | I am happy because I am off work.
 
 ## story Hos legen | At the doctor's
@@ -155,7 +155,7 @@ Lege: Har du spist i dag? | Have you eaten today?
 Tom: Nei, jeg har ikke spist ennå. Jeg er ikke sulten. | No, I have not eaten yet. I am not hungry.
 Lege: Jobber du? | Do you work?
 Tom: Ja, jeg har jobbet veldig lenge hver dag. Sjefen sier at det er viktig. | Yes, I have worked very long every day. The boss says that it is important.
-Lege: Jeg tror at du er trøtt. Du må bli hjemme og sove. | I think that you are tired. You must stay at home and sleep.
+Lege: Jeg tror at du er trøtt. Du må bli{stay} hjemme og sove. | I think that you are tired. You must stay at home and sleep.
 Tom: Heldigvis har jeg fri i morgen. | Luckily I am off work tomorrow.
 ? What is wrong with Tom? | *he has a headache | he has a cold | his foot hurts
 ? What does the doctor tell Tom to do? | *stay at home and sleep | eat more fish | work at home

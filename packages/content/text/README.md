@@ -29,6 +29,8 @@ Ida: Hei! | Hi!
 - `w` is a word. It matches every inflected form of its lemma, unless `only` is set.
 - `f` is a single irregular form, taught as its own item. It always matches only itself.
 - `c` is a chunk. `___` marks a slot.
+- Give each item one meaning. A word or chunk with two unrelated meanings is written once for each, with `sense=name`: `w bli | verb | to become | sense=become` and `w bli | verb | to stay | sense=stay`. The meaning written first keeps the plain id.
+- In a sentence or a story, a word with several meanings must name the one meant: `Vi ble{stay} hjemme.` The build fails without it.
 - `p` is a grammar pattern. `needs:` lists the pattern ids it depends on.
 - A lesson needs the previous lesson unless `needs:` names pattern ids or lesson titles.
 - Noun gender is `en`, `ei`, `et` or `pl` (plural only).

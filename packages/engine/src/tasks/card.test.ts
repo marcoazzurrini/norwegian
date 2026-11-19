@@ -9,7 +9,9 @@ import { play } from "../testing";
 const hus = item("w:hus:noun");
 const run = (events: CardEvent[]) => play(cardTask, { item: hus }, events);
 const answer = (text: string): CardEvent => ({ text, type: "answer" });
-const hear: Effect = { text: "hus", type: "speak" };
+
+// The word is heard as it is shown, with its article.
+const hear: Effect = { text: "et hus", type: "speak" };
 
 const recorded = (grade: "good" | "again"): Effect[] => [
   { inputs: [{ grade, id: hus.id }], type: "review" },

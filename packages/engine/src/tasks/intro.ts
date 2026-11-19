@@ -71,7 +71,7 @@ const goTo = (state: IntroState, index: number): IntroState => {
 };
 
 const hear = (state: IntroState): Step<IntroState> => ({
-  effects: [{ text: state.item.text, type: "speak" }],
+  effects: [{ text: state.item.display, type: "speak" }],
   state,
 });
 
@@ -117,7 +117,7 @@ const answer = (state: IntroState, text: string): Step<IntroState> => {
     return {
       effects: [
         { ids: [state.item.id], type: "teach" },
-        { text: state.item.text, type: "speak" },
+        { text: state.item.display, type: "speak" },
       ],
       state: { ...next, recalled: true },
     };

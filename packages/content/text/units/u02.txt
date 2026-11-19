@@ -13,7 +13,7 @@ w hus | noun et | house
 w bil | noun en | car
 w bok | noun ei | book
 w har | verb | have / has | lemma=ha | only
-w det | pron | it, that
+w det | pron | it
 w dette | pron | this (pointing at a thing)
 
 ## lesson Home
@@ -37,10 +37,10 @@ q: en stol | *a chair | the chair
 q: døra | *the door | a door
 w her | adv | here
 w der | adv | there
-w ligge | verb | to lie, to be (somewhere)
+w ligge | verb | to lie (be somewhere)
 w stå | verb | to stand
 w på | prep | on
-c det er ___ | there is ___, it is ___
+c det er ___ | there is ___
 
 ## lesson People
 w mann | noun en | man
@@ -56,7 +56,7 @@ w telefon | noun en | phone
 w nøkkel | noun en | key
 w penger | noun pl | money | only
 w jobb | noun en | job
-w by | noun en | town, city
+w by | noun en | town
 w land | noun et | country
 
 ## lesson Small words
@@ -64,7 +64,7 @@ w eller | conj | or
 w med | prep | with
 w til | prep | to
 w veldig | adv | very
-w bra | adj | good, fine
+w bra | adj | good (in general)
 w nå | adv | now
 c ikke sant? | right? isn't it?
 

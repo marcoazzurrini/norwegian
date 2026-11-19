@@ -9,12 +9,12 @@ ex: jeg skal reise i morgen | I am going to travel tomorrow
 ex: hva skal du gjøre? | what are you going to do?
 q: vi skal spise ute | *we are going to eat out | we are eating out
 q: skal du jobbe? | *are you going to work? | are you working?
-w skal | verb | going to, shall | lemma=skulle | only
+w skal | verb | going to | lemma=skulle | only
 c neste uke | next week
 w neste | det | next
 w sommer | noun en | summer
 w vinter | noun en | winter
-w ute | adv | outside, out
+w ute | adv | outside
 
 ## lesson It is raining
 p det-subj | It rains, it is cold | needs: present
@@ -38,7 +38,7 @@ w tenke | verb | to think (use your mind)
 w planlegge | verb | to plan
 c glede seg til ___ | to look forward to ___
 c ha lyst til å ___ | to feel like (doing something)
-w lyst | noun ei | wish, desire
+w lyst | noun ei | desire
 
 ## lesson Free time
 w film | noun en | film
@@ -55,7 +55,7 @@ w høst | noun en | autumn
 w måned | noun en | month
 w jul | noun ei | Christmas
 w bursdag | noun en | birthday
-w gave | noun en | present, gift
+w gave | noun en | gift
 
 ## lesson Invitations
 c det høres bra ut | that sounds good
@@ -70,7 +70,7 @@ w ting | noun en | thing
 w tid | noun ei | time
 w liv | noun et | life
 w verden | noun en | world
-w menneske | noun et | person, human being
+w menneske | noun et | human being
 w folk | noun et | people
 
 ## sentences
@@ -129,7 +129,7 @@ s Livet er godt. | Life is good.
 s Verden er stor. | The world is big.
 s Det er mange mennesker her. | There are many people here.
 s Folk liker sol. | People like sun.
-s Hun skal bli lege. | She is going to become a doctor.
+s Hun skal bli{become} lege. | She is going to become a doctor.
 s Skal vi spise snart? | Are we going to eat soon?
 s Jeg håper at du kan komme. | I hope that you can come.
 s Jeg tror at det skal regne i kveld. | I think that it is going to rain tonight. | +det-subj

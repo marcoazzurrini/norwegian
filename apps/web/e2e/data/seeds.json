@@ -757,6 +757,23 @@
           "lastReviewAt": "2026-02-21T08:50:00.000Z",
           "state": 2,
           "scheduleStatus": "review",
+          "cardId": "c:vær-så-god:welcome",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:vær-så-god:welcome",
+        "introducedAt": 1770539400000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-08T08:50:00.000Z",
+          "lastReviewAt": "2026-02-21T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
           "cardId": "c:hyggelig-å-møte-deg",
           "reps": 5,
           "lapses": 0,
@@ -1854,6 +1871,23 @@
           "learningStep": 0
         },
         "id": "c:vær-så-god",
+        "introducedAt": 1771057800000
+      },
+      {
+        "card": {
+          "stability": 46.35346242,
+          "difficulty": 2.09058635,
+          "dueAt": "2026-04-14T08:50:00.000Z",
+          "lastReviewAt": "2026-02-27T08:50:00.000Z",
+          "state": 2,
+          "scheduleStatus": "review",
+          "cardId": "c:vær-så-god:welcome",
+          "reps": 5,
+          "lapses": 0,
+          "scheduledDays": 46,
+          "learningStep": 0
+        },
+        "id": "c:vær-så-god:welcome",
         "introducedAt": 1771057800000
       },
       {

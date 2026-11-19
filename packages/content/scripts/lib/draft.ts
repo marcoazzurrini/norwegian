@@ -24,6 +24,8 @@ export interface ItemInfo {
   exact: boolean;
   /** The dictionary form. Empty for chunks and patterns. */
   lemma: string;
+  /** The name of this meaning, when the same word or phrase is taught once for each of its meanings. */
+  sense: string | undefined;
 }
 
 /** A sentence as written in a unit file, before its words are matched to items. */

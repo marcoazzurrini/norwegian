@@ -54,7 +54,7 @@ const showResult = (
   correct: boolean,
   answered: boolean
 ): Step<CardState> => ({
-  effects: [{ text: state.item.text, type: "speak" }],
+  effects: [{ text: state.item.display, type: "speak" }],
   state: {
     ...state,
     phase: { answered, correct, firstTry, step: "result" },

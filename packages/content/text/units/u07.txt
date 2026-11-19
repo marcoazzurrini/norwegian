@@ -15,7 +15,7 @@ w liten | adj | small (with en words)
 f lite | adj | small (with et words) | lemma=liten
 f små | adj | small (more than one) | lemma=liten
 w ny | adj | new
-w fin | adj | nice, fine
+w fin | adj | nice
 
 ## lesson Old and new
 w ung | adj | young
@@ -52,7 +52,7 @@ w kjole | noun en | dress
 ## lesson People
 w snill | adj | kind
 w morsom | adj | funny
-w flink | adj | clever, good at something
+w flink | adj | good at something
 w høy | adj | tall
 w syk | adj | ill
 w frisk | adj | healthy

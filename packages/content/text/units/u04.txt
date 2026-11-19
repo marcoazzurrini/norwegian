@@ -20,7 +20,7 @@ q: mange barn | *many children | a child
 w to | num | two
 w tre | num | three
 w mange | adj | many | only
-w noen | det | some, any
+w noen | det | some
 w hund | noun en | dog
 w katt | noun en | cat
 
@@ -37,7 +37,7 @@ q: boka hennes | *her book | his book
 w min | det | my
 w din | det | your (one person)
 w hans | det | his
-w hennes | det | her, hers (owner)
+w hennes | det | her (owner)
 
 ## lesson Counting
 w fire | num | four
@@ -68,7 +68,7 @@ w deres | det | their
 w sønn | noun en | son
 w datter | noun ei | daughter
 w kone | noun ei | wife
-w kjæreste | noun en | boyfriend, girlfriend
+w kjæreste | noun en | boyfriend or girlfriend
 w gift | adj | married
 w sammen | adv | together
 w sju | num | seven
@@ -78,9 +78,9 @@ w åtte | num | eight
 c hvor mange | how many
 w ni | num | nine
 w ti | num | ten
-w bare | adv | only, just
-w alle | pron | all, everyone
-w ingen | pron | nobody, none
+w bare | adv | only
+w alle | pron | everyone
+w ingen | pron | nobody
 w kjenne | verb | to know (a person)
 
 ## sentences

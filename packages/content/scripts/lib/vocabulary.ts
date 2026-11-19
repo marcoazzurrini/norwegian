@@ -18,6 +18,8 @@ export interface Candidate {
   lemma: string;
   /** Every spelling of the word. */
   forms: Forms;
+  /** The name of this meaning, when the word is taught once for each of its meanings. */
+  sense: string | undefined;
 }
 
 /** A chunk, as the spellings each of its words may take. A slot (___) separates the parts. */
@@ -66,7 +68,7 @@ const chunkWordForms = (lexicon: Lexicon, word: string): Set<string> => {
 const formIndexOf = (info: Map<string, ItemInfo>) => {
   const formIndex = new Map<string, Candidate[]>();
 
-  for (const [id, { item, forms, exact, lemma }] of info) {
+  for (const [id, { item, forms, exact, lemma, sense }] of info) {
     const { pos } = item;
 
     // Every word has a word class; the check is for the compiler.
@@ -86,6 +88,7 @@ const formIndexOf = (info: Map<string, ItemInfo>) => {
         text: item.text,
         lemma,
         forms,
+        sense,
       });
       formIndex.set(form, candidates);
     }

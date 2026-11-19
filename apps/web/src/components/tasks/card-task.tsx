@@ -123,7 +123,7 @@ export const CardTask = ({ item, frame, onDone }: CardTaskProps) => {
           audio={
             <AudioButton
               onPlay={() => {
-                say(item.text);
+                say(item.display);
               }}
               style={taskStyles.answerAudio}
             />

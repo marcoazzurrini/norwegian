@@ -18,9 +18,9 @@ ex: hun vil spise | she wants to eat
 ex: vi må drikke vann | we must drink water
 q: du må komme | *you must come | you are coming
 q: han vil ha kaffe | *he wants coffee | he has coffee
-w vil | verb | want to, will | lemma=ville | only
+w vil | verb | want to | lemma=ville | only
 w kan | verb | can | lemma=kunne | only
-w må | verb | must, have to | lemma=måtte | only
+w må | verb | must | lemma=måtte | only
 w ha | verb | to have
 w spise | verb | to eat
 w drikke | verb | to drink

@@ -230,7 +230,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
           <div {...stylex.props(styles.head)}>
             <AudioButton
               onPlay={() => {
-                say(item.text);
+                say(item.display);
               }}
               style={styles.headAudio}
             />
@@ -294,7 +294,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
           audio={
             <AudioButton
               onPlay={() => {
-                say(item.text);
+                say(item.display);
               }}
               style={taskStyles.answerAudio}
             />

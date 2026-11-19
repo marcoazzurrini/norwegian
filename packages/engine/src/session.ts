@@ -63,6 +63,18 @@ const REVIEW_SHARE = 0.6;
 /** With this many reviews due, the session teaches nothing new. */
 const BACKLOG = 40;
 
+/**
+ * New material waits while fewer than this share of the latest recalls were right at the first try.
+ * Effort helps memory only when the recall succeeds in the end, so a learner who keeps missing
+ * catches up first. The amount of new material is not capped otherwise: a count of new words
+ * says nothing about whether they are being learned.
+ */
+const MIN_SUCCESS = 0.7;
+
+/** How many of the latest recall tasks the success rate is taken from, and how many answers it needs. */
+const SUCCESS_TASKS = 10;
+const SUCCESS_ANSWERS = 6;
+
 /** A story is offered once this share of the session has passed. */
 const STORY_AFTER = 0.7;
 const MIN_MINUTES_FOR_EXTRAS = 15;
@@ -135,6 +147,8 @@ export class Session {
   private storyOffered = false;
   /** The last few items the learner worked on, newest first. */
   private recent: string[] = [];
+  /** Right and wrong first tries of the latest recall tasks, newest first. */
+  private recalls: { right: number; wrong: number }[] = [];
 
   /** `rng` returns a number from 0 up to, but not including, 1, as Math.random does. */
   constructor(minutes: number, rng: () => number) {
@@ -177,6 +191,10 @@ export class Session {
 
     if (block === "review") {
       this.stats.reviewed += result.itemIds.length;
+      this.recalls = [
+        { right: result.right, wrong: result.wrong },
+        ...this.recalls,
+      ].slice(0, SUCCESS_TASKS);
     }
 
     return counted;
@@ -196,8 +214,25 @@ export class Session {
 
     return (
       this.learningCard(due) ??
-      this.plannedTask(view, due, now) ??
-      this.earlyCard(view.memory, now) ?? { type: "done" }
+      this.plannedTask(view, due, now, this.isStruggling()) ??
+      this.earlyCard(view.memory, now) ??
+      // Nothing else is left to do: new material is better than ending the session early.
+      this.plannedTask(view, due, now, false) ?? { type: "done" }
+    );
+  }
+
+  /** True while too many of the latest recalls failed: new material waits until the learner has caught up. */
+  private isStruggling(): boolean {
+    let right = 0;
+    let wrong = 0;
+
+    for (const recall of this.recalls) {
+      right += recall.right;
+      wrong += recall.wrong;
+    }
+
+    return (
+      right + wrong >= SUCCESS_ANSWERS && right / (right + wrong) < MIN_SUCCESS
     );
   }
 
@@ -227,11 +262,16 @@ export class Session {
   }
 
   /** Reviews, new material and the story, in the order the time budget allows. */
-  private plannedTask(view: SessionView, due: Due, now: number): Task | null {
+  private plannedTask(
+    view: SessionView,
+    due: Due,
+    now: number,
+    holdNew: boolean
+  ): Task | null {
     const { memory } = view;
 
     const lesson =
-      due.review.length >= BACKLOG
+      holdNew || due.review.length >= BACKLOG
         ? null
         : nextLesson(memory, view.chosenLesson);
 

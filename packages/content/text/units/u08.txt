@@ -16,28 +16,30 @@ c for ___ siden | ___ ago
 c i forrige uke | last week
 
 ## lesson Was and went
-f var | verb | was, were | lemma=være
+f var | verb | was / were | lemma=være
 f hadde | verb | had | lemma=ha
-f gikk | verb | walked, went (on foot) | lemma=gå
+f gikk | verb | walked | lemma=gå
 f kom | verb | came | lemma=komme
 f så | verb | saw | lemma=se
 
 ## lesson Said and took
 f sa | verb | said | lemma=si
 f tok | verb | took | lemma=ta
-f fikk | verb | got, received | lemma=få
-w få | verb | to get, to receive
-w dra | verb | to leave, to go (travel)
-f dro | verb | left, went (travelled) | lemma=dra
-w bli | verb | to become, to stay
-f ble | verb | became, stayed | lemma=bli
+f fikk | verb | got | lemma=få
+w få | verb | to get
+w dra | verb | to leave
+f dro | verb | left (went away) | lemma=dra
+w bli | verb | to become | sense=become
+w bli | verb | to stay | sense=stay
+f ble | verb | became | lemma=bli | sense=become
+f ble | verb | stayed | lemma=bli | sense=stay
 
 ## lesson Meeting people
 w møte | verb | to meet
 w besøke | verb | to visit
 w huske | verb | to remember
 w glemme | verb | to forget
-w tro | verb | to believe, to think (not sure)
+w tro | verb | to believe
 w vet | verb | know (a fact) | lemma=vite | only
 f visste | verb | knew (a fact) | lemma=vite
 
@@ -47,15 +49,15 @@ w skrive | verb | to write
 f skrev | verb | wrote | lemma=skrive
 f sov | verb | slept | lemma=sove
 f sto | verb | stood | lemma=stå
-f lå | verb | lay, was (somewhere) | lemma=ligge
+f lå | verb | lay (was somewhere) | lemma=ligge
 w sitte | verb | to sit
 f satt | verb | sat | lemma=sitte
 
 ## lesson A trip
-w tur | noun en | trip, walk
+w tur | noun en | trip
 w ferie | noun en | holiday
 w fjell | noun et | mountain
-w sjø | noun en | sea, lake
+w sjø | noun en | sea
 w vær | noun et | weather
 w gøy | adj | fun
 c ha det gøy | to have fun
@@ -99,9 +101,16 @@ s Han tok bussen. | He took the bus.
 s Jeg fikk en ny jobb. | I got a new job.
 s Vi dro til fjellet. | We went to the mountains.
 s Hun dro hjem klokka ti. | She went home at ten o'clock.
-s Jeg vil bli lærer. | I want to become a teacher.
-s Han ble syk. | He became ill.
-s Vi ble hjemme. | We stayed at home.
+s Jeg vil bli{become} lærer. | I want to become a teacher.
+s Vil du bli{become} lærer? | Do you want to become a teacher?
+s Han ble{become} syk. | He became ill.
+s Hun ble{become} lærer. | She became a teacher.
+s Jeg ble{become} syk i går. | I became ill yesterday.
+s Vi ble{stay} hjemme. | We stayed at home.
+s Hun ble{stay} hjemme i går. | She stayed at home yesterday.
+s De ble{stay} her. | They stayed here.
+s Jeg vil bli{stay} hjemme i dag. | I want to stay at home today.
+s Kan du bli{stay} her? | Can you stay here?
 s Jeg møtte en gammel venn. | I met an old friend.
 s Vi besøkte foreldrene mine. | We visited my parents.
 s Husker du meg? | Do you remember me?

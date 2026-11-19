@@ -295,7 +295,7 @@ const ItemDetail = ({ shown, now }: ItemDetailProps) => {
         {isPattern ? null : (
           <AudioButton
             onPlay={() => {
-              say(shown.text);
+              say(shown.display);
             }}
             style={styles.headAudio}
           />

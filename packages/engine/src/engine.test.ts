@@ -253,6 +253,14 @@ describe("choosing what to do", () => {
   });
 });
 
+/** What a review task reports: how many first tries were right and wrong. */
+const answered = (right: number, wrong: number) => ({
+  itemIds: [],
+  right,
+  taught: 0,
+  wrong,
+});
+
 describe("a session", () => {
   test("a short first session starts teaching straight away", () => {
     const session = new Session(5, () => 0.3);
@@ -288,6 +296,24 @@ describe("a session", () => {
     const task = session.next(view(mem), now);
     expect(["intro", "pattern"]).toContain(task.type);
   });
+
+  test("new material waits while the learner keeps missing, and comes back once recalls succeed", async () => {
+    const mem = await taught([0, 1, 2, 3], T0);
+    const session = new Session(5, () => 0.3);
+    const now = T0 + 40 * DAY;
+    const first = session.next(view(mem), now);
+
+    // Reviews have had their share of the session, but four answers of six were wrong.
+    session.complete(first, answered(2, 4), 3.5 * 60_000);
+    expect(["card", "sentence"]).toContain(session.next(view(mem), now).type);
+
+    // Ten recalls that go well push the bad ones out of the count.
+    for (let i = 0; i < 10; i += 1) {
+      session.complete(first, answered(1, 0), 1000);
+    }
+
+    expect(["intro", "pattern"]).toContain(session.next(view(mem), now).type);
+  });
 });
 
 const scheduler = await createScheduler(0.9);
@@ -322,6 +348,8 @@ describe("how much new material comes together", () => {
   test("a long phrase of new words is taught alone, short ones and words share a group", () => {
     expect(taughtBy(6)).toEqual([
       ["unnskyld", "tusen takk"],
+      ["vær så god"],
+      // The same phrase again, with its second use: "you are welcome".
       ["vær så god"],
       ["hyggelig å møte deg"],
       ["jeg vet ikke"],

@@ -53,7 +53,7 @@ interface Word {
   /** As written, without punctuation. */
   t: string;
   lc: string;
-  /** The word class the author chose with word{pos}. */
+  /** The word class or the meaning the author chose with word{pos} or word{meaning}. */
   pick: string | undefined;
   /** Whether the word ends a sentence. */
   end: boolean;
@@ -97,7 +97,7 @@ interface Analysis {
   readings: Reading[];
 }
 
-/** word{pos}: the author's choice of word class for an ambiguous spelling. */
+/** word{pos} or word{meaning}: the author's choice for a spelling that is two words, or a word with two meanings. */
 const PICKED = /^(?<before>.*?)\{(?<pick>\w+)\}(?<after>.*)$/u;
 const OUTER_PUNCTUATION = /^[.,!?:;"«»()]+|[.,!?:;"«»()]+$/gu;
 const SENTENCE_END = /[.!?:]["»]?$/u;
@@ -250,6 +250,30 @@ const warnIfAmbiguous = (
   }
 };
 
+/**
+ * A word taught once for each of its meanings (bli: to become, to stay). Nothing in the text
+ * tells the meanings apart, so the author must name the one that is meant; otherwise the
+ * sentence would train the wrong item.
+ */
+const requireMeaning = (
+  a: Analysis,
+  word: Word,
+  best: Candidate,
+  candidates: Candidate[]
+) => {
+  const meanings = candidates.filter(
+    (c) => c.sense !== undefined && c.text === best.text && c.pos === best.pos
+  );
+
+  if (best.sense !== undefined && meanings.length > 1) {
+    const choices = meanings.map((c) => `${word.t}{${c.sense}}`).join(" or ");
+
+    a.report.errors.push(
+      `${a.where}: "${word.t}" has ${meanings.length} meanings; write ${choices}`
+    );
+  }
+};
+
 /** Other spellings of the same form (boka / boken). */
 const otherSpellings = (best: Candidate, written: string): string[] => {
   const least = FEAT_ORDER.find((f) => best.feats.has(f));
@@ -293,10 +317,16 @@ const readWord = (a: Analysis, word: Word, token: Token, i: number) => {
   if (word.pick === undefined) {
     warnIfAmbiguous(a, word, token, candidates);
   } else {
-    candidates = candidates.filter((c) => c.pos === word.pick);
+    candidates = candidates.filter(
+      (c) => c.pos === word.pick || c.sense === word.pick
+    );
   }
 
   const [best] = candidates.toSorted(byRankThenLesson);
+
+  if (best !== undefined) {
+    requireMeaning(a, word, best, candidates);
+  }
 
   if (best === undefined) {
     readOtherWord(a, word, token);

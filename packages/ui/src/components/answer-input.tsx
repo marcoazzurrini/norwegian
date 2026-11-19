@@ -9,6 +9,19 @@ import { color, radius, text } from "../tokens/tokens.stylex";
 
 const LETTERS = ["æ", "ø", "å"] as const;
 
+/**
+ * Keys that type the three letters on a keyboard without them. They sit where the letters
+ * are on a Norwegian keyboard, and no answer of the course uses the characters themselves.
+ */
+const KEYS = new Map([
+  ["'", "æ"],
+  [";", "ø"],
+  ["[", "å"],
+]);
+
+const keyOf = (letter: string): string | undefined =>
+  [...KEYS].find(([, typed]) => typed === letter)?.[0];
+
 const styles = stylex.create({
   frame: {
     alignItems: "center",
@@ -131,6 +144,8 @@ export const AnswerInput = ({
             // The letters are reached by pointer; Tab goes from the field to send.
             tabIndex={-1}
             aria-label={`Insert ${letter}`}
+            aria-keyshortcuts={keyOf(letter)}
+            title={`Key ${keyOf(letter)}`}
             // A press must not take focus from the field: on a phone that closes the keyboard for a moment.
             onPointerDown={keepFocus}
             onMouseDown={keepFocus}
@@ -153,6 +168,15 @@ export const AnswerInput = ({
           if (event.key === "Enter" && !empty) {
             event.preventDefault();
             onSubmit();
+
+            return;
+          }
+
+          const letter = KEYS.get(event.key);
+
+          if (letter !== undefined && !event.metaKey && !event.ctrlKey) {
+            event.preventDefault();
+            insert(letter);
           }
         }}
         placeholder={placeholder}
