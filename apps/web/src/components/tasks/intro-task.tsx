@@ -24,7 +24,7 @@ import {
   tracking,
 } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
-import { Tag as TagIcon } from "lucide-react";
+import { Eye as EyeIcon, EyeOff, Tag as TagIcon } from "lucide-react";
 import { useState } from "react";
 
 import { learner } from "../../learner";
@@ -123,8 +123,30 @@ const styles = stylex.create({
     fontSize: { default: text.s18, [stylex.env.desktop]: text.s24 },
   },
   exampleMeaning: {
+    alignItems: "center",
     color: color.fg2,
+    cursor: "pointer",
+    display: "flex",
     fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
+    gap: "0.5rem",
+    maxWidth: "100%",
+    textAlign: "start",
+  },
+  exampleMeaningText: {
+    minWidth: 0,
+    transitionDuration: "150ms",
+    transitionProperty: "filter, opacity",
+  },
+  // Blurred, the line keeps its width, so nothing moves when it is shown.
+  blurred: {
+    filter: "blur(5px)",
+    opacity: 0.75,
+    userSelect: "none",
+  },
+  eye: {
+    flexShrink: 0,
+    height: { default: "1rem", [stylex.env.desktop]: "1.125rem" },
+    width: { default: "1rem", [stylex.env.desktop]: "1.125rem" },
   },
   strong: {
     fontWeight: 600,
@@ -147,6 +169,43 @@ const Marked = ({ sentence, id }: MarkedProps) =>
       {part.text}
     </span>
   ));
+
+interface ExampleMeaningProps {
+  meaning: string;
+}
+
+/**
+ * The English of the example sentence, hidden until asked for, so the learner can first
+ * try to understand the Norwegian. The line and the eye are one button.
+ */
+const ExampleMeaning = ({ meaning }: ExampleMeaningProps) => {
+  const [shown, setShown] = useState(false);
+  const Eye = shown ? EyeOff : EyeIcon;
+
+  return (
+    <button
+      type="button"
+      aria-label={shown ? undefined : "Show the English"}
+      aria-pressed={shown}
+      onClick={() => {
+        setShown(!shown);
+      }}
+      // A click must not take the focus from "Continue", or Enter would stop moving on.
+      onMouseDown={(event) => {
+        event.preventDefault();
+      }}
+      {...stylex.props(styles.exampleMeaning)}
+    >
+      <span
+        aria-hidden={!shown}
+        {...stylex.props(styles.exampleMeaningText, !shown && styles.blurred)}
+      >
+        {meaning}
+      </span>
+      <Eye aria-hidden {...stylex.props(styles.eye)} />
+    </button>
+  );
+};
 
 interface WordFactsProps {
   shown: Item;
@@ -255,7 +314,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
               <div {...stylex.props(styles.exampleWords)}>
                 <Marked sentence={example} id={item.id} />
               </div>
-              <div {...stylex.props(styles.exampleMeaning)}>{example.en}</div>
+              <ExampleMeaning meaning={example.en} />
             </div>
           </div>
         )}

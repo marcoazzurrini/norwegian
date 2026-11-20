@@ -364,7 +364,14 @@ export const scenarios: Scenario[] = [
       await seen(page, "1 of 3");
       await shot("show");
       await proceed(page);
-      await proceed(page);
+      // The English of the example is hidden until the learner asks for it.
+      await seen(page, "2 of 3");
+      await shot("example-hidden");
+      await press(page, "Show the English");
+      await shot("example-shown");
+      // Enter still moves on after the click.
+      await page.keyboard.press("Enter");
+      await seen(page, "3 of 3");
       await proceed(page);
       await seen(page, "Step 2 of 2");
       await answer(page, "rom");

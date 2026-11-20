@@ -11278,16 +11278,45 @@
                "name": "Jeg har et hus."
               },
               {
-               "id": "MrN4p",
-               "type": "text",
-               "text": "I have a house.",
+               "id": "bXfxc",
+               "type": "frame",
+               "name": "Meaning",
                "style": {
-                "fontSize": 16,
-                "lineHeight": 1.45,
-                "fontWeight": 400,
-                "color": "var(--text-2)"
+                "display": "flex",
+                "alignItems": "center",
+                "gap": 8,
+                "cursor": "pointer"
                },
-               "name": "I have a house."
+               "children": [
+                {
+                 "id": "MrN4p",
+                 "type": "text",
+                 "text": "I have a house.",
+                 "style": {
+                  "fontSize": 16,
+                  "lineHeight": 1.45,
+                  "fontWeight": 400,
+                  "color": "var(--text-2)",
+                  "filter": "blur(5px)",
+                  "opacity": 0.75,
+                  "cursor": "pointer",
+                  "userSelect": "none"
+                 },
+                 "name": "I have a house."
+                },
+                {
+                 "id": "WmH7f",
+                 "type": "icon",
+                 "name": "Reveal",
+                 "icon": "eye",
+                 "style": {
+                  "width": 18,
+                  "height": 18,
+                  "color": "var(--text-2)",
+                  "flexShrink": 0
+                 }
+                }
+               ]
               }
              ],
              "name": "Frame"
@@ -11351,6 +11380,472 @@
           }
          ],
          "name": "Frame"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "zhLn4",
+   "type": "frame",
+   "name": "Intro, example shown",
+   "x": 13600,
+   "y": 11760,
+   "style": {
+    "width": 2560,
+    "height": 1440,
+    "position": "relative",
+    "overflow": "hidden",
+    "background": "var(--base)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "display": "flex",
+    "padding": 10
+   },
+   "children": [
+    {
+     "id": "NHnf9",
+     "type": "frame",
+     "name": "Panel",
+     "style": {
+      "flex": 1,
+      "minHeight": 0,
+      "background": "var(--panel)",
+      "borderRadius": 24,
+      "display": "flex",
+      "flexDirection": "column",
+      "overflow": "hidden"
+     },
+     "children": [
+      {
+       "id": "W5dgf",
+       "type": "frame",
+       "name": "Top Bar",
+       "style": {
+        "display": "grid",
+        "gridTemplateColumns": "1fr auto 1fr",
+        "alignItems": "center",
+        "padding": "20px 24px"
+       },
+       "children": [
+        {
+         "id": "P4VQN",
+         "type": "frame",
+         "style": {
+          "display": "flex"
+         },
+         "name": "Frame",
+         "children": [
+          {
+           "id": "4PQ7w",
+           "type": "ref",
+           "ref": "KK5p6",
+           "style": {
+            "width": 44,
+            "height": 44
+           },
+           "name": "Icon Button"
+          }
+         ]
+        },
+        {
+         "id": "2tdA7",
+         "type": "ref",
+         "ref": "57whY",
+         "overrides": {
+          "Instance": {
+           "ref": "By2wD",
+           "style": {
+            "width": 26,
+            "height": 26
+           }
+          },
+          "Label": {
+           "text": "New"
+          }
+         },
+         "style": {
+          "height": 44,
+          "fontSize": 16,
+          "padding": "0 18px 0 10px",
+          "gap": 10
+         },
+         "name": "Title Pill"
+        },
+        {
+         "id": "3Li9W",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "flex-end",
+          "gap": 14,
+          "paddingRight": 8
+         },
+         "name": "Frame",
+         "children": [
+          {
+           "id": "VP493",
+           "type": "ref",
+           "ref": "3dFRX",
+           "overrides": {
+            "Fill": {
+             "style": {
+              "width": "28%"
+             }
+            }
+           },
+           "style": {
+            "width": 160
+           },
+           "name": "Progress"
+          },
+          {
+           "id": "QN3zC",
+           "type": "text",
+           "text": "18 min left",
+           "style": {
+            "fontSize": 15,
+            "fontWeight": 500,
+            "color": "var(--text-2)",
+            "whiteSpace": "nowrap"
+           },
+           "name": "18 min left"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "jjBJt",
+       "type": "frame",
+       "name": "Stage",
+       "style": {
+        "flex": 1,
+        "minHeight": 0,
+        "width": 880,
+        "alignSelf": "center",
+        "display": "flex",
+        "flexDirection": "column",
+        "justifyContent": "center",
+        "gap": 14,
+        "padding": 0
+       },
+       "children": [
+        {
+         "id": "BpmAi",
+         "type": "text",
+         "text": "Step 1 of 2 · Hear and see · 1 of 3",
+         "style": {
+          "fontSize": 15,
+          "lineHeight": 1.45,
+          "fontWeight": 500,
+          "alignSelf": "center",
+          "color": "var(--text-3)",
+          "paddingBottom": 10
+         },
+         "name": "Step 1 of 2 · Hear and …"
+        },
+        {
+         "id": "FTv3R",
+         "type": "frame",
+         "style": {
+          "background": "var(--inset)",
+          "border": "1px solid var(--line)",
+          "borderRadius": 32,
+          "padding": 44,
+          "display": "flex",
+          "flexDirection": "column"
+         },
+         "name": "Frame",
+         "children": [
+          {
+           "id": "BNK6a",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "alignItems": "center",
+            "gap": 36
+           },
+           "name": "Frame",
+           "children": [
+            {
+             "id": "M5TRY",
+             "type": "ref",
+             "ref": "72692",
+             "overrides": {
+              "Icon": {
+               "style": {
+                "width": 38,
+                "height": 38
+               }
+              }
+             },
+             "style": {
+              "width": 104,
+              "height": 104
+             },
+             "name": "Audio Large"
+            },
+            {
+             "id": "WAGrs",
+             "type": "frame",
+             "name": "Frame",
+             "children": [
+              {
+               "id": "qgain",
+               "type": "text",
+               "spans": [
+                {
+                 "text": "et ",
+                 "style": {
+                  "color": "var(--text-3)"
+                 }
+                },
+                {
+                 "text": "hus"
+                }
+               ],
+               "style": {
+                "fontSize": 128,
+                "lineHeight": 1,
+                "letterSpacing": "-0.035em",
+                "fontWeight": 500
+               },
+               "name": "et hus"
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "id": "xRc7e",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "alignItems": "center",
+            "gap": 10,
+            "flexWrap": "wrap",
+            "paddingTop": 20
+           },
+           "name": "Frame",
+           "children": [
+            {
+             "id": "DruJX",
+             "type": "text",
+             "text": "/hʉːs/",
+             "style": {
+              "fontSize": 22,
+              "lineHeight": 1.5,
+              "fontWeight": 400,
+              "color": "var(--text-2)"
+             },
+             "name": "/hʉːs/"
+            },
+            {
+             "id": "6bFvi",
+             "type": "ref",
+             "ref": "nzCf2",
+             "overrides": {
+              "Mark": {
+               "icon": "tag"
+              },
+              "Label": {
+               "text": "et word"
+              }
+             },
+             "style": {
+              "height": 32,
+              "fontSize": 15,
+              "padding": "0 14px 0 10px"
+             },
+             "name": "Tag Neutral"
+            }
+           ]
+          },
+          {
+           "id": "H3mzh",
+           "type": "frame",
+           "style": {
+            "height": 1,
+            "background": "var(--line)",
+            "margin": "32px 0 28px"
+           },
+           "name": "Frame"
+          },
+          {
+           "id": "Bf4f7",
+           "type": "text",
+           "text": "house",
+           "style": {
+            "fontSize": 40,
+            "lineHeight": 1.1,
+            "letterSpacing": "-0.03em",
+            "fontWeight": 500
+           },
+           "name": "house"
+          }
+         ]
+        },
+        {
+         "id": "LRHhz",
+         "type": "frame",
+         "style": {
+          "alignSelf": "flex-start",
+          "maxWidth": "100%",
+          "background": "var(--raised)",
+          "borderRadius": 22,
+          "padding": "14px 24px 14px 14px",
+          "fontSize": 18,
+          "lineHeight": 1.5
+         },
+         "name": "Frame",
+         "children": [
+          {
+           "id": "xPSwm",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "alignItems": "center",
+            "gap": 16
+           },
+           "name": "Frame",
+           "children": [
+            {
+             "id": "h5Brg",
+             "type": "ref",
+             "ref": "caCgD",
+             "style": {
+              "width": 44,
+              "height": 44
+             },
+             "name": "Audio"
+            },
+            {
+             "id": "5Lbez",
+             "type": "frame",
+             "name": "Frame",
+             "children": [
+              {
+               "id": "Lt9uv",
+               "type": "text",
+               "spans": [
+                {
+                 "text": "Jeg har et "
+                },
+                {
+                 "text": "hus",
+                 "style": {
+                  "fontWeight": 600
+                 }
+                },
+                {
+                 "text": "."
+                }
+               ],
+               "style": {
+                "fontSize": 24
+               },
+               "name": "Jeg har et hus."
+              },
+              {
+               "id": "V9Rfj",
+               "type": "frame",
+               "name": "Meaning",
+               "style": {
+                "display": "flex",
+                "alignItems": "center",
+                "gap": 8,
+                "cursor": "pointer"
+               },
+               "children": [
+                {
+                 "id": "4nf63",
+                 "type": "text",
+                 "text": "I have a house.",
+                 "style": {
+                  "fontSize": 16,
+                  "lineHeight": 1.45,
+                  "fontWeight": 400,
+                  "color": "var(--text-2)"
+                 },
+                 "name": "I have a house."
+                },
+                {
+                 "id": "Lgx2m",
+                 "type": "icon",
+                 "name": "Reveal",
+                 "icon": "eye-off",
+                 "style": {
+                  "width": 18,
+                  "height": 18,
+                  "color": "var(--text-2)",
+                  "flexShrink": 0
+                 }
+                }
+               ]
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "4J23m",
+       "type": "frame",
+       "name": "Dock",
+       "style": {
+        "width": 880,
+        "alignSelf": "center",
+        "padding": "20px 0 48px",
+        "minHeight": 124
+       },
+       "children": [
+        {
+         "id": "g3Xpi",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "space-between",
+          "gap": 16
+         },
+         "name": "Frame",
+         "children": [
+          {
+           "id": "Wf6Yb",
+           "type": "text",
+           "text": "Another new one comes next.",
+           "style": {
+            "fontSize": 16,
+            "lineHeight": 1.5,
+            "fontWeight": 400,
+            "color": "var(--text-2)"
+           },
+           "name": "Another new one comes n…"
+          },
+          {
+           "id": "nV6N2",
+           "type": "ref",
+           "ref": "sYjG2",
+           "overrides": {
+            "Label": {
+             "text": "Continue"
+            }
+           },
+           "style": {
+            "height": 56,
+            "fontSize": 18,
+            "padding": "0 28px"
+           },
+           "name": "Button Key"
+          }
+         ]
         }
        ]
       }
@@ -19810,7 +20305,7 @@
     {
      "id": "VbCvz",
      "type": "text",
-     "text": "5 states",
+     "text": "6 states",
      "style": {
       "fontSize": 71.42857142857143,
       "color": "#9B9B9B"
