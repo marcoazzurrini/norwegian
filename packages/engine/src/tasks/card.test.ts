@@ -55,13 +55,18 @@ describe("a card", () => {
   test("a wrong word gets a hint at how it starts, and no audio yet", () => {
     const { effects, state } = run([answer("hytte")]);
 
-    expect(state.phase).toEqual({ hint: "start", step: "retry" });
+    expect(state.phase).toEqual({
+      asked: false,
+      hint: "start",
+      step: "retry",
+    });
     expect(state.typed).toBe("hytte");
     expect(effects).toEqual([]);
   });
 
   test("the right word with the wrong article gets a hint at the article", () => {
     expect(run([answer("en hus")]).state.phase).toEqual({
+      asked: false,
       hint: "article",
       step: "retry",
     });
@@ -115,7 +120,11 @@ describe("a card", () => {
   test("asking for the hint before trying gives the start of the word, and a right answer after it is still forgotten", () => {
     const hinted = run([{ type: "hint" }]);
 
-    expect(hinted.state.phase).toEqual({ hint: "start", step: "retry" });
+    expect(hinted.state.phase).toEqual({
+      asked: true,
+      hint: "start",
+      step: "retry",
+    });
     expect(hinted.state.typed).toBe("");
 
     // There is one hint only.
@@ -168,6 +177,35 @@ describe("a card", () => {
     const ended = run([answer("hytte"), answer("et hus"), { type: "typo" }]);
 
     expect(ended.effects).toEqual([hear, ...recorded("good")]);
+  });
+
+  test("an answer after asking for the hint cannot be called a typo", () => {
+    const hint = { type: "hint" } as const;
+    const typo = { type: "typo" } as const;
+
+    // Right after the hint.
+    const passed = [hint, answer("et hus")];
+
+    expect(run(passed).state.phase).toEqual({
+      answered: false,
+      correct: true,
+      firstTry: false,
+      step: "result",
+    });
+    expect(run([...passed, typo])).toEqual(run(passed));
+
+    // Wrong after the hint, then copied.
+    const copied = [hint, answer("et hsu"), answer("et hus")];
+
+    expect(run([hint, answer("et hsu")]).state.phase).toEqual({
+      answered: false,
+      step: "copy",
+    });
+    expect(run([...copied, typo])).toEqual(run(copied));
+    expect(run([...copied, { type: "continue" }]).effects).toEqual([
+      hear,
+      ...recorded("again"),
+    ]);
   });
 
   test("events that do not fit the phase change nothing", () => {
