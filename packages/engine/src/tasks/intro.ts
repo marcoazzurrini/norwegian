@@ -10,7 +10,7 @@ import type { Step, TaskMachine } from "./types";
 export interface IntroInput {
   /** The new items, at least one. */
   items: Item[];
-  /** Ids of the items the learner already has, used to pick example sentences. */
+  /** Ids of the items the learner already has. An example that uses any other item is left out. */
   known: ReadonlySet<string>;
 }
 
@@ -22,7 +22,7 @@ export type IntroHelp = "none" | "article" | "start" | "copy";
 
 export interface IntroState {
   items: Item[];
-  /** One example sentence per item, or null where no taught sentence uses it. */
+  /** One example sentence per item, or null where it has none the learner can read. */
   examples: (Sentence | null)[];
   phase: "show" | "recall";
   index: number;

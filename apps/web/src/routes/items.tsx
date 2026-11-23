@@ -1,6 +1,6 @@
-import { item, items, sentencesWith } from "@norsk/content";
+import { item, items, sentenceReady, sentencesWith } from "@norsk/content";
 import type { Item } from "@norsk/content";
-import { itemState, retrievability, sentenceReady } from "@norsk/engine";
+import { itemState, retrievability } from "@norsk/engine";
 import type { Memory } from "@norsk/engine";
 import {
   AudioButton,

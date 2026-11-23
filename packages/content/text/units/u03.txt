@@ -43,8 +43,8 @@ ex: jeg vil spise | I want to eat
 ex: hun trenger å spise | she needs to eat
 q: vi liker å snakke | *we like to talk | we want to talk
 q: jeg må spise | *I must eat | I like to eat
-w å | other | to (before a verb)
 w like | verb | to like
+w å | other | to (before a verb)
 w lage | verb | to make
 w kjøpe | verb | to buy
 w betale | verb | to pay
@@ -129,6 +129,15 @@ s Kan vi spise nå? | Can we eat now?
 s De må kjøpe mat. | They must buy food.
 s En kopp kaffe koster ei krone. | A cup of coffee costs one krone.
 s Hun trenger å drikke mer vann. | She needs to drink more water.
+s Kaffen er veldig bra. | The coffee is very good.
+s Har du te? | Do you have tea?
+s Vi har ikke vann. | We do not have water.
+s Brødet er bra. | The bread is good.
+s Vi har melk og kaffe. | We have milk and coffee.
+s Jeg vil snakke norsk. | I want to speak Norwegian.
+s Du må komme nå. | You must come now.
+s Jeg liker å snakke norsk. | I like to speak Norwegian.
+s Kan du lage kaffe? | Can you make coffee?
 
 ## story På kafé | At a café
 Ida: Hei! Hva vil du ha? | Hi! What would you like?

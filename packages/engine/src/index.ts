@@ -31,7 +31,6 @@ export {
   nextNewItems,
   nextStory,
   pickReview,
-  sentenceReady,
   storyReady,
 } from "./select";
 
@@ -39,7 +38,6 @@ export type {
   Compression,
   Due,
   ItemState,
-  Known,
   LessonState,
   Memory,
   ReviewPick,

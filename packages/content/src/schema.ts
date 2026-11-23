@@ -61,6 +61,11 @@ export const ItemSchema = v.strictObject({
   examples: v.exactOptional(v.array(ExampleSchema)),
   quiz: v.exactOptional(v.array(QuizSchema)),
   needs: v.exactOptional(v.array(v.string())),
+  /**
+   * Word or chunk only: the id of the sentence that first shows the item in use.
+   * The build chooses it, see scripts/lib/examples.ts. An item without one has no fitting sentence.
+   */
+  exampleId: v.exactOptional(v.string()),
 });
 
 export type Item = v.InferOutput<typeof ItemSchema>;

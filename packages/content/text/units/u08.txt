@@ -153,6 +153,10 @@ s Jeg likte turen. | I liked the trip.
 s Hun fortalte meg navnet. | She told me the name.
 s Han trodde meg. | He believed me.
 s Vi vil få en hund. | We want to get a dog.
+s Jeg bodde i Oslo da. | I lived in Oslo then.
+s Vi drar nå. | We are leaving now.
+s Hun visste det. | She knew it. | -v2
+s Jeg skriver ei bok. | I am writing a book.
 
 ## story En tur til fjellet | A trip to the mountains
 Jonas: Hva gjorde du i helga? | What did you do at the weekend?

@@ -54,10 +54,10 @@ w opptatt | adj | busy
 w ledig | adj | vacant
 
 ## lesson Health
-w hode | noun et | head
 w lege | noun en | doctor
 w føle | verb | to feel
 c ha vondt i ___ | to have a pain in ___
+w hode | noun et | head
 c føle seg ___ | to feel ___
 w bedre | adj | better
 w dårlig | adj | bad
@@ -147,6 +147,9 @@ s Er rommet ledig i kveld? | Is the room free tonight?
 s Sjefen har reist til Bergen. | The boss has travelled to Bergen.
 s Hvis du er syk, må du bli{stay} hjemme. | If you are ill, you must stay at home.
 s Jeg er glad fordi jeg har fri. | I am happy because I am off work.
+s Hun sover ennå. | She is still sleeping.
+s Hva føler du nå? | What do you feel now?
+s Butikken er dessverre stengt. | Unfortunately the shop is closed. | alt: Dessverre er butikken stengt.
 
 ## story Hos legen | At the doctor's
 Lege: Hei. Hvorfor har du kommet i dag? | Hi. Why have you come today?

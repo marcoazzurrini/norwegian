@@ -141,6 +141,13 @@ s Hun venter foran restauranten. | She is waiting in front of the restaurant.
 s Toget til Oslo går hver time. | The train to Oslo goes every hour.
 s Kan dere hjelpe oss? | Can you all help us?
 s Barnet vil gi deg et eple. | The child wants to give you an apple.
+s Jeg går i gata. | I am walking in the street.
+s Hun kjenner meg. | She knows me.
+s Jeg ser deg. | I see you.
+s Vi kjenner ham. | We know him.
+s Vi spiser på restaurant. | We are eating at a restaurant.
+s Jeg drikker kaffe på en kafé. | I am drinking coffee at a café.
+s Hun jobber på et sykehus. | She works at a hospital.
 
 ## story Hvor er stasjonen? | Where is the station?
 Tom: Unnskyld, kan du hjelpe meg? Hvor er stasjonen? | Excuse me, can you help me? Where is the station?

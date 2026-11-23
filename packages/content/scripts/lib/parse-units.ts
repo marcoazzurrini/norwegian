@@ -342,7 +342,14 @@ const readPattern = (
   addItem(
     reader,
     lesson,
-    { item, forms: new Map(), exact: true, lemma: "", sense: undefined },
+    {
+      item,
+      forms: new Map(),
+      exact: true,
+      lemma: "",
+      sense: undefined,
+      noExample: false,
+    },
     line
   );
   reader.pattern = open;
@@ -377,7 +384,7 @@ const readChunk = (
   addItem(
     reader,
     lesson,
-    { item, forms: new Map(), exact: true, lemma: "", sense },
+    { item, forms: new Map(), exact: true, lemma: "", sense, noExample: false },
     line
   );
 };
@@ -548,7 +555,14 @@ const readWord = (
   addItem(
     reader,
     lesson,
-    { item, forms, exact: word.exact, lemma: word.lemma, sense },
+    {
+      item,
+      forms,
+      exact: word.exact,
+      lemma: word.lemma,
+      sense,
+      noExample: opts.includes("no-example"),
+    },
     line
   );
 };

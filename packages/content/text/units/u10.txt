@@ -143,6 +143,10 @@ s Jeg gleder meg til å møte deg. | I am looking forward to meeting you.
 s Sommeren er kort i Norge. | The summer is short in Norway.
 s Skal du svømme i dag? | Are you going to swim today?
 s Hunden vår{det} liker å svømme. | Our dog likes to swim.
+s Neste buss kommer snart. | The next bus is coming soon.
+s Vinteren er kald i Norge. | The winter is cold in Norway.
+s Det er sol i dag. | It is sunny today.
+s Vi spiller musikk. | We play music.
 
 ## story Helga på ski | The weekend on skis
 + ski | skis

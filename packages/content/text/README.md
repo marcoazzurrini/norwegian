@@ -29,6 +29,7 @@ Ida: Hei! | Hi!
 - `w` is a word. It matches every inflected form of its lemma, unless `only` is set.
 - `f` is a single irregular form, taught as its own item. It always matches only itself.
 - `c` is a chunk. `___` marks a slot.
+- A word marked `no-example` may go without an example sentence: `w ja | interj | yes | no-example`. See "Example sentences" below.
 - Give each item one meaning. A word or chunk with two unrelated meanings is written once for each, with `sense=name`: `w bli | verb | to become | sense=become` and `w bli | verb | to stay | sense=stay`. The meaning written first keeps the plain id.
 - In a sentence or a story, a word with several meanings must name the one meant: `Vi ble{stay} hjemme.` The build fails without it.
 - `p` is a grammar pattern. `needs:` lists the pattern ids it depends on.
@@ -37,6 +38,16 @@ Ida: Hei! | Hi!
 - In a sentence, `word{pos}` picks one item when a spelling is ambiguous, for example `så{verb}`.
 - `+tag` adds a pattern the checker cannot detect. `-tag` removes a detected one.
 - `alt:` lists other accepted answers, separated by `;`.
+
+## Example sentences
+
+A new word is shown with one example sentence. The build chooses it from `## sentences` and writes its id into the item.
+
+- The example may use the word itself and everything taught before it: the earlier lessons, and the lines above it in its own lesson. The order of the lines in a lesson is the order in which they are taught.
+- The word must stand outside every chunk. "Jeg heter Anna." is the chunk `jeg heter ___`, so it is no example of `hete`.
+- Of several sentences that fit, the shortest is chosen, and of two equally short the one written first.
+- The build fails for a word without an example. Write a sentence for it, or move its line down in the lesson. The first words of the course cannot have one, because there is nothing to build a sentence from: mark those `no-example`.
+- A chunk gets an example in the same way when a sentence shows it with at least one more word. A chunk without one is not an error.
 
 ## Rules for sentences
 

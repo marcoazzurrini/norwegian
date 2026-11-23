@@ -1,15 +1,18 @@
 // Decides what the learner can do next: which sentences are usable, which items are due,
 // and which review clears the most due items at once ("compression").
 import {
+  chunkCovered,
+  exampleOf,
   item,
   items,
   lessons,
   sentenceItems,
+  sentenceReady,
   sentences,
   sentencesWith,
   stories,
 } from "@norsk/content";
-import type { Item, Lesson, Sentence, Story, Token } from "@norsk/content";
+import type { Item, Known, Lesson, Sentence, Story } from "@norsk/content";
 
 import {
   CARRIER_MIN_DAYS,
@@ -21,9 +24,6 @@ import {
 import type { Mem } from "./memory";
 
 export type Memory = ReadonlyMap<string, Mem>;
-
-/** Anything that can say whether an item has been taught: the memory itself, or a set of ids. */
-export type Known = Pick<ReadonlySet<string>, "has">;
 
 export type ItemState = "locked" | "ready" | "learning" | "stable";
 
@@ -37,36 +37,6 @@ const lessonAt = (index: number): Lesson => {
   }
 
   return found;
-};
-
-const chunkCovered = (t: Token, known: Known): boolean =>
-  t.free === true || (t.c !== undefined && known.has(t.c));
-
-const tokenReady = (t: Token, known: Known): boolean => {
-  if (chunkCovered(t, known)) {
-    return true;
-  }
-
-  const patterns = t.p ?? [];
-  const patternsKnown = patterns.every((p) => known.has(p));
-
-  if (t.w !== undefined) {
-    return known.has(t.w) && patternsKnown;
-  }
-
-  return patterns.length > 0 && patternsKnown;
-};
-
-/** A sentence is usable once every word in it has been taught. */
-export const sentenceReady = (s: Sentence, known: Known): boolean => {
-  if (!s.tokens.every((t) => tokenReady(t, known))) {
-    return false;
-  }
-
-  return (
-    s.tokens.every((t) => chunkCovered(t, known)) ||
-    s.patterns.every((p) => known.has(p))
-  );
 };
 
 /** A story is readable once its words are taught. Grammar is not required for reading. */
@@ -358,15 +328,16 @@ export const practiceFor = (
     .slice(0, limit);
 };
 
-/** The shortest taught sentence that uses a new item, as its first example. */
+/**
+ * The example sentence of a new item. It is chosen when the curriculum is built, for a learner who
+ * takes the lessons in course order. A learner who took a later lesson first may not have met one of
+ * its words yet: the example is then left out.
+ */
 export const exampleFor = (it: Item, known: Known): Sentence | null => {
+  const example = exampleOf(it);
   const withItem: Known = { has: (id) => id === it.id || known.has(id) };
 
-  const [shortest] = sentencesWith(it.id)
-    .filter((s) => sentenceReady(s, withItem) && s.tokens.length > 1)
-    .toSorted((a, b) => a.tokens.length - b.tokens.length);
-
-  return shortest ?? null;
+  return example !== null && sentenceReady(example, withItem) ? example : null;
 };
 
 export const nextStory = (

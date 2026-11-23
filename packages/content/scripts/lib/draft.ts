@@ -26,6 +26,8 @@ export interface ItemInfo {
   lemma: string;
   /** The name of this meaning, when the same word or phrase is taught once for each of its meanings. */
   sense: string | undefined;
+  /** A word the author marked "no-example": the build does not ask for an example sentence. */
+  noExample: boolean;
 }
 
 /** A sentence as written in a unit file, before its words are matched to items. */

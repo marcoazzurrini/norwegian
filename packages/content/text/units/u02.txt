@@ -9,11 +9,11 @@ ex: ei bok | a book
 ex: et hus | a house
 q: et hus | *a house | the house
 q: ei bok | *a book | books
+w det | pron | it
+w har | verb | have / has | lemma=ha | only
 w hus | noun et | house
 w bil | noun en | car
 w bok | noun ei | book
-w har | verb | have / has | lemma=ha | only
-w det | pron | it
 w dette | pron | this (pointing at a thing)
 
 ## lesson Home
@@ -63,8 +63,8 @@ w land | noun et | country
 w eller | conj | or
 w med | prep | with
 w til | prep | to
-w veldig | adv | very
 w bra | adj | good (in general)
+w veldig | adv | very
 w nå | adv | now
 c ikke sant? | right? isn't it?
 
@@ -130,6 +130,20 @@ s Jeg har et rom i huset. | I have a room in the house.
 s Telefonen er ikke her. | The phone is not here.
 s Har dere et kjøkken? | Do you all have a kitchen?
 s Vennen bor i et land med jobb og penger. | The friend lives in a country with work and money.
+s Jeg forstår det. | I understand it. | -v2
+s Jeg har det. | I have it.
+s Jeg har et hus. | I have a house.
+s Du har en bil. | You have a car.
+s Dette er et rom. | This is a room.
+s Jeg har ei seng. | I have a bed.
+s Vi har et bord. | We have a table.
+s Hun har en stol. | She has a chair.
+s Dette er ei dør. | This is a door.
+s De har et vindu. | They have a window.
+s Boka ligger her. | The book is lying here.
+s Gutten er her. | The boy is here.
+s Vi kommer til Oslo. | We are coming to Oslo.
+s Boka er veldig bra. | The book is very good.
 
 ## story Hvor er nøkkelen? | Where is the key?
 Kari: Per, hvor er nøkkelen? | Per, where is the key?

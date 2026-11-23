@@ -96,6 +96,23 @@ export const sentencesWith = (id: string): Sentence[] => {
   return found;
 };
 
+const sentenceById = new Map(sentences.map((s) => [s.id, s]));
+
+/** The sentence that first shows a word or chunk in use, or null for an item that has none. */
+export const exampleOf = (it: Item): Sentence | null => {
+  if (it.exampleId === undefined) {
+    return null;
+  }
+
+  const found = sentenceById.get(it.exampleId);
+
+  if (found === undefined) {
+    throw new Error(`Unknown sentence "${it.exampleId}"`);
+  }
+
+  return found;
+};
+
 export const storyById = (id: string): Story | undefined =>
   stories.find((s) => s.id === id);
 
@@ -103,6 +120,10 @@ export const storyById = (id: string): Story | undefined =>
 export const recordedVoices: readonly string[] = audio.voices;
 
 export { audioKey, audioPath, spokenText } from "./audio-key";
+
+export { chunkCovered, sentenceReady } from "./ready";
+
+export type { Known } from "./ready";
 
 export { CurriculumSchema } from "./schema";
 

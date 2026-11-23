@@ -137,6 +137,11 @@ s Han drikker kald melk. | He drinks cold milk.
 s Det er en viktig jobb. | It is an important job.
 s Buksa er for kort. | The trousers are too short.
 s Har du andre farger? | Do you have other colours?
+s Bergen er en pen by. | Bergen is a pretty town.
+s Bilen er blå. | The car is blue.
+s Rød er en fin farge. | Red is a nice colour.
+s Katten er svart. | The cat is black.
+s Vi går ut nå. | We are going out now.
 
 ## story Ei ny jakke | A new jacket
 Nora: Jeg trenger ei ny jakke. Denne er for liten. | I need a new jacket. This one is too small.

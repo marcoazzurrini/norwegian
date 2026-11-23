@@ -11,6 +11,7 @@ import * as v from "valibot";
 import { CurriculumSchema } from "../src/schema";
 import type { Curriculum, Item } from "../src/schema";
 import type { Draft, Practice, Report } from "./lib/draft";
+import { chooseExamples } from "./lib/examples";
 import { resolveLessonNeeds } from "./lib/lesson-needs";
 import { parseSounds } from "./lib/parse-sounds";
 import { parseUnits } from "./lib/parse-units";
@@ -136,6 +137,8 @@ const vocabulary = vocabularyOf(draft, names, lexicon);
 resolveLessonNeeds(draft, vocabulary, report);
 
 const practice = buildPractice(draft, vocabulary, report);
+
+chooseExamples(draft, practice.sentences, report);
 
 const curriculum: Curriculum = {
   units: draft.units,

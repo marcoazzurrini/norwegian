@@ -4,8 +4,8 @@
 c hei | hi
 c ha det bra | goodbye
 w takk | interj | thanks
-w ja | interj | yes
-w nei | interj | no
+w ja | interj | yes | no-example
+w nei | interj | no | no-example
 c god morgen | good morning
 
 ## lesson I and you
@@ -17,9 +17,9 @@ ex: du er | you are
 ex: jeg heter Anna | my name is Anna
 q: du heter | *you are called | I am called
 q: jeg er | *I am | you are
+w er | verb | am / is / are | lemma=være | only | no-example
 w jeg | pron | I
 w du | pron | you (one person)
-w er | verb | am / is / are | lemma=være | only
 w hete | verb | to be called
 c jeg heter ___ | my name is ___
 c hva heter du? | what is your name?
@@ -27,10 +27,10 @@ c hva heter du? | what is your name?
 ## lesson Where from
 w komme | verb | to come
 w fra | prep | from
-w hvor | adv | where
+w hvor | adv | where | no-example
 c hvor kommer du fra? | where are you from?
-w bo | verb | to live (in a place)
 w i | prep | in
+w bo | verb | to live (in a place)
 w og | conj | and
 
 ## lesson Saying not
@@ -151,6 +151,13 @@ s Vi forstår ikke engelsk. | We do not understand English.
 s God morgen, Kari. | Good morning, Kari.
 s Ha det bra, Ola. | Goodbye, Ola.
 s Hun er lærer og han er student. | She is a teacher and he is a student.
+s Takk, Anna. | Thanks, Anna.
+s Du heter Kari. | Your name is Kari.
+s Jeg kommer. | I am coming.
+s Jeg er i Oslo. | I am in Oslo.
+s Du snakker ikke. | You are not speaking.
+s Du snakker engelsk. | You speak English.
+s Hvordan er Bergen? | How is Bergen?
 
 ## story På toget | On the train
 Anna: Hei! Jeg heter Anna. Hva heter du? | Hi! My name is Anna. What is your name?

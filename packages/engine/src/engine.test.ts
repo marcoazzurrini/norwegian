@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { item, lessons, sentences } from "@norsk/content";
+import { item, lessons, sentenceReady, sentences } from "@norsk/content";
 import type { Sentence } from "@norsk/content";
 
 import {
@@ -17,7 +17,6 @@ import {
   pickReview,
   retrievability,
   review,
-  sentenceReady,
   strength,
 } from "./index";
 import type { Mem, SessionView } from "./index";

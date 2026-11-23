@@ -6,11 +6,13 @@ import * as v from "valibot";
 import {
   CurriculumSchema,
   curriculum,
+  exampleOf,
   item,
   items,
   lessonOf,
   lessons,
   sentenceItems,
+  sentenceReady,
   sentences,
   sentencesWith,
   stories,
@@ -173,6 +175,54 @@ describe("the committed curriculum", () => {
     expect(bad).toEqual([]);
   });
 
+  test("gives an item an example that shows it in use, made of what is taught before it", () => {
+    const taught = new Set<string>();
+    const bad: string[] = [];
+
+    // In course order, so `taught` holds the item itself and everything before it.
+    for (const lesson of lessons) {
+      for (const id of lesson.items) {
+        taught.add(id);
+
+        const it = item(id);
+        const example = exampleOf(it);
+
+        if (example !== null) {
+          const inUse =
+            it.kind === "chunk"
+              ? example.tokens.some((t) => t.c === id) &&
+                example.tokens.some((t) => t.c !== id)
+              : example.tokens.some((t) => t.w === id && t.c === undefined);
+
+          if (
+            it.kind === "pattern" ||
+            !inUse ||
+            !sentenceReady(example, taught)
+          ) {
+            bad.push(`${id}: ${example.no}`);
+          }
+        }
+      }
+    }
+
+    expect(bad).toEqual([]);
+  });
+
+  test("leaves only words of the first unit without an example", () => {
+    const [first] = units;
+
+    const late = allItems
+      .filter(
+        (it) =>
+          it.kind === "word" &&
+          exampleOf(it) === null &&
+          lessonOf(it.id).unit !== first?.index
+      )
+      .map((it) => it.id);
+
+    expect(late).toEqual([]);
+  });
+
   test("gives every word and chunk at least one answer", () => {
     // A pattern is practised with quizzes and sentences, never typed, so it has no answers.
     const bad = allItems
@@ -239,6 +289,14 @@ describe("lookups", () => {
     }
 
     expect(storyById("no-such-story")).toBeUndefined();
+  });
+
+  test("exampleOf returns the sentence an item names, and null for an item that names none", () => {
+    const hus = item("w:hus:noun");
+
+    expect(exampleOf(hus)?.id).toBe(hus.exampleId);
+    expect(exampleOf(hus)?.tokens.some((t) => t.w === hus.id)).toBe(true);
+    expect(exampleOf(item("p:gender"))).toBeNull();
   });
 
   test("an unknown id is an error", () => {

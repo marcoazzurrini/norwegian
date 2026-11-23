@@ -138,6 +138,14 @@ s Når slutter skolen? | When does school finish?
 s I morgen er det fredag. | Tomorrow it is Friday.
 s Klokka er ti, og jeg er trøtt. | It is ten o'clock, and I am tired.
 s Jeg kan ikke komme i dag, men jeg kan komme i morgen. | I cannot come today, but I can come tomorrow.
+s Hun kommer opp nå. | She is coming up now.
+s Vi spiser frokost, så jobber vi. | We eat breakfast, then we work.
+s Det er morgen, og jeg står opp. | It is morning, and I am getting up.
+s Det er kveld, og barna sover. | It is evening, and the children are sleeping.
+s Det er natt, og vi sover. | It is night, and we are sleeping.
+s Barna liker skolen. | The children like the school.
+s Vi jobber ikke på lørdag. | We do not work on Saturday.
+s Jeg trener på tirsdag. | I exercise on Tuesday.
 
 ## story Dagen min | My day
 Lars: Når står du opp, Nora? | When do you get up, Nora?

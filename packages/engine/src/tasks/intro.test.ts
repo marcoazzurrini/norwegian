@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { item } from "@norsk/content";
+import { exampleOf, item } from "@norsk/content";
 
 import { introTask } from "../index";
 import type { Effect, IntroEvent } from "../index";
@@ -179,7 +179,7 @@ describe("an intro", () => {
     );
   });
 
-  test("the example is the shortest taught sentence that uses the new item", () => {
+  test("the example is the one the curriculum gives the new item", () => {
     const hus = item("w:hus:noun");
 
     const taught = play(
@@ -188,8 +188,23 @@ describe("an intro", () => {
       []
     ).state.example;
 
-    expect(taught?.tokens.some((t) => t.w === hus.id)).toBe(true);
-    expect(run([], [hus]).state.example).toBeNull();
+    expect(taught).not.toBeNull();
+    expect(taught).toEqual(exampleOf(hus));
+  });
+
+  test("an example with a word the learner has not met is left out", () => {
+    // The example of "hus" uses words of the first unit, which this learner skipped.
+    expect(run([], [item("w:hus:noun")]).state.example).toBeNull();
+  });
+
+  test("an item without an example in the curriculum is shown without one", () => {
+    const ja = item("w:ja:interj");
+
+    expect(exampleOf(ja)).toBeNull();
+    expect(
+      play(introTask, { items: [ja], known: itemsOf([0, 1, 2, 3]) }, []).state
+        .example
+    ).toBeNull();
   });
 
   test("an intro needs at least one item", () => {

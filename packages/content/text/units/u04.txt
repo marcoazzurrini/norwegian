@@ -147,6 +147,17 @@ s Hvor mange rom har huset? | How many rooms does the house have? | +plural
 s Katten vår liker fisk. | Our cat likes fish.
 s Vennene deres kommer fra Italia. | Their friends come from Italy.
 s Mora mi og faren min er gift. | My mother and my father are married.
+s Mor drikker te. | Mother drinks tea.
+s Far liker fisk. | Father likes fish.
+s Jeg har ei søster. | I have a sister.
+s Familien bor i Oslo. | The family lives in Oslo.
+s Ola og Kari er foreldre. | Ola and Kari are parents. | -plural
+s De har mange biler. | They have many cars.
+s Hun har tre hunder. | She has three dogs.
+s Vi har fire katter. | We have four cats.
+s De har fem barn. | They have five children.
+s Barnet er fire år. | The child is four years old. | alt: Barnet er fire år gammelt.
+s To menn bor her. | Two men live here.
 
 ## story Familien min | My family
 Emma: Dette er familien min. | This is my family.
