@@ -113,12 +113,26 @@ export type Lesson = v.InferOutput<typeof LessonSchema>;
 
 export const UnitSchema = v.strictObject({
   index: IndexSchema,
+  /** The id of the level this unit belongs to, such as "A1". */
+  level: v.string(),
   name: v.string(),
   subtitle: v.string(),
   lessons: v.array(IndexSchema),
 });
 
 export type Unit = v.InferOutput<typeof UnitSchema>;
+
+/** A step of the course, such as A1. Levels are learned in the order they are listed. */
+export const LevelSchema = v.strictObject({
+  /** The name of the level in the European framework, such as "A1". */
+  id: v.string(),
+  /** What the level is called in plain words, such as "Beginner". */
+  name: v.string(),
+  /** The units of the level, in order. Empty for a level that is not written yet. */
+  units: v.array(IndexSchema),
+});
+
+export type Level = v.InferOutput<typeof LevelSchema>;
 
 export const StoryLineSchema = v.strictObject({
   who: v.string(),
@@ -159,6 +173,7 @@ export const SoundPairSchema = v.strictObject({
 export type SoundPair = v.InferOutput<typeof SoundPairSchema>;
 
 export const CurriculumSchema = v.strictObject({
+  levels: v.array(LevelSchema),
   units: v.array(UnitSchema),
   lessons: v.array(LessonSchema),
   items: v.record(v.string(), ItemSchema),

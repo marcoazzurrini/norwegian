@@ -86,7 +86,7 @@ const idWithSense = (reader: Reader, id: string, sense: string | undefined) =>
   sense !== undefined && reader.draft.info.has(id) ? `${id}:${sense}` : id;
 
 const startUnit = (reader: Reader, line: Line) => {
-  const [head = "", name, subtitle] = fields(line.text.slice(2));
+  const [head = "", name, subtitle, level] = fields(line.text.slice(2));
 
   if (name === undefined || subtitle === undefined) {
     reader.report.errors.push(
@@ -94,8 +94,16 @@ const startUnit = (reader: Reader, line: Line) => {
     );
   }
 
+  if (level?.startsWith("level:") !== true) {
+    reader.report.errors.push(
+      `${line.where}: unit needs its level, written as "level: A1"`
+    );
+  }
+
   const unit: Unit = {
     index: Number(head.replace("unit", "")),
+    // Whether the level exists is checked once every unit is read: see levels.ts.
+    level: level?.slice("level:".length).trim() ?? "",
     name: name ?? "",
     subtitle: subtitle ?? "",
     lessons: [],

@@ -30,6 +30,20 @@ test("a lesson sits one row below its deepest need", () => {
   expect(height).toBe(22);
 });
 
+test("a need that is not among the lessons shown gets no row and no curve", () => {
+  // Lesson 0 belongs to an earlier level, so only lessons 1 and 2 are laid out.
+  const { nodes, edges } = layoutMap(
+    [lesson(1, [0]), lesson(2, [1, 0])],
+    SIZES
+  );
+
+  expect(nodes.map((node) => [node.lesson.index, node.y])).toEqual([
+    [1, 0],
+    [2, 10],
+  ]);
+  expect(edges.map((edge) => [edge.from, edge.to])).toEqual([[1, 2]]);
+});
+
 test("each row is centred in the widest row", () => {
   const { nodes, width } = layoutMap(
     [lesson(0, []), lesson(1, [0]), lesson(2, [0])],

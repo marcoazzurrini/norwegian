@@ -1,5 +1,12 @@
-import { item, lessons, units, unlockedBy } from "@norsk/content";
-import type { Lesson } from "@norsk/content";
+import {
+  item,
+  lessons,
+  levelLessons,
+  levels,
+  units,
+  unlockedBy,
+} from "@norsk/content";
+import type { Lesson, Level } from "@norsk/content";
 import { itemState, lessonState, nextLesson } from "@norsk/engine";
 import type { LessonState, Memory } from "@norsk/engine";
 import {
@@ -21,6 +28,7 @@ import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { AppShell } from "../components/app-shell";
+import { LevelSwitch, useLevel } from "../components/level-switch";
 import { ITEM_LOOK, LESSON_LOOK } from "../components/looks";
 import { MAP_SIZES, layoutMap } from "../components/map-layout";
 import { learner, useMemory, useProgress } from "../learner";
@@ -38,10 +46,23 @@ const ICON: Record<LessonState, LucideIcon> = {
 const SCROLL_DELAY_MS = 150;
 
 const styles = stylex.create({
+  // The same two columns as the content below, so that the level switch ends where the graph ends.
+  titleRow: {
+    display: { default: "flex", [stylex.env.desktop]: "grid" },
+    gridTemplateColumns: {
+      default: null,
+      [stylex.env.desktop]: "minmax(0, 1fr) 32.5rem",
+    },
+  },
+  // As tall as the level switch, so the two share one centre line.
   legend: {
+    alignContent: "center",
+    alignItems: "center",
     display: { default: "none", [stylex.env.desktop]: "flex" },
     flexWrap: "wrap",
     gap: "0.625rem",
+    justifyContent: "flex-end",
+    minHeight: "3.25rem",
   },
   columns: {
     display: "grid",
@@ -366,26 +387,36 @@ const centreChosen = (frame: HTMLElement | null) => {
   });
 };
 
+/** The lesson a level opens on: the one that comes next if it is in the level, or else its first. */
+const startOf = (level: Level, next: Lesson | null): number => {
+  const shown = levelLessons(level);
+
+  return next !== null && shown.includes(next)
+    ? next.index
+    : (shown[0]?.index ?? 0);
+};
+
 const MapPage = () => {
   const memory = useMemory();
   const { chosenLesson } = useProgress();
   const desktop = useDesktop();
   const size = desktop ? MAP_SIZES.desktop : MAP_SIZES.phone;
+  const [level, pickLevel] = useLevel(memory);
 
   const { nodes, edges, width, height } = useMemo(
-    () => layoutMap(lessons, size),
-    [size]
+    () => layoutMap(levelLessons(level), size),
+    [level, size]
   );
 
-  const [selected, setSelected] = useState(
-    () => nextLesson(memory, chosenLesson)?.index ?? 0
+  const [selected, setSelected] = useState(() =>
+    startOf(level, nextLesson(memory, chosenLesson))
   );
 
   const lesson = lessons[selected];
   const scroller = useRef<HTMLDivElement>(null);
 
   // The graph is larger than its frame: open it on the lesson that comes next, and again when
-  // the layout changes between the phone and the wide one.
+  // another level is picked or the layout changes between the phone and the wide one.
   useEffect(() => {
     // Wait until the router has restored its own scroll position, which would otherwise undo this.
     const wait = setTimeout(() => {
@@ -395,19 +426,38 @@ const MapPage = () => {
     return () => {
       clearTimeout(wait);
     };
-    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- the layout is not read here; a change of it is what asks for a new scroll position
-  }, [desktop]);
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- neither is read here; a change of the layout or the level is what asks for a new scroll position
+  }, [desktop, level]);
 
   return (
     <AppShell width="full" fill>
-      <PageTitle title="Map" sub="What you know, and what it unlocks.">
-        <div {...stylex.props(styles.legend)}>
-          {STATES.map((state) => (
-            <Tag key={state} tone={LESSON_LOOK[state].tone}>
-              {LESSON_LOOK[state].label}
-            </Tag>
-          ))}
-        </div>
+      <PageTitle
+        title="Map"
+        sub="What you know, and what it unlocks."
+        style={styles.titleRow}
+        aside={
+          <div {...stylex.props(styles.legend)}>
+            {STATES.map((state) => (
+              <Tag key={state} tone={LESSON_LOOK[state].tone}>
+                {LESSON_LOOK[state].label}
+              </Tag>
+            ))}
+          </div>
+        }
+      >
+        <LevelSwitch
+          level={level}
+          memory={memory}
+          onPick={(id) => {
+            const picked = levels.find((one) => one.id === id);
+
+            pickLevel(id);
+
+            if (picked !== undefined) {
+              setSelected(startOf(picked, nextLesson(memory, chosenLesson)));
+            }
+          }}
+        />
       </PageTitle>
       <div {...stylex.props(styles.columns)}>
         <div

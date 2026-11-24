@@ -42,7 +42,10 @@ export interface MapLayout {
   height: number;
 }
 
-/** The row of every lesson: one below its deepest need, so needs always point upward. */
+/**
+ * The row of every lesson: one below its deepest need, so needs always point upward.
+ * A need that is not among the lessons, such as one from an earlier level, is left out.
+ */
 const depths = (lessons: readonly Lesson[]): Map<number, number> => {
   const depth = new Map<number, number>();
 
@@ -50,7 +53,7 @@ const depths = (lessons: readonly Lesson[]): Map<number, number> => {
   for (const lesson of lessons) {
     const deepest = Math.max(
       -1,
-      ...lesson.needs.map((need) => depth.get(need) ?? 0)
+      ...lesson.needs.flatMap((need) => depth.get(need) ?? [])
     );
 
     depth.set(lesson.index, deepest + 1);

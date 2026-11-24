@@ -328,5 +328,5 @@ test("Start over asks first, then deletes all progress", async ({ page }) => {
 
   // Nothing is left on another page either.
   await page.goto("/items");
-  await expect(page.getByText("0 of 463 learned.")).toBeVisible();
+  await expect(page.getByText("0 of 463 learned in A1.")).toBeVisible();
 });

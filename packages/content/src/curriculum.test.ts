@@ -11,6 +11,10 @@ import {
   items,
   lessonOf,
   lessons,
+  levelItems,
+  levelLessons,
+  levelOf,
+  levels,
   sentenceItems,
   sentenceReady,
   sentences,
@@ -327,5 +331,24 @@ describe("lookups", () => {
     expect(() => unlockedBy(-1)).toThrow("Unknown lesson");
     // A name every object inherits is still not an item.
     expect(() => item("constructor")).toThrow("Unknown item");
+  });
+});
+
+describe("levels", () => {
+  test("every unit is in exactly one level, the one it names", () => {
+    expect(levels.flatMap((level) => level.units)).toEqual(
+      units.map((unit) => unit.index)
+    );
+
+    for (const unit of units) {
+      expect(levelOf(unit.index).id).toBe(unit.level);
+    }
+  });
+
+  test("the lessons and items of the levels together are the whole course", () => {
+    expect(levels.flatMap((level) => levelLessons(level))).toEqual(lessons);
+    expect(levels.flatMap((level) => levelItems(level)).toSorted()).toEqual(
+      Object.keys(items).toSorted()
+    );
   });
 });

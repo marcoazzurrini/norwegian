@@ -6,11 +6,12 @@
 import audio from "./audio.json";
 // The .js is spelled out so every tool picks the same file: see curriculum-data.d.ts.
 import data from "./curriculum-data.js";
-import type { Item, Lesson, Sentence, Story } from "./schema";
+import type { Item, Lesson, Level, Sentence, Story } from "./schema";
 
 export const curriculum = data;
 
-export const { items, lessons, units, sentences, stories, sounds } = curriculum;
+export const { levels, items, lessons, units, sentences, stories, sounds } =
+  curriculum;
 
 const itemById = new Map(Object.entries(items));
 
@@ -33,6 +34,37 @@ const lessonAt = (index: number): Lesson => {
 
   return found;
 };
+
+const levelByUnit = new Map(
+  levels.flatMap((one) => one.units.map((unit) => [unit, one] as const))
+);
+
+/** The level a unit belongs to. */
+export const levelOf = (unit: number): Level => {
+  const found = levelByUnit.get(unit);
+
+  if (found === undefined) {
+    throw new Error(`Unit ${unit} is in no level`);
+  }
+
+  return found;
+};
+
+// The curriculum never changes while the app runs, so the lessons of a level are found once.
+const lessonsByLevel = new Map(
+  levels.map((one) => [
+    one.id,
+    lessons.filter((lesson) => one.units.includes(lesson.unit)),
+  ])
+);
+
+/** The lessons of a level, in the order of the course. None for a level that is not written yet. */
+export const levelLessons = (one: Level): readonly Lesson[] =>
+  lessonsByLevel.get(one.id) ?? [];
+
+/** The ids of every item taught in a level, in the order taught. */
+export const levelItems = (one: Level): string[] =>
+  levelLessons(one).flatMap((lesson) => lesson.items);
 
 /** The lesson that teaches this item. */
 export const lessonOf = (id: string): Lesson => lessonAt(item(id).lesson);
@@ -134,6 +166,7 @@ export type {
   Item,
   ItemKind,
   Lesson,
+  Level,
   Quiz,
   Sentence,
   SoundPair,

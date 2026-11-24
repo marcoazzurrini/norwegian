@@ -5,7 +5,7 @@
 ## Unit files (`units/uNN.txt`)
 
 ```
-# unit 2 | Hjemme | Things at home
+# unit 2 | Hjemme | Things at home | level: A1
 ## lesson Home | needs: gender
 w hus | noun et | house
 w snakke | verb | to speak
@@ -26,6 +26,7 @@ Ida: Hei! | Hi!
 ? What does Tom order? | *coffee | tea | water
 ```
 
+- The first line of a unit names its level. The levels are listed in `levels.txt`, in the order they are learned. Units of one level stay together: after a unit of A2, no unit of A1 may follow.
 - `w` is a word. It matches every inflected form of its lemma, unless `only` is set.
 - `f` is a single irregular form, taught as its own item. It always matches only itself.
 - `c` is a chunk. `___` marks a slot.

@@ -1,5 +1,7 @@
-// Page title with an optional line under it and an optional control on the right.
+// Page title with an optional line under it, an optional control beside it,
+// and an optional second part that a page can line up with a column of its own.
 import * as stylex from "@stylexjs/stylex";
+import type { StyleXStyles } from "@stylexjs/stylex";
 import type { ReactNode } from "react";
 
 import { color, display, text, tracking } from "../tokens/tokens.stylex";
@@ -9,8 +11,20 @@ const styles = stylex.create({
     alignItems: { default: null, [stylex.env.desktop]: "flex-end" },
     display: "flex",
     flexDirection: { default: "column", [stylex.env.desktop]: "row" },
+    gap: "1.25rem",
+  },
+  // The words and the control. When they do not fit side by side, the control goes under the words.
+  main: {
+    alignItems: { default: null, [stylex.env.desktop]: "flex-end" },
+    display: "flex",
+    flexBasis: { default: null, [stylex.env.desktop]: "0%" },
+    flexDirection: { default: "column", [stylex.env.desktop]: "row" },
+    flexGrow: { default: null, [stylex.env.desktop]: 1 },
+    flexShrink: { default: null, [stylex.env.desktop]: 1 },
+    flexWrap: { default: null, [stylex.env.desktop]: "wrap" },
     gap: { default: "1.25rem", [stylex.env.desktop]: "1rem" },
     justifyContent: { default: null, [stylex.env.desktop]: "space-between" },
+    minWidth: 0,
   },
   title: {
     fontSize: display.title,
@@ -32,16 +46,32 @@ interface PageTitleProps {
   sub?: string;
   /** A control shown beside the title on a wide screen and under it on a phone. */
   children?: ReactNode;
+  /**
+   * A second part after the title and its control. A page whose content has two columns
+   * gives the same columns in `style`, so that this part sits above the second one.
+   */
+  aside?: ReactNode;
+  /** Applies to the row that holds both parts. */
+  style?: StyleXStyles;
 }
 
-export const PageTitle = ({ title, sub, children }: PageTitleProps) => (
-  <div {...stylex.props(styles.row)}>
-    <div>
-      <h1 {...stylex.props(styles.title)}>{title}</h1>
-      {sub === undefined || sub === "" ? null : (
-        <p {...stylex.props(styles.sub)}>{sub}</p>
-      )}
+export const PageTitle = ({
+  title,
+  sub,
+  children,
+  aside,
+  style,
+}: PageTitleProps) => (
+  <div {...stylex.props(styles.row, style)}>
+    <div {...stylex.props(styles.main)}>
+      <div>
+        <h1 {...stylex.props(styles.title)}>{title}</h1>
+        {sub === undefined || sub === "" ? null : (
+          <p {...stylex.props(styles.sub)}>{sub}</p>
+        )}
+      </div>
+      {children}
     </div>
-    {children}
+    {aside}
   </div>
 );

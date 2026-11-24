@@ -13,6 +13,7 @@ import type { Curriculum, Item } from "../src/schema";
 import type { Draft, Practice, Report } from "./lib/draft";
 import { chooseExamples } from "./lib/examples";
 import { resolveLessonNeeds } from "./lib/lesson-needs";
+import { parseLevels } from "./lib/levels";
 import { parseSounds } from "./lib/parse-sounds";
 import { parseUnits } from "./lib/parse-units";
 import { buildPractice } from "./lib/practice";
@@ -106,7 +107,7 @@ const printSummary = (curriculum: Curriculum, report: Report) => {
   }
 
   console.log(
-    `\n${curriculum.units.length} units, ${curriculum.lessons.length} lessons, ${counts.word} words, ${counts.chunk} chunks, ${counts.pattern} patterns, ${curriculum.sentences.length} sentences, ${curriculum.stories.length} stories, ${curriculum.sounds.length} sound pairs`
+    `\n${curriculum.levels.length} levels, ${curriculum.units.length} units, ${curriculum.lessons.length} lessons, ${counts.word} words, ${counts.chunk} chunks, ${counts.pattern} patterns, ${curriculum.sentences.length} sentences, ${curriculum.stories.length} stories, ${curriculum.sounds.length} sound pairs`
   );
   console.log(
     `${report.errors.length} errors, ${report.warnings.length} warnings`
@@ -141,6 +142,7 @@ const practice = buildPractice(draft, vocabulary, report);
 chooseExamples(draft, practice.sentences, report);
 
 const curriculum: Curriculum = {
+  levels: parseLevels(path.join(ROOT, "text/levels.txt"), draft.units, report),
   units: draft.units,
   lessons: draft.lessons,
   items: Object.fromEntries(

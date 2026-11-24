@@ -9,11 +9,12 @@ import {
 } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Play } from "lucide-react";
+import { Check, Lock, Play } from "lucide-react";
 import { useMemo } from "react";
 
 import { AppShell } from "../components/app-shell";
 import { greetingAt, todayOf } from "../components/today-plan";
+import type { LevelStep } from "../components/today-plan";
 import {
   learner,
   useMemory,
@@ -119,6 +120,52 @@ const styles = stylex.create({
     flexDirection: "column",
     gap: "1.25rem",
   },
+  // The levels of the course side by side, above the progress of the one the learner is in.
+  steps: {
+    borderBottomWidth: 1,
+    borderColor: color.line,
+    borderStyle: "solid",
+    borderWidth: 0,
+    display: "flex",
+    gap: { default: "0.5rem", [stylex.env.desktop]: "0.625rem" },
+    marginBottom: { default: "1rem", [stylex.env.desktop]: "1.375rem" },
+    paddingBottom: { default: "1rem", [stylex.env.desktop]: "1.375rem" },
+  },
+  step: {
+    display: "flex",
+    flexBasis: "0%",
+    flexDirection: "column",
+    flexGrow: 1,
+    flexShrink: 1,
+    gap: { default: "0.5rem", [stylex.env.desktop]: "0.625rem" },
+    minWidth: 0,
+  },
+  stepBar: {
+    height: { default: "0.25rem", [stylex.env.desktop]: "0.3125rem" },
+  },
+  stepLabel: {
+    alignItems: "center",
+    color: color.fg2,
+    display: "flex",
+    fontSize: { default: text.s13, [stylex.env.desktop]: text.s16 },
+    gap: "0.375rem",
+    lineHeight: 1.3,
+  },
+  stepName: {
+    color: color.fg,
+    fontWeight: 600,
+  },
+  stepLocked: {
+    color: color.fg3,
+  },
+  stepMark: {
+    flexShrink: 0,
+    height: "0.875rem",
+    width: "0.875rem",
+  },
+  stepDone: {
+    color: color.green,
+  },
   cardTitle: {
     color: color.fg2,
     fontSize: { default: text.s15, [stylex.env.desktop]: text.s18 },
@@ -137,32 +184,17 @@ const styles = stylex.create({
     fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
     lineHeight: 1.45,
   },
-  legend: {
-    color: color.fg2,
-    display: "flex",
-    flexDirection: "column",
-    fontSize: { default: text.s14, [stylex.env.desktop]: text.s16 },
-    gap: "0.375rem",
-    lineHeight: 1.45,
-  },
-  legendRow: {
-    alignItems: "center",
-    display: "flex",
-    gap: "0.5rem",
-  },
-  dot: {
-    borderRadius: radius.pill,
-    flexShrink: 0,
-    height: "0.5rem",
-    width: "0.5rem",
-  },
-  dotSeen: { backgroundColor: color.yellow },
-  dotKnown: { backgroundColor: color.green },
   meter: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.625rem",
     paddingTop: "0.875rem",
+  },
+  // The items of the level, under its progress and set apart by a hairline, as the levels are above it.
+  items: {
+    borderColor: color.line,
+    borderStyle: "solid",
+    borderTopWidth: 1,
+    borderWidth: 0,
+    marginTop: { default: "1.125rem", [stylex.env.desktop]: "1.625rem" },
+    paddingTop: { default: "1rem", [stylex.env.desktop]: "1.375rem" },
   },
   stats: {
     display: "flex",
@@ -196,6 +228,50 @@ const Stat = ({ value, label }: StatProps) => (
   <div>
     <div {...stylex.props(styles.figure)}>{value}</div>
     <div {...stylex.props(styles.caption)}>{label}</div>
+  </div>
+);
+
+interface LevelStepsProps {
+  steps: LevelStep[];
+  /** The id of the level the learner is in. */
+  current: string;
+}
+
+/** Every level with a small bar: done, the one being learned, and the locked ones after it. */
+const LevelSteps = ({ steps, current }: LevelStepsProps) => (
+  <div {...stylex.props(styles.steps)}>
+    {steps.map((step) => {
+      const locked = step.state === "locked";
+
+      return (
+        <div key={step.id} {...stylex.props(styles.step)}>
+          <Progress value={step.progress} tone="good" style={styles.stepBar} />
+          <div {...stylex.props(styles.stepLabel)}>
+            <span
+              {...stylex.props(styles.stepName, locked && styles.stepLocked)}
+            >
+              {step.id}
+            </span>
+            {step.state === "done" ? (
+              <>
+                <Check
+                  aria-hidden
+                  {...stylex.props(styles.stepMark, styles.stepDone)}
+                />
+                Done
+              </>
+            ) : null}
+            {locked ? (
+              <Lock
+                aria-label="Locked"
+                {...stylex.props(styles.stepMark, styles.stepLocked)}
+              />
+            ) : null}
+            {step.id === current && step.state === "open" ? "Now" : null}
+          </div>
+        </div>
+      );
+    })}
   </div>
 );
 
@@ -276,7 +352,10 @@ const Today = () => {
 
         <div {...stylex.props(styles.cards)}>
           <Card>
-            <div {...stylex.props(styles.cardTitle)}>Progress to A1</div>
+            <LevelSteps steps={view.levels} current={view.level.id} />
+            <div {...stylex.props(styles.cardTitle)}>
+              Progress to {view.level.id}
+            </div>
             <div {...stylex.props(styles.figure, styles.figureLower)}>
               {Math.round(view.progress * 100)}%
             </div>
@@ -286,24 +365,14 @@ const Today = () => {
                 reach={view.seen / view.total}
                 tone="good"
               />
-              <div {...stylex.props(styles.legend)}>
-                <div {...stylex.props(styles.legendRow)}>
-                  <span {...stylex.props(styles.dot, styles.dotSeen)} />
-                  {view.seen} of {view.total} items seen
-                </div>
-                <div {...stylex.props(styles.legendRow)}>
-                  <span {...stylex.props(styles.dot, styles.dotKnown)} />
-                  {view.stable} of {view.total} items known well
-                </div>
-              </div>
             </div>
-          </Card>
-          <Card>
-            <div {...stylex.props(styles.cardTitle)}>Items</div>
-            <div {...stylex.props(styles.stats)}>
-              <Stat value={view.stable} label="Stable" />
-              <Stat value={view.learning} label="Learning" />
-              <Stat value={view.toLearn} label="To learn" />
+            <div {...stylex.props(styles.items)}>
+              <div {...stylex.props(styles.cardTitle)}>Items</div>
+              <div {...stylex.props(styles.stats)}>
+                <Stat value={view.stable} label="Stable" />
+                <Stat value={view.learning} label="Learning" />
+                <Stat value={view.toLearn} label="To learn" />
+              </div>
             </div>
           </Card>
           <Card>

@@ -1,16 +1,24 @@
 // What the Today screen says: the greeting, the numbers, and one line for each part of a session.
-import { item, items, units } from "@norsk/content";
-import type { Item, Lesson, Story } from "@norsk/content";
+import { item, levelItems, levels, units } from "@norsk/content";
+import type { Item, Lesson, Level, Story } from "@norsk/content";
 import {
   compression,
+  currentLevel,
   dueItems,
   isStable,
+  levelState,
   nextLesson,
   nextStory,
   retrievability,
   strength,
 } from "@norsk/engine";
-import type { Compression, Memory, Scheduler } from "@norsk/engine";
+import type {
+  Compression,
+  LevelState,
+  Mem,
+  Memory,
+  Scheduler,
+} from "@norsk/engine";
 
 export interface Greeting {
   norwegian: string;
@@ -104,42 +112,56 @@ export interface TodayInput {
   scheduler: Scheduler;
 }
 
+/** One level of the course, as a step on the way. */
+export interface LevelStep {
+  id: string;
+  state: LevelState;
+  /** From 0 to 1: how well the items of the level are known. */
+  progress: number;
+}
+
 export interface TodayView {
   summary: string;
   reviewDetail: string;
   newDetail: string;
   storyDetail: string;
+  /** The level the learner is in. The numbers below are about this level, except `recall`. */
+  level: Level;
+  /** Every level of the course, in the order they are learned. */
+  levels: LevelStep[];
   /**
-   * Progress to A1, from 0 to 1: how well the items of the course are known. An item
+   * Progress to the end of the level, from 0 to 1: how well its items are known. An item
    * counts from its first recall and in full once it is stable, so the number moves
    * with every review and reaches 1 only when everything holds.
    */
   progress: number;
-  /** Items met at least once. */
+  /** Items of the level met at least once. */
   seen: number;
-  /** Every item of the course. */
+  /** Every item of the level. */
   total: number;
   stable: number;
   learning: number;
   toLearn: number;
-  /** The share of learned items the learner would recall now, as text. */
+  /** The share of everything learned, in any level, that the learner would recall now, as text. */
   recall: string;
 }
 
 const averageRecall = (
-  memory: Memory,
+  mems: Mem[],
   scheduler: Scheduler,
   now: number
 ): number => {
-  const all = [...memory.values()];
-
-  const sum = all.reduce(
+  const sum = mems.reduce(
     (total, mem) => total + retrievability(scheduler, mem, now),
     0
   );
 
-  return all.length === 0 ? 0 : sum / all.length;
+  return mems.length === 0 ? 0 : sum / mems.length;
 };
+
+/** How well the items of a level are known, from 0 to 1. A level without items counts as 0. */
+const levelProgress = (mems: Mem[], total: number): number =>
+  total === 0 ? 0 : mems.reduce((sum, mem) => sum + strength(mem), 0) / total;
 
 export const todayOf = ({
   memory,
@@ -149,29 +171,42 @@ export const todayOf = ({
   now,
   scheduler,
 }: TodayInput): TodayView => {
-  const all = [...memory.values()];
   const lesson = nextLesson(memory, chosenLesson);
   const firstId = lesson?.items.find((id) => !memory.has(id));
   const firstNew = firstId === undefined ? null : item(firstId);
   const cover = compression(memory, now, sentenceSeen);
+  // What is due is counted over everything learned: a review does not stop at the end of a level.
   const due = cover.due + dueItems(memory, now).learning.length;
-  const stable = all.filter((mem) => isStable(mem)).length;
-  const total = Object.keys(items).length;
+  const level = currentLevel(memory);
+  const all = [...memory.values()];
+
+  const memsOf = (one: Level): Mem[] =>
+    levelItems(one).flatMap((id) => memory.get(id) ?? []);
+
+  const inLevel = memsOf(level);
+  const total = levelItems(level).length;
+  const stable = inLevel.filter((mem) => isStable(mem)).length;
 
   return {
-    learning: all.length - stable,
+    learning: inLevel.length - stable,
+    level,
+    levels: levels.map((one) => ({
+      id: one.id,
+      progress: levelProgress(memsOf(one), levelItems(one).length),
+      state: levelState(one, memory),
+    })),
     newDetail: newDetail(lesson, firstNew),
-    progress: all.reduce((sum, mem) => sum + strength(mem), 0) / total,
+    progress: levelProgress(inLevel, total),
     recall:
       all.length === 0
         ? "–"
-        : `${Math.round(averageRecall(memory, scheduler, now) * 100)}%`,
+        : `${Math.round(averageRecall(all, scheduler, now) * 100)}%`,
     reviewDetail: reviewDetail(due, cover),
+    seen: inLevel.length,
     stable,
     storyDetail: storyDetail(nextStory(memory, new Set(storiesDone))),
-    seen: all.length,
     summary: summaryOf(due, firstNew),
-    toLearn: total - memory.size,
+    toLearn: total - inLevel.length,
     total,
   };
 };

@@ -8,6 +8,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 
 import { AppShell } from "../components/app-shell";
+import { LevelSwitch, useLevel } from "../components/level-switch";
 import { useMemory, useProgress } from "../learner";
 
 const styles = stylex.create({
@@ -120,7 +121,9 @@ const StoryRow = ({ story, ready, read }: StoryRowProps) => {
 const StoriesPage = () => {
   const memory = useMemory();
   const { storiesDone } = useProgress();
-  const half = Math.ceil(stories.length / 2);
+  const [level, pickLevel] = useLevel(memory);
+  const shown = stories.filter((story) => level.units.includes(story.unit));
+  const half = Math.ceil(shown.length / 2);
 
   const rows = (list: Story[]) =>
     list.map((story) => (
@@ -137,13 +140,15 @@ const StoriesPage = () => {
       <PageTitle
         title="Stories"
         sub="Short texts made only from words you have learned."
-      />
+      >
+        <LevelSwitch level={level} memory={memory} onPick={pickLevel} />
+      </PageTitle>
       <div {...stylex.props(styles.columns)}>
-        <ListCard style={styles.phoneOnly}>{rows(stories)}</ListCard>
+        <ListCard style={styles.phoneOnly}>{rows(shown)}</ListCard>
         <ListCard style={styles.wideOnly}>
-          {rows(stories.slice(0, half))}
+          {rows(shown.slice(0, half))}
         </ListCard>
-        <ListCard style={styles.wideOnly}>{rows(stories.slice(half))}</ListCard>
+        <ListCard style={styles.wideOnly}>{rows(shown.slice(half))}</ListCard>
       </div>
     </AppShell>
   );

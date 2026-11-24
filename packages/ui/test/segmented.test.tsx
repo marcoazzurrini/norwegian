@@ -89,3 +89,27 @@ test("the arrow keys move the choice, and wrap at the ends", async () => {
 
   expect(onPick.mock.calls).toStrictEqual([[25], [5], [25]]);
 });
+
+test("an option that is disabled is shown but cannot be chosen", async () => {
+  const onPick = vi.fn<(level: string) => void>();
+
+  const screen = await render(
+    <Segmented
+      label="Level"
+      value="A1"
+      options={[
+        ["A1", "A1"],
+        ["A2", "A2"],
+      ]}
+      disabled={["A2"]}
+      onPick={onPick}
+    />
+  );
+
+  const locked = screen.getByRole("radio", { name: "A2" });
+
+  await expect.element(locked).toBeDisabled();
+  await locked.click({ force: true });
+
+  expect(onPick).not.toHaveBeenCalled();
+});

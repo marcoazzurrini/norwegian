@@ -1,11 +1,24 @@
 import { expect, test } from "bun:test";
 
-import { item } from "@norsk/content";
+import { item, levels } from "@norsk/content";
 import type { Mem } from "@norsk/engine";
 
 import { itemGroups, memoryNote, splitAt } from "./item-list";
 
 const DAY = 86_400_000;
+
+const levelAt = (index: number) => {
+  const found = levels[index];
+
+  if (found === undefined) {
+    throw new Error(`No level ${index}`);
+  }
+
+  return found;
+};
+
+const A1 = levelAt(0);
+const A2 = levelAt(1);
 const NOW = Date.UTC(2026, 2, 10, 8);
 
 const mem = (stability: number, dueAt: number): Mem => ({
@@ -27,21 +40,21 @@ const mem = (stability: number, dueAt: number): Mem => ({
 });
 
 test("without a search every unit is listed with all its items", () => {
-  const groups = itemGroups("  ");
+  const groups = itemGroups("  ", A1);
 
   expect(groups[0]?.unit.index).toBe(1);
   expect(groups[0]?.list[0]?.id).toBe("c:hei");
 });
 
 test("a search matches the Norwegian or the English, in any case", () => {
-  const found = itemGroups(" TAKK ").flatMap((group) => group.list);
+  const found = itemGroups(" TAKK ", A1).flatMap((group) => group.list);
 
   expect(found.map((one) => one.id)).toContain("w:takk:interj");
   expect(found.every((one) => /takk/iu.test(`${one.text} ${one.gloss}`))).toBe(
     true
   );
-  expect(itemGroups("thanks").length).toBeGreaterThan(0);
-  expect(itemGroups("zzzz")).toEqual([]);
+  expect(itemGroups("thanks", A1).length).toBeGreaterThan(0);
+  expect(itemGroups("zzzz", A1)).toEqual([]);
 });
 
 test("a list is cut after the chosen item", () => {
@@ -62,4 +75,13 @@ test("the note on a memory says how long it lasts and when it comes back", () =>
   });
   expect(memoryNote(mem(12.4, NOW + DAY), NOW).lasts).toBe("12 days");
   expect(memoryNote(mem(12.4, NOW + DAY), NOW).next).not.toBe("now");
+});
+
+test("only the units of the chosen level are listed", () => {
+  const groups = itemGroups("", A1);
+
+  expect(groups.length).toBeGreaterThan(0);
+  expect(groups.every((group) => group.unit.level === "A1")).toBe(true);
+  // A2 is not written yet, so it has nothing to list.
+  expect(itemGroups("", A2)).toEqual([]);
 });

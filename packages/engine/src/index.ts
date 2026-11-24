@@ -25,9 +25,11 @@ export type { Card, Grade, Mem, ReviewInput, Scheduler } from "./memory";
 // Selection: what is taught, what is due, and what comes next.
 export {
   compression,
+  currentLevel,
   dueItems,
   itemState,
   lessonState,
+  levelState,
   nextLesson,
   nextNewItems,
   nextStory,
@@ -42,6 +44,7 @@ export type {
   Due,
   ItemState,
   LessonState,
+  LevelState,
   Memory,
   PickLimits,
   RecallPlan,

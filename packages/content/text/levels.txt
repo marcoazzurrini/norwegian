@@ -1,0 +1,5 @@
+# The levels of the course, in the order they are learned: id | name.
+# A unit names its level in its first line. A level without units is not written yet.
+A1 | Beginner
+A2 | Elementary
+B1 | Intermediate

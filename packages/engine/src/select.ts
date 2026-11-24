@@ -6,13 +6,22 @@ import {
   item,
   items,
   lessons,
+  levelLessons,
+  levels,
   sentenceItems,
   sentenceReady,
   sentences,
   sentencesWith,
   stories,
 } from "@norsk/content";
-import type { Item, Known, Lesson, Sentence, Story } from "@norsk/content";
+import type {
+  Item,
+  Known,
+  Lesson,
+  Level,
+  Sentence,
+  Story,
+} from "@norsk/content";
 
 import { dueTime, isDue, isLearning, isStable } from "./memory";
 import type { Mem } from "./memory";
@@ -22,6 +31,8 @@ export type Memory = ReadonlyMap<string, Mem>;
 export type ItemState = "locked" | "ready" | "learning" | "stable";
 
 export type LessonState = "locked" | "ready" | "started" | "done";
+
+export type LevelState = "locked" | "open" | "done";
 
 const lessonAt = (index: number): Lesson => {
   const found = lessons[index];
@@ -59,6 +70,42 @@ export const lessonState = (l: Lesson, known: Known): LessonState => {
   return l.needs.every((n) => lessonState(lessonAt(n), known) === "done")
     ? "ready"
     : "locked";
+};
+
+const everyLessonDone = (one: Level, known: Known): boolean => {
+  const all = levelLessons(one);
+
+  return all.length > 0 && all.every((l) => lessonState(l, known) === "done");
+};
+
+/**
+ * A level opens when the level before it is done. A level that is not written yet has
+ * no lessons, so it stays locked.
+ */
+export const levelState = (one: Level, known: Known): LevelState => {
+  if (everyLessonDone(one, known)) {
+    return "done";
+  }
+
+  const before = levels[levels.indexOf(one) - 1];
+
+  const reached = before === undefined || everyLessonDone(before, known);
+
+  return reached && levelLessons(one).length > 0 ? "open" : "locked";
+};
+
+/** The level the learner is in: the first one that is open, or the last one done when none is. */
+export const currentLevel = (known: Known): Level => {
+  const found =
+    levels.find((one) => levelState(one, known) === "open") ??
+    levels.findLast((one) => levelState(one, known) === "done") ??
+    levels[0];
+
+  if (found === undefined) {
+    throw new Error("The course has no level");
+  }
+
+  return found;
 };
 
 export const itemState = (it: Item, mem: Memory): ItemState => {

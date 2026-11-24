@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 import {
   item,
   lessons,
+  levels,
   sentenceReady,
   sentences,
   sentencesWith,
@@ -14,11 +15,13 @@ import {
   applyReview,
   compression,
   createScheduler,
+  currentLevel,
   dueItems,
   gradeCard,
   gradeSentence,
   introduce,
   lessonState,
+  levelState,
   nextLesson,
   nextNewItems,
   pickReview,
@@ -662,5 +665,36 @@ describe("how much new material comes together", () => {
       expect(groups.flat()).toEqual(lesson.items.map((id) => item(id).text));
       expect(Math.max(...groups.map((group) => group.length))).toBeLessThan(4);
     }
+  });
+});
+
+const levelAt = (index: number) => {
+  const found = levels[index];
+
+  if (found === undefined) {
+    throw new Error(`No level ${index}`);
+  }
+
+  return found;
+};
+
+describe("levels", () => {
+  const everything = new Set(lessons.flatMap((l) => l.items));
+
+  test("a new learner is in the first level, and the ones after it are locked", () => {
+    const nothing = new Set<string>();
+
+    expect(currentLevel(nothing).id).toBe("A1");
+    expect(levelState(levelAt(0), nothing)).toBe("open");
+    expect(levelState(levelAt(1), nothing)).toBe("locked");
+  });
+
+  test("a level is done once every lesson of it is learned", () => {
+    expect(levelState(levelAt(0), everything)).toBe("done");
+  });
+
+  test("a level that is not written yet stays locked, and the learner stays in the last level done", () => {
+    expect(levelState(levelAt(1), everything)).toBe("locked");
+    expect(currentLevel(everything).id).toBe("A1");
   });
 });

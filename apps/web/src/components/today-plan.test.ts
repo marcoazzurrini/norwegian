@@ -43,7 +43,7 @@ test("the other lines say what comes next, or that nothing does", () => {
   expect(storyDetail(null)).toBe("A story unlocks after a few more lessons.");
 });
 
-test("progress to A1 counts every item seen, and counts it more the better it is known", async () => {
+test("progress to the level counts every item of it seen, and counts it more the better it is known", async () => {
   const scheduler = await createScheduler(0.9);
   const start = new Date("2026-01-01T08:00:00Z").getTime();
   const total = Object.keys(items).length;
@@ -63,6 +63,13 @@ test("progress to A1 counts every item seen, and counts it more the better it is
   expect(empty.progress).toBe(0);
   expect(empty.seen).toBe(0);
   expect(empty.total).toBe(total);
+  // Everything written so far is A1, which is where a new learner starts. The levels after it are locked.
+  expect(empty.level.id).toBe("A1");
+  expect(empty.levels.map((step) => [step.id, step.state])).toEqual([
+    ["A1", "open"],
+    ["A2", "locked"],
+    ["B1", "locked"],
+  ]);
 
   const fresh = introduce(scheduler, "c:hei", start);
   const one = viewOf([fresh], start);

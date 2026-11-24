@@ -1,4 +1,4 @@
-import { item, items, sentenceReady, sentencesWith } from "@norsk/content";
+import { item, levelItems, sentenceReady, sentencesWith } from "@norsk/content";
 import type { Item } from "@norsk/content";
 import { itemState, retrievability } from "@norsk/engine";
 import type { Memory } from "@norsk/engine";
@@ -22,6 +22,7 @@ import { useId, useMemo, useState } from "react";
 
 import { AppShell } from "../components/app-shell";
 import { itemGroups, memoryNote, splitAt } from "../components/item-list";
+import { LevelSwitch, useLevel } from "../components/level-switch";
 import { ITEM_LOOK } from "../components/looks";
 import { hasArticle, soundOf } from "../components/tasks/items";
 import { useMemory, useScheduler } from "../learner";
@@ -49,8 +50,9 @@ const styles = stylex.create({
     fontSize: text.s16,
     gap: "0.75rem",
     height: { default: "3rem", [stylex.env.desktop]: "3.25rem" },
+    minWidth: 0,
     paddingInline: "1.125rem",
-    width: { default: "100%", [stylex.env.desktop]: "32.5rem" },
+    width: "100%",
   },
   searchIcon: {
     color: color.fg3,
@@ -69,6 +71,14 @@ const styles = stylex.create({
     fontSize: text.s16,
     minWidth: 0,
     padding: 0,
+  },
+  // The same two columns as the content below, so that the level switch ends where the list ends.
+  titleRow: {
+    display: { default: "flex", [stylex.env.desktop]: "grid" },
+    gridTemplateColumns: {
+      default: null,
+      [stylex.env.desktop]: "minmax(0, 1fr) 35rem",
+    },
   },
   columns: {
     alignItems: "start",
@@ -458,7 +468,10 @@ const ItemsPage = () => {
   const searchId = useId();
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
-  const groups = useMemo(() => itemGroups(query), [query]);
+  const [level, pickLevel] = useLevel(memory);
+  const groups = useMemo(() => itemGroups(query, level), [query, level]);
+  const taught = levelItems(level);
+  const learned = taught.filter((id) => memory.has(id)).length;
 
   const pick = (id: string) => {
     setSelected(selected === id ? null : id);
@@ -468,21 +481,32 @@ const ItemsPage = () => {
     <AppShell>
       <PageTitle
         title="Items"
-        sub={`${memory.size} of ${Object.keys(items).length} learned.`}
+        sub={`${learned} of ${taught.length} learned in ${level.id}.`}
+        style={styles.titleRow}
+        aside={
+          <label htmlFor={searchId} {...stylex.props(styles.search)}>
+            <Search {...stylex.props(styles.searchIcon)} />
+            <input
+              id={searchId}
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+              }}
+              placeholder="Search Norwegian or English"
+              aria-label="Search items"
+              {...stylex.props(styles.searchField)}
+            />
+          </label>
+        }
       >
-        <label htmlFor={searchId} {...stylex.props(styles.search)}>
-          <Search {...stylex.props(styles.searchIcon)} />
-          <input
-            id={searchId}
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value);
-            }}
-            placeholder="Search Norwegian or English"
-            aria-label="Search items"
-            {...stylex.props(styles.searchField)}
-          />
-        </label>
+        <LevelSwitch
+          level={level}
+          memory={memory}
+          onPick={(id) => {
+            pickLevel(id);
+            setSelected(null);
+          }}
+        />
       </PageTitle>
       <div {...stylex.props(styles.columns)}>
         <div {...stylex.props(styles.groups)}>
