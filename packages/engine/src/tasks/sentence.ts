@@ -77,22 +77,32 @@ export interface ExplainRequest {
   itemIds: string[];
 }
 
-const itemsOf = (t: Token): string[] => {
-  const main = t.w ?? t.c;
+/** Every item a word of the sentence stands for: the word, the phrase it is part of, and its patterns. */
+const itemsOf = (t: Token): string[] =>
+  [t.w, t.c, ...(t.p ?? [])].filter((id) => id !== undefined);
 
-  return [...(main === undefined ? [] : [main]), ...(t.p ?? [])];
-};
+const itemsAt = (s: Sentence, indexes: number[]): string[] => [
+  ...new Set(indexes.flatMap((i) => s.tokens[i] ?? []).flatMap(itemsOf)),
+];
 
-/** Items behind the words the learner got wrong. */
-const failedItems = (s: Sentence, g: SentenceGrade): string[] => {
-  // Right words in the wrong order: the word-order patterns failed, not the words.
-  if (g.orderOnly) {
-    return [...new Set(s.patterns)];
+/**
+ * Items behind the words the learner got wrong.
+ * Right words in the wrong order: the word-order patterns failed, not the words. A sentence
+ * that has no taught pattern for its order has no rule to blame, so the words that are out of
+ * place fail. A wrong answer that failed nothing would be recorded as a recall.
+ */
+const failedItems = (
+  s: Sentence,
+  g: SentenceGrade,
+  known: ReadonlySet<string>
+): string[] => {
+  if (!g.orderOnly) {
+    return itemsAt(s, g.missed);
   }
 
-  const missed = g.missed.flatMap((i) => s.tokens[i] ?? []);
+  const rules = [...new Set(s.patterns)].filter((id) => known.has(id));
 
-  return [...new Set(missed.flatMap((t) => itemsOf(t)))];
+  return rules.length > 0 ? rules : itemsAt(s, g.misplaced);
 };
 
 const hintFor = (
@@ -175,7 +185,7 @@ const answer = (state: SentenceState, text: string): Step<SentenceState> => {
     ...state,
     phase: {
       close: off <= 2,
-      failed: failedItems(sentence, grade),
+      failed: failedItems(sentence, grade, state.known),
       first: grade,
       hint: hintFor(sentence, grade, state.known),
       step: "retry",
@@ -253,7 +263,12 @@ const step = (
   // Giving up before a first try is graded as an empty answer: every word was missed.
   const blank = gradeSentence(state.sentence, "");
 
-  return showResult(state, failedItems(state.sentence, blank), blank, false);
+  return showResult(
+    state,
+    failedItems(state.sentence, blank, state.known),
+    blank,
+    false
+  );
 };
 
 export const sentenceTask: TaskMachine<

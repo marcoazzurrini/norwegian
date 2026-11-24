@@ -23,6 +23,11 @@ export interface SentenceGrade {
   missed: number[];
   /** All the right words, in the wrong order. */
   orderOnly: boolean;
+  /**
+   * Indexes of the expected words that are out of place. Empty unless `orderOnly` is true.
+   * Two words that swapped places are both out of place: the answer does not say which one moved.
+   */
+  misplaced: number[];
 }
 
 interface Alignment {
@@ -32,16 +37,14 @@ interface Alignment {
   typed: Set<number>;
 }
 
-/**
- * Pairs expected words with typed words by longest common subsequence,
- * so one wrong word does not make the words after it wrong too.
- */
-const align = (
+type Same = (i: number, j: number) => boolean;
+
+/** `lcs(i, j)` is the length of the longest common subsequence of expected[i..] and typed[j..]. */
+const lcsTable = (
   n: number,
   m: number,
-  same: (i: number, j: number) => boolean
-): Alignment => {
-  // lcs(i, j) is the length of the longest common subsequence of expected[i..] and typed[j..].
+  same: Same
+): ((i: number, j: number) => number) => {
   const width = m + 1;
   const table = Array.from({ length: (n + 1) * width }, () => 0);
   const lcs = (i: number, j: number): number => table[i * width + j] ?? 0;
@@ -54,6 +57,15 @@ const align = (
     }
   }
 
+  return lcs;
+};
+
+/**
+ * Pairs expected words with typed words by longest common subsequence,
+ * so one wrong word does not make the words after it wrong too.
+ */
+const align = (n: number, m: number, same: Same): Alignment => {
+  const lcs = lcsTable(n, m, same);
   const matched: Alignment = { expected: new Set(), typed: new Set() };
   let i = 0;
   let j = 0;
@@ -72,6 +84,22 @@ const align = (
   }
 
   return matched;
+};
+
+/**
+ * The expected words that are out of place in an answer that has every word.
+ * A word is out of place if the others are in as good an order without it. The pairing of `align`
+ * cannot tell this: of two words that swapped places it leaves out one, and which one is chance.
+ */
+const outOfPlace = (n: number, m: number, same: Same): number[] => {
+  const inOrder = lcsTable(n, m, same)(0, 0);
+  const all = Array.from({ length: n }, (_, k) => k);
+
+  return all.filter((skip) => {
+    const without: Same = (i, j) => same(i < skip ? i : i + 1, j);
+
+    return lcsTable(n - 1, m, without)(0, 0) === inOrder;
+  });
 };
 
 /** Same words, different order: every expected word can be paired with a distinct typed word. */
@@ -106,6 +134,7 @@ export const gradeSentence = (
   if ([sentence.no, ...sentence.alts].some((a) => normalize(a) === joined)) {
     return {
       correct: true,
+      misplaced: [],
       missed: [],
       orderOnly: false,
       typed: typed.map((word) => ({ ok: true, word })),
@@ -133,11 +162,13 @@ export const gradeSentence = (
   );
 
   const correct = missed.length === 0 && matched.typed.size === typed.length;
+  const orderOnly = !correct && sameWords(expected, typed);
 
   return {
     correct,
+    misplaced: orderOnly ? outOfPlace(expected.length, typed.length, same) : [],
     missed,
-    orderOnly: !correct && sameWords(expected, typed),
+    orderOnly,
     typed: typed.map((word, k) => ({ ok: matched.typed.has(k), word })),
   };
 };

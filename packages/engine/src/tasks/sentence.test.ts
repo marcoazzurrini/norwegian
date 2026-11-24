@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
+import { sentenceItems, sentences } from "@norsk/content";
 import type { Sentence } from "@norsk/content";
 
 import { explainRequest, sentenceTask } from "../index";
@@ -221,19 +222,57 @@ describe("a sentence", () => {
       hint: { kind: "order", pattern: "p:v2" },
     });
 
-    // Before the pattern is taught there is no rule to name, and nothing to record against it.
+    // Before the pattern is taught there is no rule to name, so the words that are out of place fail.
     const early = run(
-      [answer("i dag jeg jobber hjemme"), { type: "reveal" }, next],
+      [answer("i dag jeg jobber hjemme")],
       iDag,
       known.filter((id) => id !== "p:v2")
     );
 
     expect(early.state.covered).not.toContain("p:v2");
-    expect(early.effects.at(-1)).toMatchObject({ result: { wrong: 0 } });
-    expect(
-      run([answer("i dag jeg jobber hjemme")], iDag, known.slice(0, 4)).state
-        .phase
-    ).toMatchObject({ hint: { kind: "order", pattern: null } });
+    expect(early.state.phase).toMatchObject({
+      failed: ["w:jobbe:verb", "p:present", "w:jeg:pron"],
+      hint: { kind: "order", pattern: null },
+    });
+  });
+
+  test("a sentence without a word-order pattern fails the words that are out of place", () => {
+    // "snakker" and "ikke" swapped places: nothing says which of the two moved, so both fail.
+    const ended = run([
+      answer("jeg ikke snakker norsk"),
+      answer("jeg snakker ikke norsk"),
+      next,
+    ]);
+
+    const failed = ["w:snakke:verb", "p:present", "w:ikke:adv", "p:neg"];
+
+    expect(ended.effects).toEqual([hear(snakker), ...recorded(all, failed)]);
+  });
+
+  test("a wrong order always fails something the learner has", () => {
+    const silent = sentences.filter((s) => {
+      const known = new Set(sentenceItems(s));
+      const words = s.tokens.map((t) => t.t);
+
+      // Every answer that swaps two neighbouring words.
+      return words.slice(1).some((word, k) => {
+        const swapped = words.with(k, word).with(k + 1, words[k] ?? "");
+
+        const { phase } = sentenceTask.step(
+          sentenceTask.init({ known, sentence: s }).state,
+          answer(swapped.join(" ")),
+          T0
+        ).state;
+
+        return (
+          phase.step === "retry" &&
+          phase.first.orderOnly &&
+          !phase.failed.some((id) => known.has(id))
+        );
+      });
+    });
+
+    expect(silent.map((s) => s.no)).toEqual([]);
   });
 
   test("a word too many fails nothing but still needs a second try", () => {

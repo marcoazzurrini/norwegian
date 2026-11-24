@@ -85,6 +85,21 @@ describe("grading a sentence", () => {
 
     expect(g.correct).toBe(false);
     expect(g.orderOnly).toBe(true);
+    // Two words that swapped places are both out of place.
+    expect(g.misplaced).toEqual([2, 3]);
+  });
+
+  test("names the one word that moved when the others kept their order", () => {
+    const g = gradeSentence(
+      find("I dag jobber jeg hjemme."),
+      "hjemme i dag jobber jeg"
+    );
+
+    expect(g.misplaced).toEqual([4]);
+    expect(
+      gradeSentence(find("Jeg snakker ikke norsk."), "jeg snakker norsk")
+        .misplaced
+    ).toEqual([]);
   });
 
   test("accepts the other spelling of a feminine noun", () => {
