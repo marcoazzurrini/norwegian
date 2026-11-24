@@ -28,6 +28,7 @@ import type {
   IntroEvent,
   IntroState,
   Mem,
+  Pace,
   PatternEvent,
   PatternState,
   QuizState,
@@ -72,11 +73,15 @@ export interface TaskRecord {
   dueReviews: number;
   /** A review could have been served instead of this task. */
   reviewable: boolean;
+  /** The session was closing: it only recalled what was still being learned. */
+  closing: boolean;
   /** For new material: every lesson it needs was finished. */
   prerequisitesDone: boolean;
   /** Time the session counted for the task. */
   ms: number;
   taught: string[];
+  /** Items the task recorded an answer for, also inside the practice sentences of a pattern. */
+  answered: string[];
   result: TaskResult;
 }
 
@@ -86,6 +91,8 @@ export interface DayRecord {
   elapsedMs: number;
   tasks: number;
   stats: SessionStats;
+  /** True if the session closed because its time was used. */
+  timeUp: boolean;
   /** Items in memory when the day's session ended. */
   learned: number;
   /** Items still being learned, or learned again after a miss, that were due when the session started. */
@@ -135,6 +142,7 @@ interface Move<Event> {
 interface Outcome {
   result: TaskResult | null;
   taught: string[];
+  answered: string[];
 }
 
 /** A small repeatable random generator (a linear congruential one). Returns numbers from 0 up to 1. */
@@ -189,6 +197,8 @@ class Learner {
   unknownReviews = 0;
   private readonly soundStats: Record<string, SoundStats> = {};
   private readonly sentenceSeen: Record<string, number> = {};
+  /** The times of the learner's tasks, kept from one session to the next as the app does. */
+  private pace: Pace = {};
   private readonly scheduler: Scheduler;
   private readonly options: Options;
   private readonly rng: () => number;
@@ -202,7 +212,7 @@ class Learner {
 
   /** One session, at the same hour every day. */
   study(day: number): void {
-    const session = new Session(this.options.minutes, this.rng);
+    const session = new Session(this.options.minutes, this.rng, this.pace);
     const usedSentences = new Set<string>();
     let recent: string[] = [];
     let reviewMs = 0;
@@ -227,6 +237,7 @@ class Learner {
       const isNew = task.type === "intro" || task.type === "pattern";
 
       const record = {
+        closing: session.closing,
         day,
         dueReviews: dueItems(this.memory, this.now).review.length,
         elapsedBefore,
@@ -246,6 +257,7 @@ class Learner {
       const outcome = this.perform(task, known);
       const result = must(outcome.result);
       const ms = session.complete(task, result, this.now - started);
+      this.pace = session.pace;
 
       if (task.type === "sentence") {
         usedSentences.add(task.sentence.id);
@@ -259,7 +271,13 @@ class Learner {
         0,
         RECENT_ITEMS
       );
-      this.tasks.push({ ...record, ms, result, taught: outcome.taught });
+      this.tasks.push({
+        ...record,
+        answered: outcome.answered,
+        ms,
+        result,
+        taught: outcome.taught,
+      });
       count += 1;
     }
 
@@ -272,6 +290,7 @@ class Learner {
       recallAtStart,
       stats: { ...session.stats },
       tasks: count,
+      timeUp: session.timeUp,
     });
   }
 
@@ -330,6 +349,7 @@ class Learner {
         case "review": {
           for (const input of effect.inputs) {
             const m = this.memory.get(input.id);
+            outcome.answered.push(input.id);
 
             if (m === undefined) {
               this.unknownReviews += 1;
@@ -389,7 +409,7 @@ class Learner {
     input: Input,
     choose: (state: State) => Move<Event>
   ): Outcome {
-    const outcome: Outcome = { result: null, taught: [] };
+    const outcome: Outcome = { answered: [], result: null, taught: [] };
     const first = machine.init(input);
     let { state } = first;
     this.apply(first.effects, outcome);
@@ -453,7 +473,7 @@ class Learner {
       }
 
       default: {
-        return { result: null, taught: [] };
+        return { answered: [], result: null, taught: [] };
       }
     }
   }

@@ -3,11 +3,25 @@
 // due reviews, new material, then a story.
 // What is recalled is decided here; how an item is recalled (alone on a card or inside
 // a sentence) is decided by the picker in select.ts, the same way for every priority.
+//
+// A session never starts what it cannot finish. An item that is still being learned is owed one
+// more recall before the session ends, unless it was recalled right a moment ago. The session
+// keeps the time for those recalls in reserve, and starts a task only if the task fits in the
+// time that is left over. When nothing fits any more, the session closes: it gives every item
+// the recall it is owed, then it ends. So an item taught in the last minutes is still recalled
+// the same day.
 import { sounds } from "@norsk/content";
 import type { Item, Lesson, Sentence, SoundPair, Story } from "@norsk/content";
 
-import { dueTime, isLearning } from "./memory";
+import {
+  RECALLS_AFTER_TEACHING,
+  hasWaited,
+  isFresh,
+  isLearning,
+} from "./memory";
 import type { Mem } from "./memory";
+import { typicalMs, withTime } from "./pace";
+import type { Pace, PaceKind } from "./pace";
 import {
   byDue,
   dueItems,
@@ -15,6 +29,7 @@ import {
   nextNewItems,
   nextStory,
   pickRecall,
+  planRecalls,
   practiceFor,
 } from "./select";
 import type { Due, Memory, SentenceSeen } from "./select";
@@ -87,9 +102,6 @@ const MIN_MINUTES_FOR_EXTRAS = 15;
 /** Time counted for one task is capped, so a break in the middle does not inflate study time. */
 const MAX_TASK_MS = 3 * 60_000;
 
-/** An item that is still being learned may come back this much before it is due, when nothing else is left. */
-const EARLY_MS = 3 * 60_000;
-
 /** A new pattern is practised with at most this many sentences. */
 const PRACTICE_SENTENCES = 3;
 
@@ -107,6 +119,18 @@ const soundsFor = (minutes: number): number => {
 
   return minutes >= MIN_MINUTES_FOR_EXTRAS ? 6 : 0;
 };
+
+/**
+ * True if the item is owed a recall at this moment, before the session ends: it was taught or
+ * missed and not recalled right since, or it has waited long enough for a pass to count.
+ * An item that was recalled right a moment ago is not asked again just because the session ends.
+ */
+const isOwed = (m: Mem, at: number): boolean =>
+  isLearning(m) && (isFresh(m) || hasWaited(m, at));
+
+/** The kind of work a task is, for the time it takes. Sounds are short and are not planned for. */
+const paceKindOf = (task: Task): PaceKind | null =>
+  task.type === "sound" || task.type === "done" ? null : task.type;
 
 export const blockOf = (task: Task): Block => {
   if (task.type === "sound") {
@@ -152,14 +176,41 @@ export class Session {
   private recent: string[] = [];
   /** Right and wrong first tries of the latest recall tasks, newest first. */
   private recalls: { right: number; wrong: number }[] = [];
+  private paceNow: Pace;
+  /** When the session was to end, as it stood when the session started to close. Null before that. */
+  private endAt: number | null = null;
+  private shortOfTime = false;
+  /** Items recalled since the session started to close. */
+  private readonly closed = new Set<string>();
+  /** The last task taught something new. */
+  private justTaught = false;
 
-  /** `rng` returns a number from 0 up to, but not including, 1, as Math.random does. */
-  constructor(minutes: number, rng: () => number) {
+  /**
+   * `rng` returns a number from 0 up to, but not including, 1, as Math.random does.
+   * `pace` holds the times of the learner's earlier tasks; the session adds its own.
+   */
+  constructor(minutes: number, rng: () => number, pace: Pace = {}) {
     this.minutes = minutes;
     this.rng = rng;
     this.budgetMs = minutes * 60_000;
     this.soundsTotal = soundsFor(minutes);
     this.soundsLeft = this.soundsTotal;
+    this.paceNow = pace;
+  }
+
+  /** The times of the learner's latest tasks, with those of this session. To be saved after every task. */
+  get pace(): Pace {
+    return this.paceNow;
+  }
+
+  /** True once the session only recalls what is still being learned, before it ends. */
+  get closing(): boolean {
+    return this.endAt !== null;
+  }
+
+  /** True if the session closed because its time was used, false if nothing was left to do. */
+  get timeUp(): boolean {
+    return this.closing && this.shortOfTime;
   }
 
   get progress(): number {
@@ -169,6 +220,7 @@ export class Session {
   /** Adds time to the session, and remembers the items so that they do not come straight back. */
   record(ms: number, block: Block, itemIds: string[] = []): void {
     this.elapsedMs += ms;
+    this.justTaught = block === "new";
 
     if (block === "review") {
       this.reviewMs += ms;
@@ -178,6 +230,12 @@ export class Session {
       0,
       RECENT_ITEMS
     );
+
+    if (this.closing) {
+      for (const id of itemIds) {
+        this.closed.add(id);
+      }
+    }
   }
 
   /**
@@ -187,7 +245,14 @@ export class Session {
   complete(task: Task, result: TaskResult, ms: number): number {
     const counted = Math.min(MAX_TASK_MS, ms);
     const block = blockOf(task);
+    const kind = paceKindOf(task);
     this.record(counted, block, result.itemIds);
+
+    if (kind !== null) {
+      const pieces = task.type === "intro" ? task.items.length : 1;
+      this.paceNow = withTime(this.paceNow, kind, counted / pieces);
+    }
+
     this.stats.right += result.right;
     this.stats.wrong += result.wrong;
     this.stats.taught += result.taught;
@@ -205,8 +270,55 @@ export class Session {
 
   /** The next task, given the learner's state at this moment. */
   next(view: SessionView, now: number): Task {
-    if (this.elapsedMs >= this.budgetMs) {
-      return { type: "done" };
+    const task = this.choose(view, now);
+
+    // A session uses a sentence once, and a sentence a pattern was practised with is used.
+    if (task.type === "sentence") {
+      this.usedSentences.add(task.sentence.id);
+    }
+
+    if (task.type === "pattern") {
+      for (const sentence of task.practice) {
+        this.usedSentences.add(sentence.id);
+      }
+    }
+
+    if (task.type === "story") {
+      this.storyOffered = true;
+    }
+
+    return task;
+  }
+
+  private choose(view: SessionView, now: number): Task {
+    if (this.endAt === null) {
+      const task = this.workTask(view, now);
+
+      if (task !== null) {
+        return task;
+      }
+
+      this.endAt = now + Math.max(0, this.budgetMs - this.elapsedMs);
+    }
+
+    return this.closingTask(view, this.endAt) ?? { type: "done" };
+  }
+
+  /** The next task while there is time for more than the recalls the session owes. Null when it must close. */
+  private workTask(view: SessionView, now: number): Task | null {
+    const learning = [...view.memory.values()]
+      .filter((m) => isLearning(m))
+      .toSorted(byDue);
+
+    // The recalls the session would owe if it worked until its time is up.
+    const left = this.budgetMs - this.elapsedMs;
+    const owed = learning.filter((m) => isOwed(m, now + left));
+    const spare = left - this.reserveFor(view, owed);
+
+    if (spare <= 0) {
+      this.shortOfTime = true;
+
+      return null;
     }
 
     if (this.soundsLeft > 0) {
@@ -217,11 +329,71 @@ export class Session {
 
     return (
       this.learningTask(view, due) ??
-      this.plannedTask(view, due, this.isStruggling()) ??
-      this.earlyTask(view, now) ??
+      this.plannedTask(view, due, spare, this.isStruggling()) ??
+      this.waitedTask(view, learning, now) ??
       // Nothing else is left to do: new material is better than ending the session early.
-      this.plannedTask(view, due, false) ?? { type: "done" }
+      this.plannedTask(view, due, spare, false)
     );
+  }
+
+  /** The time to recall each of these items once. */
+  private reserveFor(view: SessionView, mems: readonly Mem[]): number {
+    const plan = planRecalls(view.memory, mems, {
+      seen: view.sentenceSeen,
+      skipSentences: this.usedSentences,
+    });
+
+    return (
+      plan.sentences * typicalMs(this.paceNow, "sentence") +
+      plan.cards * typicalMs(this.paceNow, "card")
+    );
+  }
+
+  /** The time a task takes, with the recalls it commits the session to. */
+  private costOf(task: Task): number {
+    const typical = (kind: PaceKind): number => typicalMs(this.paceNow, kind);
+
+    switch (task.type) {
+      case "intro": {
+        return (
+          task.items.length *
+          (typical("intro") + RECALLS_AFTER_TEACHING * typical("card"))
+        );
+      }
+
+      case "pattern": {
+        return (
+          typical("pattern") + RECALLS_AFTER_TEACHING * typical("sentence")
+        );
+      }
+
+      case "card":
+      case "sentence":
+      case "story": {
+        return typical(task.type);
+      }
+
+      // Sounds are short and come first; the end of a session takes no time.
+      case "sound":
+      case "done": {
+        return 0;
+      }
+
+      default: {
+        return task satisfies never;
+      }
+    }
+  }
+
+  /** The task, if there is time for it. */
+  private fit(task: Task | null, spare: number): Task | null {
+    if (task === null || this.costOf(task) <= spare) {
+      return task;
+    }
+
+    this.shortOfTime = true;
+
+    return null;
   }
 
   /** True while too many of the latest recalls failed: new material waits until the learner has caught up. */
@@ -261,10 +433,11 @@ export class Session {
     return this.recallTask(view, due.learning, "learning", this.recent);
   }
 
-  /** Reviews, new material and the story, in the order the time budget allows. */
+  /** Reviews, new material and the story, in the order the time budget allows. Only what fits in the spare time. */
   private plannedTask(
     view: SessionView,
     due: Due,
+    spare: number,
     holdNew: boolean
   ): Task | null {
     const { memory } = view;
@@ -274,42 +447,61 @@ export class Session {
         ? null
         : nextLesson(memory, view.chosenLesson);
 
-    const story =
+    const found =
       this.minutes >= MIN_MINUTES_FOR_EXTRAS && !this.storyOffered
         ? nextStory(memory, view.storiesDone)
         : null;
 
-    if (story !== null && this.elapsedMs >= this.budgetMs * STORY_AFTER) {
-      return this.offer(story);
+    const story: Task | null =
+      found === null ? null : { story: found, type: "story" };
+
+    if (this.elapsedMs >= this.budgetMs * STORY_AFTER) {
+      const now = this.fit(story, spare);
+
+      if (now !== null) {
+        return now;
+      }
     }
+
+    const review = (): Task | null =>
+      this.recallTask(view, due.review, "review", this.recent);
+
+    const fresh = (): Task | null =>
+      lesson === null ? null : this.newTask(lesson, memory, spare);
 
     const reviewFirst =
       due.review.length > 0 &&
       (lesson === null || this.reviewMs < this.budgetMs * REVIEW_SHARE);
 
-    const task =
-      (reviewFirst
-        ? this.recallTask(view, due.review, "review", this.recent)
-        : null) ?? (lesson === null ? null : this.newTask(lesson, memory));
+    // New material that no longer fits leaves the rest of the time to reviews.
+    const [first, second] = reviewFirst ? [review, fresh] : [fresh, review];
 
-    if (task !== null || story === null) {
+    return (
+      this.fit(first(), spare) ??
+      this.fit(second(), spare) ??
+      this.fit(story, spare)
+    );
+  }
+
+  /** The next new material of the lesson. A group that is too big for the spare time is cut down to what fits. */
+  private newTask(lesson: Lesson, memory: Memory, spare: number): Task | null {
+    const task = newMaterial(nextNewItems(lesson, memory), memory);
+
+    if (task?.type !== "intro") {
       return task;
     }
 
-    return this.offer(story);
-  }
+    const [first] = task.items;
 
-  private newTask(lesson: Lesson, memory: Memory): Task | null {
-    const task = newMaterial(nextNewItems(lesson, memory), memory);
+    const one =
+      first === undefined ? 0 : this.costOf({ ...task, items: [first] });
 
-    if (task?.type === "pattern") {
-      // A sentence the pattern was practised with does not come back as a review the same day.
-      for (const sentence of task.practice) {
-        this.usedSentences.add(sentence.id);
-      }
-    }
+    const room = one > 0 ? Math.floor(spare / one) : task.items.length;
 
-    return task;
+    // With no room for a single item the whole group is returned, and found not to fit.
+    return room >= 1 && room < task.items.length
+      ? { ...task, items: task.items.slice(0, room) }
+      : task;
   }
 
   /** A recall of some of the given items: a sentence that covers several, or a card for one. */
@@ -326,27 +518,43 @@ export class Session {
     });
 
     if (pick?.type === "sentence") {
-      this.usedSentences.add(pick.sentence.id);
-
       return { covers: pick.covers, sentence: pick.sentence, type: "sentence" };
     }
 
     return pick === null ? null : { item: pick.item, reason, type: "card" };
   }
 
-  /** Nothing else to do: bring back items that are still being learned, even if it is a little early. */
-  private earlyTask(view: SessionView, now: number): Task | null {
-    const soon = [...view.memory.values()]
-      .filter((m) => isLearning(m) && dueTime(m) - now < EARLY_MS)
-      .toSorted(byDue);
+  /**
+   * Nothing else to do: bring back items that are still being learned and have waited long
+   * enough for a pass to count, even if they are not due yet.
+   */
+  private waitedTask(
+    view: SessionView,
+    learning: readonly Mem[],
+    now: number
+  ): Task | null {
+    const waited = learning.filter((m) => hasWaited(m, now));
 
-    return this.recallTask(view, soon, "learning", this.recent.slice(0, 1));
+    return this.recallTask(view, waited, "learning", this.recent.slice(0, 1));
   }
 
-  private offer(story: Story): Task {
-    this.storyOffered = true;
+  /**
+   * The session is closing: every item gets the recall it is owed, the one that has waited
+   * longest first, and each item once. A recall that comes too early to count is still practice.
+   * What is owed is judged at the moment the session was to end, which is the moment the time
+   * was reserved for. Judged again after every recall, items would keep joining as time passes.
+   * Null when every item had its recall, or nothing can recall the ones left.
+   */
+  private closingTask(view: SessionView, endAt: number): Task | null {
+    const owed = [...view.memory.values()]
+      .filter((m) => isOwed(m, endAt) && !this.closed.has(m.id))
+      .toSorted(byDue);
 
-    return { story, type: "story" };
+    return (
+      this.recallTask(view, owed, "learning", this.recent.slice(0, 1)) ??
+      // The only item left was taught a moment ago: a recall straight away is better than none.
+      (this.justTaught ? this.recallTask(view, owed, "learning", []) : null)
+    );
   }
 
   /** Favours the sound contrasts the learner gets wrong most often. */

@@ -36,7 +36,8 @@ const steps = (world: World, learner: Learner): Step[] => [
   },
   async () => {
     // Same moment as the review before it: the clock is no help in telling the two apart.
-    await learner.applyReviews([{ grade: "good", id: "w:bil" }]);
+    // A second miss, because a pass that comes this soon is practice and is not recorded.
+    await learner.applyReviews([{ grade: "again", id: "w:bil" }]);
   },
   async () => {
     await learner.updateSettings({ minutes: 20 });

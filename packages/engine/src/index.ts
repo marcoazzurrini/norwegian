@@ -11,6 +11,7 @@
 export {
   applyReview,
   createScheduler,
+  hasWaited,
   introduce,
   isDue,
   isStable,
@@ -32,6 +33,7 @@ export {
   nextStory,
   pickRecall,
   pickReview,
+  planRecalls,
   storyReady,
 } from "./select";
 
@@ -42,6 +44,7 @@ export type {
   LessonState,
   Memory,
   PickLimits,
+  RecallPlan,
   ReviewPick,
   SentenceSeen,
 } from "./select";
@@ -50,6 +53,11 @@ export type {
 export { gradeCard, gradeSentence } from "./grade";
 
 export type { CardGrade, SentenceGrade, TypedWord } from "./grade";
+
+// Pace: how long the learner takes for each kind of work.
+export { typicalMs, withTime } from "./pace";
+
+export type { Pace, PaceKind } from "./pace";
 
 // A study session: one task after another until the time is up.
 export { Session, blockOf } from "./session";

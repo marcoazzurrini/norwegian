@@ -415,6 +415,8 @@ describe("when to sync", () => {
 
     await learner.teach(["w:hus"]);
     await learner.addStudyTime(MINUTE);
+    // A new word waits five minutes; a pass that comes sooner is practice and is not recorded.
+    world.clock.now += 5 * MINUTE;
     await learner.applyReviews([{ grade: "good", id: "w:hus" }]);
 
     expect(world.server.syncs()).toHaveLength(before);
@@ -530,6 +532,7 @@ describe("without a connection", () => {
       linked: true,
     });
 
+    world.clock.now += 5 * MINUTE;
     await second.applyReviews([{ grade: "good", id: "w:hus" }]);
 
     expect(await logOf(second)).toHaveLength(2);

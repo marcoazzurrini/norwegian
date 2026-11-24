@@ -309,24 +309,26 @@ export const pickReview = (
   limits: PickLimits
 ): ReviewPick | null => pickRecall(mem, dueItems(mem, now).review, limits);
 
-export interface Compression {
-  /** Items due for review now. */
-  due: number;
-  /** Reviews it would take to clear them. */
-  tasks: number;
+export interface RecallPlan {
+  /** Sentences that each recall one or more of the items. */
+  sentences: number;
+  /** Cards for the items no sentence recalls. */
+  cards: number;
 }
 
-/** How many sentence reviews would clear everything that is due now. Used for the Today screen. */
-export const compression = (
+/**
+ * How many recalls it takes to recall each of the given items once, chosen the way `pickRecall`
+ * chooses them one after another. An item that nothing can recall is left out.
+ */
+export const planRecalls = (
   mem: Memory,
-  now: number,
-  seen: SentenceSeen
-): Compression => {
-  const due = dueItems(mem, now).review;
-  const carried = new Set(due.filter((m) => usesCarrier(m)).map((m) => m.id));
-  const left = new Set(due.map((m) => m.id));
-  const used = new Set<string>();
-  let tasks = 0;
+  mems: readonly Mem[],
+  { seen, skipSentences }: PickLimits
+): RecallPlan => {
+  const carried = new Set(mems.flatMap((m) => (usesCarrier(m) ? [m.id] : [])));
+  const left = new Set(mems.map((m) => m.id));
+  const used = new Set(skipSentences);
+  const plan = { cards: 0, sentences: 0 };
 
   while (left.size > 0) {
     const wanted = new Set([...left].filter((id) => carried.has(id)));
@@ -340,18 +342,38 @@ export const compression = (
       }
 
       left.delete(next);
+      plan.cards += 1;
     } else {
       used.add(best.sentence.id);
 
       for (const id of best.covers) {
         left.delete(id);
       }
-    }
 
-    tasks += 1;
+      plan.sentences += 1;
+    }
   }
 
-  return { due: due.length, tasks };
+  return plan;
+};
+
+export interface Compression {
+  /** Items due for review now. */
+  due: number;
+  /** Reviews it would take to clear them. */
+  tasks: number;
+}
+
+/** How many reviews would clear everything that is due now. Used for the Today screen. */
+export const compression = (
+  mem: Memory,
+  now: number,
+  seen: SentenceSeen
+): Compression => {
+  const due = dueItems(mem, now).review;
+  const plan = planRecalls(mem, due, { seen, skipSentences: new Set() });
+
+  return { due: due.length, tasks: plan.cards + plan.sentences };
 };
 
 /** Sentences that practise a pattern and use only taught words, shortest first. */

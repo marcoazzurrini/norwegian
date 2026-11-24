@@ -23,10 +23,11 @@ test("the time left is rounded up to whole minutes", () => {
 });
 
 test("a session that ran out of time says so", () => {
+  // The session ended a few seconds early: it had recalled what it owed, and nothing else fitted.
   const summary = summaryOf({
-    budgetMs: 5 * MINUTE,
-    elapsedMs: 5 * MINUTE,
+    elapsedMs: 5 * MINUTE - 20_000,
     stats: { reviewed: 7, right: 3, taught: 0, wrong: 1 },
+    timeUp: true,
   });
 
   expect(summary.closing).toBe("Finished. Your time is up.");
@@ -42,9 +43,9 @@ test("a session that ran out of time says so", () => {
 
 test("a short session with nothing answered still counts one minute", () => {
   const summary = summaryOf({
-    budgetMs: 5 * MINUTE,
     elapsedMs: 10_000,
     stats: { ...stats, taught: 3 },
+    timeUp: false,
   });
 
   expect(summary.closing).toBe("Finished. Nothing more is due right now.");

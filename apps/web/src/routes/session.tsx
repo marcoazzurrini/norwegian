@@ -219,11 +219,12 @@ const SessionPage = () => {
       key={run.count}
       task={task}
       frame={{
-        block,
+        // The end of a session: what was taught or missed in it comes back once more.
+        block: session.closing ? "recall" : block,
         label: `${minutesLeft(session)} min left`,
         onClose,
         progress: session.progress,
-        title: BLOCK_TITLE[block],
+        title: session.closing ? "Recall again" : BLOCK_TITLE[block],
       }}
       onDone={onDone}
     />

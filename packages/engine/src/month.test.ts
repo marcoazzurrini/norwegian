@@ -41,26 +41,46 @@ describe("a month of daily study", () => {
     );
   });
 
-  test("a session stays within its time budget", () => {
-    // No task starts once the time is used up, so a session runs over by one task at most.
+  test("a session ends within a minute of its time budget", () => {
+    // Once the time is used up, a session only gives the recalls it owes.
     expect(
-      run.tasks.filter((t) => t.elapsedBefore >= month.minutes * MINUTE)
+      run.tasks.filter(
+        (t) => t.elapsedBefore >= month.minutes * MINUTE && !t.closing
+      )
     ).toEqual([]);
 
     for (const d of run.days) {
-      expect(d.elapsedMs).toBeLessThan(d.budgetMs + MAX_TASK_MS);
+      expect(d.elapsedMs).toBeLessThan(d.budgetMs + MINUTE);
       expect(d.budgetMs).toBe(month.minutes * MINUTE);
     }
 
     expect(run.tasks.every((t) => t.ms > 0 && t.ms <= MAX_TASK_MS)).toBe(true);
   });
 
-  test("while there is new material, a session uses all of its time", () => {
+  test("while there is new material, a session uses its time", () => {
     const total = run.days.at(-1)?.learned ?? 0;
     const busy = run.days.filter((d) => d.learned < total);
 
     expect(busy.length).toBeGreaterThan(10);
-    expect(busy.filter((d) => d.elapsedMs < d.budgetMs)).toEqual([]);
+    expect(busy.filter((d) => !d.timeUp)).toEqual([]);
+    expect(busy.filter((d) => d.elapsedMs < d.budgetMs - MINUTE)).toEqual([]);
+  });
+
+  test("a session closes with recalls of what is still being learned, each item once", () => {
+    for (const d of run.days) {
+      const tasks = run.tasks.filter((t) => t.day === d.day);
+      const closing = tasks.filter((t) => t.closing);
+      const owed = closing.map((t) => t.subject);
+
+      // Once a session closes, it does nothing else.
+      expect(tasks.slice(tasks.length - closing.length)).toEqual(closing);
+      expect(
+        closing.filter((t) => t.type !== "card" && t.type !== "sentence")
+      ).toEqual([]);
+      expect(new Set(owed).size).toBe(owed.length);
+    }
+
+    expect(run.tasks.some((t) => t.closing)).toBe(true);
   });
 
   test("no lesson is taught before the lessons it needs are finished", () => {
@@ -180,6 +200,37 @@ describe("a month of daily study", () => {
     expect(again).toBe(first);
     expect(other).not.toBe(first);
   });
+});
+
+// A pattern is practised in sentences when it is taught, and it comes back in another sentence,
+// which the lesson often cannot offer before its words are taught.
+const isPattern = (id: string): boolean => id.startsWith("p:");
+
+describe("every word and phrase taught in a session is recalled again before the session ends", () => {
+  for (const minutes of [5, 15, 25, 40]) {
+    test(`in a session of ${minutes} minutes`, async () => {
+      const days = await simulate({ ...month, days: 10, minutes });
+
+      const notRecalled = days.tasks.flatMap((task, i) =>
+        task.taught
+          .filter(
+            (id) =>
+              !isPattern(id) &&
+              !days.tasks
+                .slice(i + 1)
+                .some((t) => t.day === task.day && t.answered.includes(id))
+          )
+          .map((id) => `day ${task.day}: ${id}`)
+      );
+
+      expect(days.tasks.flatMap((t) => t.taught).length).toBeGreaterThan(30);
+      expect(notRecalled).toEqual([]);
+
+      for (const d of days.days) {
+        expect(d.elapsedMs).toBeLessThan(d.budgetMs + 1.5 * MINUTE);
+      }
+    });
+  }
 });
 
 describe("coming back after two weeks away", () => {

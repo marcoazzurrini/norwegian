@@ -50,7 +50,23 @@ export const CARRIER_MIN_DAYS = 3;
 /** A second pass inside a sentence within this time adds no new evidence. */
 const SAME_DAY_MS = 12 * 3_600_000;
 
+/**
+ * An item that is still being learned waits a few minutes between recalls, so that it has left
+ * the mind before it is recalled again. A pass counts once this share of the wait is over.
+ * Memory has no sharp line here: the share is a judgement, not a measurement.
+ */
+const EARLY_SHARE = 0.5;
+
 const DAY = 86_400_000;
+
+/**
+ * The waits of an item that is new. The first successful recall, when the item is taught,
+ * takes the item past the first wait.
+ */
+const LEARNING_STEPS = ["1m", "5m", "15m"] as const;
+
+/** How many recalls a new item needs after it was taught, before it is scheduled in days. */
+export const RECALLS_AFTER_TEACHING = LEARNING_STEPS.length - 1;
 
 // Saved cards can hold dates as text (a backup file, an older version), so every read goes through Date.
 const time = (date: Date): number => new Date(date).getTime();
@@ -64,7 +80,7 @@ export const createScheduler = async (
     desiredRetention,
     enableFuzz: false,
     enableShortTerm: true,
-    learningSteps: ["1m", "5m", "15m"],
+    learningSteps: [...LEARNING_STEPS],
     relearningSteps: ["5m"],
     version: "FSRS-6",
   });
@@ -163,9 +179,34 @@ export const review = (
   return { ...m, card };
 };
 
+/** When the item was last recalled, or first learned. */
+const lastRecall = (m: Mem): number =>
+  m.card.lastReviewAt === null ? m.introducedAt : time(m.card.lastReviewAt);
+
 /**
- * Applies one recorded answer, or returns null when it adds no evidence and must not be recorded:
- * a second pass inside a sentence on the same day.
+ * True if a pass now would count: the item has waited long enough since its last recall.
+ * Only an item that is still being learned can be too early. There is no upper limit:
+ * a recall that comes late always counts.
+ */
+export const hasWaited = (m: Mem, now: number): boolean => {
+  const last = lastRecall(m);
+
+  return !isLearning(m) || now - last >= EARLY_SHARE * (dueTime(m) - last);
+};
+
+/**
+ * True if the item was taught or missed and has not been recalled right since.
+ * Teaching is the item's first review; a miss sends an item back to the first of its waits.
+ */
+export const isFresh = (m: Mem): boolean =>
+  isLearning(m) && (m.card.reps === 1 || m.card.learningStep === 0);
+
+/**
+ * Applies one recorded answer, or returns null when it adds no evidence and must not be recorded.
+ * That is a pass that comes too soon after the last recall, when the item was still in mind:
+ * a pass of an item that is still being learned before it has waited long enough, on its card
+ * or inside a sentence, and a second pass inside a sentence on the same day for any other item.
+ * Such a pass is practice. A miss always counts.
  */
 export const applyReview = (
   s: Scheduler,
@@ -175,16 +216,11 @@ export const applyReview = (
 ): Mem | null => {
   const carrier = input.carrier === true;
 
-  const last = m.card.lastReviewAt === null ? 0 : time(m.card.lastReviewAt);
+  const tooSoon = isLearning(m)
+    ? !hasWaited(m, now)
+    : carrier && now - lastRecall(m) < SAME_DAY_MS;
 
-  if (
-    carrier &&
-    input.grade === "good" &&
-    m.card.scheduleStatus === "review" &&
-    now - last < SAME_DAY_MS
-  ) {
-    return null;
-  }
-
-  return review(s, m, input.grade, now, carrier);
+  return input.grade === "good" && tooSoon
+    ? null
+    : review(s, m, input.grade, now, carrier);
 };

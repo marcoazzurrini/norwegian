@@ -11,6 +11,7 @@ import type { Sentence } from "@norsk/content";
 
 import {
   Session,
+  applyReview,
   compression,
   createScheduler,
   dueItems,
@@ -197,6 +198,44 @@ describe("memory", () => {
     );
   });
 
+  test("a pass that comes too soon after the last recall is practice, on a card or inside a sentence", async () => {
+    const s = await createScheduler(0.9);
+    const id = "w:hus:noun";
+    // A new item waits five minutes for its next recall.
+    const m = introduce(s, id, T0);
+    const pass = { grade: "good", id } as const;
+
+    expect(applyReview(s, m, pass, T0 + 40_000)).toBeNull();
+    expect(
+      applyReview(s, m, { ...pass, carrier: true }, T0 + 80_000)
+    ).toBeNull();
+
+    // Half of the wait is enough, and there is no upper limit.
+    const counted = applyReview(s, m, { ...pass, carrier: true }, T0 + 150_000);
+    const late = applyReview(s, m, pass, T0 + 3 * DAY);
+
+    expect(counted?.card.learningStep).toBe(m.card.learningStep + 1);
+    expect(late?.card.learningStep).toBe(m.card.learningStep + 1);
+
+    // The next wait is fifteen minutes: seven are too few, eight are enough.
+    const second = counted ?? m;
+    const from = T0 + 150_000;
+
+    expect(applyReview(s, second, pass, from + 7 * 60_000)).toBeNull();
+    expect(
+      applyReview(s, second, pass, from + 8 * 60_000)?.card.scheduleStatus
+    ).toBe("review");
+  });
+
+  test("a miss always counts, however soon it comes", async () => {
+    const s = await createScheduler(0.9);
+    const m = introduce(s, "w:hus:noun", T0);
+
+    const missed = applyReview(s, m, { grade: "again", id: m.id }, T0 + 10_000);
+
+    expect(missed?.card.learningStep).toBe(0);
+  });
+
   test("an item counts a little from its first recall, more with every pass, and in full once it is stable", async () => {
     const s = await createScheduler(0.9);
     let m = introduce(s, "w:hus:noun", T0);
@@ -338,6 +377,68 @@ const answered = (right: number, wrong: number) => ({
   wrong,
 });
 
+/**
+ * Plays a session of five minutes to its end, of which the given time is already used.
+ * Returns the words it taught and the words it asked on a card, in order.
+ */
+const playToEnd = (usedMs: number) => {
+  const mem = new Map<string, Mem>();
+  const session = new Session(5, () => 0.3);
+  const taughtIds: string[] = [];
+  const asked: string[] = [];
+  let now = T0;
+
+  session.record(usedMs, "review");
+
+  for (
+    let task = session.next(view(mem), now);
+    task.type !== "done";
+    task = session.next(view(mem), now)
+  ) {
+    if (task.type === "intro") {
+      // Ten seconds for each new word.
+      const ids = task.items.map((it) => it.id);
+      const ms = ids.length * 10_000;
+      now += ms;
+
+      for (const id of ids) {
+        mem.set(id, introduce(scheduler, id, now));
+      }
+
+      taughtIds.push(...ids);
+
+      session.complete(
+        task,
+        { itemIds: ids, right: ids.length, taught: ids.length, wrong: 0 },
+        ms
+      );
+    } else if (task.type === "card") {
+      const { id } = task.item;
+      const before = mem.get(id);
+      now += 7000;
+
+      const after =
+        before === undefined
+          ? null
+          : applyReview(scheduler, before, { grade: "good", id }, now);
+
+      // Every recall comes seconds after the word was taught: it is practice, and nothing is recorded.
+      expect(after).toBeNull();
+      asked.push(id);
+
+      session.complete(
+        task,
+        { itemIds: [id], right: 1, taught: 0, wrong: 0 },
+        7000
+      );
+    } else {
+      throw new Error(`Unexpected task of type ${task.type}`);
+    }
+  }
+
+  return { asked, session, taught: taughtIds };
+};
+
 describe("a session", () => {
   test("a short first session starts teaching straight away", () => {
     const session = new Session(5, () => 0.3);
@@ -381,7 +482,8 @@ describe("a session", () => {
     const first = session.next(view(mem), now);
 
     // Reviews have had their share of the session, but four answers of six were wrong.
-    session.complete(first, answered(2, 4), 3.5 * 60_000);
+    session.record(3 * 60_000, "review");
+    session.complete(first, answered(2, 4), 20_000);
     expect(["card", "sentence"]).toContain(session.next(view(mem), now).type);
 
     // Ten recalls that go well push the bad ones out of the count.
@@ -390,6 +492,51 @@ describe("a session", () => {
     }
 
     expect(["intro", "pattern"]).toContain(session.next(view(mem), now).type);
+  });
+
+  test("words taught in the last minute are still recalled before the session ends, each once", () => {
+    const { asked, session, taught: taughtIds } = playToEnd(4 * 60_000);
+
+    expect(taughtIds).toHaveLength(2);
+    expect(asked).toEqual(taughtIds);
+    expect(session.closing).toBe(true);
+    expect(session.timeUp).toBe(true);
+  });
+
+  test("a single word taught last is recalled straight away, which is better than not at all", () => {
+    const { asked, taught: taughtIds } = playToEnd(4.4 * 60_000);
+
+    expect(taughtIds).toHaveLength(1);
+    expect(asked).toEqual(taughtIds);
+  });
+
+  test("new words are not started when there is no time left to recall them", () => {
+    const mem = new Map<string, Mem>();
+    const early = new Session(5, () => 0.3);
+    const late = new Session(5, () => 0.3);
+
+    // One new word takes the time to teach it and the time of its recalls: about half a minute.
+    early.record(4 * 60_000, "review");
+    late.record(4.7 * 60_000, "review");
+
+    const task = early.next(view(mem), T0);
+
+    // A minute is left: enough for one or two words of the group of three.
+    expect(task.type === "intro" && task.items.length).toBeLessThan(3);
+    expect(late.next(view(mem), T0).type).toBe("done");
+    expect(late.timeUp).toBe(true);
+  });
+
+  test("a session with nothing left to do ends without its time being up", async () => {
+    const all = await taught(
+      lessons.map((l) => l.index),
+      T0
+    );
+
+    const session = new Session(5, () => 0.3);
+
+    expect(session.next(view(all), T0 + 3 * DAY).type).toBe("done");
+    expect(session.timeUp).toBe(false);
   });
 
   test("a pattern that was missed comes back inside a sentence, and in another one after that", async () => {

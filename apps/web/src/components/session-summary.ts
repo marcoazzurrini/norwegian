@@ -34,18 +34,18 @@ export interface SessionSummary {
 }
 
 export const summaryOf = ({
-  budgetMs,
   elapsedMs,
   stats,
-}: Pick<Session, "budgetMs" | "elapsedMs" | "stats">): SessionSummary => {
+  timeUp,
+}: Pick<Session, "elapsedMs" | "stats" | "timeUp">): SessionSummary => {
   const answered = stats.right + stats.wrong;
   const spent = Math.max(1, Math.round(elapsedMs / MS_PER_MINUTE));
 
   return {
-    closing:
-      elapsedMs >= budgetMs
-        ? "Finished. Your time is up."
-        : "Finished. Nothing more is due right now.",
+    // A session ends a little before or after its time, once it has recalled what it taught.
+    closing: timeUp
+      ? "Finished. Your time is up."
+      : "Finished. Nothing more is due right now.",
     spent,
     taughtNew: stats.taught > 0,
     tiles: [
