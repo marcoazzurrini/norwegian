@@ -195,9 +195,14 @@ export const dueItems = (mem: Memory, now: number): Due => {
 
 const isPattern = (id: string): boolean => item(id).kind === "pattern";
 
-/** An item is reviewed inside sentences once it is past its first days. Patterns can only be reviewed that way. */
+/**
+ * How an item is recalled depends on what it is, never on how urgent it is.
+ * A pattern has no card, so it is always recalled inside a sentence. A word or a phrase is
+ * recalled alone on its card in its first days and while it is learned again after a miss,
+ * and inside sentences after that.
+ */
 const usesCarrier = (m: Mem): boolean =>
-  isPattern(m.id) || m.card.stability >= CARRIER_MIN_DAYS;
+  isPattern(m.id) || (!isLearning(m) && m.card.stability >= CARRIER_MIN_DAYS);
 
 export type ReviewPick =
   | { type: "sentence"; sentence: Sentence; covers: string[] }
@@ -273,26 +278,36 @@ const bestCover = (
 };
 
 /**
- * Picks the next review. Prefers the sentence that clears the most due items;
- * falls back to a single card for an item no sentence can cover.
+ * Picks a recall for the given items, which the caller wants recalled now.
+ * Prefers the sentence that clears the most of them; falls back to a single card
+ * for an item no sentence can cover. Null when nothing can recall any of them.
  */
-export const pickReview = (
+export const pickRecall = (
   mem: Memory,
-  now: number,
+  mems: readonly Mem[],
   { seen, skipItems = new Set(), skipSentences }: PickLimits
 ): ReviewPick | null => {
-  const due = dueItems(mem, now).review.filter((m) => !skipItems.has(m.id));
-  const wanted = new Set(due.filter((m) => usesCarrier(m)).map((m) => m.id));
+  const open = mems.filter((m) => !skipItems.has(m.id));
+
+  const wanted = new Set(open.flatMap((m) => (usesCarrier(m) ? [m.id] : [])));
+
   const best = bestCover(mem, wanted, skipSentences, seen);
 
   if (best !== null) {
     return { covers: best.covers, sentence: best.sentence, type: "sentence" };
   }
 
-  const single = due.find((m) => !isPattern(m.id));
+  const single = open.find((m) => !isPattern(m.id));
 
   return single === undefined ? null : { item: item(single.id), type: "card" };
 };
+
+/** Picks the next review among the items whose scheduled review has arrived. */
+export const pickReview = (
+  mem: Memory,
+  now: number,
+  limits: PickLimits
+): ReviewPick | null => pickRecall(mem, dueItems(mem, now).review, limits);
 
 export interface Compression {
   /** Items due for review now. */

@@ -1,17 +1,20 @@
 // A study session: decides, one task at a time, what to do with the minutes the learner chose.
 // Order of priority (docs/spec.md, section 3): sounds, items still being learned,
 // due reviews, new material, then a story.
-import { item, sounds } from "@norsk/content";
-import type { Item, Sentence, SoundPair, Story } from "@norsk/content";
+// What is recalled is decided here; how an item is recalled (alone on a card or inside
+// a sentence) is decided by the picker in select.ts, the same way for every priority.
+import { sounds } from "@norsk/content";
+import type { Item, Lesson, Sentence, SoundPair, Story } from "@norsk/content";
 
 import { dueTime, isLearning } from "./memory";
+import type { Mem } from "./memory";
 import {
   byDue,
   dueItems,
   nextLesson,
   nextNewItems,
   nextStory,
-  pickReview,
+  pickRecall,
   practiceFor,
 } from "./select";
 import type { Due, Memory, SentenceSeen } from "./select";
@@ -104,8 +107,6 @@ const soundsFor = (minutes: number): number => {
 
   return minutes >= MIN_MINUTES_FOR_EXTRAS ? 6 : 0;
 };
-
-const isPattern = (id: string): boolean => item(id).kind === "pattern";
 
 export const blockOf = (task: Task): Block => {
   if (task.type === "sound") {
@@ -215,11 +216,11 @@ export class Session {
     const due = dueItems(view.memory, now);
 
     return (
-      this.learningCard(due) ??
-      this.plannedTask(view, due, now, this.isStruggling()) ??
-      this.earlyCard(view.memory, now) ??
+      this.learningTask(view, due) ??
+      this.plannedTask(view, due, this.isStruggling()) ??
+      this.earlyTask(view, now) ??
       // Nothing else is left to do: new material is better than ending the session early.
-      this.plannedTask(view, due, now, false) ?? { type: "done" }
+      this.plannedTask(view, due, false) ?? { type: "done" }
     );
   }
 
@@ -252,22 +253,18 @@ export class Session {
     };
   }
 
-  /** Items in their first minutes come back as soon as they are due, but not twice in a row. */
-  private learningCard(due: Due): Task | null {
-    const learning = due.learning.find(
-      (m) => !this.recent.includes(m.id) && !isPattern(m.id)
-    );
-
-    return learning === undefined
-      ? null
-      : { item: item(learning.id), reason: "learning", type: "card" };
+  /**
+   * Items in their first minutes, or learned again after a miss, come back as soon as they are due,
+   * but not straight after the learner worked on them.
+   */
+  private learningTask(view: SessionView, due: Due): Task | null {
+    return this.recallTask(view, due.learning, "learning", this.recent);
   }
 
   /** Reviews, new material and the story, in the order the time budget allows. */
   private plannedTask(
     view: SessionView,
     due: Due,
-    now: number,
     holdNew: boolean
   ): Task | null {
     const { memory } = view;
@@ -291,10 +288,9 @@ export class Session {
       (lesson === null || this.reviewMs < this.budgetMs * REVIEW_SHARE);
 
     const task =
-      (reviewFirst ? this.reviewTask(view, now) : null) ??
-      (lesson === null
-        ? null
-        : newMaterial(nextNewItems(lesson, memory), memory));
+      (reviewFirst
+        ? this.recallTask(view, due.review, "review", this.recent)
+        : null) ?? (lesson === null ? null : this.newTask(lesson, memory));
 
     if (task !== null || story === null) {
       return task;
@@ -303,10 +299,29 @@ export class Session {
     return this.offer(story);
   }
 
-  private reviewTask(view: SessionView, now: number): Task | null {
-    const pick = pickReview(view.memory, now, {
+  private newTask(lesson: Lesson, memory: Memory): Task | null {
+    const task = newMaterial(nextNewItems(lesson, memory), memory);
+
+    if (task?.type === "pattern") {
+      // A sentence the pattern was practised with does not come back as a review the same day.
+      for (const sentence of task.practice) {
+        this.usedSentences.add(sentence.id);
+      }
+    }
+
+    return task;
+  }
+
+  /** A recall of some of the given items: a sentence that covers several, or a card for one. */
+  private recallTask(
+    view: SessionView,
+    mems: readonly Mem[],
+    reason: "learning" | "review",
+    skipItems: readonly string[]
+  ): Task | null {
+    const pick = pickRecall(view.memory, mems, {
       seen: view.sentenceSeen,
-      skipItems: new Set(this.recent),
+      skipItems: new Set(skipItems),
       skipSentences: this.usedSentences,
     });
 
@@ -316,22 +331,16 @@ export class Session {
       return { covers: pick.covers, sentence: pick.sentence, type: "sentence" };
     }
 
-    return pick === null
-      ? null
-      : { item: pick.item, reason: "review", type: "card" };
+    return pick === null ? null : { item: pick.item, reason, type: "card" };
   }
 
-  /** Nothing else to do: bring back an item that is still being learned, even if it is a little early. */
-  private earlyCard(memory: Memory, now: number): Task | null {
-    const [last] = this.recent;
-
-    const [waiting] = [...memory.values()]
-      .filter((m) => isLearning(m) && !isPattern(m.id) && m.id !== last)
+  /** Nothing else to do: bring back items that are still being learned, even if it is a little early. */
+  private earlyTask(view: SessionView, now: number): Task | null {
+    const soon = [...view.memory.values()]
+      .filter((m) => isLearning(m) && dueTime(m) - now < EARLY_MS)
       .toSorted(byDue);
 
-    return waiting !== undefined && dueTime(waiting) - now < EARLY_MS
-      ? { item: item(waiting.id), reason: "learning", type: "card" }
-      : null;
+    return this.recallTask(view, soon, "learning", this.recent.slice(0, 1));
   }
 
   private offer(story: Story): Task {

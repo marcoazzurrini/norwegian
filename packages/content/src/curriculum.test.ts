@@ -150,6 +150,26 @@ describe("the committed curriculum", () => {
     expect(bad).toEqual([]);
   });
 
+  test("gives every pattern two sentences to come back in once its lesson is done", () => {
+    // A pattern has no card: it is recalled inside sentences only. A pattern that was missed
+    // comes back in another sentence than the one it was missed in, so it needs two at least.
+    const short = allItems
+      .filter((it) => it.kind === "pattern")
+      .flatMap((it) => {
+        const taught = new Set(
+          lessons.slice(0, it.lesson + 1).flatMap((l) => l.items)
+        );
+
+        const usable = sentencesWith(it.id).filter((s) =>
+          sentenceReady(s, taught)
+        );
+
+        return usable.length < 2 ? [`${it.id}: ${usable.length}`] : [];
+      });
+
+    expect(short).toEqual([]);
+  });
+
   test("uses only known items and units in sentences", () => {
     const bad = sentences.flatMap((s) => [
       ...s.tokens.flatMap((token) => tokenProblems(token, s.id)),

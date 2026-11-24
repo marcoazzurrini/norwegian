@@ -30,6 +30,7 @@ export {
   nextLesson,
   nextNewItems,
   nextStory,
+  pickRecall,
   pickReview,
   storyReady,
 } from "./select";

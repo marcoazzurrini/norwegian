@@ -317,6 +317,19 @@ describe("choosing what to do", () => {
   });
 });
 
+const scheduler = await createScheduler(0.9);
+
+/** The memory with one item missed at the given time, inside a sentence. */
+const withMiss = (mem: Map<string, Mem>, id: string, at: number): void => {
+  const before = mem.get(id);
+
+  if (before === undefined) {
+    throw new Error(`"${id}" was not taught`);
+  }
+
+  mem.set(id, review(scheduler, before, "again", at, true));
+};
+
 /** What a review task reports: how many first tries were right and wrong. */
 const answered = (right: number, wrong: number) => ({
   itemIds: [],
@@ -378,9 +391,56 @@ describe("a session", () => {
 
     expect(["intro", "pattern"]).toContain(session.next(view(mem), now).type);
   });
-});
 
-const scheduler = await createScheduler(0.9);
+  test("a pattern that was missed comes back inside a sentence, and in another one after that", async () => {
+    const mem = await taught([0, 1, 2, 3], T0);
+    const missedAt = T0 + 4 * DAY;
+    const session = new Session(5, () => 0.3);
+
+    // Nothing is due four days after the lessons, so the session would teach.
+    expect(session.next(view(mem), missedAt).type).toBe("intro");
+
+    withMiss(mem, "p:neg", missedAt);
+
+    const dueAt = missedAt + 5 * 60_000;
+    const first = session.next(view(mem), dueAt);
+    const second = session.next(view(mem), dueAt);
+
+    expect(first).toMatchObject({ covers: ["p:neg"], type: "sentence" });
+    expect(second).toMatchObject({ covers: ["p:neg"], type: "sentence" });
+
+    if (first.type === "sentence" && second.type === "sentence") {
+      expect(second.sentence.id).not.toBe(first.sentence.id);
+    }
+  });
+
+  test("a word that was missed comes back alone on its card, however well it was known", async () => {
+    const mem = await taught([0, 1, 2, 3], T0);
+    const missedAt = T0 + 4 * DAY;
+
+    withMiss(mem, "w:ikke:adv", missedAt);
+
+    const missed = mem.get("w:ikke:adv");
+
+    if (missed === undefined) {
+      throw new Error("The word is gone");
+    }
+
+    // Old enough for sentences by its stability, but it is being learned again.
+    mem.set("w:ikke:adv", {
+      ...missed,
+      card: { ...missed.card, stability: 10 },
+    });
+
+    expect(
+      new Session(5, () => 0.3).next(view(mem), missedAt + 5 * 60_000)
+    ).toMatchObject({
+      item: { id: "w:ikke:adv" },
+      reason: "learning",
+      type: "card",
+    });
+  });
+});
 
 /** The groups a lesson is taught in, for a learner who knows nothing else. */
 const taughtBy = (index: number): string[][] => {

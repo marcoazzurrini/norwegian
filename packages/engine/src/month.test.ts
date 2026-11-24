@@ -109,6 +109,27 @@ describe("a month of daily study", () => {
     ).toEqual([]);
   });
 
+  test("an item that waits to be learned again is recalled in the next session", () => {
+    const waiting = run.days.flatMap((d) => d.learningDue);
+
+    const forgotten = run.days.flatMap((d) => {
+      const recalled = new Set(
+        run.tasks
+          .filter((t) => t.day === d.day)
+          .flatMap((t) => t.result.itemIds)
+      );
+
+      return d.learningDue
+        .filter((id) => !recalled.has(id))
+        .map((id) => `day ${d.day}: ${id}`);
+    });
+
+    // Words wait on their cards and patterns inside sentences: both kinds must come back.
+    expect(waiting.some((id) => id.startsWith("p:"))).toBe(true);
+    expect(waiting.some((id) => id.startsWith("w:"))).toBe(true);
+    expect(forgotten).toEqual([]);
+  });
+
   test("memory holds only real items, and no review is recorded for an item the learner does not have", () => {
     expect(run.memory.filter((m) => !isRealItem(m.id))).toEqual([]);
     expect(run.unknownReviews).toBe(0);

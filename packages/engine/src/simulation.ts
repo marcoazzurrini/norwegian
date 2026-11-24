@@ -88,6 +88,8 @@ export interface DayRecord {
   stats: SessionStats;
   /** Items in memory when the day's session ended. */
   learned: number;
+  /** Items still being learned, or learned again after a miss, that were due when the session started. */
+  learningDue: string[];
   /** Mean chance of recall over all items when the session started; null while nothing is learned. */
   recallAtStart: number | null;
 }
@@ -209,6 +211,10 @@ class Learner {
     this.now = T0 + day * DAY;
     const recallAtStart = this.averageRecall();
 
+    const learningDue = dueItems(this.memory, this.now).learning.map(
+      (m) => m.id
+    );
+
     while (count < MAX_STEPS) {
       const task = session.next(this.view(), this.now);
 
@@ -262,6 +268,7 @@ class Learner {
       day,
       elapsedMs: session.elapsedMs,
       learned: this.memory.size,
+      learningDue,
       recallAtStart,
       stats: { ...session.stats },
       tasks: count,
