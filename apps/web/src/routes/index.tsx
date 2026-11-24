@@ -214,9 +214,17 @@ const Today = () => {
         memory,
         now,
         scheduler,
+        sentenceSeen: progress.sentenceSeen,
         storiesDone: progress.storiesDone,
       }),
-    [memory, now, progress.chosenLesson, progress.storiesDone, scheduler]
+    [
+      memory,
+      now,
+      progress.chosenLesson,
+      progress.sentenceSeen,
+      progress.storiesDone,
+      scheduler,
+    ]
   );
 
   const extras = minutes >= MIN_MINUTES_FOR_EXTRAS;

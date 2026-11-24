@@ -40,7 +40,9 @@ export type {
   ItemState,
   LessonState,
   Memory,
+  PickLimits,
   ReviewPick,
+  SentenceSeen,
 } from "./select";
 
 // Grading: comparing a typed answer with the expected one.

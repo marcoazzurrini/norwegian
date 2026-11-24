@@ -54,6 +54,7 @@ test("progress to A1 counts every item seen, and counts it more the better it is
       memory: new Map(mems.map((mem) => [mem.id, mem])),
       now,
       scheduler,
+      sentenceSeen: {},
       storiesDone: [],
     });
 

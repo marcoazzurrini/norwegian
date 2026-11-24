@@ -161,12 +161,14 @@ interface Run {
 
 /** Asks the session for its next task, given what the learner knows at this moment. */
 const nextRun = (session: Session, count: number, now: number): Run => {
-  const { chosenLesson, sounds, storiesDone } = learner.progress();
+  const { chosenLesson, sentenceSeen, sounds, storiesDone } =
+    learner.progress();
 
   const task = session.next(
     {
       chosenLesson,
       memory: learner.memory(),
+      sentenceSeen,
       soundStats: sounds,
       storiesDone: new Set(storiesDone),
     },

@@ -98,6 +98,8 @@ export interface TodayInput {
   memory: Memory;
   chosenLesson: number | null;
   storiesDone: readonly string[];
+  /** When each sentence was last used as a review. */
+  sentenceSeen: Readonly<Record<string, number>>;
   now: number;
   scheduler: Scheduler;
 }
@@ -143,6 +145,7 @@ export const todayOf = ({
   memory,
   chosenLesson,
   storiesDone,
+  sentenceSeen,
   now,
   scheduler,
 }: TodayInput): TodayView => {
@@ -150,7 +153,7 @@ export const todayOf = ({
   const lesson = nextLesson(memory, chosenLesson);
   const firstId = lesson?.items.find((id) => !memory.has(id));
   const firstNew = firstId === undefined ? null : item(firstId);
-  const cover = compression(memory, now);
+  const cover = compression(memory, now, sentenceSeen);
   const due = cover.due + dueItems(memory, now).learning.length;
   const stable = all.filter((mem) => isStable(mem)).length;
   const total = Object.keys(items).length;

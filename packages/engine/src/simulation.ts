@@ -186,6 +186,7 @@ class Learner {
   readonly days: DayRecord[] = [];
   unknownReviews = 0;
   private readonly soundStats: Record<string, SoundStats> = {};
+  private readonly sentenceSeen: Record<string, number> = {};
   private readonly scheduler: Scheduler;
   private readonly options: Options;
   private readonly rng: () => number;
@@ -226,8 +227,11 @@ class Learner {
         prerequisitesDone: !isNew || this.prerequisitesDone(task),
         reviewMsBefore: reviewMs,
         reviewable:
-          pickReview(this.memory, this.now, usedSentences, new Set(recent)) !==
-          null,
+          pickReview(this.memory, this.now, {
+            seen: this.sentenceSeen,
+            skipItems: new Set(recent),
+            skipSentences: usedSentences,
+          }) !== null,
         subject: subjectOf(task),
         type: task.type,
       };
@@ -268,6 +272,7 @@ class Learner {
     return {
       chosenLesson: null,
       memory: this.memory,
+      sentenceSeen: this.sentenceSeen,
       soundStats: this.soundStats,
       storiesDone: this.storiesDone,
     };
@@ -353,9 +358,14 @@ class Learner {
           break;
         }
 
-        // Audio and the time a sentence was last seen do not change what the learner knows.
-        case "speak":
         case "sentenceSeen": {
+          this.sentenceSeen[effect.id] = effect.at;
+
+          break;
+        }
+
+        // Audio does not change what the learner knows.
+        case "speak": {
           break;
         }
 

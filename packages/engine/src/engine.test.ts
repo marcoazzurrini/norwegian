@@ -1,6 +1,12 @@
 import { describe, expect, test } from "bun:test";
 
-import { item, lessons, sentenceReady, sentences } from "@norsk/content";
+import {
+  item,
+  lessons,
+  sentenceReady,
+  sentences,
+  sentencesWith,
+} from "@norsk/content";
 import type { Sentence } from "@norsk/content";
 
 import {
@@ -19,7 +25,7 @@ import {
   review,
   strength,
 } from "./index";
-import type { Mem, SessionView } from "./index";
+import type { Mem, PickLimits, SessionView } from "./index";
 
 const DAY = 86_400_000;
 const T0 = new Date("2026-01-01T08:00:00Z").getTime();
@@ -46,9 +52,13 @@ const lessonAt = (index: number) => {
 
 const isLearning = (m: Mem): boolean => m.card.scheduleStatus !== "review";
 
+/** No sentence was used before, in this session or an earlier one. */
+const FRESH: PickLimits = { seen: {}, skipSentences: new Set() };
+
 const view = (memory: Map<string, Mem>): SessionView => ({
   chosenLesson: null,
   memory,
+  sentenceSeen: {},
   soundStats: {},
   storiesDone: new Set(),
 });
@@ -254,16 +264,56 @@ describe("choosing what to do", () => {
     const now = T0 + 40 * DAY;
     const due = dueItems(mem, now).review.length;
     expect(due).toBeGreaterThan(20);
-    const pick = pickReview(mem, now, new Set());
+    const pick = pickReview(mem, now, FRESH);
     expect(pick?.type).toBe("sentence");
 
     if (pick?.type === "sentence") {
       expect(pick.covers.length).toBeGreaterThanOrEqual(4);
     }
 
-    const c = compression(mem, now);
+    const c = compression(mem, now, {});
     expect(c.due).toBe(due);
     expect(c.tasks).toBeLessThan(due * 0.7);
+  });
+
+  test("a word with several sentences gets each of them in turn", async () => {
+    const now = T0 + 40 * DAY;
+    const taughtItems = await taught([0, 1, 2, 3, 4, 5, 6], T0);
+
+    // Only "jeg" is due, and it is old enough to be reviewed inside a sentence.
+    const mem = new Map(
+      [...taughtItems].map(([id, m]) => [
+        id,
+        id === "w:jeg:pron"
+          ? { ...m, card: { ...m.card, stability: 10 } }
+          : { ...m, card: { ...m.card, dueAt: new Date(now + DAY) } },
+      ])
+    );
+
+    const usable = sentencesWith("w:jeg:pron").filter((s) =>
+      sentenceReady(s, mem)
+    );
+
+    expect(usable.length).toBeGreaterThan(5);
+
+    const seen: Record<string, number> = {};
+    const picked: string[] = [];
+
+    // One review a day, for one day more than there are sentences.
+    for (let day = 0; day <= usable.length; day += 1) {
+      const pick = pickReview(mem, now, { seen, skipSentences: new Set() });
+
+      if (pick?.type !== "sentence") {
+        throw new Error("Expected a sentence");
+      }
+
+      picked.push(pick.sentence.id);
+      seen[pick.sentence.id] = now + day * DAY;
+    }
+
+    // Every sentence is used once before any comes back, and the first to come back is the oldest.
+    expect(new Set(picked.slice(0, -1)).size).toBe(usable.length);
+    expect(picked.at(-1)).toBe(picked[0]);
   });
 });
 

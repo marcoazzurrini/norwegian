@@ -14,7 +14,7 @@ import {
   pickReview,
   practiceFor,
 } from "./select";
-import type { Due, Memory } from "./select";
+import type { Due, Memory, SentenceSeen } from "./select";
 import type { TaskResult } from "./tasks/types";
 
 export type Task =
@@ -47,6 +47,8 @@ export interface SessionView {
   chosenLesson: number | null;
   /** Right and total answers per sound group. */
   soundStats: Readonly<Record<string, SoundStats>>;
+  /** When each sentence was last used as a review. */
+  sentenceSeen: SentenceSeen;
 }
 
 export interface SessionStats {
@@ -289,7 +291,7 @@ export class Session {
       (lesson === null || this.reviewMs < this.budgetMs * REVIEW_SHARE);
 
     const task =
-      (reviewFirst ? this.reviewTask(memory, now) : null) ??
+      (reviewFirst ? this.reviewTask(view, now) : null) ??
       (lesson === null
         ? null
         : newMaterial(nextNewItems(lesson, memory), memory));
@@ -301,13 +303,12 @@ export class Session {
     return this.offer(story);
   }
 
-  private reviewTask(memory: Memory, now: number): Task | null {
-    const pick = pickReview(
-      memory,
-      now,
-      this.usedSentences,
-      new Set(this.recent)
-    );
+  private reviewTask(view: SessionView, now: number): Task | null {
+    const pick = pickReview(view.memory, now, {
+      seen: view.sentenceSeen,
+      skipItems: new Set(this.recent),
+      skipSentences: this.usedSentences,
+    });
 
     if (pick?.type === "sentence") {
       this.usedSentences.add(pick.sentence.id);

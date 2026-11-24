@@ -203,18 +203,49 @@ export type ReviewPick =
   | { type: "sentence"; sentence: Sentence; covers: string[] }
   | { type: "card"; item: Item };
 
+/** When each sentence was last used as a review, in milliseconds. A sentence that is missing was never used. */
+export type SentenceSeen = Readonly<Record<string, number>>;
+
+/** What limits the choice of a review. */
+export interface PickLimits {
+  /** When each sentence was last used as a review. */
+  seen: SentenceSeen;
+  /** Sentences already used in this session. */
+  skipSentences: ReadonlySet<string>;
+  /** Items the learner has just worked on. */
+  skipItems?: ReadonlySet<string>;
+}
+
 interface Cover {
   sentence: Sentence;
   covers: string[];
-  score: number;
 }
 
-/** The unused sentence that scores highest among those that clear at least one wanted item. */
+/**
+ * True if `a` is the better review. The sentence that clears more wanted items wins.
+ * Among equals it is the one not used for the longest time: a word can have many sentences,
+ * and a learner who always gets the same one learns the sentence by heart, not the word.
+ * Then the shorter one.
+ */
+const isBetter = (a: Cover, b: Cover, seen: SentenceSeen): boolean => {
+  if (a.covers.length !== b.covers.length) {
+    return a.covers.length > b.covers.length;
+  }
+
+  const seenA = seen[a.sentence.id] ?? 0;
+  const seenB = seen[b.sentence.id] ?? 0;
+
+  return seenA === seenB
+    ? a.sentence.tokens.length < b.sentence.tokens.length
+    : seenA < seenB;
+};
+
+/** The best unused sentence among those that clear at least one wanted item. */
 const bestCover = (
   mem: Memory,
   wanted: ReadonlySet<string>,
   skipSentences: ReadonlySet<string>,
-  scoreOf: (covers: string[], sentence: Sentence) => number
+  seen: SentenceSeen
 ): Cover | null => {
   let best: Cover | null = null;
 
@@ -229,10 +260,10 @@ const bestCover = (
       const covers = sentenceItems(sentence).filter((id) => wanted.has(id));
 
       if (covers.length > 0 && sentenceReady(sentence, mem)) {
-        const score = scoreOf(covers, sentence);
+        const cover = { covers, sentence };
 
-        if (best === null || score > best.score) {
-          best = { covers, score, sentence };
+        if (best === null || isBetter(cover, best, seen)) {
+          best = cover;
         }
       }
     }
@@ -248,19 +279,11 @@ const bestCover = (
 export const pickReview = (
   mem: Memory,
   now: number,
-  skipSentences: ReadonlySet<string>,
-  skipItems: ReadonlySet<string> = new Set()
+  { seen, skipItems = new Set(), skipSentences }: PickLimits
 ): ReviewPick | null => {
   const due = dueItems(mem, now).review.filter((m) => !skipItems.has(m.id));
   const wanted = new Set(due.filter((m) => usesCarrier(m)).map((m) => m.id));
-
-  // More due items first; among equals, the shorter sentence.
-  const best = bestCover(
-    mem,
-    wanted,
-    skipSentences,
-    (covers, sentence) => covers.length - sentence.tokens.length * 0.04
-  );
+  const best = bestCover(mem, wanted, skipSentences, seen);
 
   if (best !== null) {
     return { covers: best.covers, sentence: best.sentence, type: "sentence" };
@@ -279,7 +302,11 @@ export interface Compression {
 }
 
 /** How many sentence reviews would clear everything that is due now. Used for the Today screen. */
-export const compression = (mem: Memory, now: number): Compression => {
+export const compression = (
+  mem: Memory,
+  now: number,
+  seen: SentenceSeen
+): Compression => {
   const due = dueItems(mem, now).review;
   const carried = new Set(due.filter((m) => usesCarrier(m)).map((m) => m.id));
   const left = new Set(due.map((m) => m.id));
@@ -288,7 +315,7 @@ export const compression = (mem: Memory, now: number): Compression => {
 
   while (left.size > 0) {
     const wanted = new Set([...left].filter((id) => carried.has(id)));
-    const best = bestCover(mem, wanted, used, (covers) => covers.length);
+    const best = bestCover(mem, wanted, used, seen);
 
     if (best === null) {
       const next = [...left].find((id) => !isPattern(id));
