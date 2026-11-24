@@ -31,7 +31,7 @@ const oldData = async () => {
   const bil = introduce(scheduler, "w:bil", START);
   const katt = introduce(scheduler, "w:katt", T0 - DAY);
   const husLater = review(scheduler, hus, "good", START + DAY);
-  const bilLater = review(scheduler, bil, "again", T0 - 2 * DAY, true);
+  const bilLater = review(scheduler, bil, "again", T0 - 2 * DAY);
 
   const log: WireLog[] = [
     {

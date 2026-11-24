@@ -14,13 +14,7 @@ import {
 } from "@norsk/content";
 import type { Item, Known, Lesson, Sentence, Story } from "@norsk/content";
 
-import {
-  CARRIER_MIN_DAYS,
-  dueTime,
-  isDue,
-  isLearning,
-  isStable,
-} from "./memory";
+import { dueTime, isDue, isLearning, isStable } from "./memory";
 import type { Mem } from "./memory";
 
 export type Memory = ReadonlyMap<string, Mem>;
@@ -198,11 +192,11 @@ const isPattern = (id: string): boolean => item(id).kind === "pattern";
 /**
  * How an item is recalled depends on what it is, never on how urgent it is.
  * A pattern has no card, so it is always recalled inside a sentence. A word or a phrase is
- * recalled alone on its card in its first days and while it is learned again after a miss,
- * and inside sentences after that.
+ * recalled alone on its card while it is being learned: on the day it is taught, and again
+ * after a miss. A card is quick, and it asks for exactly the item that is still weak.
+ * After that the item is recalled inside sentences.
  */
-const usesCarrier = (m: Mem): boolean =>
-  isPattern(m.id) || (!isLearning(m) && m.card.stability >= CARRIER_MIN_DAYS);
+const usesCarrier = (m: Mem): boolean => isPattern(m.id) || !isLearning(m);
 
 export type ReviewPick =
   | { type: "sentence"; sentence: Sentence; covers: string[] }

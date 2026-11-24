@@ -31,23 +31,20 @@ export interface Mem {
 
 export type Grade = "again" | "good";
 
-/** One answer to record for an item. `carrier` marks a recall made inside a sentence. */
+/**
+ * One answer to record for an item. `carrier` marks a recall made inside a sentence.
+ * It is kept in the log; a pass counts the same on a card and inside a sentence.
+ */
 export interface ReviewInput {
   id: string;
   grade: Grade;
   carrier?: boolean;
 }
 
-/** Share of the stability gain an item keeps when it was recalled inside a sentence, where context helps. */
-const CARRIER_CREDIT = 0.8;
-
 /** Items at or above this stability (in days) count as stable. */
 const STABLE_DAYS = 21;
 
-/** Below this stability (in days), a word or chunk is reviewed on its own card, not inside a sentence. */
-export const CARRIER_MIN_DAYS = 3;
-
-/** A second pass inside a sentence within this time adds no new evidence. */
+/** A second pass of an item within this time adds no new evidence: the item was just recalled. */
 const SAME_DAY_MS = 12 * 3_600_000;
 
 /**
@@ -132,49 +129,20 @@ export const introduce = (s: Scheduler, id: string, now: number): Mem => {
 };
 
 /**
- * Applies one review.
- * `carrier` marks a recall made inside a sentence: a pass then keeps only part of its stability gain.
+ * Applies one review. A typed sentence makes the learner recall every word in it, and the
+ * answer shows which word failed, so a pass inside a sentence counts as much as one on a card.
  */
 export const review = (
   s: Scheduler,
   m: Mem,
   grade: Grade,
-  now: number,
-  carrier = false
+  now: number
 ): Mem => {
-  const before = m.card;
-
   const { card } = s.fsrs.review({
-    card: before,
+    card: m.card,
     grade: grade === "good" ? Rating.Good : Rating.Again,
     now: new Date(now),
   });
-
-  if (
-    carrier &&
-    grade === "good" &&
-    before.scheduleStatus === "review" &&
-    card.stability > before.stability
-  ) {
-    const stability =
-      before.stability + CARRIER_CREDIT * (card.stability - before.stability);
-
-    const adjusted = { ...card, stability };
-
-    const days = Math.max(
-      1,
-      Math.round(s.fsrs.model.nextInterval(adjusted, s.desiredRetention))
-    );
-
-    return {
-      ...m,
-      card: {
-        ...adjusted,
-        dueAt: new Date(now + days * DAY),
-        scheduledDays: days,
-      },
-    };
-  }
 
   return { ...m, card };
 };
@@ -204,8 +172,8 @@ export const isFresh = (m: Mem): boolean =>
 /**
  * Applies one recorded answer, or returns null when it adds no evidence and must not be recorded.
  * That is a pass that comes too soon after the last recall, when the item was still in mind:
- * a pass of an item that is still being learned before it has waited long enough, on its card
- * or inside a sentence, and a second pass inside a sentence on the same day for any other item.
+ * before an item that is still being learned has waited long enough, or on the same day for any
+ * other item. It does not matter whether the pass was on a card or inside a sentence.
  * Such a pass is practice. A miss always counts.
  */
 export const applyReview = (
@@ -214,13 +182,11 @@ export const applyReview = (
   input: ReviewInput,
   now: number
 ): Mem | null => {
-  const carrier = input.carrier === true;
-
   const tooSoon = isLearning(m)
     ? !hasWaited(m, now)
-    : carrier && now - lastRecall(m) < SAME_DAY_MS;
+    : now - lastRecall(m) < SAME_DAY_MS;
 
   return input.grade === "good" && tooSoon
     ? null
-    : review(s, m, input.grade, now, carrier);
+    : review(s, m, input.grade, now);
 };

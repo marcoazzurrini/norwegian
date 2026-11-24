@@ -170,19 +170,41 @@ describe("memory", () => {
     expect(new Date(m.card.dueAt).getTime() - T0).toBeGreaterThan(DAY);
   });
 
-  test("a pass inside a sentence earns less than a pass on its own card", async () => {
+  test("a pass inside a sentence counts as much as a pass on the item's card", async () => {
     const s = await createScheduler(0.9);
-    let m = introduce(s, "w:hus:noun", T0);
+    const id = "w:hus:noun";
+    let m = introduce(s, id, T0);
     m = review(s, m, "good", T0 + 5 * 60_000);
     m = review(s, m, "good", T0 + 20 * 60_000);
     const later = T0 + 4 * DAY;
-    const direct = review(s, m, "good", later);
-    const carried = review(s, m, "good", later, true);
-    expect(carried.card.stability).toBeGreaterThan(m.card.stability);
-    expect(carried.card.stability).toBeLessThan(direct.card.stability);
-    expect(new Date(carried.card.dueAt).getTime()).toBeLessThanOrEqual(
-      new Date(direct.card.dueAt).getTime()
+    const direct = applyReview(s, m, { grade: "good", id }, later);
+
+    const carried = applyReview(
+      s,
+      m,
+      { carrier: true, grade: "good", id },
+      later
     );
+
+    expect(carried?.card.stability).toBeGreaterThan(m.card.stability);
+    expect(carried).toEqual(direct);
+  });
+
+  test("a second pass on the same day is practice, on a card or inside a sentence", async () => {
+    const s = await createScheduler(0.9);
+    const id = "w:hus:noun";
+    let m = introduce(s, id, T0);
+    m = review(s, m, "good", T0 + 5 * 60_000);
+    m = review(s, m, "good", T0 + 20 * 60_000);
+    m = review(s, m, "good", T0 + 4 * DAY);
+    const soon = T0 + 4 * DAY + 3_600_000;
+
+    expect(applyReview(s, m, { grade: "good", id }, soon)).toBeNull();
+    expect(
+      applyReview(s, m, { carrier: true, grade: "good", id }, soon)
+    ).toBeNull();
+    expect(applyReview(s, m, { grade: "again", id }, soon)).not.toBeNull();
+    expect(applyReview(s, m, { grade: "good", id }, soon + DAY)).not.toBeNull();
   });
 
   test("a miss sends the item back to relearning", async () => {
@@ -315,16 +337,32 @@ describe("choosing what to do", () => {
     expect(c.tasks).toBeLessThan(due * 0.7);
   });
 
+  test("a word is reviewed inside a sentence from its first review on a later day", () => {
+    const mem = new Map<string, Mem>();
+
+    // Taught and recalled twice on the same day, and due two days later.
+    for (const index of [0, 1, 2, 3]) {
+      for (const id of lessonAt(index).items) {
+        let m = introduce(scheduler, id, T0);
+        m = review(scheduler, m, "good", T0 + 5 * 60_000);
+        m = review(scheduler, m, "good", T0 + 20 * 60_000);
+        mem.set(id, m);
+      }
+    }
+
+    expect(pickReview(mem, T0 + 3 * DAY, FRESH)?.type).toBe("sentence");
+  });
+
   test("a word with several sentences gets each of them in turn", async () => {
     const now = T0 + 40 * DAY;
     const taughtItems = await taught([0, 1, 2, 3, 4, 5, 6], T0);
 
-    // Only "jeg" is due, and it is old enough to be reviewed inside a sentence.
+    // Only "jeg" is due.
     const mem = new Map(
       [...taughtItems].map(([id, m]) => [
         id,
         id === "w:jeg:pron"
-          ? { ...m, card: { ...m.card, stability: 10 } }
+          ? m
           : { ...m, card: { ...m.card, dueAt: new Date(now + DAY) } },
       ])
     );
@@ -358,7 +396,7 @@ describe("choosing what to do", () => {
 
 const scheduler = await createScheduler(0.9);
 
-/** The memory with one item missed at the given time, inside a sentence. */
+/** The memory with one item missed at the given time. */
 const withMiss = (mem: Map<string, Mem>, id: string, at: number): void => {
   const before = mem.get(id);
 
@@ -366,7 +404,7 @@ const withMiss = (mem: Map<string, Mem>, id: string, at: number): void => {
     throw new Error(`"${id}" was not taught`);
   }
 
-  mem.set(id, review(scheduler, before, "again", at, true));
+  mem.set(id, review(scheduler, before, "again", at));
 };
 
 /** What a review task reports: how many first tries were right and wrong. */
@@ -561,23 +599,12 @@ describe("a session", () => {
     }
   });
 
-  test("a word that was missed comes back alone on its card, however well it was known", async () => {
+  test("a word that was missed comes back alone on its card", async () => {
     const mem = await taught([0, 1, 2, 3], T0);
     const missedAt = T0 + 4 * DAY;
 
+    // Before the miss the word was reviewed inside sentences; while it is learned again it is not.
     withMiss(mem, "w:ikke:adv", missedAt);
-
-    const missed = mem.get("w:ikke:adv");
-
-    if (missed === undefined) {
-      throw new Error("The word is gone");
-    }
-
-    // Old enough for sentences by its stability, but it is being learned again.
-    mem.set("w:ikke:adv", {
-      ...missed,
-      card: { ...missed.card, stability: 10 },
-    });
 
     expect(
       new Session(5, () => 0.3).next(view(mem), missedAt + 5 * 60_000)

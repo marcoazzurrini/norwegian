@@ -129,8 +129,8 @@ const redo = (
       next =
         have === undefined ? introduce(scheduler, entry.id, entry.at) : null;
     } else if (have !== undefined) {
-      // The entry exists, so the review counted when it was made: no second look at the same-day rule.
-      next = review(scheduler, have, entry.grade, entry.at, entry.carrier);
+      // The entry exists, so the review counted when it was made: no second look at whether it came too soon.
+      next = review(scheduler, have, entry.grade, entry.at);
     }
 
     if (next !== null) {
