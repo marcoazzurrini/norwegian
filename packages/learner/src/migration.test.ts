@@ -148,6 +148,7 @@ describe("data written by the app before this module (version 2)", () => {
     expect(learner.progress()).toEqual({
       chosenLesson: 4,
       days: ["2026-11-08", "2026-11-09", "2026-11-17"],
+      pace: {},
       sentenceSeen: { "Jeg har et hus.": START + DAY },
       sounds: { "y-u": { right: 7, total: 9 } },
       storiesDone: ["s:1", "s:2"],

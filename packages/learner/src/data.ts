@@ -4,7 +4,7 @@
 // Saves run one after another in the order the changes were made, so what is saved is always a
 // state the copy in memory has been through.
 import { applyReview, createScheduler, introduce, review } from "@norsk/engine";
-import type { Mem, ReviewInput, Scheduler } from "@norsk/engine";
+import type { Mem, Pace, ReviewInput, Scheduler } from "@norsk/engine";
 import { mergeMeta, stampOf } from "@norsk/protocol";
 import type { SyncedMeta, WireMem } from "@norsk/protocol";
 import { Store } from "@tanstack/store";
@@ -60,6 +60,7 @@ export interface Data {
   markStoryDone: (id: string) => Promise<void>;
   markSentenceSeen: (id: string, at?: number) => Promise<void>;
   recordSound: (group: string, right: boolean) => Promise<void>;
+  savePace: (pace: Pace) => Promise<void>;
   exportBackup: () => Promise<string>;
 
   syncRecord: () => SyncRecord;
@@ -87,6 +88,7 @@ interface DataDeps {
 const progressOf = (meta: Meta): Progress => ({
   chosenLesson: meta.chosenLesson,
   days: meta.days,
+  pace: meta.pace,
   sentenceSeen: meta.sentenceSeen,
   sounds: meta.sounds,
   storiesDone: meta.storiesDone,
@@ -276,8 +278,10 @@ export const createData = (deps: DataDeps): Data => {
         const both = page.wipe ? theirs : mergeMeta(before.meta, theirs);
 
         // The voice, speed and text size belong to this device and never come from another.
+        // So does the pace: a phone and a keyboard are not typed on at the same speed.
         meta = setMeta({
           ...both,
+          pace: before.meta.pace,
           settings: {
             ...both.settings,
             rate: mine.rate,
@@ -411,6 +415,10 @@ export const createData = (deps: DataDeps): Data => {
         ...meta,
         sentenceSeen: { ...meta.sentenceSeen, [id]: at },
       }));
+    },
+
+    savePace: async (pace) => {
+      await saveMeta((meta) => ({ ...meta, pace }));
     },
 
     markStoryDone: async (id) => {

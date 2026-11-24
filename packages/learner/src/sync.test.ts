@@ -233,6 +233,22 @@ describe("two devices", () => {
     expect(laptop.learner().settings().minutes).toBe(25);
   });
 
+  test("how long tasks take belongs to each device", async () => {
+    const { laptop, phone } = await pair();
+
+    // A phone is typed on more slowly than a keyboard.
+    await phone.learner().savePace({ card: [12_000] });
+    await laptop.learner().savePace({ card: [6000] });
+    await phone.learner().addStudyTime(MINUTE);
+    await laptop.learner().addStudyTime(2 * MINUTE);
+
+    await settle([phone, laptop]);
+
+    expect(phone.learner().progress().totalMs).toBe(2 * MINUTE);
+    expect(phone.learner().progress().pace).toEqual({ card: [12_000] });
+    expect(laptop.learner().progress().pace).toEqual({ card: [6000] });
+  });
+
   test("counters only grow", async () => {
     const { laptop, phone, world } = await pair();
 
@@ -253,6 +269,7 @@ describe("two devices", () => {
     const expected = {
       chosenLesson: null,
       days: [dayOf(T0), dayOf(T0 + 3 * DAY)],
+      pace: {},
       sentenceSeen: { "Jeg har et hus.": T0 + DAY },
       sounds: { "y-u": { right: 1, total: 2 } },
       storiesDone: ["s:1", "s:2"],

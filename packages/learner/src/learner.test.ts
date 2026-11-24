@@ -36,6 +36,7 @@ describe("a new device", () => {
     expect(learner.progress()).toEqual({
       chosenLesson: null,
       days: [],
+      pace: {},
       sentenceSeen: {},
       sounds: {},
       storiesDone: [],
@@ -208,6 +209,7 @@ describe("settings and counters", () => {
     expect(learner.progress()).toEqual({
       chosenLesson: 4,
       days: [],
+      pace: {},
       sentenceSeen: { "Hun bor her.": T0 - DAY, "Jeg har et hus.": T0 },
       sounds: { "y-u": { right: 1, total: 2 } },
       storiesDone: ["s:1"],
@@ -217,6 +219,21 @@ describe("settings and counters", () => {
     await learner.chooseLesson(null);
 
     expect(learner.progress().chosenLesson).toBeNull();
+  });
+
+  test("how long the latest tasks took is kept, also after a restart", async () => {
+    const world = createWorld();
+    const device = world.device("phone");
+    const learner = await device.launch();
+    const pace = { card: [7000, 9000], sentence: [21_000] };
+
+    await learner.savePace(pace);
+
+    expect(learner.progress().pace).toEqual(pace);
+
+    const restarted = await device.launch();
+
+    expect(restarted.progress().pace).toEqual(pace);
   });
 });
 

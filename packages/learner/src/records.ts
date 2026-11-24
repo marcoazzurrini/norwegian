@@ -1,6 +1,6 @@
 // The shapes of the learner's data as this device saves it and as a backup file holds it,
 // and the conversions to and from the shapes that travel to the server.
-import type { Mem } from "@norsk/engine";
+import type { Mem, PaceKind } from "@norsk/engine";
 import {
   SyncedMetaSchema,
   WireCardSchema,
@@ -22,6 +22,20 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
 
 const SoundScoreSchema = v.object({ right: v.number(), total: v.number() });
 
+const TimesSchema = v.exactOptional(v.pipe(v.array(v.number()), v.readonly()));
+
+/**
+ * How long the learner's latest tasks took on this device, for each kind of work.
+ * The check below fails to compile when the engine plans with a kind that is missing here.
+ */
+const PaceSchema = v.object({
+  card: TimesSchema,
+  intro: TimesSchema,
+  pattern: TimesSchema,
+  sentence: TimesSchema,
+  story: TimesSchema,
+} satisfies Record<PaceKind, typeof TimesSchema>);
+
 const SettingsSchema = v.looseObject({
   desiredRetention: v.optional(v.number(), DEFAULT_SETTINGS.desiredRetention),
   minutes: v.optional(v.number(), DEFAULT_SETTINGS.minutes),
@@ -36,6 +50,7 @@ const SettingsSchema = v.looseObject({
  */
 const MetaSchema = v.looseObject({
   ...SyncedMetaSchema.entries,
+  pace: v.optional(PaceSchema, {}),
   settings: v.optional(SettingsSchema, {}),
 });
 
@@ -54,6 +69,7 @@ const SavedSettingsSchema = v.looseObject({
 const SavedMetaFieldsSchema = v.looseObject({
   chosenLesson: v.fallback(v.nullable(v.number()), null),
   days: v.fallback(v.array(v.string()), () => []),
+  pace: v.fallback(PaceSchema, () => ({})),
   prefsAt: v.fallback(v.number(), 0),
   sentenceSeen: v.fallback(v.record(v.string(), v.number()), () => ({})),
   settings: v.fallback(SavedSettingsSchema, () => ({ ...DEFAULT_SETTINGS })),

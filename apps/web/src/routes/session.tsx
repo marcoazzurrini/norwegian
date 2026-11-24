@@ -183,7 +183,12 @@ const SessionPage = () => {
   const navigate = useNavigate();
 
   const [run, setRun] = useState(() =>
-    nextRun(new Session(minutes, Math.random), 1, Date.now())
+    nextRun(
+      // The session plans its time with how long this learner's tasks took before.
+      new Session(minutes, Math.random, learner.progress().pace),
+      1,
+      Date.now()
+    )
   );
 
   const { session, task } = run;
@@ -208,6 +213,7 @@ const SessionPage = () => {
     const counted = session.complete(task, result, Date.now() - run.startedAt);
 
     await learner.addStudyTime(counted);
+    await learner.savePace(session.pace);
     await forgetFinishedChoice();
     setRun(nextRun(session, run.count + 1, Date.now()));
   };

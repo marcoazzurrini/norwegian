@@ -60,6 +60,7 @@ const settings = (textScale: number): Settings => ({
 const meta = (textScale: number, patch: Partial<Meta> = {}): Meta => ({
   chosenLesson: null,
   days: [],
+  pace: {},
   prefsAt: 0,
   sentenceSeen: {},
   settings: settings(textScale),

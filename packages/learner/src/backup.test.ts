@@ -203,6 +203,7 @@ describe("a backup file", () => {
     expect(learner.progress()).toEqual({
       chosenLesson: 2,
       days: ["2026-11-08", "2026-11-09", "2026-11-10"],
+      pace: {},
       sentenceSeen: { "Jeg har et hus.": 1_762_675_200_000 },
       sounds: { "y-u": { right: 3, total: 4 } },
       storiesDone: ["s:1"],

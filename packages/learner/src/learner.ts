@@ -29,6 +29,7 @@ export const createLearner = (deps: LearnerDeps): Learner => {
     ready: () => data.store.state.ready,
     recordSound: data.recordSound,
     restoreBackup: sync.restoreBackup,
+    savePace: data.savePace,
 
     scheduler: () => {
       const { scheduler } = data.store.state;

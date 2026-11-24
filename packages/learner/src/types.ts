@@ -1,5 +1,5 @@
 // The public types of the learner module.
-import type { Mem, ReviewInput, Scheduler } from "@norsk/engine";
+import type { Mem, Pace, ReviewInput, Scheduler } from "@norsk/engine";
 
 export interface Settings {
   /** Length of a session, in minutes. Shared between devices. */
@@ -32,6 +32,8 @@ export interface Progress {
   readonly sentenceSeen: Readonly<Record<string, number>>;
   /** Right and total answers per sound group. */
   readonly sounds: Readonly<Record<string, SoundScore>>;
+  /** How long the latest tasks took, for each kind of work. Belongs to this device. */
+  readonly pace: Pace;
 }
 
 export interface SyncStatus {
@@ -107,6 +109,8 @@ export interface Learner {
   /** Notes that a sentence was used as a review, now or at the given time. */
   markSentenceSeen: (id: string, at?: number) => Promise<void>;
   recordSound: (group: string, right: boolean) => Promise<void>;
+  /** Keeps how long the latest tasks took, so the next session can plan its time with it. */
+  savePace: (pace: Pace) => Promise<void>;
 
   /** Everything on this device, as the text of a backup file. */
   exportBackup: () => Promise<string>;
