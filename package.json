@@ -20,7 +20,7 @@
   "scripts": {
     "dev": "bun run --filter @norsk/web dev",
     "build": "bun run --filter @norsk/web build",
-    "deploy": "bun run build && bun run --filter @norsk/api deploy",
+    "deploy": "SOURCE_MAPS=1 VITE_RELEASE=$(git rev-parse --short HEAD) bun run build && bun run --filter @norsk/web maps && bun run --filter @norsk/api deploy",
     "test": "bun run --filter '*' test",
     "test:e2e": "bun run --filter @norsk/web test:e2e",
     "typecheck": "bun run --filter '*' typecheck",
