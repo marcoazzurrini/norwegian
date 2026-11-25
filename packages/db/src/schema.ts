@@ -43,6 +43,27 @@ export const log = sqliteTable("log", {
   data: text("data").notNull(),
 });
 
+/**
+ * The journal: what happened in the app, kept to find out later why it behaved as it did.
+ * Rows are only added, and "Start over" leaves them. `at`, `kind` and `session` are copies of
+ * fields in `data`, as columns, so that a query can filter on them.
+ */
+export const event = sqliteTable(
+  "event",
+  {
+    seq: integer("seq").primaryKey({ autoIncrement: true }),
+    uid: text("uid").notNull().unique(),
+    at: integer("at").notNull(),
+    kind: text("kind").notNull(),
+    session: text("session"),
+    data: text("data").notNull(),
+  },
+  (table) => [
+    index("event_at").on(table.at),
+    index("event_session").on(table.session),
+  ]
+);
+
 /** Settings and counters, as one document in one row. */
 export const meta = sqliteTable(
   "meta",

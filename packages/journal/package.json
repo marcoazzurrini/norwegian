@@ -1,0 +1,23 @@
+{
+  "name": "@norsk/journal",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@norsk/protocol": "workspace:*",
+    "idb": "^8.0.4",
+    "valibot": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "fake-indexeddb": "^6.0.0",
+    "typescript": "catalog:"
+  }
+}

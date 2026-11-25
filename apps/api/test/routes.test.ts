@@ -112,16 +112,19 @@ test("the tests use stand-in secrets, never the real ones", () => {
 });
 
 describe("who may use the API", () => {
-  test.each(["/api/sync", "/api/reset", "/api/explain", "/api/nothing"])(
-    "%s without a session answers 401",
-    async (path) => {
-      const response = await post(path, EMPTY_SYNC);
+  test.each([
+    "/api/sync",
+    "/api/reset",
+    "/api/explain",
+    "/api/journal",
+    "/api/nothing",
+  ])("%s without a session answers 401", async (path) => {
+    const response = await post(path, EMPTY_SYNC);
 
-      expect(response.status).toBe(401);
-      expect(await response.json()).toEqual({ error: "Not signed in" });
-      expect(response.headers.get("cache-control")).toBe("no-store");
-    }
-  );
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({ error: "Not signed in" });
+    expect(response.headers.get("cache-control")).toBe("no-store");
+  });
 
   test("a request from another website answers 403", async () => {
     const response = await post("/api/sync", EMPTY_SYNC, await signIn(), {
@@ -348,6 +351,112 @@ describe("/api/sync", () => {
       "user",
     ]);
     expect(JSON.stringify(logged.mock.calls)).not.toContain("@");
+    expect(JSON.stringify(logged.mock.calls)).not.toContain("hus");
+  });
+});
+
+const journalEvent = {
+  at: 1_795_000_000_000,
+  data: { typed: "jeg har en hus", why: "review" },
+  kind: "task.answer",
+  session: "s-1",
+  uid: "e-1",
+};
+
+interface StoredEvent {
+  at: number;
+  data: string;
+  kind: string;
+  session: string | null;
+  uid: string;
+}
+
+const storedEvents = async () => {
+  const { results } = await env.DB.prepare(
+    "SELECT uid, at, kind, session, data FROM event ORDER BY seq"
+  ).all<StoredEvent>();
+
+  return results;
+};
+
+describe("/api/journal", () => {
+  test("stores the events a device sends, each with its data", async () => {
+    const outside = { ...journalEvent, session: null, uid: "e-2" };
+
+    const answer = await result(
+      post("/api/journal", { events: [journalEvent, outside] }, await signIn())
+    );
+
+    expect(answer).toEqual({ body: { stored: 2 }, status: 200 });
+    expect(await storedEvents()).toEqual([
+      {
+        at: journalEvent.at,
+        data: JSON.stringify(journalEvent.data),
+        kind: "task.answer",
+        session: "s-1",
+        uid: "e-1",
+      },
+      {
+        at: journalEvent.at,
+        data: JSON.stringify(journalEvent.data),
+        kind: "task.answer",
+        session: null,
+        uid: "e-2",
+      },
+    ]);
+  });
+
+  test("an event sent twice is stored once", async () => {
+    const cookie = await signIn();
+
+    await post("/api/journal", { events: [journalEvent] }, cookie);
+    await post("/api/journal", { events: [journalEvent] }, cookie);
+
+    expect(await storedEvents()).toHaveLength(1);
+  });
+
+  test("the events stay after Start over", async () => {
+    const cookie = await signIn();
+
+    await post("/api/journal", { events: [journalEvent] }, cookie);
+    await post("/api/reset", { epoch: 5 }, cookie);
+
+    expect(await storedEvents()).toHaveLength(1);
+  });
+
+  test("a body that is not a list of events answers 400", async () => {
+    const answer = await result(
+      post("/api/journal", { events: [{ uid: "e-1" }] }, await signIn())
+    );
+
+    expect(answer).toEqual({
+      body: { error: "Not a journal request" },
+      status: 400,
+    });
+  });
+
+  test("more events than one message may carry answers 400", async () => {
+    const events = Array.from({ length: 501 }, (_, index) => ({
+      ...journalEvent,
+      uid: `e-${index}`,
+    }));
+
+    const response = await post("/api/journal", { events }, await signIn());
+
+    expect(response.status).toBe(400);
+  });
+
+  test("the server log has the count and no contents", async () => {
+    const cookie = await signIn();
+    const logged = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await post("/api/journal", { events: [journalEvent] }, cookie);
+
+    expect(logged).toHaveBeenCalledTimes(1);
+    expect(logged.mock.calls[0]?.[0]).toMatchObject({
+      event: "journal",
+      events: 1,
+    });
     expect(JSON.stringify(logged.mock.calls)).not.toContain("hus");
   });
 });

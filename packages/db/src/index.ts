@@ -12,6 +12,7 @@ import {
   WireMemSchema,
 } from "@norsk/protocol";
 import type {
+  JournalEvent,
   SyncedMeta,
   SyncRequest,
   SyncResponse,
@@ -22,7 +23,7 @@ import { eq, gt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import * as v from "valibot";
 
-import { log, memory, meta, state } from "./schema";
+import { event, log, memory, meta, state } from "./schema";
 
 /** A stored row that this version cannot read. It is left in the database as it is. */
 export interface UnreadableRow {
@@ -47,6 +48,8 @@ export interface Db {
    * Returns false, and changes nothing, if a later generation has already begun.
    */
   reset: (epoch: number) => Promise<boolean>;
+  /** Adds events to the journal. One that is already stored, by its `uid`, is left alone. */
+  record: (events: readonly JournalEvent[]) => Promise<void>;
 }
 
 const warn = (row: UnreadableRow) => {
@@ -247,5 +250,22 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
     return true;
   };
 
-  return { exchange, reset };
+  const record = async (events: readonly JournalEvent[]): Promise<void> => {
+    if (events.length === 0) {
+      return;
+    }
+
+    await db
+      .insert(event)
+      .select(
+        // NULL for `seq`: the database numbers the event.
+        sql`SELECT NULL, json_extract(value, '$.uid'), json_extract(value, '$.at'),
+                   json_extract(value, '$.kind'), json_extract(value, '$.session'),
+                   json_extract(value, '$.data')
+            FROM json_each(${JSON.stringify(events)}) WHERE true`
+      )
+      .onConflictDoNothing({ target: event.uid });
+  };
+
+  return { exchange, record, reset };
 };

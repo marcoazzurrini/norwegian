@@ -46,4 +46,14 @@ export {
   type WireMem,
 } from "./sync";
 
+export {
+  EVENT_PAGE,
+  JournalEventSchema,
+  JournalRequestSchema,
+  JournalResponseSchema,
+  type JournalEvent,
+  type JournalRequest,
+  type JournalResponse,
+} from "./journal";
+
 export { ROUTES } from "./routes";

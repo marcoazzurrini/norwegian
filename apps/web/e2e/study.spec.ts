@@ -1,6 +1,9 @@
 // The parts of a session and the pages around it, each started from a learner who has studied before.
+import { JournalRequestSchema } from "@norsk/protocol";
+import type { JournalEvent } from "@norsk/protocol";
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
+import * as v from "valibot";
 
 import { answer, asked, open, proceed, startAs } from "./learner";
 
@@ -180,6 +183,46 @@ test("a review session asks single words, then whole sentences", async ({
 
   await page.getByRole("button", { name: "Close" }).click();
   await expect(page.getByRole("link", { name: "Start session" })).toBeVisible();
+});
+
+test("what happens in a session is sent to the journal when the learner leaves", async ({
+  page,
+}) => {
+  const sent: JournalEvent[] = [];
+
+  await page.route("**/api/journal", async (route) => {
+    const { events } = v.parse(
+      JournalRequestSchema,
+      JSON.parse(route.request().postData() ?? "")
+    );
+
+    sent.push(...events);
+    await route.fulfill({ json: { stored: events.length } });
+  });
+
+  await startAs(page, "progress");
+  await open(page, "/session?minutes=5");
+
+  const first = await asked(page, MEANINGS);
+
+  await answer(page, NOUNS[first].bare);
+  await page.getByRole("button", { name: "Close" }).click();
+
+  await expect
+    .poll(() => sent.map((event) => event.kind))
+    .toEqual(["session.started", "task.chosen", "task.event", "session.left"]);
+
+  // The task that was chosen, why, and what the learner typed.
+  expect(sent[1]?.data).toMatchObject({
+    count: 1,
+    dueLearning: 3,
+    reason: "learning",
+    step: "learning",
+    task: "card",
+  });
+  expect(sent[2]?.data).toEqual({
+    event: { text: NOUNS[first].bare, type: "answer" },
+  });
 });
 
 test("a pattern is shown, read and then produced", async ({ page }) => {

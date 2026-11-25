@@ -13,6 +13,7 @@ import {
   summaryOf,
 } from "../components/session-summary";
 import { TaskScreen } from "../components/tasks/task-screen";
+import { noteSessionLeft, noteTaskChosen, noteTaskDone } from "../journal";
 import { learner } from "../learner";
 import { stopSpeaking } from "../speech";
 
@@ -178,20 +179,26 @@ const nextRun = (session: Session, count: number, now: number): Run => {
   return { count, session, startedAt: now, task };
 };
 
+/** A new session, planned with how long this learner's tasks took before, and its first task. */
+const firstRun = (minutes: number): Run =>
+  nextRun(
+    new Session(minutes, Math.random, learner.progress().pace),
+    1,
+    Date.now()
+  );
+
 const SessionPage = () => {
   const { minutes } = Route.useSearch();
   const navigate = useNavigate();
 
-  const [run, setRun] = useState(() =>
-    nextRun(
-      // The session plans its time with how long this learner's tasks took before.
-      new Session(minutes, Math.random, learner.progress().pace),
-      1,
-      Date.now()
-    )
-  );
+  const [run, setRun] = useState(() => firstRun(minutes));
 
   const { session, task } = run;
+
+  // Each task is noted once it is on screen, with the reason the session chose it.
+  useEffect(() => {
+    noteTaskChosen(run.session, run.count, run.task);
+  }, [run]);
 
   useEffect(
     () => () => {
@@ -210,7 +217,10 @@ const SessionPage = () => {
 
   const onDone = async (result: TaskResult) => {
     // The session decides how much of the time counts and keeps the statistics.
-    const counted = session.complete(task, result, Date.now() - run.startedAt);
+    const ms = Date.now() - run.startedAt;
+    const counted = session.complete(task, result, ms);
+
+    noteTaskDone(run.count, result, ms, counted);
 
     await learner.addStudyTime(counted);
     await learner.savePace(session.pace);
@@ -239,6 +249,7 @@ const SessionPage = () => {
 
 export const Route = createFileRoute("/session")({
   component: SessionPage,
+  onLeave: noteSessionLeft,
   validateSearch: (search) => ({
     minutes: sessionMinutes(Number(search.minutes)),
   }),

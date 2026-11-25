@@ -5,6 +5,7 @@ import type { SpeakOptions } from "@norsk/speech";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 
+import { note } from "../../journal";
 import { learner } from "../../learner";
 import { speak } from "../../speech";
 
@@ -30,11 +31,13 @@ const speakOptions = ({ rate, voiceIndex }: SpeakEffect): SpeakOptions => {
 const perform = async (effect: Effect, onDone: OnDone): Promise<void> => {
   switch (effect.type) {
     case "teach": {
+      note("task.taught", { ids: effect.ids });
       await learner.teach(effect.ids);
       break;
     }
 
     case "review": {
+      note("task.reviewed", { inputs: effect.inputs });
       await learner.applyReviews(effect.inputs);
       break;
     }
@@ -132,6 +135,9 @@ export const useTask = <Input, State, Event>(
 
   const send = useCallback(
     (event: Event) => {
+      // What the learner did, as the task was told it: the answer typed, a hint asked for.
+      note("task.event", { event });
+
       const next = machine.step(current.current, event, Date.now());
 
       current.current = next.state;

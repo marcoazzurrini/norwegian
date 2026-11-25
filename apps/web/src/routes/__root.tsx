@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { SignInScreen } from "../components/sign-in-screen";
+import { startJournal } from "../journal";
 import { learner, useReady, useSettings, useSyncStatus } from "../learner";
 
 import baseCss from "@norsk/ui/base.css?url";
@@ -52,6 +53,8 @@ const App = () => {
     if ("serviceWorker" in navigator && import.meta.env.PROD) {
       navigator.serviceWorker.register("/sw.js").catch(reportError);
     }
+
+    return startJournal();
   }, []);
 
   useEffect(() => {

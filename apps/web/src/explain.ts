@@ -1,9 +1,15 @@
 // Short explanations written by a language model, asked from the server.
 // The app decides right and wrong by itself; this only adds words about a mistake, and only when there is a connection.
-import { ExplainResponseSchema, ROUTES } from "@norsk/protocol";
+import {
+  ExplainRequestSchema,
+  ExplainResponseSchema,
+  ROUTES,
+} from "@norsk/protocol";
 import type { ExplainRequest } from "@norsk/protocol";
 import { useEffect, useState } from "react";
 import * as v from "valibot";
+
+import { note } from "./journal";
 
 const TIMEOUT_MS = 12_000;
 
@@ -53,9 +59,15 @@ export const useExplain = (request: ExplainRequest | null): string | null => {
     const stop = new AbortController();
 
     const run = async (asked: string): Promise<void> => {
+      const started = Date.now();
       const text = await ask(asked, stop.signal);
 
       if (!stop.signal.aborted) {
+        note("explain", {
+          ms: Date.now() - started,
+          request: v.parse(ExplainRequestSchema, JSON.parse(asked)),
+          text,
+        });
         setAnswer({ body: asked, text });
       }
     };

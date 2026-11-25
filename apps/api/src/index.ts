@@ -9,6 +9,7 @@ import {
   AUDIO_FILE,
   AudioListRequestSchema,
   ExplainRequestSchema,
+  JournalRequestSchema,
   ResetRequestSchema,
   ROUTES,
   SyncRequestSchema,
@@ -19,6 +20,7 @@ import type {
   AudioListResponse,
   ErrorBody,
   ExplainResponse,
+  JournalResponse,
   ResetResponse,
   SyncResponse,
 } from "@norsk/protocol";
@@ -282,6 +284,33 @@ app.post(ROUTES.reset, async (c) => {
   return c.json({ epoch } satisfies ResetResponse, 200, NO_STORE);
 });
 
+/** The journal: events from a device, kept to find out later why the app behaved as it did. */
+app.post(ROUTES.journal, async (c) => {
+  const { body, user } = await learnerRequest(c);
+  const request = v.safeParse(JournalRequestSchema, body);
+
+  if (!request.success) {
+    throw refuse(400, "Not a journal request");
+  }
+
+  const { events } = request.output;
+  const started = Date.now();
+
+  await createDb(c.env.DB).record(events);
+
+  logInfo("journal", {
+    events: events.length,
+    ms: Date.now() - started,
+    user: user.id,
+  });
+
+  return c.json(
+    { stored: events.length } satisfies JournalResponse,
+    200,
+    NO_STORE
+  );
+});
+
 app.post(ROUTES.explain, async (c) => {
   const { body, user } = await learnerRequest(c);
   const apiKey = c.env.OPENROUTER_API_KEY;
@@ -302,7 +331,15 @@ app.post(ROUTES.explain, async (c) => {
     throw refuse(429, "Too many explanations. Try again in a minute.");
   }
 
+  const started = Date.now();
   const explanation = await explain(apiKey, request.output);
+
+  logInfo("explain", {
+    ms: Date.now() - started,
+    ok: explanation.ok,
+    status: explanation.ok ? 200 : explanation.status,
+    user: user.id,
+  });
 
   if (!explanation.ok) {
     throw refuse(explanation.status, explanation.error);

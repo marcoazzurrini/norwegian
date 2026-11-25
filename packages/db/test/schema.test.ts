@@ -133,6 +133,7 @@ test("the Drizzle schema creates the same tables as the production migrations", 
 
   expect(Object.keys(production)).toEqual([
     "account",
+    "event",
     "log",
     "memory",
     "meta",
