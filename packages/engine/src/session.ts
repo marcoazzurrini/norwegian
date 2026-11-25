@@ -77,6 +77,49 @@ export interface SessionStats {
   wrong: number;
 }
 
+/**
+ * Why the session chose its latest task, with the facts it decided on. The session does not use
+ * this itself: it is for the journal, to find out later why a session went as it did.
+ */
+export interface Choice {
+  /**
+   * The step of the plan that gave the task:
+   * "sound" the sounds at the start; "learning" an item in its first minutes that is due;
+   * "planned" a review, new material or the story, as the time budget allows;
+   * "waited" an item in its first minutes that is not due yet, for want of other work;
+   * "spare" new material although recalls are going badly, because nothing else was left;
+   * "closing" a recall the session owes before it ends; "done" the end.
+   */
+  step:
+    | "sound"
+    | "learning"
+    | "planned"
+    | "waited"
+    | "spare"
+    | "closing"
+    | "done";
+  /** Time left of the session, in milliseconds. Below zero once the session runs over. */
+  leftMs: number;
+  /** Time left after the recalls the session owes. Null while the session closes. */
+  spareMs: number | null;
+  /** Reviews that are due. */
+  dueReviews: number;
+  /** Items in their first minutes that are due. */
+  dueLearning: number;
+  /** Items in their first minutes, due or not. */
+  learning: number;
+  /** Recalls the session owes before it ends. */
+  owed: number;
+  /** Too many of the latest recalls failed, so new material waits. */
+  struggling: boolean;
+  /** So many reviews are due that nothing new is taught. */
+  backlog: boolean;
+  /** Share of the session's time spent on reviews so far, from 0 to 1. */
+  reviewShare: number;
+  /** A task was left out, now or earlier, because the time left was too short for it. */
+  shortOfTime: boolean;
+}
+
 /** Share of the session that reviews may take while new material is still waiting. */
 const REVIEW_SHARE = 0.6;
 
@@ -184,6 +227,7 @@ export class Session {
   private readonly closed = new Set<string>();
   /** The last task taught something new. */
   private justTaught = false;
+  private choice: Choice | null = null;
 
   /**
    * `rng` returns a number from 0 up to, but not including, 1, as Math.random does.
@@ -211,6 +255,11 @@ export class Session {
   /** True if the session closed because its time was used, false if nothing was left to do. */
   get timeUp(): boolean {
     return this.closing && this.shortOfTime;
+  }
+
+  /** Why the latest task was chosen. Null before the first task. */
+  get lastChoice(): Choice | null {
+    return this.choice;
   }
 
   get progress(): number {
@@ -301,7 +350,41 @@ export class Session {
       this.endAt = now + Math.max(0, this.budgetMs - this.elapsedMs);
     }
 
-    return this.closingTask(view, this.endAt) ?? { type: "done" };
+    const closing = this.closingTask(view, this.endAt);
+
+    this.choice = {
+      ...this.factsOf(view, now),
+      owed: this.owedAt(view, this.endAt).length,
+      spareMs: null,
+      step: closing === null ? "done" : "closing",
+    };
+
+    return closing ?? { type: "done" };
+  }
+
+  /** What the session knows at this moment, apart from the step that gives the task. */
+  private factsOf(view: SessionView, now: number): Omit<Choice, "step"> {
+    const due = dueItems(view.memory, now);
+
+    return {
+      backlog: due.review.length >= BACKLOG,
+      dueLearning: due.learning.length,
+      dueReviews: due.review.length,
+      learning: [...view.memory.values()].filter((m) => isLearning(m)).length,
+      leftMs: this.budgetMs - this.elapsedMs,
+      owed: 0,
+      reviewShare: this.reviewMs / this.budgetMs,
+      shortOfTime: this.shortOfTime,
+      spareMs: null,
+      struggling: this.isStruggling(),
+    };
+  }
+
+  /** The items that are owed a recall at the moment the session was to end, and did not get it yet. */
+  private owedAt(view: SessionView, endAt: number): Mem[] {
+    return [...view.memory.values()]
+      .filter((m) => isOwed(m, endAt) && !this.closed.has(m.id))
+      .toSorted(byDue);
   }
 
   /** The next task while there is time for more than the recalls the session owes. Null when it must close. */
@@ -321,19 +404,37 @@ export class Session {
       return null;
     }
 
-    if (this.soundsLeft > 0) {
-      return this.nextSound(view);
-    }
-
     const due = dueItems(view.memory, now);
 
-    return (
-      this.learningTask(view, due) ??
-      this.plannedTask(view, due, spare, this.isStruggling()) ??
-      this.waitedTask(view, learning, now) ??
+    // Each step of the plan, in order. The first that has a task gives it.
+    const steps: [Choice["step"], () => Task | null][] = [
+      ["sound", () => (this.soundsLeft > 0 ? this.nextSound(view) : null)],
+      ["learning", () => this.learningTask(view, due)],
+      [
+        "planned",
+        () => this.plannedTask(view, due, spare, this.isStruggling()),
+      ],
+      ["waited", () => this.waitedTask(view, learning, now)],
       // Nothing else is left to do: new material is better than ending the session early.
-      this.plannedTask(view, due, spare, false)
-    );
+      ["spare", () => this.plannedTask(view, due, spare, false)],
+    ];
+
+    for (const [step, find] of steps) {
+      const task = find();
+
+      if (task !== null) {
+        this.choice = {
+          ...this.factsOf(view, now),
+          owed: owed.length,
+          spareMs: spare,
+          step,
+        };
+
+        return task;
+      }
+    }
+
+    return null;
   }
 
   /** The time to recall each of these items once. */
@@ -546,9 +647,7 @@ export class Session {
    * Null when every item had its recall, or nothing can recall the ones left.
    */
   private closingTask(view: SessionView, endAt: number): Task | null {
-    const owed = [...view.memory.values()]
-      .filter((m) => isOwed(m, endAt) && !this.closed.has(m.id))
-      .toSorted(byDue);
+    const owed = this.owedAt(view, endAt);
 
     return (
       this.recallTask(view, owed, "learning", this.recent.slice(0, 1)) ??

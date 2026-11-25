@@ -551,6 +551,41 @@ describe("a session", () => {
     expect(asked).toEqual(taughtIds);
   });
 
+  test("the session says why it chose a task, with the facts it decided on", () => {
+    const mem = new Map<string, Mem>();
+    const session = new Session(5, () => 0.3);
+
+    expect(session.lastChoice).toBeNull();
+
+    session.next(view(mem), T0);
+
+    // Nothing is learned yet, so the plan gives new material, with all five minutes to spare.
+    expect(session.lastChoice).toEqual({
+      backlog: false,
+      dueLearning: 0,
+      dueReviews: 0,
+      learning: 0,
+      leftMs: 5 * 60_000,
+      owed: 0,
+      reviewShare: 0,
+      shortOfTime: false,
+      spareMs: 5 * 60_000,
+      step: "planned",
+      struggling: false,
+    });
+  });
+
+  test("at the end the session says that it closed, and that time was short", () => {
+    const { session } = playToEnd(4 * 60_000);
+
+    expect(session.lastChoice).toMatchObject({
+      owed: 0,
+      shortOfTime: true,
+      spareMs: null,
+      step: "done",
+    });
+  });
+
   test("new words are not started when there is no time left to recall them", () => {
     const mem = new Map<string, Mem>();
     const early = new Session(5, () => 0.3);

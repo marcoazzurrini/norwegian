@@ -67,6 +67,7 @@ export { Session, blockOf } from "./session";
 
 export type {
   Block,
+  Choice,
   SessionStats,
   SessionView,
   SoundStats,
