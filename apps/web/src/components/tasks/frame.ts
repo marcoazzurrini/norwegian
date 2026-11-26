@@ -6,5 +6,7 @@ export interface Frame {
   title: string;
   label: string;
   progress: number;
+  /** Where the bar stood on the task before, so it fills from there. */
+  progressFrom?: number;
   onClose: () => void;
 }

@@ -33,6 +33,8 @@ const styles = stylex.create({
     paddingLeft: { default: "1rem", [stylex.env.desktop]: "1.375rem" },
     paddingRight: { default: "1.25rem", [stylex.env.desktop]: "1.75rem" },
     textAlign: "left",
+    // The ring and the greyed text of a marked option fade in; they do not snap.
+    transitionProperty: "transform, box-shadow, color",
     width: "100%",
   },
   right: {
@@ -139,13 +141,13 @@ export const Choices = ({
             {isRight ? (
               <Check
                 aria-label="right"
-                {...stylex.props(styles.mark, styles.markRight)}
+                {...stylex.props(effects.pop, styles.mark, styles.markRight)}
               />
             ) : null}
             {isWrong ? (
               <X
                 aria-label="wrong"
-                {...stylex.props(styles.mark, styles.markWrong)}
+                {...stylex.props(effects.pop, styles.mark, styles.markWrong)}
               />
             ) : null}
           </button>

@@ -1,7 +1,7 @@
 import { lessons } from "@norsk/content";
 import { Session, blockOf, lessonState } from "@norsk/engine";
 import type { Task, TaskResult } from "@norsk/engine";
-import { Card, Chip, Focus, buttonStyle } from "@norsk/ui";
+import { Card, Chip, Focus, buttonStyle, effects } from "@norsk/ui";
 import { color, display, text, tracking } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -86,11 +86,13 @@ const styles = stylex.create({
 
 interface DoneProps {
   session: Session;
+  /** The progress the last task showed. */
+  progressFrom: number;
   onClose: () => void;
 }
 
 /** The end of a session: what was done in it. */
-const Done = ({ session, onClose }: DoneProps) => {
+const Done = ({ session, progressFrom, onClose }: DoneProps) => {
   const { spent, closing, tiles, taughtNew } = summaryOf(session);
   const days = learner.progress().days.length;
 
@@ -100,6 +102,7 @@ const Done = ({ session, onClose }: DoneProps) => {
       title="Done"
       label={`${spent} min`}
       progress={1}
+      progressFrom={progressFrom}
       onClose={onClose}
       wide
       dock={
@@ -113,7 +116,7 @@ const Done = ({ session, onClose }: DoneProps) => {
         </div>
       }
     >
-      <div {...stylex.props(styles.hero)}>
+      <div {...stylex.props(effects.rise, styles.hero)}>
         <Chip strong="Session complete.">
           {days > 0 ? `Day ${days}` : undefined}
         </Chip>
@@ -121,15 +124,24 @@ const Done = ({ session, onClose }: DoneProps) => {
         <p {...stylex.props(styles.closing)}>{closing}</p>
       </div>
       <div {...stylex.props(styles.tiles)}>
-        {tiles.map((tile) => (
-          <Card key={tile.label} style={styles.tile}>
+        {tiles.map((tile, place) => (
+          <Card
+            key={tile.label}
+            style={[effects.rise, effects.after(place + 1), styles.tile]}
+          >
             <div {...stylex.props(styles.tileValue)}>{tile.value}</div>
             <div {...stylex.props(styles.tileLabel)}>{tile.label}</div>
           </Card>
         ))}
       </div>
       {taughtNew ? (
-        <p {...stylex.props(styles.note)}>
+        <p
+          {...stylex.props(
+            effects.rise,
+            effects.after(tiles.length + 1),
+            styles.note
+          )}
+        >
           New items come back within minutes at first. Open the app again later
           today, or tomorrow.
         </p>
@@ -158,10 +170,17 @@ interface Run {
   /** How many tasks the session has shown. Each task gets a fresh screen. */
   count: number;
   startedAt: number;
+  /** The progress the screen before showed. Each task has its own bar, which fills from here. */
+  progressFrom: number;
 }
 
 /** Asks the session for its next task, given what the learner knows at this moment. */
-const nextRun = (session: Session, count: number, now: number): Run => {
+const nextRun = (
+  session: Session,
+  count: number,
+  now: number,
+  progressFrom: number
+): Run => {
   const { chosenLesson, sentenceSeen, sounds, storiesDone } =
     learner.progress();
 
@@ -176,7 +195,7 @@ const nextRun = (session: Session, count: number, now: number): Run => {
     now
   );
 
-  return { count, session, startedAt: now, task };
+  return { count, progressFrom, session, startedAt: now, task };
 };
 
 /** A new session, planned with how long this learner's tasks took before, and its first task. */
@@ -184,7 +203,8 @@ const firstRun = (minutes: number): Run =>
   nextRun(
     new Session(minutes, Math.random, learner.progress().pace),
     1,
-    Date.now()
+    Date.now(),
+    0
   );
 
 const SessionPage = () => {
@@ -212,12 +232,19 @@ const SessionPage = () => {
   };
 
   if (task.type === "done") {
-    return <Done session={session} onClose={onClose} />;
+    return (
+      <Done
+        session={session}
+        progressFrom={run.progressFrom}
+        onClose={onClose}
+      />
+    );
   }
 
   const onDone = async (result: TaskResult) => {
     // The session decides how much of the time counts and keeps the statistics.
     const ms = Date.now() - run.startedAt;
+    const progressFrom = session.progress;
     const counted = session.complete(task, result, ms);
 
     noteTaskDone(run.count, result, ms, counted);
@@ -225,7 +252,7 @@ const SessionPage = () => {
     await learner.addStudyTime(counted);
     await learner.savePace(session.pace);
     await forgetFinishedChoice();
-    setRun(nextRun(session, run.count + 1, Date.now()));
+    setRun(nextRun(session, run.count + 1, Date.now(), progressFrom));
   };
 
   const block = blockOf(task);
@@ -240,6 +267,7 @@ const SessionPage = () => {
         label: `${minutesLeft(session)} min left`,
         onClose,
         progress: session.progress,
+        progressFrom: run.progressFrom,
         title: session.closing ? "Recall again" : BLOCK_TITLE[block],
       }}
       onDone={onDone}

@@ -2,11 +2,14 @@
 import { Progress as BaseProgress } from "@base-ui/react/progress";
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
+import { useEffect, useState } from "react";
 
 import { color, motion, radius } from "../tokens/tokens.stylex";
 
 export type ProgressTone = "plain" | "good";
 
+// Both bars are as wide as the track and are moved out of it to the left, so the part that
+// stays inside is the value. Moving a bar costs the browser less than changing its width.
 const styles = stylex.create({
   track: {
     backgroundColor: color.control,
@@ -21,7 +24,7 @@ const styles = stylex.create({
     position: "relative",
     zIndex: 1,
     transitionDuration: motion.fill,
-    transitionProperty: "width",
+    transitionProperty: "transform",
     transitionTimingFunction: motion.easeOut,
   },
 });
@@ -30,11 +33,10 @@ const reachStyles = stylex.create({
   reach: {
     backgroundColor: color.yellow,
     borderRadius: radius.pill,
-    insetBlock: 0,
-    insetInlineStart: 0,
+    inset: 0,
     position: "absolute",
     transitionDuration: motion.fill,
-    transitionProperty: "width",
+    transitionProperty: "transform",
     transitionTimingFunction: motion.easeOut,
   },
 });
@@ -54,35 +56,64 @@ interface ProgressProps {
    * next to the bar has to say the number.
    */
   reach?: number;
+  /**
+   * From 0 to 1. The bar starts here and moves to `value`. For a bar that takes the place
+   * of one on the screen before, so that the two look like one bar that goes on.
+   */
+  from?: number | undefined;
   /** Applies to the track: its height, width, or place in a layout. */
   style?: StyleXStyles;
 }
 
 const clamp = (value: number): number => Math.max(0, Math.min(1, value));
 
+/** Leaves `part` of a bar inside the track. */
+const shift = (part: number): string => `translateX(${(part - 1) * 100}%)`;
+
 export const Progress = ({
   value,
   tone = "plain",
   reach,
+  from,
   style,
 }: ProgressProps) => {
   const part = clamp(value);
 
+  // A bar with a `from` is first drawn there. One frame later it gets its value,
+  // and the transition carries it over.
+  const [moved, setMoved] = useState(from === undefined);
+
+  useEffect(() => {
+    const frame = moved
+      ? undefined
+      : requestAnimationFrame(() => {
+          setMoved(true);
+        });
+
+    return () => {
+      if (frame !== undefined) {
+        cancelAnimationFrame(frame);
+      }
+    };
+  }, [moved]);
+
+  const shown = moved || from === undefined ? part : clamp(from);
+
   // Assistive technology hears a whole percentage. The fill keeps the exact value, so the
-  // bar moves smoothly: its own `style` replaces the rounded width that Base UI gives it.
+  // bar moves smoothly: its own `style` replaces the width that Base UI gives it.
   return (
     <BaseProgress.Root
       value={Math.round(part * 100)}
       {...stylex.props(styles.track, style)}
     >
       <BaseProgress.Indicator
-        style={{ width: `${part * 100}%` }}
+        style={{ transform: shift(shown), width: "100%" }}
         {...stylex.props(styles.fill, tones[tone])}
       />
       {reach === undefined ? null : (
         <div
           aria-hidden="true"
-          style={{ width: `${clamp(reach) * 100}%` }}
+          style={{ transform: shift(clamp(reach)) }}
           {...stylex.props(reachStyles.reach)}
         />
       )}

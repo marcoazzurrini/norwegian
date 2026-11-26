@@ -45,7 +45,8 @@ const FADE = {
   transitionDuration: "200ms",
   transitionProperty:
     "color, background-color, border-color, outline-color, text-decoration-color, fill, stroke",
-  transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+  // A colour change takes the plain curve; the strong one is for things that move.
+  transitionTimingFunction: "ease",
 } as const;
 
 const styles = stylex.create({

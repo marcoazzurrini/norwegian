@@ -137,6 +137,8 @@ interface FocusProps {
   label: string;
   /** From 0 to 1. */
   progress: number;
+  /** From 0 to 1. Where the bar stood on the screen before; it fills from there. */
+  progressFrom?: number;
   onClose: () => void;
   children: ReactNode;
   /** The composer or the buttons at the bottom. */
@@ -152,6 +154,7 @@ export const Focus = ({
   title,
   label,
   progress,
+  progressFrom,
   onClose,
   children,
   dock,
@@ -171,7 +174,13 @@ export const Focus = ({
 
     const element = stage.current;
 
-    element?.scrollTo({ behavior: "smooth", top: element.scrollHeight });
+    // A scroll from a script ignores the reduced motion setting, so it is asked here.
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    element?.scrollTo({
+      behavior: still ? "auto" : "smooth",
+      top: element.scrollHeight,
+    });
   }, [scrollKey]);
 
   const column = wide ? styles.wide : styles.narrow;
@@ -190,12 +199,20 @@ export const Focus = ({
             {title}
           </div>
           <div {...stylex.props(styles.place)}>
-            <Progress value={progress} style={styles.wideBar} />
+            <Progress
+              value={progress}
+              from={progressFrom}
+              style={styles.wideBar}
+            />
             <span {...stylex.props(styles.label)}>{label}</span>
           </div>
         </header>
         <div {...stylex.props(styles.phoneBarRow)}>
-          <Progress value={progress} style={styles.phoneBar} />
+          <Progress
+            value={progress}
+            from={progressFrom}
+            style={styles.phoneBar}
+          />
         </div>
 
         <div ref={stage} {...stylex.props(styles.stage, effects.noScrollbar)}>
