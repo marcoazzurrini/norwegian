@@ -36,8 +36,8 @@ w ønske | verb | to wish
 w håpe | verb | to hope
 w tenke | verb | to think (use your mind)
 w planlegge | verb | to plan
-c glede seg til ___ | to look forward to ___
-c ha lyst til å ___ | to feel like (doing something)
+c glede seg til ___ | to look forward to ___ | verb
+c ha lyst til å ___ | to feel like (doing something) | verb
 w lyst | noun ei | desire
 
 ## lesson Free time
@@ -47,7 +47,7 @@ w fest | noun en | party
 w spille | verb | to play
 w fotball | noun en | football
 w svømme | verb | to swim
-c gå på ski | to go skiing
+c gå på ski | to go skiing | verb
 
 ## lesson The year
 w vår | noun en | spring (season)

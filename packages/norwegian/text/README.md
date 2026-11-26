@@ -30,6 +30,7 @@ Ida: Hei! | Hi!
 - `w` is a word. It matches every inflected form of its lemma, unless `only` is set.
 - `f` is a single irregular form, taught as its own item. It always matches only itself.
 - `c` is a chunk. `___` marks a slot.
+- A chunk that is a verb phrase is marked `verb`: `c stå opp | to get up | verb`. It is shown with "å" (å stå opp), like a verb, and may be typed with or without it.
 - A word marked `no-example` may go without an example sentence: `w ja | interj | yes | no-example`. See "Example sentences" below.
 - Give each item one meaning. A word or chunk with two unrelated meanings is written once for each, with `sense=name`: `w bli | verb | to become | sense=become` and `w bli | verb | to stay | sense=stay`. The meaning written first keeps the plain id.
 - In a sentence or a story, a word with several meanings must name the one meant: `Vi ble{stay} hjemme.` The build fails without it.

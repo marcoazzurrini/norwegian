@@ -56,9 +56,9 @@ w ledig | adj | vacant
 ## lesson Health
 w lege | noun en | doctor
 w føle | verb | to feel
-c ha vondt i ___ | to have a pain in ___
+c ha vondt i ___ | to have a pain in ___ | verb
 w hode | noun et | head
-c føle seg ___ | to feel ___
+c føle seg ___ | to feel ___ | verb
 w bedre | adj | better
 w dårlig | adj | bad
 

@@ -1,7 +1,7 @@
 # unit 5 | Dagen min | Daily life, time, verb in second place | level: A1
 
 ## lesson Daily verbs
-c stå opp | to get up
+c stå opp | to get up | verb
 w opp | adv | up
 w sove | verb | to sleep
 w jobbe | verb | to work
@@ -51,8 +51,8 @@ w hver | det | every
 
 ## lesson Activities
 w trene | verb | to exercise
-c lage mat | to cook
-c høre på ___ | to listen to ___
+c lage mat | to cook | verb
+c høre på ___ | to listen to ___ | verb
 w musikk | noun en | music
 w skole | noun en | school
 w hjemme | adv | at home
@@ -74,7 +74,7 @@ w onsdag | noun en | Wednesday
 w torsdag | noun en | Thursday
 w vanligvis | adv | usually
 w fri | adj | free (off work)
-c ha fri | to be off work
+c ha fri | to be off work | verb
 
 ## sentences
 

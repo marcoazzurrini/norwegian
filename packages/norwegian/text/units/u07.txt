@@ -56,7 +56,7 @@ w flink | adj | good at something
 w høy | adj | tall
 w syk | adj | ill
 w frisk | adj | healthy
-c se ___ ut | to look ___ (appear)
+c se ___ ut | to look ___ (appear) | verb
 
 ## lesson This and that
 w hvilken | det | which

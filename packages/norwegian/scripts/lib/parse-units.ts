@@ -372,15 +372,18 @@ const readChunk = (
   }
 
   const sense = senseOf(opts);
+  const typed = norm(text.replaceAll("___", ""));
+  // A verb phrase is shown like a verb, with "å" ("å stå opp"), and may be typed with or without it.
+  const verb = opts.includes("verb");
 
   const item: Item = {
     id: idWithSense(reader, `c:${slug(text)}`, sense),
     kind: "chunk",
     lesson: lesson.index,
     text,
-    display: text,
+    display: verb ? `å ${text}` : text,
     gloss,
-    answers: [norm(text.replaceAll("___", ""))],
+    answers: verb ? [typed, `å ${typed}`] : [typed],
   };
 
   addItem(

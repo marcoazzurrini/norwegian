@@ -60,7 +60,7 @@ w fjell | noun et | mountain
 w sjø | noun en | sea
 w vær | noun et | weather
 w gøy | adj | fun
-c ha det gøy | to have fun
+c ha det gøy | to have fun | verb
 
 ## lesson What did you do
 w gjøre | verb | to do
