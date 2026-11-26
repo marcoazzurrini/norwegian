@@ -1,6 +1,6 @@
 // Helpers shared by the tests. Not part of the public interface.
-import { lessons, sentences } from "@norsk/content";
-import type { Lesson, Sentence } from "@norsk/content";
+import type { Lesson, Sentence } from "@norsk/course";
+import { course } from "@norsk/norwegian";
 
 import type { Step, TaskMachine } from "./index";
 
@@ -18,10 +18,13 @@ export const must = <Value>(value: Value | null | undefined): Value => {
   return value;
 };
 
-export const sentenceOf = (no: string): Sentence =>
-  must(sentences.find((s) => s.no === no));
+/** The course the tests run on: the engine is tried on a real curriculum. */
+export { course };
 
-export const lessonAt = (index: number): Lesson => must(lessons[index]);
+export const sentenceOf = (target: string): Sentence =>
+  must(course.sentences.find((s) => s.target === target));
+
+export const lessonAt = (index: number): Lesson => must(course.lessons[index]);
 
 /** The ids of every item taught in the given lessons. */
 export const itemsOf = (lessonIndexes: number[]): Set<string> =>

@@ -69,6 +69,11 @@ export interface Host {
 export type Fetch = (path: string, init: RequestInit) => Promise<Response>;
 
 export interface LearnerDeps {
+  /**
+   * The short name of the course this learner studies: "no", "de". Each course has its own data,
+   * on this device and on the server, so a learner only ever sees and changes its own course.
+   */
+  course: string;
   /** Where the data is kept on this device. */
   indexedDB: IDBFactory;
   fetch: Fetch;
@@ -112,11 +117,14 @@ export interface Learner {
   /** Keeps how long the latest tasks took, so the next session can plan its time with it. */
   savePace: (pace: Pace) => Promise<void>;
 
-  /** Everything on this device, as the text of a backup file. */
+  /** Everything of this course on this device, as the text of a backup file. */
   exportBackup: () => Promise<string>;
-  /** Replaces all progress with a backup file, here and on every signed-in device. Rejects if the file is not a backup. */
+  /**
+   * Replaces all progress in this course with a backup file, here and on every signed-in device.
+   * Rejects if the file is not a backup, or is a backup of another course.
+   */
   restoreBackup: (json: string) => Promise<void>;
-  /** Deletes all progress, here and on every signed-in device. */
+  /** Deletes all progress in this course, here and on every signed-in device. Other courses are left alone. */
   startOver: () => Promise<void>;
 
   /** Sends local changes and fetches remote ones. Calls made while a sync runs are folded into one follow-up. */

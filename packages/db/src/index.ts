@@ -1,8 +1,9 @@
 // The learner's data on the server.
 //
 // Hides: SQL and Drizzle, the tables, the `rev` and `epoch` counters, how one exchange is made a
-// single transaction, and how the log is handed out in pages. A caller sends a sync request and
-// gets the answer; it cannot tell how either is stored.
+// single transaction, how the log is handed out in pages, and how the data of one course is kept
+// apart from the data of another. A caller sends a sync request and gets the answer; it cannot
+// tell how either is stored.
 import {
   LOG_PAGE,
   mergeMeta,
@@ -12,6 +13,7 @@ import {
   WireMemSchema,
 } from "@norsk/protocol";
 import type {
+  CourseId,
   JournalEvent,
   SyncedMeta,
   SyncRequest,
@@ -19,7 +21,7 @@ import type {
   WireLog,
   WireMem,
 } from "@norsk/protocol";
-import { eq, gt, sql } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import * as v from "valibot";
 
@@ -27,8 +29,9 @@ import { event, log, memory, meta, state } from "./schema";
 
 /** A stored row that this version cannot read. It is left in the database as it is. */
 export interface UnreadableRow {
+  course: CourseId;
   table: "memory" | "log" | "meta";
-  /** The row's key: the item id, the log sequence number, or "1" for the settings. */
+  /** The row's key within its course: the item id, the log sequence number, or "settings". */
   key: string;
 }
 
@@ -39,15 +42,17 @@ export interface DbOptions {
 
 export interface Db {
   /**
-   * One step of sync: stores what the device sends and answers with what it lacks.
-   * A device from before the last "Start over" has none of its data stored, and is told to reset.
+   * One step of sync in the request's course: stores what the device sends and answers with what
+   * it lacks. A device from before the course's last "Start over" has none of its data stored,
+   * and is told to reset.
    */
   exchange: (request: SyncRequest) => Promise<SyncResponse>;
   /**
-   * "Start over": deletes everything and begins the data generation `epoch`.
+   * "Start over" in one course: deletes everything of that course and begins its data generation
+   * `epoch`. The other courses are left alone.
    * Returns false, and changes nothing, if a later generation has already begun.
    */
-  reset: (epoch: number) => Promise<boolean>;
+  reset: (course: CourseId, epoch: number) => Promise<boolean>;
   /** Adds events to the journal. One that is already stored, by its `uid`, is left alone. */
   record: (events: readonly JournalEvent[]) => Promise<void>;
 }
@@ -78,19 +83,37 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
     }
   };
 
-  const counters = async () => {
-    const rows = await db.select().from(state);
+  const counters = async (course: CourseId) => {
+    const rows = await db.select().from(state).where(eq(state.course, course));
+    // A course that nothing was stored for yet has no rows, and counts from 0.
     const get = (key: string) => rows.find((r) => r.key === key)?.value ?? 0;
 
     return { epoch: get("epoch"), rev: get("rev") };
   };
 
-  /** The stored settings. `readable` is false if there is a row that could not be read. */
-  const storedMeta = async (): Promise<{
+  /** Sets a counter of a course, or changes it with `next` if the course already has it. */
+  const count = (
+    course: CourseId,
+    key: "epoch" | "rev",
+    first: number,
+    next = sql`excluded.value`
+  ) =>
+    db
+      .insert(state)
+      .values({ course, key, value: first })
+      .onConflictDoUpdate({
+        set: { value: next },
+        target: [state.course, state.key],
+      });
+
+  /** The stored settings of a course. `readable` is false if there is a row that could not be read. */
+  const storedMeta = async (
+    course: CourseId
+  ): Promise<{
     meta: SyncedMeta | null;
     readable: boolean;
   }> => {
-    const [row] = await db.select().from(meta).where(eq(meta.id, 1));
+    const [row] = await db.select().from(meta).where(eq(meta.course, course));
 
     if (row === undefined) {
       return { meta: null, readable: true };
@@ -98,7 +121,7 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
 
     const parsed = read(
       SyncedMetaSchema,
-      { key: "1", table: "meta" },
+      { course, key: "settings", table: "meta" },
       row.data
     );
 
@@ -108,12 +131,12 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
   const nothing = () => db.run(sql`SELECT 1`);
 
   /** Adds the memories, each under the new revision number. A stored copy is replaced only by one reviewed later. */
-  const upsertMemory = (mems: readonly WireMem[]) =>
+  const upsertMemory = (course: CourseId, mems: readonly WireMem[]) =>
     db
       .insert(memory)
       .select(
-        sql`SELECT json_extract(value, '$.id'), json_extract(value, '$.data'), json_extract(value, '$.stamp'),
-                   (SELECT value FROM state WHERE key = 'rev')
+        sql`SELECT ${course}, json_extract(value, '$.id'), json_extract(value, '$.data'), json_extract(value, '$.stamp'),
+                   (SELECT value FROM state WHERE course = ${course} AND key = 'rev')
             FROM json_each(${JSON.stringify(
               mems.map((mem) => ({
                 data: mem,
@@ -129,22 +152,23 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
           stamp: sql`excluded.stamp`,
         },
         setWhere: sql`excluded.stamp > ${memory.stamp}`,
-        target: memory.id,
+        target: [memory.course, memory.id],
       });
 
-  /** Adds the log entries. One that is already stored, by its `uid`, is left alone. */
-  const insertLog = (entries: readonly WireLog[]) =>
+  /** Adds the log entries. One that the course already has, by its `uid`, is left alone. */
+  const insertLog = (course: CourseId, entries: readonly WireLog[]) =>
     db
       .insert(log)
       .select(
         // NULL for `seq`: the database numbers the entry.
-        sql`SELECT NULL, json_extract(value, '$.uid'), value
+        sql`SELECT NULL, ${course}, json_extract(value, '$.uid'), value
             FROM json_each(${JSON.stringify(entries)}) WHERE true`
       )
-      .onConflictDoNothing({ target: log.uid });
+      .onConflictDoNothing({ target: [log.course, log.uid] });
 
   const exchange = async (request: SyncRequest): Promise<SyncResponse> => {
-    const { epoch } = await counters();
+    const { course } = request;
+    const { epoch } = await counters(course);
     // A device from an older generation (before a "Start over" elsewhere) must not bring old data back.
     const stale = request.epoch !== null && request.epoch < epoch;
     const current = request.epoch === epoch;
@@ -154,7 +178,7 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
     const sentLog = stale ? [] : request.log;
     const sentMeta = stale ? null : request.meta;
 
-    const stored = await storedMeta();
+    const stored = await storedMeta(course);
 
     const merged =
       stored.meta && sentMeta
@@ -167,33 +191,33 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
     // One batch is one transaction, so the changes and the reads after them see the same state.
     const results = await db.batch([
       sentMemory.length > 0
-        ? db
-            .update(state)
-            .set({ value: sql`${state.value} + 1` })
-            .where(eq(state.key, "rev"))
+        ? count(course, "rev", 1, sql`${state.value} + 1`)
         : nothing(),
-      sentMemory.length > 0 ? upsertMemory(sentMemory) : nothing(),
-      sentLog.length > 0 ? insertLog(sentLog) : nothing(),
+      sentMemory.length > 0 ? upsertMemory(course, sentMemory) : nothing(),
+      sentLog.length > 0 ? insertLog(course, sentLog) : nothing(),
       saveMeta
         ? db
             .insert(meta)
-            .values({ data: JSON.stringify(merged), id: 1 })
+            .values({ course, data: JSON.stringify(merged) })
             .onConflictDoUpdate({
               set: { data: sql`excluded.data` },
-              target: meta.id,
+              target: meta.course,
             })
         : nothing(),
       db
         .select({ data: memory.data, id: memory.id })
         .from(memory)
-        .where(gt(memory.rev, memRev)),
+        .where(and(eq(memory.course, course), gt(memory.rev, memRev))),
       db
         .select({ data: log.data, seq: log.seq })
         .from(log)
-        .where(gt(log.seq, logSeq))
+        .where(and(eq(log.course, course), gt(log.seq, logSeq)))
         .orderBy(log.seq)
         .limit(LOG_PAGE + 1),
-      db.select({ value: state.value }).from(state).where(eq(state.key, "rev")),
+      db
+        .select({ value: state.value })
+        .from(state)
+        .where(and(eq(state.course, course), eq(state.key, "rev"))),
     ]);
 
     // The first four results belong to the writes.
@@ -208,7 +232,11 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
       epoch,
       log: page
         .map((row) =>
-          read(WireLogSchema, { key: String(row.seq), table: "log" }, row.data)
+          read(
+            WireLogSchema,
+            { course, key: String(row.seq), table: "log" },
+            row.data
+          )
         )
         .filter((entry) => entry !== undefined)
         .filter((entry) => !sentUids.has(entry.uid)),
@@ -219,7 +247,7 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
         .map((row) =>
           read(
             WireMemSchema,
-            { key: String(row.id), table: "memory" },
+            { course, key: row.id, table: "memory" },
             row.data
           )
         )
@@ -231,8 +259,8 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
     };
   };
 
-  const reset = async (epoch: number): Promise<boolean> => {
-    const now = await counters();
+  const reset = async (course: CourseId, epoch: number): Promise<boolean> => {
+    const now = await counters(course);
 
     if (!Number.isFinite(epoch) || epoch < now.epoch) {
       return false;
@@ -240,10 +268,10 @@ export const createDb = (d1: D1Database, options: DbOptions = {}): Db => {
 
     if (epoch > now.epoch) {
       await db.batch([
-        db.delete(memory),
-        db.delete(log),
-        db.delete(meta),
-        db.update(state).set({ value: epoch }).where(eq(state.key, "epoch")),
+        db.delete(memory).where(eq(memory.course, course)),
+        db.delete(log).where(eq(log.course, course)),
+        db.delete(meta).where(eq(meta.course, course)),
+        count(course, "epoch", epoch),
       ]);
     }
 

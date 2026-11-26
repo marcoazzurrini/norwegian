@@ -750,15 +750,15 @@
      },
      "children": [
       {
-       "id": "n2mCY",
+       "id": "DSaYg",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "uCdYp",
@@ -1813,15 +1813,15 @@
      "name": "Frame",
      "children": [
       {
-       "id": "Ha4vK",
+       "id": "cPgWM",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "dxRPA",
@@ -2888,15 +2888,15 @@
      "name": "Frame",
      "children": [
       {
-       "id": "XZiq3",
+       "id": "LALj7",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "NKmeG",
@@ -3962,15 +3962,15 @@
      },
      "children": [
       {
-       "id": "MzjmH",
+       "id": "pYSwc",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "sRZBz",
@@ -5136,15 +5136,15 @@
      },
      "children": [
       {
-       "id": "4eFbw",
+       "id": "UqvmP",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "8ZGw9",
@@ -6069,15 +6069,15 @@
      },
      "children": [
       {
-       "id": "9aAkU",
+       "id": "u4FtE",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "RpXZf",
@@ -6813,15 +6813,15 @@
      },
      "children": [
       {
-       "id": "CTBce",
+       "id": "fA2Ku",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "ejsZz",
@@ -7822,15 +7822,15 @@
      },
      "children": [
       {
-       "id": "xxTYk",
+       "id": "b45nu",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "aStPP",
@@ -8809,15 +8809,15 @@
      },
      "children": [
       {
-       "id": "3wmcB",
+       "id": "6NPZd",
        "type": "text",
+       "name": "norsk",
        "text": "norsk",
        "style": {
         "fontSize": 22,
         "fontWeight": 500,
         "letterSpacing": "-0.03em"
-       },
-       "name": "norsk"
+       }
       },
       {
        "id": "Cuh7W",
@@ -20336,7 +20336,7 @@
     {
      "id": "cTXWw",
      "type": "text",
-     "text": "1 screen",
+     "text": "3 states",
      "style": {
       "fontSize": 25.714285714285715,
       "color": "#9B9B9B"

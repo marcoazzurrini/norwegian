@@ -161,3 +161,101 @@ describe("two devices", () => {
     expect(phone.data()).toEqual(laptop.data());
   });
 });
+
+describe("devices in two courses", () => {
+  test("the app from before there were courses and the app of today share the first course", async () => {
+    const today = new Device("today", await signIn(), null, "no");
+
+    phone.teach("w:hus:noun");
+    phone.study(5 * MINUTE, "2026-11-17");
+    later();
+    today.teach("w:bok:noun");
+    later();
+
+    await phone.sync();
+    await today.sync();
+    await phone.sync();
+
+    expect([...today.memory.keys()].toSorted()).toEqual([
+      "w:bok:noun",
+      "w:hus:noun",
+    ]);
+    expect(today.data()).toEqual(phone.data());
+  });
+
+  test("each course has its own memories, log and settings", async () => {
+    const cookie = await signIn();
+    const german = new Device("german", cookie, null, "de");
+    const germanToo = new Device("german-too", cookie, null, "de");
+
+    phone.teach("w:hus:noun");
+    phone.setMinutes(25);
+    phone.study(5 * MINUTE, "2026-11-17");
+    later();
+    // The same item id means another word in another course.
+    german.teach("w:hus:noun", "w:haus:noun");
+    later();
+    german.review("w:hus:noun");
+    later();
+
+    await phone.sync();
+    await german.sync();
+    await laptop.sync();
+    await germanToo.sync();
+    await phone.sync();
+
+    expect(laptop.data()).toEqual(phone.data());
+    expect(germanToo.data()).toEqual(german.data());
+    expect([...laptop.memory.keys()]).toEqual(["w:hus:noun"]);
+    expect(laptop.memory.get("w:hus:noun")?.card.reps).toBe(1);
+    expect(germanToo.memory.get("w:hus:noun")?.card.reps).toBe(2);
+    expect(laptop.log.size).toBe(1);
+    expect(germanToo.log.size).toBe(3);
+    expect(laptop.meta).toMatchObject({ days: ["2026-11-17"] });
+    expect(laptop.meta.settings.minutes).toBe(25);
+    expect(germanToo.meta).toMatchObject({ days: [], totalMs: 0 });
+    expect(germanToo.meta.settings.minutes).toBe(15);
+  });
+
+  test("a Start over in one course leaves the other as it was", async () => {
+    const cookie = await signIn();
+    const german = new Device("german", cookie, null, "de");
+    const germanToo = new Device("german-too", cookie, null, "de");
+
+    phone.teach("w:hus:noun");
+    german.teach("w:haus:noun");
+    later();
+    await phone.sync();
+    await german.sync();
+    await laptop.sync();
+    await germanToo.sync();
+    later();
+
+    const before = laptop.data();
+
+    german.startOver();
+    await german.sync();
+    await germanToo.sync();
+    await laptop.sync();
+    await phone.sync();
+
+    expect(germanToo.memory.size).toBe(0);
+    expect(germanToo.log.size).toBe(0);
+    expect(laptop.data()).toEqual(before);
+    expect(phone.data()).toEqual(before);
+    expect(laptop.cursors.epoch).toBe(0);
+
+    // And the other way round: the first course starts over, the German course goes on.
+    later();
+    german.teach("w:buch:noun");
+    later();
+    phone.startOver();
+    await phone.sync();
+    await german.sync();
+    await laptop.sync();
+    await germanToo.sync();
+
+    expect(laptop.memory.size).toBe(0);
+    expect([...germanToo.memory.keys()]).toEqual(["w:buch:noun"]);
+  });
+});

@@ -1,4 +1,4 @@
-import type { Example, Item, Sentence } from "@norsk/content";
+import type { Example, Item, Sentence } from "@norsk/course";
 import { patternTask } from "@norsk/engine";
 import type { TaskResult } from "@norsk/engine";
 import {
@@ -142,7 +142,7 @@ interface ExampleRowProps {
 }
 
 const ExampleRow = ({ example }: ExampleRowProps) => {
-  const { from, kept, added } = contrast(example.no);
+  const { from, kept, added } = contrast(example.target);
   const changed = added !== "";
 
   const form = (
@@ -151,7 +151,7 @@ const ExampleRow = ({ example }: ExampleRowProps) => {
         <span {...stylex.props(changed && styles.kept)}>{kept}</span>
         {changed ? <span {...stylex.props(styles.added)}>{added}</span> : null}
       </span>
-      <span {...stylex.props(styles.meaningPhone)}>{example.en}</span>
+      <span {...stylex.props(styles.meaningPhone)}>{example.base}</span>
     </span>
   );
 
@@ -159,7 +159,7 @@ const ExampleRow = ({ example }: ExampleRowProps) => {
     <div {...stylex.props(styles.example)}>
       <AudioButton
         onPlay={() => {
-          say(spokenForm(example.no));
+          say(spokenForm(example.target));
         }}
         style={styles.exampleAudio}
       />
@@ -180,7 +180,7 @@ const ExampleRow = ({ example }: ExampleRowProps) => {
           from === null && styles.meaningWideAlone
         )}
       >
-        {example.en}
+        {example.base}
       </span>
     </div>
   );
@@ -202,7 +202,7 @@ export const PatternTask = ({
 }: PatternTaskProps) => {
   const [state, send] = useTask(
     patternTask,
-    () => ({ item, known: new Set(learner.memory().keys()), practice }),
+    () => ({ item, known: new Set(learner().memory().keys()), practice }),
     onDone
   );
 
@@ -245,7 +245,7 @@ export const PatternTask = ({
         <p {...stylex.props(styles.lead)}>Watch what changes.</p>
         <ListCard style={styles.examples}>
           {item.examples?.map((example) => (
-            <ExampleRow key={example.no} example={example} />
+            <ExampleRow key={example.target} example={example} />
           ))}
         </ListCard>
         <Remark lead="The rule." style={styles.rule}>

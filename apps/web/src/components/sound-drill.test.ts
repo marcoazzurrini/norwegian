@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { sounds } from "@norsk/content";
+import { course } from "@norsk/norwegian";
 
 import {
   DRILL_LENGTH,
@@ -8,6 +8,8 @@ import {
   soundGroups,
   voicesNote,
 } from "./sound-drill";
+
+const { sounds } = course;
 
 test("the pairs are grouped by the contrast they train", () => {
   const groups = soundGroups(sounds);
@@ -35,11 +37,13 @@ test("a drill has ten questions from the given pairs", () => {
 });
 
 test("the note on voices counts them", () => {
-  expect(voicesNote([])).toStartWith("No Norwegian voice is installed");
-  expect(voicesNote(["Nora"])).toBe(
+  expect(voicesNote([], "Norwegian")).toStartWith(
+    "No Norwegian voice is installed"
+  );
+  expect(voicesNote(["Nora"], "Norwegian")).toBe(
     "This device has one Norwegian voice (Nora). Ear training works best with several voices."
   );
-  expect(voicesNote(["Nora", "Henrik"])).toBe(
+  expect(voicesNote(["Nora", "Henrik"], "Norwegian")).toBe(
     "This device has 2 Norwegian voices. The drill switches between them."
   );
 });

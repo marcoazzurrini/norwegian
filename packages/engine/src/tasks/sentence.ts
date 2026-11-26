@@ -1,7 +1,7 @@
-// A whole sentence: English shown, Norwegian typed. One sentence reviews every taught item in it.
+// A whole sentence: its meaning shown, the sentence typed. One sentence reviews every taught item in it.
 // A miss gets a hint and a second try. The items behind the words missed on the first try fail;
 // every other item in the sentence passes.
-import type { Sentence, Token } from "@norsk/content";
+import type { Sentence, Token } from "@norsk/course";
 
 import { gradeSentence } from "../grade";
 import type { SentenceGrade } from "../grade";
@@ -67,10 +67,10 @@ export type SentenceEvent =
 export interface ExplainRequest {
   /** "hint" must not give the answer away; "explain" comes after the answer is shown. */
   kind: "hint" | "explain";
-  /** The English sentence the learner was asked to say. */
-  en: string;
-  /** The expected Norwegian. */
-  no: string;
+  /** The sentence the learner was asked to say, in their own language. */
+  base: string;
+  /** The expected sentence, in the language of the course. */
+  target: string;
   /** What the learner typed. */
   answer: string;
   /** Ids of the items the learner got wrong. */
@@ -163,7 +163,7 @@ const showResult = (
   last: SentenceGrade,
   passed: boolean
 ): Step<SentenceState> => ({
-  effects: [{ text: state.sentence.no, type: "speak" }],
+  effects: [{ text: state.sentence.target, type: "speak" }],
   state: { ...state, phase: { failed, last, passed, step: "result" } },
 });
 
@@ -286,7 +286,7 @@ const wordsOf = (g: SentenceGrade): string =>
  */
 export const explainRequest = (state: SentenceState): ExplainRequest | null => {
   const { phase, sentence } = state;
-  const about = { en: sentence.en, no: sentence.no };
+  const about = { base: sentence.base, target: sentence.target };
 
   if (phase.step === "retry") {
     return {

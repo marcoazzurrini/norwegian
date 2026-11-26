@@ -132,6 +132,12 @@ export interface SignInFailure {
 }
 
 interface SignInProps {
+  /** The name of the app as it is written at the top, such as "norsk". */
+  name: string;
+  /** The language that is learned, in the learner's own language: "Norwegian". */
+  language: string;
+  /** "Welcome" in the language that is learned. */
+  welcome: string;
   /** Called when the learner presses the button. The caller starts the sign-in. */
   onSignIn: () => void;
   /** True while the sign-in is starting; the button cannot be pressed again. */
@@ -141,6 +147,9 @@ interface SignInProps {
 }
 
 export const SignIn = ({
+  name,
+  language,
+  welcome,
   onSignIn,
   busy = false,
   failure = null,
@@ -170,10 +179,12 @@ export const SignIn = ({
   );
 
   return (
-    <Bare>
+    <Bare name={name}>
       <div {...stylex.props(styles.greeting)}>
-        <Chip strong="Norsk.">Norwegian by recall</Chip>
-        <h1 {...stylex.props(styles.title)}>Velkommen</h1>
+        <Chip strong={`${name.charAt(0).toUpperCase()}${name.slice(1)}.`}>
+          {language} by recall
+        </Chip>
+        <h1 {...stylex.props(styles.title)}>{welcome}</h1>
         <p {...stylex.props(styles.lead)}>
           Welcome. Sign in to start learning.
         </p>

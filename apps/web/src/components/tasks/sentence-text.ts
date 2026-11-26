@@ -1,14 +1,14 @@
 // The words around a sentence task: the hint after a miss and the line under the answer.
-import { item } from "@norsk/content";
+import type { Course } from "@norsk/course";
 import type { SentenceHint } from "@norsk/engine";
 
 /** A prompt that points at the problem without giving the answer. */
-export const hintText = (hint: SentenceHint): string => {
+export const hintText = (course: Course, hint: SentenceHint): string => {
   switch (hint.kind) {
     case "order": {
       return hint.pattern === null
         ? "All the words are right. Check the order."
-        : `All the words are right. Check the order: ${item(hint.pattern).title ?? ""}.`;
+        : `All the words are right. Check the order: ${course.item(hint.pattern).title ?? ""}.`;
     }
 
     case "extra": {
@@ -16,15 +16,15 @@ export const hintText = (hint: SentenceHint): string => {
     }
 
     case "pattern": {
-      return `Think about: ${item(hint.id).title ?? ""}.`;
+      return `Think about: ${course.item(hint.id).title ?? ""}.`;
     }
 
     case "word": {
-      return `Check the word for “${item(hint.id).gloss}”.`;
+      return `Check the word for “${course.item(hint.id).gloss}”.`;
     }
 
     case "chunk": {
-      return `Check the phrase for “${item(hint.id).gloss}”.`;
+      return `Check the phrase for “${course.item(hint.id).gloss}”.`;
     }
 
     case "unknown": {

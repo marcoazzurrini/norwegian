@@ -24,8 +24,8 @@
     "test": "bun run --filter '*' test",
     "test:e2e": "bun run --filter @norsk/web test:e2e",
     "typecheck": "bun run --filter '*' typecheck",
-    "content": "bun run --filter @norsk/content build",
-    "audio": "bun run --filter @norsk/content audio",
+    "content": "bun run --filter @norsk/norwegian build",
+    "audio": "bun run --filter @norsk/norwegian audio",
     "fix": "ultracite fix",
     "prepare": "lefthook install",
     "lint": "ultracite check"

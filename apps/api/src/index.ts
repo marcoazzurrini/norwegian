@@ -4,6 +4,7 @@
 // answers. Static files are served by Cloudflare directly; this code handles /api/* and /audio/*.
 import { createAuth } from "@norsk/auth";
 import type { Auth, AuthEnv } from "@norsk/auth";
+import { courseMeta } from "@norsk/courses";
 import { createDb } from "@norsk/db";
 import {
   AUDIO_FILE,
@@ -239,17 +240,26 @@ app.post(ROUTES.sync, async (c) => {
 
   const db = createDb(c.env.DB, {
     onUnreadableRow: (row) => {
-      logWarning("sync.unreadable_row", { key: row.key, table: row.table });
+      logWarning("sync.unreadable_row", {
+        course: row.course,
+        key: row.key,
+        table: row.table,
+      });
     },
   });
 
   const answer: SyncResponse = await db.exchange(request);
 
   if (dropped > 0) {
-    logWarning("sync.dropped", { items: dropped, user: user.id });
+    logWarning("sync.dropped", {
+      course: request.course,
+      items: dropped,
+      user: user.id,
+    });
   }
 
   logInfo("sync", {
+    course: request.course,
     logIn: request.log.length,
     logOut: answer.log.length,
     memoryIn: request.memory.length,
@@ -264,7 +274,10 @@ app.post(ROUTES.sync, async (c) => {
   return c.json(answer, 200, NO_STORE);
 });
 
-/** "Start over": deletes everything and starts a new generation, so other devices drop their copies too. */
+/**
+ * "Start over" in one course: deletes everything of that course and starts a new generation
+ * there, so other devices drop their copies too. The other courses are left alone.
+ */
 app.post(ROUTES.reset, async (c) => {
   const { body, user } = await learnerRequest(c);
   const request = v.safeParse(ResetRequestSchema, body);
@@ -273,13 +286,13 @@ app.post(ROUTES.reset, async (c) => {
     throw refuse(400, "Not a reset request");
   }
 
-  const { epoch } = request.output;
+  const { course, epoch } = request.output;
 
-  if (!(await createDb(c.env.DB).reset(epoch))) {
+  if (!(await createDb(c.env.DB).reset(course, epoch))) {
     throw refuse(409, "A newer reset already happened");
   }
 
-  logInfo("reset", { epoch, user: user.id });
+  logInfo("reset", { course, epoch, user: user.id });
 
   return c.json({ epoch } satisfies ResetResponse, 200, NO_STORE);
 });
@@ -331,8 +344,14 @@ app.post(ROUTES.explain, async (c) => {
     throw refuse(429, "Too many explanations. Try again in a minute.");
   }
 
+  const course = courseMeta(request.output.course);
+
+  if (course === undefined) {
+    throw refuse(400, "Unknown course");
+  }
+
   const started = Date.now();
-  const explanation = await explain(apiKey, request.output);
+  const explanation = await explain(apiKey, course, request.output);
 
   logInfo("explain", {
     ms: Date.now() - started,

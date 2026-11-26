@@ -1,4 +1,4 @@
-import type { Story, StoryLine } from "@norsk/content";
+import type { Story, StoryLine } from "@norsk/course";
 import { itemState, storyTask } from "@norsk/engine";
 import type {
   ItemState,
@@ -30,6 +30,7 @@ import { Play, Square } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 
+import { useCourse } from "../../course";
 import { useMemory } from "../../learner";
 import { speak, stopSpeaking } from "../../speech";
 import { say } from "../say";
@@ -255,7 +256,7 @@ interface WordsProps {
 
 /** The words of a line. Each can be tapped for its meaning. */
 const Words = ({ story, line, at, picked, send }: WordsProps) =>
-  splitLine(line.no, line.tokens).map((part) => {
+  splitLine(line.target, line.tokens).map((part) => {
     if (part.token === null) {
       return <span key={part.start}>{part.text}</span>;
     }
@@ -292,9 +293,15 @@ interface MeaningProps {
 
 /** What a tapped word means, and how well the learner knows it. */
 const Meaning = ({ meaning }: MeaningProps) => {
+  const course = useCourse();
   const memory = useMemory();
   const known = meaning.item;
-  const look = known === null ? null : KNOWN[itemState(known, memory)];
+  const look = known === null ? null : KNOWN[itemState(course, known, memory)];
+  const { infinitive } = course.meta;
+
+  // A verb is shown with its small word in front, such as "å snakke": the word is quieter than the verb.
+  const isVerb =
+    infinitive !== null && meaning.text.startsWith(`${infinitive} `);
 
   return (
     <div {...stylex.props(effects.rise, styles.meaning)}>
@@ -309,10 +316,7 @@ const Meaning = ({ meaning }: MeaningProps) => {
           {known === null ? (
             meaning.text
           ) : (
-            <Display
-              text={meaning.text}
-              split={hasArticle(known) || meaning.text.startsWith("å ")}
-            />
+            <Display text={meaning.text} split={hasArticle(known) || isVerb} />
           )}
         </div>
         <div {...stylex.props(styles.meaningGloss)}>{meaning.gloss}</div>
@@ -334,8 +338,9 @@ interface StoryTaskProps {
 
 /** A short text built from known words: listen while reading, tap a word for its meaning, then answer questions. */
 export const StoryTask = ({ story, frame, onDone }: StoryTaskProps) => {
-  const [state, send] = useTask(storyTask, () => ({ story }), onDone);
-  const { phase, picked, showEnglish } = state;
+  const course = useCourse();
+  const [state, send] = useTask(storyTask, () => ({ course, story }), onDone);
+  const { phase, picked, showBase } = state;
   // Which line is being read aloud. Playback follows the audio, so it lives here and not in the machine.
   const [playing, setPlaying] = useState<number | null>(null);
   const stopped = useRef(false);
@@ -358,7 +363,7 @@ export const StoryTask = ({ story, frame, onDone }: StoryTaskProps) => {
     }
 
     setPlaying(at);
-    await speak(line.no);
+    await speak(line.target);
     await readFrom(at + 1);
   };
 
@@ -408,7 +413,7 @@ export const StoryTask = ({ story, frame, onDone }: StoryTaskProps) => {
   const conversation = speakers.length > 0;
 
   const english = (line: StoryLine, style: stylex.StyleXStyles): ReactNode =>
-    showEnglish ? <p {...stylex.props(style)}>{line.en}</p> : null;
+    showBase ? <p {...stylex.props(style)}>{line.base}</p> : null;
 
   return (
     <Focus
@@ -418,10 +423,10 @@ export const StoryTask = ({ story, frame, onDone }: StoryTaskProps) => {
           <Button
             variant="secondary"
             onClick={() => {
-              send({ type: "toggleEnglish" });
+              send({ type: "toggleBase" });
             }}
           >
-            {showEnglish ? "Hide English" : "Show English"}
+            {showBase ? "Hide English" : "Show English"}
           </Button>
           <Button
             onClick={() => {
@@ -442,7 +447,7 @@ export const StoryTask = ({ story, frame, onDone }: StoryTaskProps) => {
         <div {...stylex.props(taskStyles.shrinks)}>
           <h1 {...stylex.props(styles.title)}>{story.title}</h1>
           <p {...stylex.props(styles.about)}>
-            {story.titleEn}. Listen and read along.
+            {story.titleBase}. Listen and read along.
           </p>
         </div>
         <AudioButton
@@ -461,7 +466,7 @@ export const StoryTask = ({ story, frame, onDone }: StoryTaskProps) => {
           return (
             <div
               // The lines of a story never change, so the place of a line names it.
-              key={`${at}-${line.no}`}
+              key={`${at}-${line.target}`}
               {...stylex.props(
                 styles.turn,
                 speakers.indexOf(line.who) % 2 === 1
@@ -506,7 +511,7 @@ export const StoryTask = ({ story, frame, onDone }: StoryTaskProps) => {
               // shortcut for the pointer, and the big play button reads every line for the keyboard.
               // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- a button may not hold other buttons
               <div
-                key={`${at}-${line.no}`}
+                key={`${at}-${line.target}`}
                 onClick={() => {
                   send({ line: at, type: "hearLine" });
                 }}

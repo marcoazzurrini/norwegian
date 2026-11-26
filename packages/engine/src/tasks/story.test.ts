@@ -1,11 +1,12 @@
 import { describe, expect, test } from "bun:test";
 
-import { item, stories, storyById } from "@norsk/content";
-import type { Token } from "@norsk/content";
+import type { Token } from "@norsk/course";
 
 import { storyTask } from "../index";
 import type { Effect, StoryEvent } from "../index";
-import { must, play } from "../testing";
+import { course, must, play } from "../testing";
+
+const { item, stories, storyById } = course;
 
 /** A conversation between Anna and Tom, with two questions. */
 const story = must(storyById("st1-0"));
@@ -17,7 +18,7 @@ const pick = (option: string): StoryEvent => ({ option, type: "pick" });
 const right = (index: number) => must(story.questions[index]?.options[0]);
 
 const run = (events: StoryEvent[], told = story) =>
-  play(storyTask, { story: told }, events);
+  play(storyTask, { course, story: told }, events);
 
 /** A word that the story explains by itself, because it is not a taught item. */
 const isGlossed = (t: Token): boolean =>
@@ -33,20 +34,20 @@ describe("a story", () => {
     expect(run([])).toEqual({
       effects: [],
       state: {
+        course,
         done: false,
         phase: { step: "read" },
         picked: null,
-        showEnglish: false,
+        showBase: false,
         story,
       },
     });
   });
 
   test("the English can be shown and hidden again", () => {
-    expect(run([{ type: "toggleEnglish" }]).state.showEnglish).toBe(true);
+    expect(run([{ type: "toggleBase" }]).state.showBase).toBe(true);
     expect(
-      run([{ type: "toggleEnglish" }, { type: "toggleEnglish" }]).state
-        .showEnglish
+      run([{ type: "toggleBase" }, { type: "toggleBase" }]).state.showBase
     ).toBe(false);
   });
 
@@ -89,7 +90,7 @@ describe("a story", () => {
 
   test("tapping a line plays it", () => {
     expect(run([{ line: 1, type: "hearLine" }]).effects).toEqual([
-      { text: must(story.lines[1]).no, type: "speak" },
+      { text: must(story.lines[1]).target, type: "speak" },
     ]);
   });
 
@@ -146,19 +147,14 @@ describe("a story", () => {
   test("events that do not fit the phase change nothing", () => {
     expect(run([pick(right(0)), after])).toEqual(run([]));
     expect(
-      run([
-        next,
-        { type: "toggleEnglish" },
-        { line: 0, type: "hearLine" },
-        next,
-      ])
+      run([next, { type: "toggleBase" }, { line: 0, type: "hearLine" }, next])
     ).toEqual(run([next]));
   });
 
   test("a finished story ignores every event", () => {
     const events = [next, pick(right(0)), after, pick(right(1)), after];
 
-    expect(run([...events, after, next, { type: "toggleEnglish" }])).toEqual(
+    expect(run([...events, after, next, { type: "toggleBase" }])).toEqual(
       run(events)
     );
   });

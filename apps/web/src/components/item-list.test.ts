@@ -1,9 +1,11 @@
 import { expect, test } from "bun:test";
 
-import { item, levels } from "@norsk/content";
 import type { Mem } from "@norsk/engine";
+import { course } from "@norsk/norwegian";
 
 import { itemGroups, memoryNote, splitAt } from "./item-list";
+
+const { item, levels } = course;
 
 const DAY = 86_400_000;
 
@@ -40,21 +42,21 @@ const mem = (stability: number, dueAt: number): Mem => ({
 });
 
 test("without a search every unit is listed with all its items", () => {
-  const groups = itemGroups("  ", A1);
+  const groups = itemGroups(course, "  ", A1);
 
   expect(groups[0]?.unit.index).toBe(1);
   expect(groups[0]?.list[0]?.id).toBe("c:hei");
 });
 
 test("a search matches the Norwegian or the English, in any case", () => {
-  const found = itemGroups(" TAKK ", A1).flatMap((group) => group.list);
+  const found = itemGroups(course, " TAKK ", A1).flatMap((group) => group.list);
 
   expect(found.map((one) => one.id)).toContain("w:takk:interj");
   expect(found.every((one) => /takk/iu.test(`${one.text} ${one.gloss}`))).toBe(
     true
   );
-  expect(itemGroups("thanks", A1).length).toBeGreaterThan(0);
-  expect(itemGroups("zzzz", A1)).toEqual([]);
+  expect(itemGroups(course, "thanks", A1).length).toBeGreaterThan(0);
+  expect(itemGroups(course, "zzzz", A1)).toEqual([]);
 });
 
 test("a list is cut after the chosen item", () => {
@@ -78,10 +80,10 @@ test("the note on a memory says how long it lasts and when it comes back", () =>
 });
 
 test("only the units of the chosen level are listed", () => {
-  const groups = itemGroups("", A1);
+  const groups = itemGroups(course, "", A1);
 
   expect(groups.length).toBeGreaterThan(0);
   expect(groups.every((group) => group.unit.level === "A1")).toBe(true);
   // A2 is not written yet, so it has nothing to list.
-  expect(itemGroups("", A2)).toEqual([]);
+  expect(itemGroups(course, "", A2)).toEqual([]);
 });

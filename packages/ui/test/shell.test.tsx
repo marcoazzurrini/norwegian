@@ -4,10 +4,14 @@ import { render } from "vitest-browser-react";
 import { page } from "vitest/browser";
 
 import { Shell } from "../src/index";
-import type { ShellDestination, ShellLinkProps } from "../src/index";
+import type {
+  ShellCourse,
+  ShellDestination,
+  ShellLinkProps,
+} from "../src/index";
 
 const DESTINATIONS: readonly ShellDestination[] = [
-  { icon: Sun, label: "Today", to: "/" },
+  { exact: true, icon: Sun, label: "Today", to: "/" },
   { icon: Waypoints, label: "Map", to: "/map" },
   { icon: BookOpen, label: "Stories", to: "/stories" },
 ];
@@ -19,12 +23,32 @@ const TestLink = ({ to, children, ...rest }: ShellLinkProps) => (
   </a>
 );
 
+const NORWEGIAN: ShellCourse = {
+  flag: "🇳🇴",
+  id: "no",
+  label: "Norwegian",
+  to: "/",
+};
+
+const GERMAN: ShellCourse = {
+  flag: "🇩🇪",
+  id: "de",
+  label: "German",
+  to: "/de",
+};
+
 interface PageProps {
   path: string;
+  courses?: readonly ShellCourse[];
 }
 
-const Page = ({ path }: PageProps) => (
+const ONE_COURSE = [NORWEGIAN];
+
+const Page = ({ path, courses = ONE_COURSE }: PageProps) => (
   <Shell
+    name="norsk"
+    courses={courses}
+    course="no"
     destinations={DESTINATIONS}
     settingsTo="/settings"
     currentPath={path}
@@ -112,4 +136,37 @@ test("on a phone the tab bar replaces the sidebar", async () => {
   await expect
     .element(screen.getByRole("link", { name: "Settings" }))
     .toHaveAttribute("aria-current", "page");
+});
+
+test("the sidebar shows the name of the app and lists every course, each a link to its first page", async () => {
+  await page.viewport(1440, 900);
+
+  const screen = await render(
+    <Page path="/map" courses={[NORWEGIAN, GERMAN]} />
+  );
+
+  const nav = screen.getByRole("navigation", { name: "Main" });
+
+  await expect.element(nav.getByText("norsk", { exact: true })).toBeVisible();
+  await expect.element(nav.getByText("Languages")).toBeVisible();
+
+  const open = nav.getByRole("link", { name: "Norwegian" });
+  const other = nav.getByRole("link", { name: "German" });
+
+  await expect.element(open).toHaveAttribute("aria-current", "page");
+  await expect.element(other).toHaveAttribute("href", "/app/de");
+  await expect.element(other).toHaveAttribute("data-test-link");
+  await expect.element(other).not.toHaveAttribute("aria-current");
+});
+
+test("on a phone the list of courses is not shown: the sidebar is gone", async () => {
+  await page.viewport(393, 852);
+
+  const screen = await render(
+    <Page path="/map" courses={[NORWEGIAN, GERMAN]} />
+  );
+
+  await expect
+    .element(screen.getByRole("link", { name: "German" }))
+    .not.toBeInTheDocument();
 });

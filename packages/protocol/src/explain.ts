@@ -1,6 +1,8 @@
 // A request for a short explanation of a mistake, written by a language model.
 import * as v from "valibot";
 
+import { CourseIdSchema, FIRST_COURSE } from "./course";
+
 const MAX_TEXT = 300;
 const MAX_TOPICS = 8;
 
@@ -13,21 +15,42 @@ const Line = v.pipe(
   v.minLength(1)
 );
 
-export const ExplainRequestSchema = v.object({
+/** What every version of the request has. */
+const SHARED = {
   /** What the learner typed. */
   answer: Line,
-  /** The English sentence the learner was asked to say. */
-  en: Line,
   /** "hint" must not give the answer away; "explain" comes after the answer is shown. */
   kind: v.picklist(["hint", "explain"]),
-  /** The expected Norwegian. */
-  no: Line,
   /** Names of the words and patterns the learner got wrong. Only the first few are used. */
   topics: v.pipe(
     v.array(Line),
     v.transform((topics) => topics.slice(0, MAX_TOPICS))
   ),
+};
+
+const CurrentSchema = v.object({
+  ...SHARED,
+  /** The sentence the learner was asked to say, in their own language. */
+  base: Line,
+  /** The course the sentence is from. */
+  course: CourseIdSchema,
+  /** The expected sentence, in the language of the course. */
+  target: Line,
 });
+
+/** The request of the versions from before there were courses: `en` is the meaning, `no` the expected sentence. */
+const FirstSchema = v.pipe(
+  v.object({ ...SHARED, en: Line, no: Line }),
+  v.transform(({ en, no, ...rest }) => ({
+    ...rest,
+    base: en,
+    course: FIRST_COURSE,
+    target: no,
+  }))
+);
+
+/** Reads the request of this version and of every earlier one. The output is always the current shape. */
+export const ExplainRequestSchema = v.union([CurrentSchema, FirstSchema]);
 
 export type ExplainRequest = v.InferOutput<typeof ExplainRequestSchema>;
 

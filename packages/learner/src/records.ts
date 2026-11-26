@@ -2,6 +2,8 @@
 // and the conversions to and from the shapes that travel to the server.
 import type { Mem, PaceKind } from "@norsk/engine";
 import {
+  CourseIdSchema,
+  FIRST_COURSE,
   SyncedMetaSchema,
   WireCardSchema,
   WireLogSchema,
@@ -149,6 +151,8 @@ const BackupLogSchema = v.object({
 
 /** Backup files written by this app and by every earlier version of it. */
 const BackupSchema = v.object({
+  // A file without a course was written before there were courses.
+  course: v.optional(CourseIdSchema, FIRST_COURSE),
   log: v.nullish(v.array(BackupLogSchema), []),
   memory: v.array(MemSchema),
   meta: v.nullish(MetaSchema, {}),
@@ -163,8 +167,18 @@ export interface Backup {
 
 const NOT_A_BACKUP = "This file is not a Norsk backup";
 
-/** Reads the text of a backup file. Throws if anything in it is not what a backup holds. */
-export const parseBackup = (json: string, newId: () => string): Backup => {
+const OTHER_COURSE =
+  "This backup is from another course. Open that course and restore it there.";
+
+/**
+ * Reads the text of a backup file of `course`. Throws if anything in it is not what a backup
+ * holds, or if the file was made in another course: its items mean nothing in this one.
+ */
+export const parseBackup = (
+  json: string,
+  course: string,
+  newId: () => string
+): Backup => {
   let data: unknown;
 
   try {
@@ -177,6 +191,10 @@ export const parseBackup = (json: string, newId: () => string): Backup => {
 
   if (!parsed.success) {
     throw new Error(NOT_A_BACKUP);
+  }
+
+  if (parsed.output.course !== course) {
+    throw new Error(OTHER_COURSE);
   }
 
   const log = parsed.output.log.map((entry) => ({

@@ -1,9 +1,8 @@
-import type { Item, Sentence } from "@norsk/content";
+import type { Item, Sentence } from "@norsk/course";
 import { introTask } from "@norsk/engine";
 import type { TaskResult } from "@norsk/engine";
 import {
   Answer,
-  AnswerInput,
   Ask,
   AudioButton,
   Button,
@@ -27,8 +26,10 @@ import * as stylex from "@stylexjs/stylex";
 import { Eye as EyeIcon, EyeOff, Tag as TagIcon } from "lucide-react";
 import { useState } from "react";
 
+import { useCourse } from "../../course";
 import { learner } from "../../learner";
 import { say } from "../say";
+import { AnswerField } from "./answer-field";
 import { cueKind, introHint, wordFact } from "./card-text";
 import type { Frame } from "./frame";
 import { CopyOnce, HelpButtons } from "./help";
@@ -161,7 +162,7 @@ interface MarkedProps {
 
 /** The example sentence, with the words of the new item in a heavier weight. */
 const Marked = ({ sentence, id }: MarkedProps) =>
-  splitLine(sentence.no, sentence.tokens).map((part) => (
+  splitLine(sentence.target, sentence.tokens).map((part) => (
     <span
       key={part.start}
       {...stylex.props(belongsTo(part, id) && styles.strong)}
@@ -175,8 +176,8 @@ interface ExampleMeaningProps {
 }
 
 /**
- * The English of the example sentence, hidden until asked for, so the learner can first
- * try to understand the Norwegian. The line and the eye are one button.
+ * The meaning of the example sentence, hidden until asked for, so the learner can first
+ * try to understand the sentence. The line and the eye are one button.
  */
 const ExampleMeaning = ({ meaning }: ExampleMeaningProps) => {
   const [shown, setShown] = useState(false);
@@ -244,11 +245,13 @@ interface IntroTaskProps {
  * and showing the whole group first keeps the first recall from being a copy.
  */
 export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
+  const course = useCourse();
+  const { meta } = course;
   const [input, setInput] = useState("");
 
   const [state, send] = useTask(
     introTask,
-    () => ({ items, known: new Set(learner.memory().keys()) }),
+    () => ({ course, items, known: new Set(learner().memory().keys()) }),
     onDone
   );
 
@@ -305,7 +308,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
           <div key={example.id} {...stylex.props(effects.rise, styles.example)}>
             <AudioButton
               onPlay={() => {
-                say(example.no);
+                say(example.target);
               }}
               label="Play the example"
               style={styles.exampleAudio}
@@ -314,7 +317,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
               <div {...stylex.props(styles.exampleWords)}>
                 <Marked sentence={example} id={item.id} />
               </div>
-              <ExampleMeaning meaning={example.en} />
+              <ExampleMeaning meaning={example.base} />
             </div>
           </div>
         )}
@@ -334,7 +337,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
             </Button>
           </DockHint>
         ) : (
-          <AnswerInput
+          <AnswerField
             key={index}
             value={input}
             onChange={setInput}
@@ -344,7 +347,10 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
       }
     >
       <Stamp>Step 2 of 2 · Recall{count}</Stamp>
-      <Ask key={item.id} note={`${cueKind(item)}. Type it in Norwegian.`}>
+      <Ask
+        key={item.id}
+        note={`${cueKind(item, meta)}. Type it in ${meta.name}.`}
+      >
         {item.gloss}
       </Ask>
       {typed === "" ? null : <Mine key={`${misses}-${recalled}`}>{typed}</Mine>}
@@ -366,7 +372,7 @@ export const IntroTask = ({ items, frame, onDone }: IntroTaskProps) => {
       ) : null}
       {!recalled && (help === "article" || help === "start") ? (
         <Remark lead={typed === "" ? "Hint." : "Not yet."}>
-          {introHint(item, help)}
+          {introHint(item, help, meta)}
         </Remark>
       ) : null}
       {!recalled && help === "copy" ? (

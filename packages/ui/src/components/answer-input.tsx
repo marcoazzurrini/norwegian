@@ -1,4 +1,4 @@
-// The composer: a field for Norwegian answers, buttons for the three letters missing on most keyboards, and send.
+// The composer: a field for answers, buttons for the letters of the language that most keyboards lack, and send.
 import * as stylex from "@stylexjs/stylex";
 import { ArrowUp } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -8,20 +8,12 @@ import { effects } from "../tokens/effects";
 import { color, radius, text } from "../tokens/tokens.stylex";
 import { Key } from "./key";
 
-const LETTERS = ["æ", "ø", "å"] as const;
-
-/**
- * Keys that type the three letters on a keyboard without them. They sit where the letters
- * are on a Norwegian keyboard, and no answer of the course uses the characters themselves.
- */
-const KEYS = new Map([
-  ["'", "æ"],
-  [";", "ø"],
-  ["[", "å"],
-]);
-
-const keyOf = (letter: string): string | undefined =>
-  [...KEYS].find(([, typed]) => typed === letter)?.[0];
+/** A letter that most keyboards lack, and the key that types it here. */
+export interface AnswerLetter {
+  letter: string;
+  /** A key that no answer uses, such as "'" for "æ". */
+  key: string;
+}
 
 const styles = stylex.create({
   frame: {
@@ -104,15 +96,23 @@ interface AnswerInputProps {
   onChange: (value: string) => void;
   /** Called on Enter or the send button, and only when there is something to send. */
   onSubmit: () => void;
-  /** Also the accessible name of the field. */
-  placeholder?: string;
+  /** Also the accessible name of the field, such as "Type in Norwegian". */
+  placeholder: string;
+  /** The language of the answers, as a language tag such as "nb". */
+  lang: string;
+  /** The letters to offer as buttons and keys. None for a language whose letters are on every keyboard. */
+  letters?: readonly AnswerLetter[];
 }
+
+const NO_LETTERS: readonly AnswerLetter[] = [];
 
 export const AnswerInput = ({
   value,
   onChange,
   onSubmit,
-  placeholder = "Type in Norwegian",
+  placeholder,
+  lang,
+  letters = NO_LETTERS,
 }: AnswerInputProps) => {
   const field = useRef<HTMLInputElement>(null);
   const empty = value.trim() === "";
@@ -146,28 +146,30 @@ export const AnswerInput = ({
 
   return (
     <div {...stylex.props(styles.frame)}>
-      <div {...stylex.props(styles.letters)}>
-        {LETTERS.map((letter) => (
-          <button
-            key={letter}
-            type="button"
-            // The letters are reached by pointer; Tab goes from the field to send.
-            tabIndex={-1}
-            aria-label={`Insert ${letter}`}
-            aria-keyshortcuts={keyOf(letter)}
-            // A press must not take focus from the field: on a phone that closes the keyboard for a moment.
-            onPointerDown={keepFocus}
-            onMouseDown={keepFocus}
-            onClick={() => {
-              insert(letter);
-            }}
-            {...stylex.props(effects.press, styles.letter)}
-          >
-            {letter}
-            <Key style={styles.letterKey}>{keyOf(letter)}</Key>
-          </button>
-        ))}
-      </div>
+      {letters.length === 0 ? null : (
+        <div {...stylex.props(styles.letters)}>
+          {letters.map(({ letter, key }) => (
+            <button
+              key={letter}
+              type="button"
+              // The letters are reached by pointer; Tab goes from the field to send.
+              tabIndex={-1}
+              aria-label={`Insert ${letter}`}
+              aria-keyshortcuts={key}
+              // A press must not take focus from the field: on a phone that closes the keyboard for a moment.
+              onPointerDown={keepFocus}
+              onMouseDown={keepFocus}
+              onClick={() => {
+                insert(letter);
+              }}
+              {...stylex.props(effects.press, styles.letter)}
+            >
+              {letter}
+              <Key style={styles.letterKey}>{key}</Key>
+            </button>
+          ))}
+        </div>
+      )}
       <input
         ref={field}
         value={value}
@@ -182,7 +184,7 @@ export const AnswerInput = ({
             return;
           }
 
-          const letter = KEYS.get(event.key);
+          const letter = letters.find(({ key }) => key === event.key)?.letter;
 
           if (letter !== undefined && !event.metaKey && !event.ctrlKey) {
             event.preventDefault();
@@ -191,7 +193,7 @@ export const AnswerInput = ({
         }}
         placeholder={placeholder}
         aria-label={placeholder}
-        lang="nb"
+        lang={lang}
         enterKeyHint="send"
         autoCapitalize="off"
         autoCorrect="off"

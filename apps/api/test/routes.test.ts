@@ -329,6 +329,7 @@ describe("/api/sync", () => {
 
     expect(logged).toHaveBeenCalledTimes(1);
     expect(entry).toMatchObject({
+      course: "no",
       event: "sync",
       logIn: 1,
       logOut: 0,
@@ -339,6 +340,7 @@ describe("/api/sync", () => {
       reset: false,
     });
     expect(Object.keys(entry).toSorted()).toEqual([
+      "course",
       "event",
       "logIn",
       "logOut",
@@ -353,6 +355,44 @@ describe("/api/sync", () => {
     expect(JSON.stringify(logged.mock.calls)).not.toContain("@");
     expect(JSON.stringify(logged.mock.calls)).not.toContain("hus");
   });
+
+  test("each course has its own data, and the log says which course a sync was for", async () => {
+    const cookie = await signIn();
+    const logged = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await post(
+      "/api/sync",
+      { ...EMPTY_SYNC, course: "de", log: [logEntry], memory: [memory] },
+      cookie
+    );
+
+    expect(await result(post("/api/sync", EMPTY_SYNC, cookie))).toMatchObject({
+      body: { log: [], logSeq: 0, memRev: 0, memory: [] },
+    });
+    expect(
+      await result(post("/api/sync", { ...EMPTY_SYNC, course: "de" }, cookie))
+    ).toMatchObject({ body: { log: [logEntry], memRev: 1, memory: [memory] } });
+    expect(
+      logged.mock.calls.map((call) =>
+        v.parse(v.looseObject({ course: v.string() }), call[0])
+      )
+    ).toMatchObject([
+      { course: "de", event: "sync" },
+      { course: "no", event: "sync" },
+      { course: "de", event: "sync" },
+    ]);
+  });
+
+  test.each(["", "DE", "de/x", 5, null])(
+    "the course %j answers 400",
+    async (course) => {
+      expect(
+        await result(
+          post("/api/sync", { ...EMPTY_SYNC, course }, await signIn())
+        )
+      ).toEqual({ body: { error: "Not a sync request" }, status: 400 });
+    }
+  );
 });
 
 const journalEvent = {
@@ -505,15 +545,51 @@ describe("/api/reset", () => {
     });
   });
 
-  test.each([{}, { epoch: "soon" }, { epoch: -1 }, { epoch: 1.5 }])(
-    "%j answers 400",
-    async (body) => {
-      expect(await result(post("/api/reset", body, await signIn()))).toEqual({
-        body: { error: "Not a reset request" },
-        status: 400,
-      });
-    }
-  );
+  test("a reset of one course leaves the others alone, and is logged with its course", async () => {
+    const cookie = await signIn();
+    const german = { ...EMPTY_SYNC, course: "de" };
+
+    await post("/api/sync", { ...EMPTY_SYNC, memory: [memory] }, cookie);
+    await post("/api/sync", { ...german, memory: [memory] }, cookie);
+
+    const logged = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    expect(
+      await result(post("/api/reset", { course: "de", epoch: 100 }, cookie))
+    ).toEqual({ body: { epoch: 100 }, status: 200 });
+
+    const entries = logged.mock.calls.map((call) =>
+      v.parse(v.looseObject({ event: v.string() }), call[0])
+    );
+
+    expect(entries.find((entry) => entry.event === "reset")).toMatchObject({
+      course: "de",
+      epoch: 100,
+    });
+    expect(await result(post("/api/sync", german, cookie))).toMatchObject({
+      body: { epoch: 100, memory: [] },
+    });
+    expect(await result(post("/api/sync", EMPTY_SYNC, cookie))).toMatchObject({
+      body: { epoch: 0, memory: [memory] },
+    });
+    // The first course has had no reset, so an older number is still new to it.
+    expect(
+      await result(post("/api/reset", { epoch: 50 }, cookie))
+    ).toMatchObject({ status: 200 });
+  });
+
+  test.each([
+    {},
+    { epoch: "soon" },
+    { epoch: -1 },
+    { epoch: 1.5 },
+    { course: "DE", epoch: 1 },
+  ])("%j answers 400", async (body) => {
+    expect(await result(post("/api/reset", body, await signIn()))).toEqual({
+      body: { error: "Not a reset request" },
+      status: 400,
+    });
+  });
 });
 
 describe("/api/explain", () => {
@@ -606,6 +682,25 @@ describe("/api/explain", () => {
 
     expect(await result(post("/api/explain", body, await signIn()))).toEqual({
       body: { error: "Missing fields" },
+      status: 400,
+    });
+    expect(asked).not.toHaveBeenCalled();
+  });
+
+  test("a course the app does not have answers 400 and the model is not asked", async () => {
+    const asked = model(completion("ok"));
+
+    const body = {
+      answer: "ich bin ein haus",
+      base: "I have a house.",
+      course: "zz",
+      kind: "hint",
+      target: "Ich habe ein Haus.",
+      topics: [],
+    };
+
+    expect(await result(post("/api/explain", body, await signIn()))).toEqual({
+      body: { error: "Unknown course" },
       status: 400,
     });
     expect(asked).not.toHaveBeenCalled();

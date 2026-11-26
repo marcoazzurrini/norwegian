@@ -36,13 +36,15 @@ const styles = stylex.create({
 });
 
 interface BareProps {
+  /** The name of the app as it is written at the top, such as "norsk". */
+  name: string;
   children?: ReactNode;
 }
 
-export const Bare = ({ children }: BareProps) => (
+export const Bare = ({ name, children }: BareProps) => (
   <div {...stylex.props(styles.frame)}>
     <main {...stylex.props(styles.panel)}>
-      <div {...stylex.props(styles.name)}>norsk</div>
+      <div {...stylex.props(styles.name)}>{name}</div>
       {children}
     </main>
   </div>

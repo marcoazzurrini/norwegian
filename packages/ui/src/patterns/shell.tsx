@@ -1,6 +1,7 @@
 // Page frame: a sidebar beside a rounded panel on a wide screen; a header and a floating tab bar on a phone.
+// The name at the top is the course that is open. The sidebar lists every course above the account.
 import * as stylex from "@stylexjs/stylex";
-import { Settings } from "lucide-react";
+import { Check, Settings } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ComponentType, CSSProperties, ReactNode } from "react";
 
@@ -27,6 +28,19 @@ export interface ShellDestination {
   to: string;
   label: string;
   icon: LucideIcon;
+  /** The page is current only on its own path, not on the pages under it. For the first page of a course. */
+  exact?: boolean;
+}
+
+/** A course the learner can open from the list in the sidebar. */
+export interface ShellCourse {
+  id: string;
+  /** The language, in the learner's own language: "Norwegian". */
+  label: string;
+  /** The flag shown in front of the label, as one emoji. */
+  flag: string;
+  /** The first page of the course. */
+  to: string;
 }
 
 export type ShellWidth = "page" | "narrow" | "full";
@@ -62,6 +76,62 @@ const styles = stylex.create({
     paddingBottom: "1.75rem",
     paddingInline: "0.875rem",
     paddingTop: "0.25rem",
+  },
+  courses: {
+    borderBottomColor: color.line,
+    borderBottomStyle: "solid",
+    borderBottomWidth: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.125rem",
+    marginBottom: "0.5rem",
+    paddingBottom: "0.625rem",
+  },
+  coursesLabel: {
+    color: color.fg3,
+    fontSize: text.s12,
+    fontWeight: 500,
+    letterSpacing: "0.04em",
+    paddingBottom: "0.5rem",
+    paddingInline: "0.875rem",
+    textTransform: "uppercase",
+  },
+  course: {
+    alignItems: "center",
+    borderRadius: radius.nav,
+    color: color.fg2,
+    display: "flex",
+    fontSize: text.s16,
+    gap: "0.875rem",
+    height: "2.625rem",
+    paddingInline: "0.875rem",
+    textDecoration: "none",
+  },
+  courseCurrent: {
+    color: color.fg,
+    fontWeight: 500,
+  },
+  courseFlag: {
+    flexShrink: 0,
+    fontSize: text.s16,
+    lineHeight: 1,
+    textAlign: "center",
+    width: "1.25rem",
+  },
+  courseFlagOther: {
+    opacity: 0.6,
+  },
+  courseLabel: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+    minWidth: 0,
+  },
+  courseCheck: {
+    color: color.fg2,
+    flexShrink: 0,
+    height: "1rem",
+    width: "1rem",
   },
   sidebarLink: {
     alignItems: "center",
@@ -270,12 +340,21 @@ const nameOf = (account: string | null) => {
   };
 };
 
-/** The home page is current only on its own path; any other destination also covers the pages under it. */
-const isCurrent = (to: string, path: string): boolean =>
-  to === "/" ? path === "/" : path === to || path.startsWith(`${to}/`);
+/** A destination also covers the pages under it, unless it is `exact`. */
+const isCurrent = (to: string, path: string, exact = false): boolean =>
+  path === to || (!exact && path.startsWith(`${to}/`));
+
+const current = (active: boolean): { "aria-current"?: "page" } =>
+  active ? { "aria-current": "page" } : {};
 
 interface ShellProps {
   children: ReactNode;
+  /** The name of the app while this course is open, such as "norsk". */
+  name: string;
+  /** Every course the learner can open, in the order the sidebar lists them. */
+  courses: readonly ShellCourse[];
+  /** The id of the course that is open. */
+  course: string;
   /** The pages in the sidebar and the tab bar, in order. */
   destinations: readonly ShellDestination[];
   /** Where the account row and the cog lead. */
@@ -292,11 +371,11 @@ interface ShellProps {
   fill?: boolean;
 }
 
-const current = (active: boolean): { "aria-current"?: "page" } =>
-  active ? { "aria-current": "page" } : {};
-
 export const Shell = ({
   children,
+  name: appName,
+  courses,
+  course,
   destinations,
   settingsTo,
   currentPath,
@@ -311,9 +390,9 @@ export const Shell = ({
   return (
     <div {...stylex.props(styles.frame)}>
       <nav aria-label="Main" {...stylex.props(styles.sidebar)}>
-        <div {...stylex.props(styles.sidebarName)}>norsk</div>
-        {destinations.map(({ to, label, icon: Icon }) => {
-          const active = isCurrent(to, currentPath);
+        <div {...stylex.props(styles.sidebarName)}>{appName}</div>
+        {destinations.map(({ to, label, icon: Icon, exact }) => {
+          const active = isCurrent(to, currentPath, exact);
 
           return (
             <Link
@@ -332,6 +411,39 @@ export const Shell = ({
           );
         })}
         <div {...stylex.props(styles.spacer)} />
+        <div {...stylex.props(styles.courses)}>
+          <div {...stylex.props(styles.coursesLabel)}>Languages</div>
+          {courses.map((one) => {
+            const open = one.id === course;
+
+            return (
+              <Link
+                key={one.id}
+                to={one.to}
+                {...current(open)}
+                {...stylex.props(
+                  effects.press,
+                  styles.course,
+                  open && styles.courseCurrent
+                )}
+              >
+                <span
+                  aria-hidden
+                  {...stylex.props(
+                    styles.courseFlag,
+                    !open && styles.courseFlagOther
+                  )}
+                >
+                  {one.flag}
+                </span>
+                <span {...stylex.props(styles.courseLabel)}>{one.label}</span>
+                {open ? (
+                  <Check aria-hidden {...stylex.props(styles.courseCheck)} />
+                ) : null}
+              </Link>
+            );
+          })}
+        </div>
         <Link
           to={settingsTo}
           aria-label="Settings"
@@ -354,7 +466,7 @@ export const Shell = ({
       </nav>
 
       <header {...stylex.props(styles.header)}>
-        <span {...stylex.props(styles.headerName)}>norsk</span>
+        <span {...stylex.props(styles.headerName)}>{appName}</span>
         <Link
           to={settingsTo}
           aria-label="Settings"
@@ -384,8 +496,8 @@ export const Shell = ({
       <div {...stylex.props(styles.fade)} />
       <nav aria-label="Main" {...stylex.props(styles.tabs)}>
         <div {...stylex.props(styles.tabBar)}>
-          {destinations.map(({ to, label, icon: Icon }) => {
-            const active = isCurrent(to, currentPath);
+          {destinations.map(({ to, label, icon: Icon, exact }) => {
+            const active = isCurrent(to, currentPath, exact);
 
             return (
               <Link

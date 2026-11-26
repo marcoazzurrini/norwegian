@@ -1,5 +1,5 @@
 // The Sounds screen as data: the pairs by the contrast they train, and a run of practice questions.
-import type { SoundPair } from "@norsk/content";
+import type { SoundPair } from "@norsk/course";
 
 import { shuffled } from "./tasks/items";
 
@@ -53,15 +53,18 @@ export const drillFrom = (
   return picked.map((pair) => ({ pair, target: random() < 0.5 ? "a" : "b" }));
 };
 
-/** What the device can do for ear training, in one sentence. */
-export const voicesNote = (names: readonly string[]): string => {
+/** What the device can do for ear training, in one sentence. `language` is the language of the course, such as "Norwegian". */
+export const voicesNote = (
+  names: readonly string[],
+  language: string
+): string => {
   const [only] = names;
 
   if (only === undefined) {
-    return "No Norwegian voice is installed on this device. Add one in the system settings.";
+    return `No ${language} voice is installed on this device. Add one in the system settings.`;
   }
 
   return names.length === 1
-    ? `This device has one Norwegian voice (${only}). Ear training works best with several voices.`
-    : `This device has ${names.length} Norwegian voices. The drill switches between them.`;
+    ? `This device has one ${language} voice (${only}). Ear training works best with several voices.`
+    : `This device has ${names.length} ${language} voices. The drill switches between them.`;
 };

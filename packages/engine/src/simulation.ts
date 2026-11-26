@@ -2,8 +2,7 @@
 //
 // It studies with the real session and the real task machines, and answers right with a fixed
 // probability. It brings its own clock and its own random numbers, so a run can be repeated exactly.
-import { item, lessonOf } from "@norsk/content";
-import type { Item, Sentence } from "@norsk/content";
+import type { Item, Sentence } from "@norsk/course";
 
 import {
   Session,
@@ -46,7 +45,9 @@ import type {
   TaskMachine,
   TaskResult,
 } from "./index";
-import { DAY, T0, lessonAt, must } from "./testing";
+import { course, DAY, T0, lessonAt, must } from "./testing";
+
+const { item, lessonOf } = course;
 
 export interface Options {
   seed: number;
@@ -212,7 +213,13 @@ class Learner {
 
   /** One session, at the same hour every day. */
   study(day: number): void {
-    const session = new Session(this.options.minutes, this.rng, this.pace);
+    const session = new Session(
+      course,
+      this.options.minutes,
+      this.rng,
+      this.pace
+    );
+
     const usedSentences = new Set<string>();
     let recent: string[] = [];
     let reviewMs = 0;
@@ -244,7 +251,7 @@ class Learner {
         prerequisitesDone: !isNew || this.prerequisitesDone(task),
         reviewMsBefore: reviewMs,
         reviewable:
-          pickReview(this.memory, this.now, {
+          pickReview(course, this.memory, this.now, {
             seen: this.sentenceSeen,
             skipItems: new Set(recent),
             skipSentences: usedSentences,
@@ -324,7 +331,7 @@ class Learner {
 
     return items.every((it) =>
       lessonOf(it.id).needs.every(
-        (index) => lessonState(lessonAt(index), this.memory) === "done"
+        (index) => lessonState(course, lessonAt(index), this.memory) === "done"
       )
     );
   }
@@ -439,8 +446,10 @@ class Learner {
       }
 
       case "intro": {
-        return this.drive(introTask, { items: task.items, known }, (state) =>
-          this.introMove(state)
+        return this.drive(
+          introTask,
+          { course, items: task.items, known },
+          (state) => this.introMove(state)
         );
       }
 
@@ -467,7 +476,7 @@ class Learner {
       }
 
       case "story": {
-        return this.drive(storyTask, { story: task.story }, (state) =>
+        return this.drive(storyTask, { course, story: task.story }, (state) =>
           this.storyMove(state)
         );
       }
@@ -559,7 +568,7 @@ class Learner {
     const accuracy =
       phase.step === "ask" ? this.options.accuracy : SECOND_TRY_ACCURACY;
 
-    const text = this.chance(accuracy) ? sentence.no : this.slip(sentence);
+    const text = this.chance(accuracy) ? sentence.target : this.slip(sentence);
 
     return {
       event: { text, type: "answer" },

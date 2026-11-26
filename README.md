@@ -1,6 +1,8 @@
 # Norsk
 
-A personal app for learning Norwegian (Bokmål) from zero. It teaches words, phrases and grammar patterns, then reviews them inside typed sentences so that one review covers several items.
+A personal app for learning languages from zero. It teaches words, phrases and grammar patterns, then reviews them inside typed sentences so that one review covers several items.
+
+The app is a platform, and each language is a course built on it. There is one course so far: Norwegian (Bokmål). See [Courses](#courses).
 
 The reasoning behind the design is in [docs/spec.md](docs/spec.md).
 
@@ -13,15 +15,15 @@ bun run dev        # http://localhost:3000
 
 Other commands, all run from the repository root:
 
-| Command             | What it does                                          |
-| ------------------- | ----------------------------------------------------- |
-| `bun run build`     | Builds the app into `apps/web/dist/client`            |
-| `bun run test`      | Runs the tests of every package                       |
-| `bun run test:e2e`  | Runs the end-to-end tests in a browser                |
-| `bun run typecheck` | Checks types                                          |
-| `bun run lint`      | Checks formatting and lint rules                      |
-| `bun run fix`       | Formats and applies the safe lint fixes               |
-| `bun run content`   | Rebuilds the curriculum from `packages/content/text/` |
+| Command | What it does |
+| --- | --- |
+| `bun run build` | Builds the app into `apps/web/dist/client` |
+| `bun run test` | Runs the tests of every package |
+| `bun run test:e2e` | Runs the end-to-end tests in a browser |
+| `bun run typecheck` | Checks types |
+| `bun run lint` | Checks formatting and lint rules |
+| `bun run fix` | Formats and applies the safe lint fixes |
+| `bun run content` | Rebuilds the Norwegian curriculum from `packages/norwegian/text/` |
 
 The tests of `packages/ui` and the end-to-end tests need a browser: run `bunx playwright install chromium` once.
 
@@ -56,15 +58,27 @@ After the first visit it works offline.
 | --- | --- |
 | `apps/web/` | The app: pages in `src/routes/`, one component per kind of task in `src/components/tasks/`. |
 | `apps/api/` | The server (a Cloudflare Worker) and the database migrations. |
-| `packages/content/` | The curriculum. `text/` holds it as plain text (format in `text/README.md`); `scripts/build-content.ts` checks it and builds `src/curriculum.json`. |
-| `packages/engine/` | Memory model, grading, task choice and session flow. No UI. |
-| `packages/learner/` | The learner's data on a device, and sync. |
+| `packages/course/` | What a course is: the shape of a curriculum, and the short description of what is particular to a language. |
+| `packages/courses/` | The list of courses. The only place that names them. |
+| `packages/norwegian/` | The Norwegian course. `text/` holds its curriculum as plain text (format in `text/README.md`); `scripts/build-content.ts` checks it and builds `src/curriculum.json`. |
+| `packages/engine/` | Memory model, grading, task choice and session flow, for whichever course it is handed. No UI. |
+| `packages/learner/` | The learner's data on a device, and sync. Kept apart for each course. |
 | `packages/protocol/` | The messages between the app and the server. |
 | `packages/db/`, `packages/auth/` | The database and sign-in, used by the server. |
-| `packages/speech/` | Playing Norwegian audio. |
+| `packages/speech/` | Playing audio in the language of a course. |
 | `packages/ui/` | The component library. It follows the design in `.penna/`. |
 | `.penna/` | The design system (Foundations, Components, Patterns) and the screen designs for desktop and phone. |
-| `packages/content/data/raw/` | Downloaded language data. Not in git. See below. |
+| `packages/norwegian/data/raw/` | Downloaded language data. Not in git. See below. |
+
+## Courses
+
+The app knows nothing of any one language. It schedules, asks, grades and remembers; a course says what there is to learn.
+
+- A course is a package that exports a `Course`, made with `createCourse` from `@norsk/course`. It holds a curriculum in the shared shape, the names of its recorded voices, and a `CourseMeta`: its name, its greetings, the letters most keyboards lack, its articles, and what the language model is told when it explains a mistake.
+- `packages/courses` lists the courses. To add one, write its package and add it to `src/index.ts` and `src/load.ts` there. Nothing else in the app changes.
+- Every page belongs to a course, named by the first part of its address: `/no/map`. An address without a course goes to the course that was open last.
+- A course is loaded when it is first opened. The learner's progress, settings and sync are kept apart for each course, on the device and on the server.
+- The sidebar lists the courses above the account. On a phone, which has no sidebar, Settings offers them once there is more than one.
 
 ## Recorded audio
 
@@ -73,18 +87,18 @@ The app plays recorded Norwegian when it exists and falls back to the browser's 
 ```bash
 bun run audio voices                  # list Norwegian voices in the ElevenLabs library
 bun run audio sample <voice-id>...    # record a few texts per voice into data/audio/samples
-bun run audio add <slug> <voice-id>   # add a voice to content/audio.json
+bun run audio add <slug> <voice-id>   # add a voice to text/audio.json
 bun run audio build --dry             # count what would be recorded
 bun run audio build                   # record what is missing, upload it, switch the app over
 ```
 
-This needs `ELEVENLABS_API_KEY` in `packages/content/.env` and the sync key in `packages/content/.sync-key`. Recordings are kept in `packages/content/data/audio`, so a text is never paid for twice. After `build`, commit `packages/content/text/audio.json` and `packages/content/src/audio.json` and push. Run `build` again after the curriculum changes.
+This needs `ELEVENLABS_API_KEY` in `packages/norwegian/.env` and the sync key in `packages/norwegian/.sync-key`. Recordings are kept in `packages/norwegian/data/audio`, so a text is never paid for twice. After `build`, commit `packages/norwegian/text/audio.json` and `packages/norwegian/src/audio.json` and push. Run `build` again after the curriculum changes.
 
 With several voices, a text keeps one voice for a day and changes voice over time.
 
 ## Language data
 
-`bun run content` needs three downloads in `packages/content/data/raw/`. They are only needed to rebuild the curriculum; the built `curriculum.json` is in the repository.
+`bun run content` needs three downloads in `packages/norwegian/data/raw/`. They are only needed to rebuild the curriculum; the built `curriculum.json` is in the repository.
 
 | Folder | Source | Licence |
 | --- | --- | --- |
@@ -102,7 +116,7 @@ Sign-in is handled by [Better Auth](https://better-auth.com) in the Worker (`pac
 
 The app decides by itself whether an answer is right. After a wrong sentence, it also asks a language model for a short hint or explanation (`apps/api/src/explain.ts`, model Claude Haiku through [OpenRouter](https://openrouter.ai)). The text is labelled "written by AI" in the app and can be wrong. It needs a connection and the Worker secret `OPENROUTER_API_KEY`; without either, the app works as before, without the extra text.
 
-`SYNC_KEY` is now used only by the audio build script. A copy is in `packages/content/.sync-key`, which is not in git.
+`SYNC_KEY` is now used only by the audio build script. A copy is in `packages/norwegian/.sync-key`, which is not in git.
 
 How sync decides:
 

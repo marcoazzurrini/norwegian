@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test";
 
-import { item, items } from "@norsk/content";
 import { createScheduler, introduce, review } from "@norsk/engine";
 import type { Mem } from "@norsk/engine";
+import { course } from "@norsk/norwegian";
 
 import {
   greetingAt,
@@ -13,11 +13,13 @@ import {
   todayOf,
 } from "./today-plan";
 
+const { item, items } = course;
+
 test("the greeting follows the hour", () => {
-  expect(greetingAt(9).norwegian).toBe("God morgen");
-  expect(greetingAt(10).norwegian).toBe("God dag");
-  expect(greetingAt(17).english).toBe("Good day");
-  expect(greetingAt(18).norwegian).toBe("God kveld");
+  expect(greetingAt(9, course.meta.greetings).target).toBe("God morgen");
+  expect(greetingAt(10, course.meta.greetings).target).toBe("God dag");
+  expect(greetingAt(17, course.meta.greetings).base).toBe("Good day");
+  expect(greetingAt(18, course.meta.greetings).target).toBe("God kveld");
 });
 
 test("the summary names reviews and new material", () => {
@@ -39,7 +41,7 @@ test("the review line says how few reviews cover the due items", () => {
 });
 
 test("the other lines say what comes next, or that nothing does", () => {
-  expect(newDetail(null, null)).toBe("You have learned every lesson.");
+  expect(newDetail(course, null, null)).toBe("You have learned every lesson.");
   expect(storyDetail(null)).toBe("A story unlocks after a few more lessons.");
 });
 
@@ -50,6 +52,7 @@ test("progress to the level counts every item of it seen, and counts it more the
 
   const viewOf = (mems: Mem[], now: number) =>
     todayOf({
+      course,
       chosenLesson: null,
       memory: new Map(mems.map((mem) => [mem.id, mem])),
       now,

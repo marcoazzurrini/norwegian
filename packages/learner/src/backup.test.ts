@@ -148,7 +148,9 @@ describe("a backup file", () => {
       JSON.parse(await learner.exportBackup())
     );
 
+    // The course is the one field that was added since; the files without it are still read.
     expect(Object.keys(file).toSorted()).toEqual([
+      "course",
       "exportedAt",
       "log",
       "memory",
@@ -157,6 +159,7 @@ describe("a backup file", () => {
     ]);
 
     expect(file).toMatchObject({
+      course: "no",
       exportedAt: T0,
       log: [
         { at: T0, carrier: false, grade: "new", id: "w:hus", uid: "phone-1" },

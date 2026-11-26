@@ -1,11 +1,12 @@
 import { describe, expect, test } from "bun:test";
 
-import { item } from "@norsk/content";
-import type { Sentence } from "@norsk/content";
+import type { Sentence } from "@norsk/course";
 
 import { patternTask } from "../index";
 import type { Effect, PatternEvent } from "../index";
-import { T0, itemsOf, must, play, sentenceOf } from "../testing";
+import { course, T0, itemsOf, must, play, sentenceOf } from "../testing";
+
+const { item } = course;
 
 const neg = item("p:neg");
 const quiz = must(neg.quiz);
@@ -26,7 +27,12 @@ known.delete(neg.id);
 const next: PatternEvent = { type: "continue" };
 const after: PatternEvent = { type: "next" };
 const pick = (option: string): PatternEvent => ({ option, type: "pick" });
-const answer = (s: Sentence): PatternEvent => ({ text: s.no, type: "answer" });
+
+const answer = (s: Sentence): PatternEvent => ({
+  text: s.target,
+  type: "answer",
+});
+
 const teach: Effect = { ids: [neg.id], type: "teach" };
 
 const run = (events: PatternEvent[], sentences = practice, pattern = neg) =>

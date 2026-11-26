@@ -1,5 +1,5 @@
 // Compares what the learner typed with what was expected.
-import type { Item, Sentence } from "@norsk/content";
+import type { Item, Sentence } from "@norsk/course";
 
 /** Lower-case, no punctuation, single spaces. */
 const normalize = (text: string): string =>
@@ -131,7 +131,9 @@ export const gradeSentence = (
   const typed = normalize(input).split(" ").filter(Boolean);
   const joined = typed.join(" ");
 
-  if ([sentence.no, ...sentence.alts].some((a) => normalize(a) === joined)) {
+  if (
+    [sentence.target, ...sentence.alts].some((a) => normalize(a) === joined)
+  ) {
     return {
       correct: true,
       misplaced: [],
@@ -175,7 +177,7 @@ export const gradeSentence = (
 
 export interface CardGrade {
   correct: boolean;
-  /** The word is right but the en / ei / et in front of it is not. */
+  /** The word is right but the article in front of it is not. */
   wrongArticle: boolean;
 }
 
@@ -187,10 +189,7 @@ export const gradeCard = (it: Item, input: string): CardGrade => {
   }
 
   const wrongArticle =
-    it.pos === "noun" &&
-    it.gender !== undefined &&
-    it.gender !== "pl" &&
-    typed.split(" ").at(-1) === normalize(it.text);
+    it.article !== undefined && typed.split(" ").at(-1) === normalize(it.text);
 
   return { correct: false, wrongArticle };
 };

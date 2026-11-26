@@ -33,8 +33,8 @@ export type TaskIds =
 
 // oxlint-disable-next-line typescript/consistent-type-definitions -- a type alias can be stored as plain data; an interface cannot
 export type Events = {
-  /** A session began, for this many minutes, with the learner's pace at that moment. */
-  "session.started": { minutes: number; pace: Pace };
+  /** A session began in this course, for this many minutes, with the learner's pace at that moment. */
+  "session.started": { course: string; minutes: number; pace: Pace };
   /** A session reached its end. */
   "session.ended": SessionTotals;
   /** The learner left a session before its end. */

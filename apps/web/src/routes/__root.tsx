@@ -1,16 +1,15 @@
-import { Bare } from "@norsk/ui";
 import {
   HeadContent,
   Outlet,
   Scripts,
   createRootRoute,
+  useRouter,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 
-import { SignInScreen } from "../components/sign-in-screen";
+import { addressInCourse, isCourse } from "../course";
 import { startJournal } from "../journal";
-import { learner, useReady, useSettings, useSyncStatus } from "../learner";
 
 import baseCss from "@norsk/ui/base.css?url";
 
@@ -41,15 +40,9 @@ const RootDocument = ({ children }: RootDocumentProps) => (
   </html>
 );
 
-/** Loads the learner's data from this device before any page renders, and shows the sign-in screen until the learner is signed in. */
+/** What every page shares, whatever the course: offline support and the journal. The pages are the course's. */
 const App = () => {
-  const ready = useReady();
-  const { textScale } = useSettings();
-  const sync = useSyncStatus();
-
   useEffect(() => {
-    learner.start().catch(reportError);
-
     if ("serviceWorker" in navigator && import.meta.env.PROD) {
       navigator.serviceWorker.register("/sw.js").catch(reportError);
     }
@@ -57,29 +50,36 @@ const App = () => {
     return startJournal();
   }, []);
 
-  useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--text-scale",
-      String(textScale)
-    );
-  }, [textScale]);
-
-  // `bun run dev` serves the app without the sign-in server, so it skips the sign-in screen.
-  const open = sync.linked || import.meta.env.DEV;
-
-  if (!ready || (!open && !sync.checked)) {
-    return <Bare />;
-  }
-
-  if (!open) {
-    return <SignInScreen />;
-  }
-
   return <Outlet />;
+};
+
+/**
+ * An address the router does not know. One that names no course is from before there were
+ * courses: it goes to the same page of the course that was open last, so old links still work.
+ */
+const Lost = () => {
+  const router = useRouter();
+  const { pathname } = router.state.location;
+  const first = pathname.split("/").find((part) => part !== "") ?? "";
+  const old = !isCourse(first);
+
+  useEffect(() => {
+    const now = router.state.location;
+
+    // Another redirect may have moved the address already: only one that still names no course is moved.
+    if (old && now.pathname === pathname) {
+      router
+        .navigate({ href: addressInCourse(now), replace: true })
+        .catch(reportError);
+    }
+  }, [old, pathname, router]);
+
+  return old ? null : <p>This page does not exist.</p>;
 };
 
 export const Route = createRootRoute({
   component: App,
+  notFoundComponent: Lost,
   head: () => ({
     links: [
       { href: baseCss, rel: "stylesheet" },
@@ -94,11 +94,6 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
         name: "viewport",
       },
-      { title: "Norsk" },
-      {
-        content: "Learn Norwegian with spaced, compressed recall.",
-        name: "description",
-      },
       { content: "#212121", name: "theme-color" },
       { content: "dark", name: "color-scheme" },
       { content: "yes", name: "apple-mobile-web-app-capable" },
@@ -107,7 +102,6 @@ export const Route = createRootRoute({
         content: "black-translucent",
         name: "apple-mobile-web-app-status-bar-style",
       },
-      { content: "Norsk", name: "apple-mobile-web-app-title" },
     ],
   }),
   shellComponent: RootDocument,

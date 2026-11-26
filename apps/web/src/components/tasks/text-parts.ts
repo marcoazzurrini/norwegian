@@ -1,5 +1,5 @@
-// Cuts a Norwegian line into its words and the punctuation between them.
-import type { Token } from "@norsk/content";
+// Cuts a line of the course into its words and the punctuation between them.
+import type { Token } from "@norsk/course";
 
 export interface TextPart {
   /** Where the part starts in the line. No two parts start at the same place. */

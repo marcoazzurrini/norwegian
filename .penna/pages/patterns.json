@@ -207,15 +207,15 @@
                  },
                  "children": [
                   {
-                   "id": "W6GxW",
+                   "id": "gmPfv",
                    "type": "text",
+                   "name": "norsk",
                    "text": "norsk",
                    "style": {
                     "fontSize": 22,
                     "fontWeight": 500,
                     "letterSpacing": "-0.03em"
-                   },
-                   "name": "norsk"
+                   }
                   },
                   {
                    "id": "XHa8X",

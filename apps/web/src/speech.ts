@@ -1,13 +1,20 @@
-// The one voice of the app: Norwegian audio at the speed and with the voice the learner chose.
-import { createSpeech } from "@norsk/speech";
-import type { Voice } from "@norsk/speech";
+// The voice of the course that is open: audio in its language, at the speed and with the voice the learner chose.
+import type { SpeakOptions, Voice } from "@norsk/speech";
 import { useVoices as useVoicesOf } from "@norsk/speech/react";
 
-import { learner } from "./learner";
+import { openCourse } from "./course";
 
-const speech = createSpeech({ settings: learner.settings });
+export const speak = async (
+  text: string,
+  options?: SpeakOptions
+): Promise<void> => {
+  await openCourse().speech.speak(text, options);
+};
 
-export const { speak, stopSpeaking } = speech;
+export const stopSpeaking = (): void => {
+  openCourse().speech.stopSpeaking();
+};
 
-/** The Norwegian voices of this browser. */
-export const useVoices = (): readonly Voice[] => useVoicesOf(speech);
+/** The voices of this browser that speak the language of the course. */
+export const useVoices = (): readonly Voice[] =>
+  useVoicesOf(openCourse().speech);

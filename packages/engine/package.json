@@ -10,10 +10,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@norsk/content": "workspace:*",
+    "@norsk/course": "workspace:*",
     "ts-fsrs": "^6.0.0"
   },
   "devDependencies": {
+    "@norsk/norwegian": "workspace:*",
     "@types/bun": "catalog:",
     "typescript": "catalog:"
   }

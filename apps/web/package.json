@@ -15,7 +15,8 @@
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
     "@norsk/auth": "workspace:*",
-    "@norsk/content": "workspace:*",
+    "@norsk/course": "workspace:*",
+    "@norsk/courses": "workspace:*",
     "@norsk/engine": "workspace:*",
     "@norsk/journal": "workspace:*",
     "@norsk/learner": "workspace:*",
@@ -32,6 +33,7 @@
     "valibot": "^1.5.0"
   },
   "devDependencies": {
+    "@norsk/norwegian": "workspace:*",
     "@playwright/test": "^1.65.1",
     "@stylexjs/unplugin": "^0.19.2",
     "@types/bun": "catalog:",

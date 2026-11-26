@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { audioKey, audioPath, recordedVoices } from "@norsk/content";
+import { audioKey, audioPath } from "@norsk/course";
 
 import { createSpeech } from "./index";
 import type { SpeechHost, SpeechSettings, Utterance, Voice } from "./index";
@@ -24,16 +24,15 @@ const settle = async (): Promise<void> => {
   await Bun.sleep(0);
 };
 
-/** The path of the recording that is played for a text when nothing picks the voice. */
-const recordingOf = async (text: string): Promise<string> => {
-  const [first] = recordedVoices;
-
-  if (first === undefined || recordedVoices.length !== 1) {
-    throw new Error("These tests are written for one recorded voice");
-  }
-
-  return audioPath(first, await audioKey(text));
+/** A course with one recorded voice, whose browser voices are the Norwegian ones. */
+const COURSE = {
+  meta: { lang: "nb-NO", voiceLangs: ["nb", "no"] },
+  voices: ["mia"],
 };
+
+/** The path of the recording that is played for a text when nothing picks the voice. */
+const recordingOf = async (text: string): Promise<string> =>
+  audioPath("mia", await audioKey(text));
 
 /** Something a test waits at until it is opened. */
 interface Gate {
@@ -175,7 +174,10 @@ const createStage = () => {
         : null,
   };
 
-  return { speech: createSpeech({ host, settings: () => settings }), stage };
+  return {
+    speech: createSpeech({ course: COURSE, host, settings: () => settings }),
+    stage,
+  };
 };
 
 describe("a text with a recording", () => {

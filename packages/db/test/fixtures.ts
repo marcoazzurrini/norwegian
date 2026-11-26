@@ -1,5 +1,5 @@
 // Sync messages for the tests, in the shapes the app sends.
-import { SyncedMetaSchema } from "@norsk/protocol";
+import { FIRST_COURSE, SyncedMetaSchema } from "@norsk/protocol";
 import type {
   SyncedMetaInput,
   SyncRequest,
@@ -47,8 +47,12 @@ export const meta = (patch: Partial<SyncedMetaInput> = {}) =>
     ...patch,
   });
 
-/** A request from a device that has never synced and has nothing, changed by `patch`. */
+/**
+ * A request from a device that has never synced and has nothing, changed by `patch`.
+ * It is for the first course unless the patch names another.
+ */
 export const request = (patch: Partial<SyncRequest> = {}): SyncRequest => ({
+  course: FIRST_COURSE,
   epoch: null,
   log: [],
   logSeq: 0,

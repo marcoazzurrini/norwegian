@@ -1,12 +1,14 @@
-// The learner data that the pictures start from. Each profile is built with the real engine,
-// from a fixed moment, so it is the same on every run.
-import { lessons } from "@norsk/content";
 import { createScheduler, introduce, review } from "@norsk/engine";
 import type { Mem } from "@norsk/engine";
 import type { Progress, Settings } from "@norsk/learner";
+// The learner data that the pictures start from. Each profile is built with the real engine,
+// from a fixed moment, so it is the same on every run.
+import { course } from "@norsk/norwegian";
 
 import { NOW } from "./learner-data";
 import type { Seed } from "./learner-data";
+
+const { lessons } = course;
 
 const DAY = 86_400_000;
 const HOUR = 3_600_000;

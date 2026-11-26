@@ -1,6 +1,7 @@
 // The app that is installed on devices today keeps running for a while after this server is deployed.
 // These requests are built the way that app builds them (apps/web/src/engine/sync.ts, store.ts and
 // lib/explain.ts before the refactor), and the rows are stored the way the server before this one stored them.
+import { applyD1Migrations, reset } from "cloudflare:test";
 import { env } from "cloudflare:workers";
 import { describe, expect, test, vi } from "vitest";
 
@@ -110,8 +111,24 @@ const emptyDevice = {
   log: [],
 };
 
-// The statements below are the ones the server ran before this refactor, word for word.
+/** The first migration that knows about courses. */
+const COURSES = "0004_courses.sql";
+
+/**
+ * Stores rows as the server before this one did, in the tables it had, and then brings the
+ * database up to date the way production is: with the migrations that came after.
+ * The statements below are the ones that server ran, word for word.
+ */
 const storeAsBefore = async () => {
+  const courses = env.MIGRATIONS.findIndex(
+    (migration) => migration.name === COURSES
+  );
+
+  expect(courses).toBeGreaterThan(0);
+
+  await reset();
+  await applyD1Migrations(env.DB, env.MIGRATIONS.slice(0, courses));
+
   await env.DB.batch([
     env.DB.prepare("UPDATE state SET value = value + 1 WHERE key = 'rev'"),
     env.DB.prepare(
@@ -137,6 +154,8 @@ const storeAsBefore = async () => {
       "INSERT INTO meta (id, data) VALUES (1, ?1) ON CONFLICT (id) DO UPDATE SET data = excluded.data"
     ).bind(JSON.stringify(meta)),
   ]);
+
+  await applyD1Migrations(env.DB, env.MIGRATIONS);
 };
 
 describe("the app in production", () => {
@@ -285,9 +304,9 @@ describe("the app in production", () => {
 
 describe("rows stored by the server before this one", () => {
   test("are handed out unchanged, and none is skipped", async () => {
-    const warned = vi.spyOn(console, "warn").mockImplementation(() => {});
-
     await storeAsBefore();
+
+    const warned = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const { body } = await result(
       post("/api/sync", emptyDevice, await signIn())
@@ -307,9 +326,11 @@ describe("rows stored by the server before this one", () => {
   });
 
   test("are replaced only by a later review, as before", async () => {
+    await storeAsBefore();
+
+    // Signing in comes second: bringing back the old tables empties the sign-in tables too.
     const cookie = await signIn();
 
-    await storeAsBefore();
     await post(
       "/api/sync",
       {
@@ -331,9 +352,11 @@ describe("rows stored by the server before this one", () => {
   });
 
   test("the same log entries sent again are not stored twice", async () => {
+    await storeAsBefore();
+
+    // Signing in comes second: bringing back the old tables empties the sign-in tables too.
     const cookie = await signIn();
 
-    await storeAsBefore();
     await post("/api/sync", firstMessage, cookie);
 
     const stored = await env.DB.prepare("SELECT count(*) AS n FROM log").first<{
@@ -341,5 +364,130 @@ describe("rows stored by the server before this one", () => {
     }>();
 
     expect(stored?.n).toBe(3);
+  });
+});
+
+/** What the app sends now: the same message, with the name of its course. */
+const inCourse = <Message extends object>(
+  course: string,
+  message: Message
+) => ({ ...message, course });
+
+describe("the app from before there were courses", () => {
+  test("its data is the data of the first course", async () => {
+    const cookie = await signIn();
+
+    await post("/api/sync", firstMessage, cookie);
+
+    const { body } = await result(
+      post("/api/sync", inCourse("no", emptyDevice), cookie)
+    );
+
+    expect(body).toEqual({
+      epoch: 0,
+      log: onTheWire(log),
+      logSeq: 3,
+      memRev: 1,
+      memory: onTheWire(memory),
+      meta: onTheWire(meta),
+      more: false,
+      reset: false,
+    });
+  });
+
+  test("it receives what the app of today stores in the first course", async () => {
+    const cookie = await signIn();
+
+    await post("/api/sync", inCourse("no", firstMessage), cookie);
+
+    const { body } = await result(post("/api/sync", emptyDevice, cookie));
+
+    expect(body).toMatchObject({
+      log: onTheWire(log),
+      memory: onTheWire(memory),
+      meta: onTheWire(meta),
+    });
+  });
+
+  test("it never sees another course, and another course never sees its data", async () => {
+    const cookie = await signIn();
+
+    await post("/api/sync", firstMessage, cookie);
+    await post(
+      "/api/sync",
+      inCourse("de", {
+        ...emptyDevice,
+        memory: [mem("w:haus:noun", NOW + 9)],
+      }),
+      cookie
+    );
+
+    const old = await result(post("/api/sync", emptyDevice, cookie));
+
+    const german = await result(
+      post("/api/sync", inCourse("de", emptyDevice), cookie)
+    );
+
+    expect(old.body).toMatchObject({ memory: onTheWire(memory) });
+    expect(german.body).toMatchObject({
+      log: [],
+      memory: onTheWire([mem("w:haus:noun", NOW + 9)]),
+      meta: null,
+    });
+  });
+
+  test("its Start over empties the first course and no other", async () => {
+    const cookie = await signIn();
+
+    await post("/api/sync", firstMessage, cookie);
+    await post("/api/sync", inCourse("de", firstMessage), cookie);
+    await post("/api/reset", { epoch: NOW }, cookie);
+
+    expect(
+      await result(post("/api/sync", inCourse("no", emptyDevice), cookie))
+    ).toMatchObject({ body: { epoch: NOW, log: [], memory: [], meta: null } });
+    expect(
+      await result(post("/api/sync", inCourse("de", emptyDevice), cookie))
+    ).toMatchObject({
+      body: { epoch: 0, memory: onTheWire(memory), meta: onTheWire(meta) },
+    });
+  });
+
+  test("a Start over in another course does not make it reset", async () => {
+    const cookie = await signIn();
+
+    await post("/api/sync", firstMessage, cookie);
+    await post("/api/reset", { course: "de", epoch: NOW }, cookie);
+
+    const { body } = await result(
+      post(
+        "/api/sync",
+        { ...emptyDevice, epoch: 0, memRev: 1, logSeq: 3 },
+        cookie
+      )
+    );
+
+    expect(body).toMatchObject({ epoch: 0, reset: false });
+  });
+
+  test("rows stored before there were courses are the first course's, and no other's", async () => {
+    await storeAsBefore();
+
+    const cookie = await signIn();
+
+    expect(
+      await result(post("/api/sync", inCourse("no", emptyDevice), cookie))
+    ).toMatchObject({
+      body: {
+        log: onTheWire(log),
+        logSeq: 3,
+        memRev: 1,
+        memory: onTheWire(memory),
+        meta: onTheWire(meta),
+      },
+    });
+    expect(
+      await result(post("/api/sync", inCourse("de", emptyDevice), cookie))
+    ).toMatchObject({ body: { log: [], memRev: 0, memory: [], meta: null } });
   });
 });

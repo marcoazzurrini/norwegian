@@ -1,4 +1,4 @@
-// The answer after a task: audio, the Norwegian, and a line on how it went.
+// The answer after a task: audio, the answer in the language of the course, and a line on how it went.
 import * as stylex from "@stylexjs/stylex";
 import { Check } from "lucide-react";
 import type { ReactNode } from "react";
@@ -52,7 +52,7 @@ interface AnswerProps {
   good?: boolean;
   /** A line on how it went, or the translation. */
   note: string;
-  /** The Norwegian. */
+  /** The answer, in the language of the course. */
   children: ReactNode;
 }
 

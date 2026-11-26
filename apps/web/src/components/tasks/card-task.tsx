@@ -1,9 +1,8 @@
-import type { Item } from "@norsk/content";
+import type { Item } from "@norsk/course";
 import { cardTask } from "@norsk/engine";
 import type { TaskResult } from "@norsk/engine";
 import {
   Answer,
-  AnswerInput,
   Ask,
   AudioButton,
   Button,
@@ -16,7 +15,9 @@ import {
 } from "@norsk/ui";
 import { useState } from "react";
 
+import { useCourse } from "../../course";
 import { say } from "../say";
+import { AnswerField } from "./answer-field";
 import { cardHint, cardNote, cueKind } from "./card-text";
 import type { Frame } from "./frame";
 import { CopyOnce, HelpButtons } from "./help";
@@ -26,7 +27,8 @@ import { useTask } from "./use-task";
 
 /** What the field asks for at each step that has one. */
 const PLACEHOLDER = {
-  ask: "Type in Norwegian",
+  // The field itself asks for the language of the course.
+  ask: undefined,
   copy: "Copy it once",
   result: "",
   retry: "Try again",
@@ -38,8 +40,9 @@ interface CardTaskProps {
   onDone: (result: TaskResult) => void | Promise<void>;
 }
 
-/** A single item on its own: meaning shown, Norwegian typed. */
+/** A single item on its own: its meaning shown, the item typed. */
 export const CardTask = ({ item, frame, onDone }: CardTaskProps) => {
+  const { meta } = useCourse();
   const [input, setInput] = useState("");
   const [state, send] = useTask(cardTask, () => ({ item }), onDone);
   const { phase, typed } = state;
@@ -80,23 +83,27 @@ export const CardTask = ({ item, frame, onDone }: CardTaskProps) => {
             </Button>
           </DockRow>
         ) : (
-          <AnswerInput
+          <AnswerField
             key={phase.step}
             value={input}
             onChange={setInput}
             onSubmit={check}
-            placeholder={PLACEHOLDER[phase.step]}
+            {...(phase.step === "ask"
+              ? {}
+              : { placeholder: PLACEHOLDER[phase.step] })}
           />
         )
       }
     >
       <Stamp>Review</Stamp>
-      <Ask note={`${cueKind(item)}. Type it in Norwegian.`}>{item.gloss}</Ask>
+      <Ask note={`${cueKind(item, meta)}. Type it in ${meta.name}.`}>
+        {item.gloss}
+      </Ask>
       {typed === "" ? null : <Mine>{typed}</Mine>}
 
       {phase.step === "retry" ? (
         <Remark lead={typed === "" ? "Hint." : "Not yet."}>
-          {cardHint(item, phase.hint)}
+          {cardHint(item, phase.hint, meta)}
         </Remark>
       ) : null}
 

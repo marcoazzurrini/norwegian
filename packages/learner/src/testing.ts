@@ -2,10 +2,12 @@
 //
 // A "world" is one sync server and one clock. A "device" is one browser profile in that world:
 // its own IndexedDB, its own sign-in, its own connection. Launching a device again on the same
-// IndexedDB is a restart of the app.
+// IndexedDB is a restart of the app. A launch opens one course, the first one unless it names
+// another; launching another course is the learner switching to it.
 import "fake-indexeddb/auto";
 import type { Card } from "@norsk/engine";
 import {
+  FIRST_COURSE,
   LOG_PAGE,
   mergeMeta,
   ResetRequestSchema,
@@ -84,42 +86,75 @@ export interface Spoiled {
 export const dayOf = (at: number): string =>
   new Date(at).toLocaleDateString("sv-SE");
 
+/**
+ * The server keeps the data of each course apart. What a test reads from it is the data of the
+ * first course, unless the test names another.
+ */
 export interface Server {
   /** Answers one request as the real server does (`apps/api`): same rules, kept in memory. */
   handle: (path: string, body: string) => Response;
-  /** Every sync request received, oldest first. */
+  /** Every sync request received, for any course, oldest first. */
   syncs: () => readonly SyncRequest[];
-  /** Every reset request received, oldest first. */
+  /** Every reset request received, for any course, oldest first. */
   resets: () => readonly ResetRequest[];
   /** Adds unreadable records to the next sync answer. */
   spoil: (records: Spoiled) => void;
   /** Makes the next answer something that is not a sync answer at all. */
   garble: () => void;
-  memory: () => WireMem[];
-  log: () => WireLog[];
-  meta: () => SyncedMeta | null;
-  epoch: () => number;
+  memory: (course?: string) => WireMem[];
+  log: (course?: string) => WireLog[];
+  meta: (course?: string) => SyncedMeta | null;
+  epoch: (course?: string) => number;
   /** The revision of the newest memory, which is the cursor a device in step holds. */
-  rev: () => number;
+  rev: (course?: string) => number;
 }
 
 /** An answer that says no, with its HTTP status. */
 const refuse = (error: string, status: number): Response =>
   Response.json({ error }, { status });
 
+/** What the server holds for one course. */
+interface Held {
+  epoch: number;
+  rev: number;
+  meta: SyncedMeta | null;
+  memory: Map<string, { data: WireMem; rev: number }>;
+  log: { data: WireLog; seq: number }[];
+}
+
 export const createServer = (): Server => {
-  let epoch = 0;
-  let rev = 0;
+  const courses = new Map<string, Held>();
+  // One count for the log entries of all courses, as on the real server.
   let seq = 0;
-  let meta: SyncedMeta | null = null;
-  let memory = new Map<string, { data: WireMem; rev: number }>();
-  let log: { data: WireLog; seq: number }[] = [];
   let spoiled: Spoiled = {};
   let garbled = false;
   const syncs: SyncRequest[] = [];
   const resets: ResetRequest[] = [];
 
+  /** The data of a course. A course nothing was stored for yet is empty. */
+  const held = (course: string): Held => {
+    const have = courses.get(course);
+
+    if (have !== undefined) {
+      return have;
+    }
+
+    const empty: Held = {
+      epoch: 0,
+      log: [],
+      memory: new Map(),
+      meta: null,
+      rev: 0,
+    };
+
+    courses.set(course, empty);
+
+    return empty;
+  };
+
   const sync = (request: SyncRequest): SyncResponse => {
+    const course = held(request.course);
+    const { epoch, memory, log } = course;
     // A device from an older generation (before a "Start over" elsewhere) must not bring old data back.
     const stale = request.epoch !== null && request.epoch < epoch;
     const current = request.epoch === epoch;
@@ -130,14 +165,14 @@ export const createServer = (): Server => {
     const sentMeta = stale ? null : request.meta;
 
     if (sentMemory.length > 0) {
-      rev += 1;
+      course.rev += 1;
     }
 
     for (const mem of sentMemory) {
       const have = memory.get(mem.id);
 
       if (have === undefined || stampOf(mem) > stampOf(have.data)) {
-        memory.set(mem.id, { data: mem, rev });
+        memory.set(mem.id, { data: mem, rev: course.rev });
       }
     }
 
@@ -152,7 +187,8 @@ export const createServer = (): Server => {
     }
 
     if (sentMeta !== null) {
-      meta = meta === null ? sentMeta : mergeMeta(meta, sentMeta);
+      course.meta =
+        course.meta === null ? sentMeta : mergeMeta(course.meta, sentMeta);
     }
 
     // The device already has what it just sent.
@@ -167,13 +203,13 @@ export const createServer = (): Server => {
         sentUids.has(row.data.uid) ? [] : [row.data]
       ),
       logSeq: page.at(-1)?.seq ?? logSeq,
-      memRev: rev,
+      memRev: course.rev,
       memory: [...memory.values()].flatMap((row) =>
         row.rev > memRev && sentStamps.get(row.data.id) !== stampOf(row.data)
           ? [row.data]
           : []
       ),
-      meta,
+      meta: course.meta,
       more: waiting.length > LOG_PAGE,
       reset: stale,
     };
@@ -216,22 +252,29 @@ export const createServer = (): Server => {
 
     resets.push(request.output);
 
-    if (request.output.epoch < epoch) {
+    const { course, epoch } = request.output;
+    const before = held(course);
+
+    if (epoch < before.epoch) {
       return refuse("A newer reset already happened", 409);
     }
 
-    if (request.output.epoch > epoch) {
-      ({ epoch } = request.output);
-      memory = new Map();
-      log = [];
-      meta = null;
+    if (epoch > before.epoch) {
+      // The revisions go on counting, as on the real server; everything else of the course is gone.
+      courses.set(course, {
+        epoch,
+        log: [],
+        memory: new Map(),
+        meta: null,
+        rev: before.rev,
+      });
     }
 
     return Response.json({ epoch });
   };
 
   return {
-    epoch: () => epoch,
+    epoch: (course = FIRST_COURSE) => held(course).epoch,
 
     garble: () => {
       garbled = true;
@@ -249,11 +292,14 @@ export const createServer = (): Server => {
       return refuse("Not found", 404);
     },
 
-    log: () => log.map((row) => row.data),
-    memory: () => [...memory.values()].map((row) => row.data),
-    meta: () => meta,
+    log: (course = FIRST_COURSE) => held(course).log.map((row) => row.data),
+
+    memory: (course = FIRST_COURSE) =>
+      [...held(course).memory.values()].map((row) => row.data),
+
+    meta: (course = FIRST_COURSE) => held(course).meta,
     resets: () => resets,
-    rev: () => rev,
+    rev: (course = FIRST_COURSE) => held(course).rev,
 
     spoil: (records) => {
       spoiled = records;
@@ -305,6 +351,8 @@ const stoppable = (
 });
 
 export interface Launch {
+  /** The course to open. The first course when left out. */
+  course?: string;
   /** How many writes to IndexedDB succeed before the app "stops". Unlimited when left out. */
   writes?: number;
 }
@@ -320,7 +368,7 @@ export interface Device {
   newId: () => string;
   /** This device's IndexedDB, for tests that put data in an older layout there first. */
   indexedDB: IDBFactory;
-  /** Starts the app (again) on this device's IndexedDB and waits until its first sync has ended. */
+  /** Starts the app (again) on this device's IndexedDB, in one course, and waits until its first sync has ended. */
   launch: (options?: Launch) => Promise<Learner>;
   /** The learner made by the last `launch`. */
   learner: () => Learner;
@@ -394,6 +442,8 @@ const createDevice = (world: World, name: string): Device => {
             await Promise.resolve();
           },
         },
+
+        course: options.course ?? FIRST_COURSE,
 
         fetch: async (path, init) => {
           if (!device.online) {
@@ -551,7 +601,10 @@ export interface OldData {
   sync?: Record<string, Json>;
 }
 
-/** Builds the IndexedDB database exactly as an earlier version of the app left it. */
+/**
+ * Builds the IndexedDB database exactly as an earlier version of the app left it.
+ * Those versions had one course and one database, "norsk".
+ */
 export const seedOldLayout = async (
   factory: IDBFactory,
   data: OldData

@@ -29,7 +29,7 @@ export type Effect =
   | { type: "teach"; ids: string[] }
   /** Record answers for items the learner already has. */
   | { type: "review"; inputs: ReviewInput[] }
-  /** Play Norwegian audio. The app does not wait for it to end. */
+  /** Play audio in the language of the course. The app does not wait for it to end. */
   | { type: "speak"; text: string; voiceIndex?: number; rate?: number }
   /** Remember when a sentence was last used as a review. */
   | { type: "sentenceSeen"; id: string; at: number }

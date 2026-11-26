@@ -1,6 +1,12 @@
 // What the Today screen says: the greeting, the numbers, and one line for each part of a session.
-import { item, levelItems, levels, units } from "@norsk/content";
-import type { Item, Lesson, Level, Story } from "@norsk/content";
+import type {
+  Course,
+  Greetings,
+  Item,
+  Lesson,
+  Level,
+  Story,
+} from "@norsk/course";
 import {
   compression,
   currentLevel,
@@ -21,20 +27,23 @@ import type {
 } from "@norsk/engine";
 
 export interface Greeting {
-  norwegian: string;
-  english: string;
+  /** The greeting in the language of the course. */
+  target: string;
+  /** What it means. */
+  base: string;
 }
 
-export const greetingAt = (hour: number): Greeting => {
+/** The greeting for an hour of the day, in the words of the course. */
+export const greetingAt = (hour: number, greetings: Greetings): Greeting => {
   if (hour < 10) {
-    return { english: "Good morning", norwegian: "God morgen" };
+    return { base: "Good morning", target: greetings.morning };
   }
 
   if (hour < 18) {
-    return { english: "Good day", norwegian: "God dag" };
+    return { base: "Good day", target: greetings.day };
   }
 
-  return { english: "Good evening", norwegian: "God kveld" };
+  return { base: "Good evening", target: greetings.evening };
 };
 
 const reviewsText = (due: number): string =>
@@ -85,6 +94,7 @@ const firstNewText = (firstNew: Item | null): string => {
 };
 
 export const newDetail = (
+  course: Course,
   lesson: Lesson | null,
   firstNew: Item | null
 ): string => {
@@ -92,7 +102,7 @@ export const newDetail = (
     return "You have learned every lesson.";
   }
 
-  const unit = units[lesson.unit - 1]?.name ?? "";
+  const unit = course.units[lesson.unit - 1]?.name ?? "";
 
   return `Unit ${lesson.unit}, ${unit}: ${lesson.title}.${firstNewText(firstNew)}`;
 };
@@ -103,6 +113,7 @@ export const storyDetail = (story: Story | null): string =>
     : `${story.title}. Made from words you know.`;
 
 export interface TodayInput {
+  course: Course;
   memory: Memory;
   chosenLesson: number | null;
   storiesDone: readonly string[];
@@ -164,6 +175,7 @@ const levelProgress = (mems: Mem[], total: number): number =>
   total === 0 ? 0 : mems.reduce((sum, mem) => sum + strength(mem), 0) / total;
 
 export const todayOf = ({
+  course,
   memory,
   chosenLesson,
   storiesDone,
@@ -171,31 +183,31 @@ export const todayOf = ({
   now,
   scheduler,
 }: TodayInput): TodayView => {
-  const lesson = nextLesson(memory, chosenLesson);
+  const lesson = nextLesson(course, memory, chosenLesson);
   const firstId = lesson?.items.find((id) => !memory.has(id));
-  const firstNew = firstId === undefined ? null : item(firstId);
-  const cover = compression(memory, now, sentenceSeen);
+  const firstNew = firstId === undefined ? null : course.item(firstId);
+  const cover = compression(course, memory, now, sentenceSeen);
   // What is due is counted over everything learned: a review does not stop at the end of a level.
   const due = cover.due + dueItems(memory, now).learning.length;
-  const level = currentLevel(memory);
+  const level = currentLevel(course, memory);
   const all = [...memory.values()];
 
   const memsOf = (one: Level): Mem[] =>
-    levelItems(one).flatMap((id) => memory.get(id) ?? []);
+    course.levelItems(one).flatMap((id) => memory.get(id) ?? []);
 
   const inLevel = memsOf(level);
-  const total = levelItems(level).length;
+  const total = course.levelItems(level).length;
   const stable = inLevel.filter((mem) => isStable(mem)).length;
 
   return {
     learning: inLevel.length - stable,
     level,
-    levels: levels.map((one) => ({
+    levels: course.levels.map((one) => ({
       id: one.id,
-      progress: levelProgress(memsOf(one), levelItems(one).length),
-      state: levelState(one, memory),
+      progress: levelProgress(memsOf(one), course.levelItems(one).length),
+      state: levelState(course, one, memory),
     })),
-    newDetail: newDetail(lesson, firstNew),
+    newDetail: newDetail(course, lesson, firstNew),
     progress: levelProgress(inLevel, total),
     recall:
       all.length === 0
@@ -204,7 +216,7 @@ export const todayOf = ({
     reviewDetail: reviewDetail(due, cover),
     seen: inLevel.length,
     stable,
-    storyDetail: storyDetail(nextStory(memory, new Set(storiesDone))),
+    storyDetail: storyDetail(nextStory(course, memory, new Set(storiesDone))),
     summary: summaryOf(due, firstNew),
     toLearn: total - inLevel.length,
     total,

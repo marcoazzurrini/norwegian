@@ -4,7 +4,9 @@ import * as v from "valibot";
 
 import {
   ExplainRequestSchema,
+  FIRST_COURSE,
   mergeMeta,
+  ResetRequestSchema,
   stampOf,
   SyncedMetaSchema,
   SyncRequestSchema,
@@ -129,7 +131,10 @@ describe("the sync request", () => {
       meta: null,
     };
 
-    expect(v.parse(SyncRequestSchema, request)).toEqual(request);
+    expect(v.parse(SyncRequestSchema, request)).toEqual({
+      ...request,
+      course: FIRST_COURSE,
+    });
     expect(v.parse(WireLogSchema, entry)).toEqual(entry);
   });
 
@@ -146,6 +151,48 @@ describe("the sync request", () => {
     };
 
     expect(v.is(SyncRequestSchema, request)).toBe(false);
+  });
+});
+
+describe("the course of a message", () => {
+  const sync = {
+    epoch: null,
+    log: [],
+    logSeq: 0,
+    memRev: 0,
+    memory: [],
+    meta: null,
+  };
+
+  test("a sync request names its course", () => {
+    expect(v.parse(SyncRequestSchema, { ...sync, course: "de" }).course).toBe(
+      "de"
+    );
+  });
+
+  test("a sync request from before there were courses is for the first course", () => {
+    expect(v.parse(SyncRequestSchema, sync).course).toBe("no");
+  });
+
+  test("a reset request names its course", () => {
+    expect(v.parse(ResetRequestSchema, { course: "de", epoch: 5 })).toEqual({
+      course: "de",
+      epoch: 5,
+    });
+  });
+
+  test("a reset request from before there were courses is for the first course", () => {
+    expect(v.parse(ResetRequestSchema, { epoch: 5 })).toEqual({
+      course: "no",
+      epoch: 5,
+    });
+  });
+
+  test("a course that is not the short name of one is refused", () => {
+    for (const course of ["", "NO", "no/de", "9a", null, 1]) {
+      expect(v.is(SyncRequestSchema, { ...sync, course })).toBe(false);
+      expect(v.is(ResetRequestSchema, { course, epoch: 5 })).toBe(false);
+    }
   });
 });
 

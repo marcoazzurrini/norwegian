@@ -80,6 +80,7 @@ export interface Data {
 }
 
 interface DataDeps {
+  course: string;
   indexedDB: IDBFactory;
   now: () => number;
   newId: () => string;
@@ -360,6 +361,7 @@ export const createData = (deps: DataDeps): Data => {
       const { memory, meta } = store.state;
 
       return JSON.stringify({
+        course: deps.course,
         exportedAt: deps.now(),
         log,
         memory: [...memory.values()],
@@ -369,7 +371,8 @@ export const createData = (deps: DataDeps): Data => {
     },
 
     load: async () => {
-      const opened = await openStorage(deps.indexedDB, deps.newId);
+      const opened = await openStorage(deps.indexedDB, deps.course, deps.newId);
+
       const saved = await opened.read();
 
       const scheduler = await createScheduler(
@@ -462,7 +465,10 @@ export const createData = (deps: DataDeps): Data => {
 
     replaceAll: async (json) => {
       live();
-      const backup = json === null ? null : parseBackup(json, deps.newId);
+
+      const backup =
+        json === null ? null : parseBackup(json, deps.course, deps.newId);
+
       const now = deps.now();
 
       // A restored backup counts as the latest choice of settings on any device.

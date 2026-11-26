@@ -1,10 +1,9 @@
-import type { Sentence } from "@norsk/content";
+import type { Sentence } from "@norsk/course";
 import { explainRequest, sentenceTask } from "@norsk/engine";
 import type { SentenceEvent, SentenceState, TaskResult } from "@norsk/engine";
 import {
   AiNote,
   Answer,
-  AnswerInput,
   Ask,
   AudioButton,
   Button,
@@ -19,9 +18,11 @@ import * as stylex from "@stylexjs/stylex";
 import { Check, CircleAlert, X } from "lucide-react";
 import { useState } from "react";
 
+import { useCourse } from "../../course";
 import { useExplain } from "../../explain";
 import { learner } from "../../learner";
 import { say } from "../say";
+import { AnswerField } from "./answer-field";
 import type { Frame } from "./frame";
 import { HelpButtons } from "./help";
 import { itemName } from "./items";
@@ -122,6 +123,7 @@ export const SentenceView = ({
   frame,
   stamp,
 }: SentenceViewProps) => {
+  const course = useCourse();
   const [input, setInput] = useState("");
   const { sentence, covered, phase } = state;
 
@@ -141,10 +143,11 @@ export const SentenceView = ({
       ? null
       : {
           answer: ask.answer,
-          en: ask.en,
+          base: ask.base,
+          course: course.meta.id,
           kind: ask.kind,
-          no: ask.no,
-          topics: ask.itemIds.map((id) => itemName(id)),
+          target: ask.target,
+          topics: ask.itemIds.map((id) => itemName(course, id)),
         }
   );
 
@@ -181,20 +184,18 @@ export const SentenceView = ({
             </Button>
           </DockRow>
         ) : (
-          <AnswerInput
+          <AnswerField
             key={phase.step}
             value={input}
             onChange={setInput}
             onSubmit={check}
-            placeholder={
-              phase.step === "retry" ? "Try again" : "Type in Norwegian"
-            }
+            {...(phase.step === "retry" ? { placeholder: "Try again" } : {})}
           />
         )
       }
     >
       <Stamp>{stamp}</Stamp>
-      <Ask>{sentence.en}</Ask>
+      <Ask>{sentence.base}</Ask>
 
       {shown === null || shown.length === 0 ? null : (
         <div key={phase.step} {...stylex.props(effects.rise, styles.typed)}>
@@ -230,7 +231,7 @@ export const SentenceView = ({
             style={styles.hint}
             lead={phase.close ? "Almost." : "Not yet."}
           >
-            {hintText(phase.hint)}
+            {hintText(course, phase.hint)}
           </Remark>
           {aiText === null ? null : <AiNote label="Hint">{aiText}</AiNote>}
         </>
@@ -252,7 +253,7 @@ export const SentenceView = ({
             audio={
               <AudioButton
                 onPlay={() => {
-                  say(sentence.no);
+                  say(sentence.target);
                 }}
                 style={taskStyles.answerAudio}
               />
@@ -260,7 +261,7 @@ export const SentenceView = ({
             good={phase.passed}
             note={sentenceNote(failed.length, phase.passed)}
           >
-            {sentence.no}
+            {sentence.target}
           </Answer>
           {aiText === null ? null : (
             <AiNote label="Explanation">{aiText}</AiNote>
@@ -294,7 +295,7 @@ export const SentenceView = ({
                       />
                     )}
                     <span {...stylex.props(taskStyles.grow)}>
-                      {itemName(id)}
+                      {itemName(course, id)}
                     </span>
                     <span {...stylex.props(taskStyles.quiet14)}>
                       {bad ? "needs work" : "reviewed"}
@@ -318,18 +319,27 @@ interface SentenceTaskProps {
   onDone: (result: TaskResult) => void | Promise<void>;
 }
 
-/** A whole sentence: English shown, Norwegian typed. One sentence reviews every item in it. */
+/** A whole sentence: its meaning shown, the sentence typed. One sentence reviews every item in it. */
 export const SentenceTask = ({
   sentence,
   frame,
-  stamp = "Say it in Norwegian",
+  stamp,
   onDone,
 }: SentenceTaskProps) => {
+  const { meta } = useCourse();
+
   const [state, send] = useTask(
     sentenceTask,
-    () => ({ known: new Set(learner.memory().keys()), sentence }),
+    () => ({ known: new Set(learner().memory().keys()), sentence }),
     onDone
   );
 
-  return <SentenceView state={state} send={send} frame={frame} stamp={stamp} />;
+  return (
+    <SentenceView
+      state={state}
+      send={send}
+      frame={frame}
+      stamp={stamp ?? `Say it in ${meta.name}`}
+    />
+  );
 };

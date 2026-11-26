@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import type { Token } from "@norsk/content";
+import type { Token } from "@norsk/course";
 
 import { belongsTo, splitLine } from "./text-parts";
 

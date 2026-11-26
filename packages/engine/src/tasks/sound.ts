@@ -1,5 +1,5 @@
 // Minimal-pair listening: one of two similar words is played, and the learner picks which.
-import type { SoundPair } from "@norsk/content";
+import type { SoundPair } from "@norsk/course";
 
 import { EMPTY_RESULT, stay } from "./types";
 import type { Effect, Step, TaskMachine } from "./types";

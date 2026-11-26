@@ -21,6 +21,13 @@ const Composer = ({ start = "", onSubmit }: ComposerProps) => {
       onSubmit={() => {
         onSubmit?.(value);
       }}
+      placeholder="Type in Norwegian"
+      lang="nb"
+      letters={[
+        { key: "'", letter: "æ" },
+        { key: ";", letter: "ø" },
+        { key: "[", letter: "å" },
+      ]}
     />
   );
 };

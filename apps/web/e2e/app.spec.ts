@@ -26,6 +26,7 @@ const inOrder = async <T>(
   }
 };
 
+/** Opens a path of the app and waits for it: the development server builds a page, and the course, when first asked for. */
 const open = async (page: Page, path = "/") => {
   await page.goto(path);
   await expect(
@@ -33,7 +34,7 @@ const open = async (page: Page, path = "/") => {
       .getByRole("link", { name: "Start session" })
       .or(page.getByRole("heading", { level: 1 }))
       .first()
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 30_000 });
 };
 
 test("a new learner sees an empty Today page", async ({ page }) => {

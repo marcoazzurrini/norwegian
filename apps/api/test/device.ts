@@ -1,5 +1,7 @@
 // A simulated device. It keeps data and talks to the server the way the app in production does
 // (apps/web/src/engine/sync.ts and store.ts at the time of this refactor), using only raw requests.
+// A device made without a course is that app: its messages name no course. One made with a
+// course is the app of today, studying that course.
 import {
   LOG_PAGE,
   mergeMeta,
@@ -97,12 +99,20 @@ export class Device {
   private pendingReset: number | null = null;
   private readonly cookie: string;
   private readonly name: string;
+  /** Sent with every message, when the device has one. */
+  private readonly course: { course?: string };
   private made = 0;
 
-  constructor(name: string, cookie: string, voice: string | null = null) {
+  constructor(
+    name: string,
+    cookie: string,
+    voice: string | null = null,
+    course?: string
+  ) {
     this.name = name;
     this.cookie = cookie;
     this.meta.settings.voice = voice;
+    this.course = course === undefined ? {} : { course };
   }
 
   private record(id: string, grade: LogEntry["grade"]) {
@@ -256,7 +266,7 @@ export class Device {
     if (this.pendingReset !== null) {
       const { status } = await this.post(
         "/api/reset",
-        JSON.stringify({ epoch: this.pendingReset })
+        JSON.stringify({ ...this.course, epoch: this.pendingReset })
       );
 
       if (status === 200) {
@@ -283,6 +293,7 @@ export class Device {
       const { body, status } = await this.post(
         "/api/sync",
         JSON.stringify({
+          ...this.course,
           epoch: this.cursors.epoch,
           log: queue.slice(0, LOG_PAGE),
           logSeq: this.cursors.logSeq,

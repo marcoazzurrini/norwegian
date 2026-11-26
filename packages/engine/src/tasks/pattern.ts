@@ -1,6 +1,6 @@
 // Teaches a grammar pattern: contrasting examples and a short rule, reading questions, then typed sentences.
 // The pattern counts as taught once the reading questions are answered; the sentences then review it.
-import type { Item, Quiz, Sentence } from "@norsk/content";
+import type { Item, Quiz, Sentence } from "@norsk/course";
 
 import { askQuestion, pickOption } from "./quiz";
 import type { QuizState } from "./quiz";

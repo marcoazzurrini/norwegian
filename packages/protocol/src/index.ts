@@ -4,6 +4,13 @@
 // sides cannot disagree about a shape. The rules that both sides must apply in the same way
 // (which copy of a memory is newer, how two copies of the settings combine) live here too.
 export {
+  CourseIdSchema,
+  FIRST_COURSE,
+  MessageCourseSchema,
+  type CourseId,
+} from "./course";
+
+export {
   mergeMeta,
   SyncedMetaSchema,
   type SyncedMeta,

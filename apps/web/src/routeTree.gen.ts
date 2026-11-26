@@ -10,128 +10,144 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ItemsRouteImport } from './routes/items'
-import { Route as MapRouteImport } from './routes/map'
-import { Route as SessionRouteImport } from './routes/session'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SoundsRouteImport } from './routes/sounds'
-import { Route as StoriesIndexRouteImport } from './routes/stories.index'
-import { Route as StoriesIdRouteImport } from './routes/stories.$id'
+import { Route as CourseRouteRouteImport } from './routes/$course/route'
+import { Route as CourseIndexRouteImport } from './routes/$course/index'
+import { Route as CourseItemsRouteImport } from './routes/$course/items'
+import { Route as CourseMapRouteImport } from './routes/$course/map'
+import { Route as CourseSessionRouteImport } from './routes/$course/session'
+import { Route as CourseSettingsRouteImport } from './routes/$course/settings'
+import { Route as CourseSoundsRouteImport } from './routes/$course/sounds'
+import { Route as CourseStoriesIndexRouteImport } from './routes/$course/stories.index'
+import { Route as CourseStoriesIdRouteImport } from './routes/$course/stories.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ItemsRoute = ItemsRouteImport.update({
+const CourseRouteRoute = CourseRouteRouteImport.update({
+  id: '/$course',
+  path: '/$course',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CourseIndexRoute = CourseIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CourseRouteRoute,
+} as any)
+const CourseItemsRoute = CourseItemsRouteImport.update({
   id: '/items',
   path: '/items',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CourseRouteRoute,
 } as any)
-const MapRoute = MapRouteImport.update({
+const CourseMapRoute = CourseMapRouteImport.update({
   id: '/map',
   path: '/map',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CourseRouteRoute,
 } as any)
-const SessionRoute = SessionRouteImport.update({
+const CourseSessionRoute = CourseSessionRouteImport.update({
   id: '/session',
   path: '/session',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CourseRouteRoute,
 } as any)
-const SettingsRoute = SettingsRouteImport.update({
+const CourseSettingsRoute = CourseSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CourseRouteRoute,
 } as any)
-const SoundsRoute = SoundsRouteImport.update({
+const CourseSoundsRoute = CourseSoundsRouteImport.update({
   id: '/sounds',
   path: '/sounds',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CourseRouteRoute,
 } as any)
-const StoriesIndexRoute = StoriesIndexRouteImport.update({
+const CourseStoriesIndexRoute = CourseStoriesIndexRouteImport.update({
   id: '/stories/',
   path: '/stories/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CourseRouteRoute,
 } as any)
-const StoriesIdRoute = StoriesIdRouteImport.update({
+const CourseStoriesIdRoute = CourseStoriesIdRouteImport.update({
   id: '/stories/$id',
   path: '/stories/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CourseRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/items': typeof ItemsRoute
-  '/map': typeof MapRoute
-  '/session': typeof SessionRoute
-  '/settings': typeof SettingsRoute
-  '/sounds': typeof SoundsRoute
-  '/stories/$id': typeof StoriesIdRoute
-  '/stories/': typeof StoriesIndexRoute
+  '/$course': typeof CourseRouteRouteWithChildren
+  '/$course/items': typeof CourseItemsRoute
+  '/$course/map': typeof CourseMapRoute
+  '/$course/session': typeof CourseSessionRoute
+  '/$course/settings': typeof CourseSettingsRoute
+  '/$course/sounds': typeof CourseSoundsRoute
+  '/$course/': typeof CourseIndexRoute
+  '/$course/stories/$id': typeof CourseStoriesIdRoute
+  '/$course/stories/': typeof CourseStoriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/items': typeof ItemsRoute
-  '/map': typeof MapRoute
-  '/session': typeof SessionRoute
-  '/settings': typeof SettingsRoute
-  '/sounds': typeof SoundsRoute
-  '/stories/$id': typeof StoriesIdRoute
-  '/stories': typeof StoriesIndexRoute
+  '/$course/items': typeof CourseItemsRoute
+  '/$course/map': typeof CourseMapRoute
+  '/$course/session': typeof CourseSessionRoute
+  '/$course/settings': typeof CourseSettingsRoute
+  '/$course/sounds': typeof CourseSoundsRoute
+  '/$course': typeof CourseIndexRoute
+  '/$course/stories/$id': typeof CourseStoriesIdRoute
+  '/$course/stories': typeof CourseStoriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/items': typeof ItemsRoute
-  '/map': typeof MapRoute
-  '/session': typeof SessionRoute
-  '/settings': typeof SettingsRoute
-  '/sounds': typeof SoundsRoute
-  '/stories/$id': typeof StoriesIdRoute
-  '/stories/': typeof StoriesIndexRoute
+  '/$course': typeof CourseRouteRouteWithChildren
+  '/$course/items': typeof CourseItemsRoute
+  '/$course/map': typeof CourseMapRoute
+  '/$course/session': typeof CourseSessionRoute
+  '/$course/settings': typeof CourseSettingsRoute
+  '/$course/sounds': typeof CourseSoundsRoute
+  '/$course/': typeof CourseIndexRoute
+  '/$course/stories/$id': typeof CourseStoriesIdRoute
+  '/$course/stories/': typeof CourseStoriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/items'
-    | '/map'
-    | '/session'
-    | '/settings'
-    | '/sounds'
-    | '/stories/$id'
-    | '/stories/'
+    | '/$course'
+    | '/$course/items'
+    | '/$course/map'
+    | '/$course/session'
+    | '/$course/settings'
+    | '/$course/sounds'
+    | '/$course/'
+    | '/$course/stories/$id'
+    | '/$course/stories/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/items'
-    | '/map'
-    | '/session'
-    | '/settings'
-    | '/sounds'
-    | '/stories/$id'
-    | '/stories'
+    | '/$course/items'
+    | '/$course/map'
+    | '/$course/session'
+    | '/$course/settings'
+    | '/$course/sounds'
+    | '/$course'
+    | '/$course/stories/$id'
+    | '/$course/stories'
   id:
     | '__root__'
     | '/'
-    | '/items'
-    | '/map'
-    | '/session'
-    | '/settings'
-    | '/sounds'
-    | '/stories/$id'
-    | '/stories/'
+    | '/$course'
+    | '/$course/items'
+    | '/$course/map'
+    | '/$course/session'
+    | '/$course/settings'
+    | '/$course/sounds'
+    | '/$course/'
+    | '/$course/stories/$id'
+    | '/$course/stories/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ItemsRoute: typeof ItemsRoute
-  MapRoute: typeof MapRoute
-  SessionRoute: typeof SessionRoute
-  SettingsRoute: typeof SettingsRoute
-  SoundsRoute: typeof SoundsRoute
-  StoriesIdRoute: typeof StoriesIdRoute
-  StoriesIndexRoute: typeof StoriesIndexRoute
+  CourseRouteRoute: typeof CourseRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -143,67 +159,101 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/items': {
-      id: '/items'
+    '/$course': {
+      id: '/$course'
+      path: '/$course'
+      fullPath: '/$course'
+      preLoaderRoute: typeof CourseRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$course/': {
+      id: '/$course/'
+      path: '/'
+      fullPath: '/$course/'
+      preLoaderRoute: typeof CourseIndexRouteImport
+      parentRoute: typeof CourseRouteRoute
+    }
+    '/$course/items': {
+      id: '/$course/items'
       path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof ItemsRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$course/items'
+      preLoaderRoute: typeof CourseItemsRouteImport
+      parentRoute: typeof CourseRouteRoute
     }
-    '/map': {
-      id: '/map'
+    '/$course/map': {
+      id: '/$course/map'
       path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof MapRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$course/map'
+      preLoaderRoute: typeof CourseMapRouteImport
+      parentRoute: typeof CourseRouteRoute
     }
-    '/session': {
-      id: '/session'
+    '/$course/session': {
+      id: '/$course/session'
       path: '/session'
-      fullPath: '/session'
-      preLoaderRoute: typeof SessionRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$course/session'
+      preLoaderRoute: typeof CourseSessionRouteImport
+      parentRoute: typeof CourseRouteRoute
     }
-    '/settings': {
-      id: '/settings'
+    '/$course/settings': {
+      id: '/$course/settings'
       path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$course/settings'
+      preLoaderRoute: typeof CourseSettingsRouteImport
+      parentRoute: typeof CourseRouteRoute
     }
-    '/sounds': {
-      id: '/sounds'
+    '/$course/sounds': {
+      id: '/$course/sounds'
       path: '/sounds'
-      fullPath: '/sounds'
-      preLoaderRoute: typeof SoundsRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$course/sounds'
+      preLoaderRoute: typeof CourseSoundsRouteImport
+      parentRoute: typeof CourseRouteRoute
     }
-    '/stories/': {
-      id: '/stories/'
+    '/$course/stories/': {
+      id: '/$course/stories/'
       path: '/stories'
-      fullPath: '/stories/'
-      preLoaderRoute: typeof StoriesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$course/stories/'
+      preLoaderRoute: typeof CourseStoriesIndexRouteImport
+      parentRoute: typeof CourseRouteRoute
     }
-    '/stories/$id': {
-      id: '/stories/$id'
+    '/$course/stories/$id': {
+      id: '/$course/stories/$id'
       path: '/stories/$id'
-      fullPath: '/stories/$id'
-      preLoaderRoute: typeof StoriesIdRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$course/stories/$id'
+      preLoaderRoute: typeof CourseStoriesIdRouteImport
+      parentRoute: typeof CourseRouteRoute
     }
   }
 }
 
+interface CourseRouteRouteChildren {
+  CourseItemsRoute: typeof CourseItemsRoute
+  CourseMapRoute: typeof CourseMapRoute
+  CourseSessionRoute: typeof CourseSessionRoute
+  CourseSettingsRoute: typeof CourseSettingsRoute
+  CourseSoundsRoute: typeof CourseSoundsRoute
+  CourseIndexRoute: typeof CourseIndexRoute
+  CourseStoriesIdRoute: typeof CourseStoriesIdRoute
+  CourseStoriesIndexRoute: typeof CourseStoriesIndexRoute
+}
+
+const CourseRouteRouteChildren: CourseRouteRouteChildren = {
+  CourseItemsRoute: CourseItemsRoute,
+  CourseMapRoute: CourseMapRoute,
+  CourseSessionRoute: CourseSessionRoute,
+  CourseSettingsRoute: CourseSettingsRoute,
+  CourseSoundsRoute: CourseSoundsRoute,
+  CourseIndexRoute: CourseIndexRoute,
+  CourseStoriesIdRoute: CourseStoriesIdRoute,
+  CourseStoriesIndexRoute: CourseStoriesIndexRoute,
+}
+
+const CourseRouteRouteWithChildren = CourseRouteRoute._addFileChildren(
+  CourseRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ItemsRoute: ItemsRoute,
-  MapRoute: MapRoute,
-  SessionRoute: SessionRoute,
-  SettingsRoute: SettingsRoute,
-  SoundsRoute: SoundsRoute,
-  StoriesIdRoute: StoriesIdRoute,
-  StoriesIndexRoute: StoriesIndexRoute,
+  CourseRouteRoute: CourseRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

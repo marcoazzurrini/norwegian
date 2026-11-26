@@ -7,6 +7,8 @@ export { effects } from "./tokens/effects";
 // Components
 export { AnswerInput } from "./components/answer-input";
 
+export type { AnswerLetter } from "./components/answer-input";
+
 export { AudioButton } from "./components/audio-button";
 
 export { Blob } from "./components/blob";
@@ -69,6 +71,7 @@ export { Remark } from "./patterns/remark";
 export { Shell } from "./patterns/shell";
 
 export type {
+  ShellCourse,
   ShellDestination,
   ShellLinkProps,
   ShellWidth,

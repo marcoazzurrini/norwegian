@@ -17,6 +17,8 @@
       "name": "@norsk/api",
       "dependencies": {
         "@norsk/auth": "workspace:*",
+        "@norsk/course": "workspace:*",
+        "@norsk/courses": "workspace:*",
         "@norsk/db": "workspace:*",
         "@norsk/protocol": "workspace:*",
         "hono": "^4.13.19",
@@ -35,7 +37,8 @@
       "dependencies": {
         "@fontsource-variable/geist": "^5.3.0",
         "@norsk/auth": "workspace:*",
-        "@norsk/content": "workspace:*",
+        "@norsk/course": "workspace:*",
+        "@norsk/courses": "workspace:*",
         "@norsk/engine": "workspace:*",
         "@norsk/journal": "workspace:*",
         "@norsk/learner": "workspace:*",
@@ -52,6 +55,7 @@
         "valibot": "^1.5.0",
       },
       "devDependencies": {
+        "@norsk/norwegian": "workspace:*",
         "@playwright/test": "^1.65.1",
         "@stylexjs/unplugin": "^0.19.2",
         "@types/bun": "catalog:",
@@ -74,10 +78,21 @@
         "vitest": "^5.1.1",
       },
     },
-    "packages/content": {
-      "name": "@norsk/content",
+    "packages/course": {
+      "name": "@norsk/course",
       "dependencies": {
         "valibot": "^1.5.0",
+      },
+      "devDependencies": {
+        "@types/bun": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "packages/courses": {
+      "name": "@norsk/courses",
+      "dependencies": {
+        "@norsk/course": "workspace:*",
+        "@norsk/norwegian": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "catalog:",
@@ -102,10 +117,11 @@
     "packages/engine": {
       "name": "@norsk/engine",
       "dependencies": {
-        "@norsk/content": "workspace:*",
+        "@norsk/course": "workspace:*",
         "ts-fsrs": "^6.0.0",
       },
       "devDependencies": {
+        "@norsk/norwegian": "workspace:*",
         "@types/bun": "catalog:",
         "typescript": "catalog:",
       },
@@ -143,6 +159,17 @@
         "react": "catalog:",
       },
     },
+    "packages/norwegian": {
+      "name": "@norsk/norwegian",
+      "dependencies": {
+        "@norsk/course": "workspace:*",
+        "valibot": "^1.5.0",
+      },
+      "devDependencies": {
+        "@types/bun": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "packages/protocol": {
       "name": "@norsk/protocol",
       "dependencies": {
@@ -156,7 +183,7 @@
     "packages/speech": {
       "name": "@norsk/speech",
       "dependencies": {
-        "@norsk/content": "workspace:*",
+        "@norsk/course": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "catalog:",
@@ -450,7 +477,9 @@
 
     "@norsk/auth": ["@norsk/auth@workspace:packages/auth"],
 
-    "@norsk/content": ["@norsk/content@workspace:packages/content"],
+    "@norsk/course": ["@norsk/course@workspace:packages/course"],
+
+    "@norsk/courses": ["@norsk/courses@workspace:packages/courses"],
 
     "@norsk/db": ["@norsk/db@workspace:packages/db"],
 
@@ -459,6 +488,8 @@
     "@norsk/journal": ["@norsk/journal@workspace:packages/journal"],
 
     "@norsk/learner": ["@norsk/learner@workspace:packages/learner"],
+
+    "@norsk/norwegian": ["@norsk/norwegian@workspace:packages/norwegian"],
 
     "@norsk/protocol": ["@norsk/protocol@workspace:packages/protocol"],
 

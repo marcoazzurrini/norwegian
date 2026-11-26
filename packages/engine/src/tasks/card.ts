@@ -1,8 +1,8 @@
-// A single item on its own: meaning shown, Norwegian typed.
+// A single item on its own: its meaning shown, the item typed.
 // A miss gets one hint and a second try. A second miss, or "I don't know", shows the answer,
 // which the learner copies once. Only a first-try pass without a hint counts as remembered,
 // or a miss the learner calls a typo. A miss after asking for the hint cannot be called one.
-import type { Item } from "@norsk/content";
+import type { Item } from "@norsk/course";
 
 import { gradeCard } from "../grade";
 import { stay } from "./types";

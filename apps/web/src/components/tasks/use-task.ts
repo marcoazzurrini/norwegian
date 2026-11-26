@@ -32,13 +32,13 @@ const perform = async (effect: Effect, onDone: OnDone): Promise<void> => {
   switch (effect.type) {
     case "teach": {
       note("task.taught", { ids: effect.ids });
-      await learner.teach(effect.ids);
+      await learner().teach(effect.ids);
       break;
     }
 
     case "review": {
       note("task.reviewed", { inputs: effect.inputs });
-      await learner.applyReviews(effect.inputs);
+      await learner().applyReviews(effect.inputs);
       break;
     }
 
@@ -49,17 +49,17 @@ const perform = async (effect: Effect, onDone: OnDone): Promise<void> => {
     }
 
     case "sentenceSeen": {
-      await learner.markSentenceSeen(effect.id, effect.at);
+      await learner().markSentenceSeen(effect.id, effect.at);
       break;
     }
 
     case "soundAnswered": {
-      await learner.recordSound(effect.group, effect.right);
+      await learner().recordSound(effect.group, effect.right);
       break;
     }
 
     case "storyDone": {
-      await learner.markStoryDone(effect.id);
+      await learner().markStoryDone(effect.id);
       break;
     }
 

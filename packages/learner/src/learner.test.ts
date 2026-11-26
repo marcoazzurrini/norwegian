@@ -283,6 +283,7 @@ describe("before the data is loaded", () => {
           await Promise.resolve();
         },
       },
+      course: "no",
       fetch: async () => await Promise.resolve(Response.json({})),
       host: { after: () => nothing, onWake: () => nothing },
       indexedDB: device.indexedDB,

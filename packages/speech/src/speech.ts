@@ -1,11 +1,6 @@
-// Recorded voices are used when they exist (see build-audio.ts in @norsk/content);
+// Recorded voices are used when the course has them (see the build-audio script of a course);
 // otherwise the browser's built-in voices (Web Speech API) speak the text.
-import {
-  audioKey,
-  audioPath,
-  recordedVoices,
-  spokenText,
-} from "@norsk/content";
+import { audioKey, audioPath, spokenText } from "@norsk/course";
 
 import { browserHost } from "./host";
 import type { SpeakOptions, Speech, SpeechDeps, Voice } from "./types";
@@ -18,10 +13,21 @@ const NORMAL_RATE = 0.9;
 /** How long a recording may take to arrive before the browser's voice speaks instead. */
 const LOAD_TIMEOUT_MS = 4000;
 
-const NORWEGIAN = /^(?:nb|no)(?:[-_]|$)/iu;
-
 export const createSpeech = (deps: SpeechDeps): Speech => {
   const host = deps.host ?? browserHost();
+  const { meta, voices: recordedVoices } = deps.course;
+
+  /** True for the language tag of a voice that speaks the language of the course. */
+  const speaksIt = (lang: string): boolean => {
+    const tag = lang.toLowerCase();
+
+    return meta.voiceLangs.some(
+      (start) =>
+        tag === start ||
+        tag.startsWith(`${start}-`) ||
+        tag.startsWith(`${start}_`)
+    );
+  };
 
   /** Counts the texts asked for, so a recording that arrives late knows it has been overtaken. */
   let playing = 0;
@@ -31,7 +37,7 @@ export const createSpeech = (deps: SpeechDeps): Speech => {
 
   const voices = (): Voice[] =>
     (host.synthesis()?.voices() ?? [])
-      .filter((voice) => NORWEGIAN.test(voice.lang))
+      .filter((voice) => speaksIt(voice.lang))
       .toSorted(
         (a, b) =>
           Number(b.localService) - Number(a.localService) ||
@@ -132,7 +138,7 @@ export const createSpeech = (deps: SpeechDeps): Speech => {
 
     synthesis.cancel();
     await synthesis.say({
-      lang: voice?.lang ?? "nb-NO",
+      lang: voice?.lang ?? meta.lang,
       rate: options.rate ?? rate,
       text: spokenText(text),
       voice: voice ?? null,

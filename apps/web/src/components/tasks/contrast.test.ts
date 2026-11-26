@@ -1,8 +1,10 @@
 import { expect, test } from "bun:test";
 
-import { items } from "@norsk/content";
+import { course } from "@norsk/norwegian";
 
 import { contrast, spokenForm } from "./contrast";
+
+const { items } = course;
 
 /** The first version of this function, kept to check every example of the course against. */
 const reference = (no: string) => {
@@ -68,7 +70,7 @@ test("forms with nothing in common are shown whole", () => {
 
 test("every example of the course is split as before", () => {
   const examples = Object.values(items).flatMap(
-    (one) => one.examples?.map((example) => example.no) ?? []
+    (one) => one.examples?.map((example) => example.target) ?? []
   );
 
   expect(examples.length).toBeGreaterThan(40);

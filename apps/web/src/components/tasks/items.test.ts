@@ -1,8 +1,10 @@
 import { expect, test } from "bun:test";
 
-import { item } from "@norsk/content";
+import { course } from "@norsk/norwegian";
 
 import { hasArticle, itemName, shuffled, soundOf } from "./items";
+
+const { item } = course;
 
 /** The shuffle of the first version of the app, which this one must match draw for draw. */
 const reference = <Value>(list: Value[], random: () => number): Value[] => {
@@ -34,9 +36,9 @@ const stream = (seed: number) => {
 };
 
 test("an item is named by its words and meaning, a pattern by its title", () => {
-  expect(itemName("c:hei")).toBe("hei (hi)");
-  expect(itemName("c:jeg-heter")).toBe("jeg heter … (my name is ___)");
-  expect(itemName("p:present")).toBe("Verbs now");
+  expect(itemName(course, "c:hei")).toBe("hei (hi)");
+  expect(itemName(course, "c:jeg-heter")).toBe("jeg heter … (my name is ___)");
+  expect(itemName(course, "p:present")).toBe("Verbs now");
 });
 
 test("only a noun shown with its article has one", () => {

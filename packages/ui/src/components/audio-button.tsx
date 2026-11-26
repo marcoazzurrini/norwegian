@@ -1,4 +1,4 @@
-// The white round button that plays Norwegian audio. The caller plays the sound.
+// The white round button that plays audio in the language of the course. The caller plays the sound.
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
 import { Volume2 } from "lucide-react";

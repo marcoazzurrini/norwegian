@@ -1,4 +1,4 @@
-import type { SoundPair } from "@norsk/content";
+import type { SoundPair } from "@norsk/course";
 import { soundTask } from "@norsk/engine";
 import type { TaskResult } from "@norsk/engine";
 import {

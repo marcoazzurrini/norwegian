@@ -1,27 +1,16 @@
 // Decides what the learner can do next: which sentences are usable, which items are due,
 // and which review clears the most due items at once ("compression").
-import {
-  chunkCovered,
-  exampleOf,
-  item,
-  items,
-  lessons,
-  levelLessons,
-  levels,
-  sentenceItems,
-  sentenceReady,
-  sentences,
-  sentencesWith,
-  stories,
-} from "@norsk/content";
+// Every question is asked of one course, which the caller passes in.
+import { chunkCovered, itemsOfSentence, sentenceReady } from "@norsk/course";
 import type {
+  Course,
   Item,
   Known,
   Lesson,
   Level,
   Sentence,
   Story,
-} from "@norsk/content";
+} from "@norsk/course";
 
 import { dueTime, isDue, isLearning, isStable } from "./memory";
 import type { Mem } from "./memory";
@@ -34,8 +23,8 @@ export type LessonState = "locked" | "ready" | "started" | "done";
 
 export type LevelState = "locked" | "open" | "done";
 
-const lessonAt = (index: number): Lesson => {
-  const found = lessons[index];
+const lessonAt = (course: Course, index: number): Lesson => {
+  const found = course.lessons[index];
 
   if (found === undefined) {
     throw new Error(`Unknown lesson ${index}`);
@@ -54,9 +43,13 @@ export const storyReady = (st: Story, known: Known): boolean =>
 
 /** The taught items a sentence exercises. */
 export const exercised = (s: Sentence, known: Known): string[] =>
-  sentenceItems(s).filter((id) => known.has(id));
+  itemsOfSentence(s).filter((id) => known.has(id));
 
-export const lessonState = (l: Lesson, known: Known): LessonState => {
+export const lessonState = (
+  course: Course,
+  l: Lesson,
+  known: Known
+): LessonState => {
   const taught = l.items.filter((id) => known.has(id)).length;
 
   if (taught === l.items.length) {
@@ -67,39 +60,50 @@ export const lessonState = (l: Lesson, known: Known): LessonState => {
     return "started";
   }
 
-  return l.needs.every((n) => lessonState(lessonAt(n), known) === "done")
+  return l.needs.every(
+    (n) => lessonState(course, lessonAt(course, n), known) === "done"
+  )
     ? "ready"
     : "locked";
 };
 
-const everyLessonDone = (one: Level, known: Known): boolean => {
-  const all = levelLessons(one);
+const everyLessonDone = (course: Course, one: Level, known: Known): boolean => {
+  const all = course.levelLessons(one);
 
-  return all.length > 0 && all.every((l) => lessonState(l, known) === "done");
+  return (
+    all.length > 0 && all.every((l) => lessonState(course, l, known) === "done")
+  );
 };
 
 /**
  * A level opens when the level before it is done. A level that is not written yet has
  * no lessons, so it stays locked.
  */
-export const levelState = (one: Level, known: Known): LevelState => {
-  if (everyLessonDone(one, known)) {
+export const levelState = (
+  course: Course,
+  one: Level,
+  known: Known
+): LevelState => {
+  if (everyLessonDone(course, one, known)) {
     return "done";
   }
 
-  const before = levels[levels.indexOf(one) - 1];
+  const before = course.levels[course.levels.indexOf(one) - 1];
 
-  const reached = before === undefined || everyLessonDone(before, known);
+  const reached =
+    before === undefined || everyLessonDone(course, before, known);
 
-  return reached && levelLessons(one).length > 0 ? "open" : "locked";
+  return reached && course.levelLessons(one).length > 0 ? "open" : "locked";
 };
 
 /** The level the learner is in: the first one that is open, or the last one done when none is. */
-export const currentLevel = (known: Known): Level => {
+export const currentLevel = (course: Course, known: Known): Level => {
   const found =
-    levels.find((one) => levelState(one, known) === "open") ??
-    levels.findLast((one) => levelState(one, known) === "done") ??
-    levels[0];
+    course.levels.find((one) => levelState(course, one, known) === "open") ??
+    course.levels.findLast(
+      (one) => levelState(course, one, known) === "done"
+    ) ??
+    course.levels[0];
 
   if (found === undefined) {
     throw new Error("The course has no level");
@@ -108,36 +112,41 @@ export const currentLevel = (known: Known): Level => {
   return found;
 };
 
-export const itemState = (it: Item, mem: Memory): ItemState => {
+export const itemState = (course: Course, it: Item, mem: Memory): ItemState => {
   const m = mem.get(it.id);
 
   if (m !== undefined) {
     return isStable(m) ? "stable" : "learning";
   }
 
-  const state = lessonState(lessonAt(it.lesson), mem);
+  const state = lessonState(course, lessonAt(course, it.lesson), mem);
 
   return state === "ready" || state === "started" ? "ready" : "locked";
 };
 
 /** The lesson to teach next: the one in progress, else the chosen one, else the earliest ready one. */
 export const nextLesson = (
+  course: Course,
   mem: Memory,
   chosen: number | null = null
 ): Lesson | null => {
-  const started = lessons.find((l) => lessonState(l, mem) === "started");
+  const started = course.lessons.find(
+    (l) => lessonState(course, l, mem) === "started"
+  );
 
   if (started !== undefined) {
     return started;
   }
 
-  const picked = chosen === null ? undefined : lessons[chosen];
+  const picked = chosen === null ? undefined : course.lessons[chosen];
 
-  if (picked !== undefined && lessonState(picked, mem) === "ready") {
+  if (picked !== undefined && lessonState(course, picked, mem) === "ready") {
     return picked;
   }
 
-  return lessons.find((l) => lessonState(l, mem) === "ready") ?? null;
+  return (
+    course.lessons.find((l) => lessonState(course, l, mem) === "ready") ?? null
+  );
 };
 
 /**
@@ -150,18 +159,36 @@ const INTRO_LOAD = 3;
 /** A phrase of this many words is long. */
 const LONG_PHRASE = 3;
 
-/** The words taught on their own, by every form they are written in. */
-const wordItems = new Map<string, string[]>();
+/** For each course, the words taught on their own, by every form they are written in. */
+const wordItemsByCourse = new WeakMap<Course, Map<string, string[]>>();
 
-for (const it of Object.values(items)) {
-  if (it.kind === "word") {
-    for (const form of [it.text, ...(it.forms ?? []).map((row) => row.form)]) {
-      const key = form.toLowerCase();
+// A course never changes while the app runs, so its words are listed once.
+const wordItemsOf = (course: Course): Map<string, string[]> => {
+  const known = wordItemsByCourse.get(course);
 
-      wordItems.set(key, [...(wordItems.get(key) ?? []), it.id]);
+  if (known !== undefined) {
+    return known;
+  }
+
+  const wordItems = new Map<string, string[]>();
+
+  for (const it of Object.values(course.items)) {
+    if (it.kind === "word") {
+      for (const form of [
+        it.text,
+        ...(it.forms ?? []).map((row) => row.form),
+      ]) {
+        const key = form.toLowerCase();
+
+        wordItems.set(key, [...(wordItems.get(key) ?? []), it.id]);
+      }
     }
   }
-}
+
+  wordItemsByCourse.set(course, wordItems);
+
+  return wordItems;
+};
 
 /** The words of a phrase, without the gap of a phrase such as "jeg heter ___" and without punctuation. */
 const wordsOf = (phrase: string): string[] =>
@@ -171,12 +198,14 @@ const wordsOf = (phrase: string): string[] =>
     .filter(Boolean);
 
 /** How much a new item asks of the learner. A long phrase of unknown words asks more than a word. */
-const loadOf = (it: Item, known: Known): number => {
+const loadOf = (course: Course, it: Item, known: Known): number => {
   if (it.kind !== "chunk") {
     return 1;
   }
 
   const words = wordsOf(it.text);
+
+  const wordItems = wordItemsOf(course);
 
   const unknown = words.filter(
     (word) => !(wordItems.get(word) ?? []).some((id) => known.has(id))
@@ -192,8 +221,15 @@ const loadOf = (it: Item, known: Known): number => {
  * comes from memory and is not a copy of what is still in mind. The group stops before
  * it asks too much at once, so a long phrase is taught alone.
  */
-export const nextNewItems = (l: Lesson, mem: Memory): Item[] => {
-  const waiting = l.items.filter((id) => !mem.has(id)).map((id) => item(id));
+export const nextNewItems = (
+  course: Course,
+  l: Lesson,
+  mem: Memory
+): Item[] => {
+  const waiting = l.items
+    .filter((id) => !mem.has(id))
+    .map((id) => course.item(id));
+
   const [first] = waiting;
 
   if (first === undefined || first.kind === "pattern") {
@@ -201,10 +237,10 @@ export const nextNewItems = (l: Lesson, mem: Memory): Item[] => {
   }
 
   const group = [first];
-  let load = loadOf(first, mem);
+  let load = loadOf(course, first, mem);
 
   for (const next of waiting.slice(1)) {
-    load += loadOf(next, mem);
+    load += loadOf(course, next, mem);
 
     if (next.kind === "pattern" || load > INTRO_LOAD) {
       break;
@@ -234,7 +270,8 @@ export const dueItems = (mem: Memory, now: number): Due => {
   };
 };
 
-const isPattern = (id: string): boolean => item(id).kind === "pattern";
+const isPattern = (course: Course, id: string): boolean =>
+  course.item(id).kind === "pattern";
 
 /**
  * How an item is recalled depends on what it is, never on how urgent it is.
@@ -243,7 +280,8 @@ const isPattern = (id: string): boolean => item(id).kind === "pattern";
  * after a miss. A card is quick, and it asks for exactly the item that is still weak.
  * After that the item is recalled inside sentences.
  */
-const usesCarrier = (m: Mem): boolean => isPattern(m.id) || !isLearning(m);
+const usesCarrier = (course: Course, m: Mem): boolean =>
+  isPattern(course, m.id) || !isLearning(m);
 
 export type ReviewPick =
   | { type: "sentence"; sentence: Sentence; covers: string[] }
@@ -288,6 +326,7 @@ const isBetter = (a: Cover, b: Cover, seen: SentenceSeen): boolean => {
 
 /** The best unused sentence among those that clear at least one wanted item. */
 const bestCover = (
+  course: Course,
   mem: Memory,
   wanted: ReadonlySet<string>,
   skipSentences: ReadonlySet<string>,
@@ -299,11 +338,13 @@ const bestCover = (
     return best;
   }
 
-  for (const sentence of sentences) {
+  for (const sentence of course.sentences) {
     if (!skipSentences.has(sentence.id)) {
       // Every wanted item is in memory, so these are the taught items the sentence clears.
       // Most sentences clear none, and that is cheaper to find out than whether one is usable.
-      const covers = sentenceItems(sentence).filter((id) => wanted.has(id));
+      const covers = course
+        .sentenceItems(sentence)
+        .filter((id) => wanted.has(id));
 
       if (covers.length > 0 && sentenceReady(sentence, mem)) {
         const cover = { covers, sentence };
@@ -324,31 +365,38 @@ const bestCover = (
  * for an item no sentence can cover. Null when nothing can recall any of them.
  */
 export const pickRecall = (
+  course: Course,
   mem: Memory,
   mems: readonly Mem[],
   { seen, skipItems = new Set(), skipSentences }: PickLimits
 ): ReviewPick | null => {
   const open = mems.filter((m) => !skipItems.has(m.id));
 
-  const wanted = new Set(open.flatMap((m) => (usesCarrier(m) ? [m.id] : [])));
+  const wanted = new Set(
+    open.flatMap((m) => (usesCarrier(course, m) ? [m.id] : []))
+  );
 
-  const best = bestCover(mem, wanted, skipSentences, seen);
+  const best = bestCover(course, mem, wanted, skipSentences, seen);
 
   if (best !== null) {
     return { covers: best.covers, sentence: best.sentence, type: "sentence" };
   }
 
-  const single = open.find((m) => !isPattern(m.id));
+  const single = open.find((m) => !isPattern(course, m.id));
 
-  return single === undefined ? null : { item: item(single.id), type: "card" };
+  return single === undefined
+    ? null
+    : { item: course.item(single.id), type: "card" };
 };
 
 /** Picks the next review among the items whose scheduled review has arrived. */
 export const pickReview = (
+  course: Course,
   mem: Memory,
   now: number,
   limits: PickLimits
-): ReviewPick | null => pickRecall(mem, dueItems(mem, now).review, limits);
+): ReviewPick | null =>
+  pickRecall(course, mem, dueItems(mem, now).review, limits);
 
 export interface RecallPlan {
   /** Sentences that each recall one or more of the items. */
@@ -362,21 +410,25 @@ export interface RecallPlan {
  * chooses them one after another. An item that nothing can recall is left out.
  */
 export const planRecalls = (
+  course: Course,
   mem: Memory,
   mems: readonly Mem[],
   { seen, skipSentences }: PickLimits
 ): RecallPlan => {
-  const carried = new Set(mems.flatMap((m) => (usesCarrier(m) ? [m.id] : [])));
+  const carried = new Set(
+    mems.flatMap((m) => (usesCarrier(course, m) ? [m.id] : []))
+  );
+
   const left = new Set(mems.map((m) => m.id));
   const used = new Set(skipSentences);
   const plan = { cards: 0, sentences: 0 };
 
   while (left.size > 0) {
     const wanted = new Set([...left].filter((id) => carried.has(id)));
-    const best = bestCover(mem, wanted, used, seen);
+    const best = bestCover(course, mem, wanted, used, seen);
 
     if (best === null) {
-      const next = [...left].find((id) => !isPattern(id));
+      const next = [...left].find((id) => !isPattern(course, id));
 
       if (next === undefined) {
         break;
@@ -407,18 +459,24 @@ export interface Compression {
 
 /** How many reviews would clear everything that is due now. Used for the Today screen. */
 export const compression = (
+  course: Course,
   mem: Memory,
   now: number,
   seen: SentenceSeen
 ): Compression => {
   const due = dueItems(mem, now).review;
-  const plan = planRecalls(mem, due, { seen, skipSentences: new Set() });
+
+  const plan = planRecalls(course, mem, due, {
+    seen,
+    skipSentences: new Set(),
+  });
 
   return { due: due.length, tasks: plan.cards + plan.sentences };
 };
 
 /** Sentences that practise a pattern and use only taught words, shortest first. */
 export const practiceFor = (
+  course: Course,
   patternId: string,
   known: Known,
   limit: number
@@ -427,7 +485,8 @@ export const practiceFor = (
     has: (id) => id === patternId || known.has(id),
   };
 
-  return sentencesWith(patternId)
+  return course
+    .sentencesWith(patternId)
     .filter((s) => sentenceReady(s, withPattern))
     .toSorted((a, b) => a.tokens.length - b.tokens.length)
     .slice(0, limit);
@@ -438,15 +497,20 @@ export const practiceFor = (
  * takes the lessons in course order. A learner who took a later lesson first may not have met one of
  * its words yet: the example is then left out.
  */
-export const exampleFor = (it: Item, known: Known): Sentence | null => {
-  const example = exampleOf(it);
+export const exampleFor = (
+  course: Course,
+  it: Item,
+  known: Known
+): Sentence | null => {
+  const example = course.exampleOf(it);
   const withItem: Known = { has: (id) => id === it.id || known.has(id) };
 
   return example !== null && sentenceReady(example, withItem) ? example : null;
 };
 
 export const nextStory = (
+  course: Course,
   mem: Memory,
   done: ReadonlySet<string>
 ): Story | null =>
-  stories.find((st) => !done.has(st.id) && storyReady(st, mem)) ?? null;
+  course.stories.find((st) => !done.has(st.id) && storyReady(st, mem)) ?? null;

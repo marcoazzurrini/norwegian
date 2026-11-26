@@ -1,14 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import {
-  item,
-  lessons,
-  levels,
-  sentenceReady,
-  sentences,
-  sentencesWith,
-} from "@norsk/content";
-import type { Sentence } from "@norsk/content";
+import { sentenceReady } from "@norsk/course";
+import type { Sentence } from "@norsk/course";
 
 import {
   Session,
@@ -30,12 +23,15 @@ import {
   strength,
 } from "./index";
 import type { Mem, PickLimits, SessionView } from "./index";
+import { course } from "./testing";
+
+const { item, lessons, levels, sentences, sentencesWith } = course;
 
 const DAY = 86_400_000;
 const T0 = new Date("2026-01-01T08:00:00Z").getTime();
 
 const find = (no: string): Sentence => {
-  const found = sentences.find((s) => s.no === no);
+  const found = sentences.find((s) => s.target === no);
 
   if (found === undefined) {
     throw new Error(`No sentence "${no}"`);
@@ -312,9 +308,9 @@ const taught = async (
 describe("choosing what to do", () => {
   test("lessons unlock in order of their needs", () => {
     const mem = new Map<string, Mem>();
-    expect(lessonState(lessonAt(0), mem)).toBe("ready");
-    expect(lessonState(lessonAt(1), mem)).toBe("locked");
-    expect(nextLesson(mem)?.index).toBe(0);
+    expect(lessonState(course, lessonAt(0), mem)).toBe("ready");
+    expect(lessonState(course, lessonAt(1), mem)).toBe("locked");
+    expect(nextLesson(course, mem)?.index).toBe(0);
   });
 
   test("a sentence is usable only when all its words are taught", async () => {
@@ -328,14 +324,14 @@ describe("choosing what to do", () => {
     const now = T0 + 40 * DAY;
     const due = dueItems(mem, now).review.length;
     expect(due).toBeGreaterThan(20);
-    const pick = pickReview(mem, now, FRESH);
+    const pick = pickReview(course, mem, now, FRESH);
     expect(pick?.type).toBe("sentence");
 
     if (pick?.type === "sentence") {
       expect(pick.covers.length).toBeGreaterThanOrEqual(4);
     }
 
-    const c = compression(mem, now, {});
+    const c = compression(course, mem, now, {});
     expect(c.due).toBe(due);
     expect(c.tasks).toBeLessThan(due * 0.7);
   });
@@ -353,7 +349,7 @@ describe("choosing what to do", () => {
       }
     }
 
-    expect(pickReview(mem, T0 + 3 * DAY, FRESH)?.type).toBe("sentence");
+    expect(pickReview(course, mem, T0 + 3 * DAY, FRESH)?.type).toBe("sentence");
   });
 
   test("a word with several sentences gets each of them in turn", async () => {
@@ -381,7 +377,10 @@ describe("choosing what to do", () => {
 
     // One review a day, for one day more than there are sentences.
     for (let day = 0; day <= usable.length; day += 1) {
-      const pick = pickReview(mem, now, { seen, skipSentences: new Set() });
+      const pick = pickReview(course, mem, now, {
+        seen,
+        skipSentences: new Set(),
+      });
 
       if (pick?.type !== "sentence") {
         throw new Error("Expected a sentence");
@@ -424,7 +423,7 @@ const answered = (right: number, wrong: number) => ({
  */
 const playToEnd = (usedMs: number) => {
   const mem = new Map<string, Mem>();
-  const session = new Session(5, () => 0.3);
+  const session = new Session(course, 5, () => 0.3);
   const taughtIds: string[] = [];
   const asked: string[] = [];
   let now = T0;
@@ -482,7 +481,7 @@ const playToEnd = (usedMs: number) => {
 
 describe("a session", () => {
   test("a short first session starts teaching straight away", () => {
-    const session = new Session(5, () => 0.3);
+    const session = new Session(course, 5, () => 0.3);
     const task = session.next(view(new Map()), T0);
     expect(task.type).toBe("intro");
 
@@ -494,13 +493,13 @@ describe("a session", () => {
   });
 
   test("a longer session starts with sounds", () => {
-    const session = new Session(25, () => 0.3);
+    const session = new Session(course, 25, () => 0.3);
     expect(session.next(view(new Map()), T0).type).toBe("sound");
   });
 
   test("reviews come before new material, and the session ends when time is up", async () => {
     const mem = await taught([0, 1, 2, 3], T0);
-    const session = new Session(5, () => 0.3);
+    const session = new Session(course, 5, () => 0.3);
     const now = T0 + 40 * DAY;
     expect(session.next(view(mem), now).type).toBe("sentence");
     session.record(5 * 60_000, "review");
@@ -509,7 +508,7 @@ describe("a session", () => {
 
   test("new material gets time even when reviews are waiting", async () => {
     const mem = await taught([0, 1, 2, 3], T0);
-    const session = new Session(5, () => 0.3);
+    const session = new Session(course, 5, () => 0.3);
     const now = T0 + 40 * DAY;
     session.record(3.5 * 60_000, "review");
     const task = session.next(view(mem), now);
@@ -518,7 +517,7 @@ describe("a session", () => {
 
   test("new material waits while the learner keeps missing, and comes back once recalls succeed", async () => {
     const mem = await taught([0, 1, 2, 3], T0);
-    const session = new Session(5, () => 0.3);
+    const session = new Session(course, 5, () => 0.3);
     const now = T0 + 40 * DAY;
     const first = session.next(view(mem), now);
 
@@ -553,7 +552,7 @@ describe("a session", () => {
 
   test("the session says why it chose a task, with the facts it decided on", () => {
     const mem = new Map<string, Mem>();
-    const session = new Session(5, () => 0.3);
+    const session = new Session(course, 5, () => 0.3);
 
     expect(session.lastChoice).toBeNull();
 
@@ -588,8 +587,8 @@ describe("a session", () => {
 
   test("new words are not started when there is no time left to recall them", () => {
     const mem = new Map<string, Mem>();
-    const early = new Session(5, () => 0.3);
-    const late = new Session(5, () => 0.3);
+    const early = new Session(course, 5, () => 0.3);
+    const late = new Session(course, 5, () => 0.3);
 
     // One new word takes the time to teach it and the time of its recalls: about half a minute.
     early.record(4 * 60_000, "review");
@@ -609,7 +608,7 @@ describe("a session", () => {
       T0
     );
 
-    const session = new Session(5, () => 0.3);
+    const session = new Session(course, 5, () => 0.3);
 
     expect(session.next(view(all), T0 + 3 * DAY).type).toBe("done");
     expect(session.timeUp).toBe(false);
@@ -618,7 +617,7 @@ describe("a session", () => {
   test("a pattern that was missed comes back inside a sentence, and in another one after that", async () => {
     const mem = await taught([0, 1, 2, 3], T0);
     const missedAt = T0 + 4 * DAY;
-    const session = new Session(5, () => 0.3);
+    const session = new Session(course, 5, () => 0.3);
 
     // Nothing is due four days after the lessons, so the session would teach.
     expect(session.next(view(mem), missedAt).type).toBe("intro");
@@ -645,7 +644,7 @@ describe("a session", () => {
     withMiss(mem, "w:ikke:adv", missedAt);
 
     expect(
-      new Session(5, () => 0.3).next(view(mem), missedAt + 5 * 60_000)
+      new Session(course, 5, () => 0.3).next(view(mem), missedAt + 5 * 60_000)
     ).toMatchObject({
       item: { id: "w:ikke:adv" },
       reason: "learning",
@@ -666,9 +665,9 @@ const taughtBy = (index: number): string[][] => {
   const groups: string[][] = [];
 
   for (
-    let group = nextNewItems(lesson, mem);
+    let group = nextNewItems(course, lesson, mem);
     group.length > 0;
-    group = nextNewItems(lesson, mem)
+    group = nextNewItems(course, lesson, mem)
   ) {
     groups.push(group.map((it) => it.text));
 
@@ -719,17 +718,17 @@ describe("levels", () => {
   test("a new learner is in the first level, and the ones after it are locked", () => {
     const nothing = new Set<string>();
 
-    expect(currentLevel(nothing).id).toBe("A1");
-    expect(levelState(levelAt(0), nothing)).toBe("open");
-    expect(levelState(levelAt(1), nothing)).toBe("locked");
+    expect(currentLevel(course, nothing).id).toBe("A1");
+    expect(levelState(course, levelAt(0), nothing)).toBe("open");
+    expect(levelState(course, levelAt(1), nothing)).toBe("locked");
   });
 
   test("a level is done once every lesson of it is learned", () => {
-    expect(levelState(levelAt(0), everything)).toBe("done");
+    expect(levelState(course, levelAt(0), everything)).toBe("done");
   });
 
   test("a level that is not written yet stays locked, and the learner stays in the last level done", () => {
-    expect(levelState(levelAt(1), everything)).toBe("locked");
-    expect(currentLevel(everything).id).toBe("A1");
+    expect(levelState(course, levelAt(1), everything)).toBe("locked");
+    expect(currentLevel(course, everything).id).toBe("A1");
   });
 });

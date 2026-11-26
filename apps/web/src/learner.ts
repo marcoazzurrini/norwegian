@@ -1,31 +1,27 @@
-// The one learner of the app: the data on this device and its sync, with the hooks that read it.
-import { currentUser, signIn, signOut } from "@norsk/auth/client";
-import { createLearner } from "@norsk/learner";
-import { createLearnerHooks } from "@norsk/learner/react";
+// The learner of the course that is open: the data on this device and its sync, with the hooks that read it.
+// Each course has its own learner (see course.ts); these are the ones of the course on screen.
+import type { Learner } from "@norsk/learner";
+import type { LearnerHooks } from "@norsk/learner/react";
 
-export const learner = createLearner({
-  account: {
-    currentUser: async () => {
-      const user = await currentUser();
+import { openCourse } from "./course";
 
-      return user === null ? null : user.email;
-    },
-    signIn,
-    signOut,
-  },
-  fetch: async (path, init) => await fetch(path, init),
-  // The page is also drawn once when the app is built, where there is no database.
-  // Nothing opens the database before `start`, which only a browser calls.
-  indexedDB: globalThis.indexedDB,
-  newId: () => crypto.randomUUID(),
-  now: () => Date.now(),
-});
+/** The learner of the course that is open. */
+export const learner = (): Learner => openCourse().learner;
 
-export const {
-  useMemory,
-  useProgress,
-  useReady,
-  useScheduler,
-  useSettings,
-  useSyncStatus,
-} = createLearnerHooks(learner);
+const hooks = (): LearnerHooks => openCourse().hooks;
+
+export const useMemory: LearnerHooks["useMemory"] = () => hooks().useMemory();
+
+export const useProgress: LearnerHooks["useProgress"] = () =>
+  hooks().useProgress();
+
+export const useReady: LearnerHooks["useReady"] = () => hooks().useReady();
+
+export const useScheduler: LearnerHooks["useScheduler"] = () =>
+  hooks().useScheduler();
+
+export const useSettings: LearnerHooks["useSettings"] = () =>
+  hooks().useSettings();
+
+export const useSyncStatus: LearnerHooks["useSyncStatus"] = () =>
+  hooks().useSyncStatus();

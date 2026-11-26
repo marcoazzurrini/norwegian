@@ -10,8 +10,14 @@
 // time that is left over. When nothing fits any more, the session closes: it gives every item
 // the recall it is owed, then it ends. So an item taught in the last minutes is still recalled
 // the same day.
-import { sounds } from "@norsk/content";
-import type { Item, Lesson, Sentence, SoundPair, Story } from "@norsk/content";
+import type {
+  Course,
+  Item,
+  Lesson,
+  Sentence,
+  SoundPair,
+  Story,
+} from "@norsk/course";
 
 import {
   RECALLS_AFTER_TEACHING,
@@ -188,7 +194,11 @@ export const blockOf = (task: Task): Block => {
 };
 
 /** The first of the new items decides the task: a pattern is taught alone, words and phrases as a group. */
-const newMaterial = (fresh: Item[], memory: Memory): Task | null => {
+const newMaterial = (
+  course: Course,
+  fresh: Item[],
+  memory: Memory
+): Task | null => {
   const [first] = fresh;
 
   if (first === undefined) {
@@ -198,7 +208,7 @@ const newMaterial = (fresh: Item[], memory: Memory): Task | null => {
   return first.kind === "pattern"
     ? {
         item: first,
-        practice: practiceFor(first.id, memory, PRACTICE_SENTENCES),
+        practice: practiceFor(course, first.id, memory, PRACTICE_SENTENCES),
         type: "pattern",
       }
     : { items: fresh, type: "intro" };
@@ -209,6 +219,7 @@ export class Session {
   readonly budgetMs: number;
   readonly stats: SessionStats = { reviewed: 0, right: 0, taught: 0, wrong: 0 };
   elapsedMs = 0;
+  private readonly course: Course;
   private readonly rng: () => number;
   private readonly soundsTotal: number;
   private readonly usedSentences = new Set<string>();
@@ -230,10 +241,17 @@ export class Session {
   private choice: Choice | null = null;
 
   /**
+   * `course` is what the session teaches and reviews.
    * `rng` returns a number from 0 up to, but not including, 1, as Math.random does.
    * `pace` holds the times of the learner's earlier tasks; the session adds its own.
    */
-  constructor(minutes: number, rng: () => number, pace: Pace = {}) {
+  constructor(
+    course: Course,
+    minutes: number,
+    rng: () => number,
+    pace: Pace = {}
+  ) {
+    this.course = course;
     this.minutes = minutes;
     this.rng = rng;
     this.budgetMs = minutes * 60_000;
@@ -439,7 +457,7 @@ export class Session {
 
   /** The time to recall each of these items once. */
   private reserveFor(view: SessionView, mems: readonly Mem[]): number {
-    const plan = planRecalls(view.memory, mems, {
+    const plan = planRecalls(this.course, view.memory, mems, {
       seen: view.sentenceSeen,
       skipSentences: this.usedSentences,
     });
@@ -546,11 +564,11 @@ export class Session {
     const lesson =
       holdNew || due.review.length >= BACKLOG
         ? null
-        : nextLesson(memory, view.chosenLesson);
+        : nextLesson(this.course, memory, view.chosenLesson);
 
     const found =
       this.minutes >= MIN_MINUTES_FOR_EXTRAS && !this.storyOffered
-        ? nextStory(memory, view.storiesDone)
+        ? nextStory(this.course, memory, view.storiesDone)
         : null;
 
     const story: Task | null =
@@ -586,7 +604,11 @@ export class Session {
 
   /** The next new material of the lesson. A group that is too big for the spare time is cut down to what fits. */
   private newTask(lesson: Lesson, memory: Memory, spare: number): Task | null {
-    const task = newMaterial(nextNewItems(lesson, memory), memory);
+    const task = newMaterial(
+      this.course,
+      nextNewItems(this.course, lesson, memory),
+      memory
+    );
 
     if (task?.type !== "intro") {
       return task;
@@ -612,7 +634,7 @@ export class Session {
     reason: "learning" | "review",
     skipItems: readonly string[]
   ): Task | null {
-    const pick = pickRecall(view.memory, mems, {
+    const pick = pickRecall(this.course, view.memory, mems, {
       seen: view.sentenceSeen,
       skipItems: new Set(skipItems),
       skipSentences: this.usedSentences,
@@ -664,6 +686,7 @@ export class Session {
       return s !== undefined && s.total >= 4 ? 1.2 - s.right / s.total : 1;
     };
 
+    const { sounds } = this.course;
     const total = sounds.reduce((sum, p) => sum + weight(p), 0);
     let r = this.rng() * total;
 

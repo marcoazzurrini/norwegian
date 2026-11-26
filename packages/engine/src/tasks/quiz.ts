@@ -1,6 +1,6 @@
 // Multiple choice, shared by the pattern and story machines.
 // A wrong pick is marked and the learner tries again; nothing is recorded.
-import type { Quiz } from "@norsk/content";
+import type { Quiz } from "@norsk/course";
 
 export interface QuizState {
   /** Position of the question in its list. */

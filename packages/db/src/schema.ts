@@ -1,47 +1,64 @@
 // The tables as they are in production (apps/api/migrations). schema.test.ts proves the two agree.
-import { sql } from "drizzle-orm";
 import {
-  check,
   customType,
   index,
   integer,
   primaryKey,
   sqliteTable,
   text,
+  unique,
 } from "drizzle-orm/sqlite-core";
 
-/** Counters: `rev` numbers each change to memory, `epoch` numbers the data generation. */
+/**
+ * Counters, for each course: `rev` numbers each change to memory, `epoch` numbers the data
+ * generation. A course that has no row yet counts from 0.
+ */
 export const state = sqliteTable(
   "state",
   {
-    key: text("key"),
+    course: text("course").notNull(),
+    key: text("key").notNull(),
     value: integer("value").notNull(),
   },
-  // A table-level key: the production column is `TEXT PRIMARY KEY` without NOT NULL.
-  (table) => [primaryKey({ columns: [table.key] })]
+  (table) => [primaryKey({ columns: [table.course, table.key] })]
 );
 
-/** One row per learned item. `stamp` is the time of its last review; `rev` is when it last changed here. */
+/**
+ * One row per learned item of a course. `stamp` is the time of its last review; `rev` is when it
+ * last changed here. An item's id is only unique within its course.
+ */
 export const memory = sqliteTable(
   "memory",
   {
-    id: text("id"),
+    course: text("course").notNull(),
+    id: text("id").notNull(),
     data: text("data").notNull(),
     stamp: integer("stamp").notNull(),
     rev: integer("rev").notNull(),
   },
   (table) => [
-    primaryKey({ columns: [table.id] }),
-    index("memory_rev").on(table.rev),
+    primaryKey({ columns: [table.course, table.id] }),
+    index("memory_rev").on(table.course, table.rev),
   ]
 );
 
-/** Every review ever made. Rows are only added. */
-export const log = sqliteTable("log", {
-  seq: integer("seq").primaryKey({ autoIncrement: true }),
-  uid: text("uid").notNull().unique(),
-  data: text("data").notNull(),
-});
+/**
+ * Every review ever made, in every course. Rows are only added. `seq` numbers the rows of all
+ * courses together, so a device's cursor into one course only ever moves forward.
+ */
+export const log = sqliteTable(
+  "log",
+  {
+    seq: integer("seq").primaryKey({ autoIncrement: true }),
+    course: text("course").notNull(),
+    uid: text("uid").notNull(),
+    data: text("data").notNull(),
+  },
+  (table) => [
+    unique().on(table.course, table.uid),
+    index("log_course_seq").on(table.course, table.seq),
+  ]
+);
 
 /**
  * The journal: what happened in the app, kept to find out later why it behaved as it did.
@@ -64,18 +81,11 @@ export const event = sqliteTable(
   ]
 );
 
-/** Settings and counters, as one document in one row. */
-export const meta = sqliteTable(
-  "meta",
-  {
-    id: integer("id"),
-    data: text("data").notNull(),
-  },
-  (table) => [
-    primaryKey({ columns: [table.id] }),
-    check("meta_one_row", sql`${table.id} = 1`),
-  ]
-);
+/** Settings and counters, as one document for each course. */
+export const meta = sqliteTable("meta", {
+  course: text("course").primaryKey(),
+  data: text("data").notNull(),
+});
 
 // Better Auth's tables. It made them with the column type `date`, and writes ISO text into them.
 const date = customType<{ data: string; driverData: string }>({

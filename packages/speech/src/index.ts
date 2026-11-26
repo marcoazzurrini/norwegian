@@ -1,4 +1,4 @@
-// Playing Norwegian audio.
+// Playing audio in the language of a course.
 //
 // This module hides the recorded files and their hashed names, which recorded voice says a text
 // on a given day, the browser's own voice as a fallback when there is no recording, how the speed
@@ -15,6 +15,7 @@ export type {
   SpeechDeps,
   SpeechHost,
   SpeechSettings,
+  SpokenCourse,
   Synthesis,
   Utterance,
   Voice,

@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { exampleOf, item } from "@norsk/content";
-
 import { introTask } from "../index";
 import type { Effect, IntroEvent } from "../index";
-import { itemsOf, play } from "../testing";
+import { course, itemsOf, play } from "../testing";
+
+const { exampleOf, item } = course;
 
 const group = [item("c:hei"), item("c:ha-det-bra"), item("w:takk:interj")];
 const ids = group.map((it) => it.id);
@@ -14,7 +14,7 @@ const hear = (text: string): Effect => ({ text, type: "speak" });
 const teach = (id: string): Effect => ({ ids: [id], type: "teach" });
 
 const run = (events: IntroEvent[], items = group) =>
-  play(introTask, { items, known: new Set<string>() }, events);
+  play(introTask, { course, items, known: new Set<string>() }, events);
 
 /** Every item has been shown; the first one is waiting to be typed. */
 const shown = [next, next, next];
@@ -184,7 +184,7 @@ describe("an intro", () => {
 
     const taught = play(
       introTask,
-      { items: [hus], known: itemsOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) },
+      { course, items: [hus], known: itemsOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) },
       []
     ).state.example;
 
@@ -202,8 +202,8 @@ describe("an intro", () => {
 
     expect(exampleOf(ja)).toBeNull();
     expect(
-      play(introTask, { items: [ja], known: itemsOf([0, 1, 2, 3]) }, []).state
-        .example
+      play(introTask, { course, items: [ja], known: itemsOf([0, 1, 2, 3]) }, [])
+        .state.example
     ).toBeNull();
   });
 

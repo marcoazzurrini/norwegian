@@ -1,6 +1,5 @@
 // The Items screen as data: the items of each unit of a level that match a search, and what is said about one memory.
-import { item, lessons, units } from "@norsk/content";
-import type { Item, Level, Unit } from "@norsk/content";
+import type { Course, Item, Level, Unit } from "@norsk/course";
 import type { Mem } from "@norsk/engine";
 
 export interface ItemGroup {
@@ -13,15 +12,19 @@ const matches = (one: Item, query: string): boolean =>
   one.gloss.toLowerCase().includes(query);
 
 /** The items of every unit of the level, in the order they are taught, that match the search. Units with none are left out. */
-export const itemGroups = (search: string, level: Level): ItemGroup[] => {
+export const itemGroups = (
+  course: Course,
+  search: string,
+  level: Level
+): ItemGroup[] => {
   const query = search.trim().toLowerCase();
 
-  return units
+  return course.units
     .filter((unit) => level.units.includes(unit.index))
     .map((unit) => ({
       list: unit.lessons
-        .flatMap((index) => lessons[index]?.items ?? [])
-        .map((id) => item(id))
+        .flatMap((index) => course.lessons[index]?.items ?? [])
+        .map((id) => course.item(id))
         .filter((one) => query === "" || matches(one, query)),
       unit,
     }))

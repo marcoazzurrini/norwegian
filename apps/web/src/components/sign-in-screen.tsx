@@ -4,6 +4,7 @@ import type { SignInFailure } from "@norsk/ui";
 import { useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { useCourse } from "../course";
 import { learner, useSyncStatus } from "../learner";
 
 /** What to tell the learner about the last attempt, or null if nothing went wrong. */
@@ -25,6 +26,7 @@ export const signInFailure = (
 
 export const SignInScreen = () => {
   const sync = useSyncStatus();
+  const { meta } = useCourse();
   const [starting, setStarting] = useState(false);
 
   // Google sends the browser back with ?error=... if the sign-in failed or the account is not allowed.
@@ -34,13 +36,16 @@ export const SignInScreen = () => {
 
   const start = async () => {
     setStarting(true);
-    await learner.signIn();
+    await learner().signIn();
     // On success the browser leaves for Google; this line only matters if the sign-in could not start.
     setStarting(false);
   };
 
   return (
     <SignIn
+      name={meta.wordmark}
+      language={meta.name}
+      welcome={meta.greetings.welcome}
       busy={starting}
       failure={signInFailure(sync.error, refused)}
       onSignIn={() => {

@@ -1,6 +1,6 @@
 // Teaches a small group of words or phrases: each one is shown, then each one is typed from its meaning.
 // Showing the whole group first keeps the first recall from being a copy of what is still in mind.
-import type { Item, Sentence } from "@norsk/content";
+import type { Course, Item, Sentence } from "@norsk/course";
 
 import { gradeCard } from "../grade";
 import { exampleFor } from "../select";
@@ -8,6 +8,8 @@ import { stay } from "./types";
 import type { Step, TaskMachine } from "./types";
 
 export interface IntroInput {
+  /** The course the items belong to. */
+  course: Course;
   /** The new items, at least one. */
   items: Item[];
   /** Ids of the items the learner already has. An example that uses any other item is left out. */
@@ -75,14 +77,14 @@ const hear = (state: IntroState): Step<IntroState> => ({
   state,
 });
 
-const init = ({ items, known }: IntroInput): Step<IntroState> => {
+const init = ({ course, items, known }: IntroInput): Step<IntroState> => {
   const [first] = items;
 
   if (first === undefined) {
     throw new Error("An intro task needs at least one item");
   }
 
-  const examples = items.map((it) => exampleFor(it, known));
+  const examples = items.map((it) => exampleFor(course, it, known));
 
   return hear({
     done: false,

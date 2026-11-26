@@ -1,14 +1,20 @@
-// Puts the data and the sync together behind the public interface.
+// Puts the data and the sync of one course together behind the public interface.
+import { CourseIdSchema } from "@norsk/protocol";
+import * as v from "valibot";
+
 import { createData } from "./data";
 import { browserHost } from "./host";
 import { createSync } from "./sync";
 import type { Learner, LearnerDeps } from "./types";
 
 export const createLearner = (deps: LearnerDeps): Learner => {
-  const data = createData(deps);
+  // A name that is not a course's would be refused by the server at every sync. Better to fail here, at once.
+  const course = v.parse(CourseIdSchema, deps.course);
+  const data = createData({ ...deps, course });
 
   const sync = createSync({
     account: deps.account,
+    course,
     data,
     fetch: deps.fetch,
     host: deps.host ?? browserHost(),

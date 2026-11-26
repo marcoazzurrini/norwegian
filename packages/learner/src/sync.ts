@@ -1,4 +1,4 @@
-// Keeps this device and the sync server in step. The app is only usable when signed in;
+// Keeps this device and the sync server in step, for one course. The app is only usable when signed in;
 // a device that has signed in once keeps working from its own data without a connection.
 import {
   LOG_PAGE,
@@ -86,6 +86,8 @@ const nothing = (): void => {
 };
 
 interface SyncDeps {
+  /** The course whose data is synced. Every message to the server names it. */
+  course: string;
   data: Data;
   fetch: Fetch;
   now: () => number;
@@ -185,7 +187,11 @@ export const createSync = (deps: SyncDeps): Sync => {
   /** Tells the server about a "Start over" or "Restore backup" made on this device. */
   const confirmReset = async (epoch: number): Promise<void> => {
     try {
-      await post(ROUTES.reset, { epoch }, ResetResponseSchema);
+      await post(
+        ROUTES.reset,
+        { course: deps.course, epoch },
+        ResetResponseSchema
+      );
       await data.patchSync({
         epoch,
         logSeq: 0,
@@ -210,6 +216,7 @@ export const createSync = (deps: SyncDeps): Sync => {
     const answer = await post(
       ROUTES.sync,
       {
+        course: deps.course,
         epoch,
         log: outbox.log.slice(0, LOG_PAGE),
         logSeq,

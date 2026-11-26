@@ -1,6 +1,7 @@
 // The public types of the speech module.
+import type { CourseMeta } from "@norsk/course";
 
-/** A Norwegian voice built into the browser. */
+/** A voice built into the browser that speaks the language of the course. */
 export interface Voice {
   readonly name: string;
   /** The language the voice speaks, for example "nb-NO". */
@@ -16,6 +17,13 @@ export interface SpeakOptions {
   rate?: number;
   /** Picks among the voices in turn; used by the sound drill to vary the speaker. */
   voiceIndex?: number;
+}
+
+/** What this module needs of a course. A `Course` fits. */
+export interface SpokenCourse {
+  meta: Pick<CourseMeta, "lang" | "voiceLangs">;
+  /** Voices that have recordings, by their short name. */
+  voices: readonly string[];
 }
 
 /** The learner's choices, which are kept outside this module. */
@@ -70,6 +78,8 @@ export interface SpeechHost {
 }
 
 export interface SpeechDeps {
+  /** The course that is spoken: its language, and the voices that have recordings. */
+  course: SpokenCourse;
   /** Read each time a text is spoken, so a change of the settings is heard at once. */
   settings: () => SpeechSettings;
   /** Defaults to the browser. */
@@ -77,10 +87,10 @@ export interface SpeechDeps {
 }
 
 export interface Speech {
-  /** Speaks Norwegian text. Resolves when the audio ends, or at once if there is no voice. */
+  /** Speaks text in the language of the course. Resolves when the audio ends, or at once if there is no voice. */
   speak: (text: string, options?: SpeakOptions) => Promise<void>;
   stopSpeaking: () => void;
-  /** The Norwegian voices of the browser: those on the device first, then by name. */
+  /** The voices of the browser that speak the language of the course: those on the device first, then by name. */
   voices: () => Voice[];
   /** Calls `listener` when the list of voices may have changed. Returns a function that stops it. */
   onVoicesChange: (listener: () => void) => () => void;

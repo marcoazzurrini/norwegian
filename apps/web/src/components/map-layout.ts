@@ -1,5 +1,5 @@
 // Where every lesson sits on the Map, and the curves that join a lesson to the lessons it needs.
-import type { Lesson } from "@norsk/content";
+import type { Lesson } from "@norsk/course";
 
 /** Sizes of the graph, in rem so the text size setting scales it. */
 export interface MapSizes {

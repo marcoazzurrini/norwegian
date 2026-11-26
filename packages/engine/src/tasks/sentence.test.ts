@@ -1,11 +1,12 @@
 import { describe, expect, test } from "bun:test";
 
-import { sentenceItems, sentences } from "@norsk/content";
-import type { Sentence } from "@norsk/content";
+import type { Sentence } from "@norsk/course";
 
 import { explainRequest, sentenceTask } from "../index";
 import type { Effect, SentenceEvent } from "../index";
-import { T0, play, sentenceOf } from "../testing";
+import { course, T0, play, sentenceOf } from "../testing";
+
+const { sentenceItems, sentences } = course;
 
 const snakker = sentenceOf("Jeg snakker ikke norsk.");
 
@@ -21,7 +22,7 @@ const all = [
 
 const answer = (text: string): SentenceEvent => ({ text, type: "answer" });
 const next: SentenceEvent = { type: "continue" };
-const hear = (s: Sentence): Effect => ({ text: s.no, type: "speak" });
+const hear = (s: Sentence): Effect => ({ text: s.target, type: "speak" });
 
 const run = (
   events: SentenceEvent[],
@@ -97,10 +98,10 @@ describe("a sentence", () => {
     expect(effects).toEqual([]);
     expect(explainRequest(state)).toEqual({
       answer: "jeg snakker ikke engelsk",
-      en: snakker.en,
+      base: snakker.base,
       itemIds: ["w:norsk:adj"],
       kind: "hint",
-      no: snakker.no,
+      target: snakker.target,
     });
   });
 
@@ -272,7 +273,7 @@ describe("a sentence", () => {
       });
     });
 
-    expect(silent.map((s) => s.no)).toEqual([]);
+    expect(silent.map((s) => s.target)).toEqual([]);
   });
 
   test("a word too many fails nothing but still needs a second try", () => {

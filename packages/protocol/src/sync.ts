@@ -2,6 +2,7 @@
 // the server stores the changes and answers with everything after those cursors.
 import * as v from "valibot";
 
+import { MessageCourseSchema } from "./course";
 import { SyncedMetaSchema } from "./meta";
 
 /** How many log entries travel in one message. */
@@ -62,6 +63,8 @@ export const WireLogSchema = v.looseObject({
 export type WireLog = v.InferOutput<typeof WireLogSchema>;
 
 export const SyncRequestSchema = v.object({
+  /** The course whose data is exchanged. Each course has its own memories, log, settings and cursors. */
+  course: MessageCourseSchema,
   /** The data generation this device belongs to. Null on a device that has never synced. */
   epoch: v.nullable(Count),
   log: v.pipe(v.array(WireLogSchema), v.maxLength(LOG_PAGE)),
@@ -90,8 +93,14 @@ export const SyncResponseSchema = v.object({
 
 export type SyncResponse = v.InferOutput<typeof SyncResponseSchema>;
 
-/** "Start over": begins a new data generation. The number is the time the learner asked for it. */
-export const ResetRequestSchema = v.object({ epoch: Count });
+/**
+ * "Start over" in one course: begins a new data generation there and leaves the other courses alone.
+ * The number is the time the learner asked for it.
+ */
+export const ResetRequestSchema = v.object({
+  course: MessageCourseSchema,
+  epoch: Count,
+});
 
 export type ResetRequest = v.InferOutput<typeof ResetRequestSchema>;
 

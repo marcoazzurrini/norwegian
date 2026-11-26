@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@norsk/auth": "workspace:*",
+    "@norsk/course": "workspace:*",
+    "@norsk/courses": "workspace:*",
     "@norsk/db": "workspace:*",
     "@norsk/protocol": "workspace:*",
     "hono": "^4.13.19",

@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { sounds } from "@norsk/content";
-
 import { soundTask } from "../index";
 import type { Effect, SoundEvent } from "../index";
-import { must, play } from "../testing";
+import { course, must, play } from "../testing";
+
+const { sounds } = course;
 
 const pair = must(sounds[0]);
 

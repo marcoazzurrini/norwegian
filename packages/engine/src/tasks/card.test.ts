@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { item } from "@norsk/content";
-
 import { cardTask } from "../index";
 import type { CardEvent, Effect } from "../index";
-import { play } from "../testing";
+import { course, play } from "../testing";
+
+const { item } = course;
 
 const hus = item("w:hus:noun");
 const run = (events: CardEvent[]) => play(cardTask, { item: hus }, events);

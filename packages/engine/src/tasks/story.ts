@@ -1,7 +1,6 @@
 // A short text built from known words: read and listen, tap a word for its meaning, then answer questions.
 // Nothing is graded; finishing the questions marks the story as read.
-import { item } from "@norsk/content";
-import type { Item, Story, Token } from "@norsk/content";
+import type { Course, Item, Story, Token } from "@norsk/course";
 
 import { askQuestion, pickOption } from "./quiz";
 import type { QuizState } from "./quiz";
@@ -9,6 +8,8 @@ import { EMPTY_RESULT, stay } from "./types";
 import type { Step, TaskMachine } from "./types";
 
 export interface StoryInput {
+  /** The course the story belongs to. */
+  course: Course;
   story: Story;
 }
 
@@ -32,16 +33,17 @@ export type StoryPhase =
   | { step: "questions"; quiz: QuizState };
 
 export interface StoryState {
+  course: Course;
   story: Story;
   phase: StoryPhase;
   /** The word the learner tapped last. */
   picked: PickedWord | null;
-  showEnglish: boolean;
+  showBase: boolean;
   done: boolean;
 }
 
 export type StoryEvent =
-  | { type: "toggleEnglish" }
+  | { type: "toggleBase" }
   | { type: "tapWord"; line: number; index: number }
   /** A line or a speaker's name was tapped: play that line. */
   | { type: "hearLine"; line: number }
@@ -51,11 +53,14 @@ export type StoryEvent =
   /** The pause after a right pick is over. */
   | { type: "next" };
 
-const meaningOf = (story: Story, token: Token): WordMeaning | null => {
+const meaningOf = (
+  { course, story }: StoryState,
+  token: Token
+): WordMeaning | null => {
   const id = token.w ?? token.c;
 
   if (id !== undefined) {
-    const it = item(id);
+    const it = course.item(id);
 
     return { gloss: it.gloss, item: it, text: it.display };
   }
@@ -67,12 +72,13 @@ const meaningOf = (story: Story, token: Token): WordMeaning | null => {
     : { gloss, item: null, text: token.t };
 };
 
-const init = ({ story }: StoryInput): Step<StoryState> =>
+const init = ({ course, story }: StoryInput): Step<StoryState> =>
   stay({
+    course,
     done: false,
     phase: { step: "read" },
     picked: null,
-    showEnglish: false,
+    showBase: false,
     story,
   });
 
@@ -104,12 +110,12 @@ const tapWord = (
     ? stay(state)
     : stay({
         ...state,
-        picked: { index, line, meaning: meaningOf(state.story, token) },
+        picked: { index, line, meaning: meaningOf(state, token) },
       });
 };
 
 const hearLine = (state: StoryState, line: number): Step<StoryState> => {
-  const text = state.story.lines[line]?.no;
+  const text = state.story.lines[line]?.target;
 
   return text === undefined
     ? stay(state)
@@ -118,8 +124,8 @@ const hearLine = (state: StoryState, line: number): Step<StoryState> => {
 
 const reading = (state: StoryState, event: StoryEvent): Step<StoryState> => {
   switch (event.type) {
-    case "toggleEnglish": {
-      return stay({ ...state, showEnglish: !state.showEnglish });
+    case "toggleBase": {
+      return stay({ ...state, showBase: !state.showBase });
     }
 
     case "tapWord": {

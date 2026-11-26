@@ -75,18 +75,24 @@ export const startJournal = (): (() => void) => {
 };
 
 /**
- * The session chose its next task: which one, and why. `count` numbers the tasks of the session.
+ * The session chose its next task: which one, and why. `count` numbers the tasks of the session,
+ * and `course` is the id of the course the session is in.
  * The first task of a session notes that the session began, and its last that it ended.
  * Telling the same task twice notes it once, so a screen may call this whenever it is drawn.
  */
 export const noteTaskChosen = (
+  course: string,
   session: Session,
   count: number,
   task: Task
 ): void => {
   if (current?.session !== session) {
     current = { count: 0, id: crypto.randomUUID(), over: false, session };
-    note("session.started", { minutes: session.minutes, pace: session.pace });
+    note("session.started", {
+      course,
+      minutes: session.minutes,
+      pace: session.pace,
+    });
   }
 
   const choice = session.lastChoice;

@@ -1,17 +1,17 @@
 // How an item is named and shown, wherever a task or a list mentions it.
-import { item } from "@norsk/content";
-import type { Item } from "@norsk/content";
+import type { Course, Item } from "@norsk/course";
 
 /** The gap in a phrase such as "jeg heter ___", with the spaces around it. */
 const GAP = /\s*___\s*/gu;
 
-/** Short English description of what a pattern or word is, for hints and lists. */
+/** Short description of what a pattern or word is, for hints and lists. */
 export const nameOf = (one: Item): string =>
   one.kind === "pattern"
     ? (one.title ?? one.text)
     : `${one.text.replaceAll(GAP, " … ").trim()} (${one.gloss})`;
 
-export const itemName = (id: string): string => nameOf(item(id));
+export const itemName = (course: Course, id: string): string =>
+  nameOf(course.item(id));
 
 /** True if the item is shown with an article in front, such as "et hus". */
 export const hasArticle = (one: Item): boolean =>

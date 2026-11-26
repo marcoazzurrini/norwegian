@@ -1,4 +1,4 @@
-// A Norwegian word such as "et hus", with the article quieter than the word.
+// A word shown with its article, such as "et hus", with the article quieter than the word.
 import * as stylex from "@stylexjs/stylex";
 
 import { color } from "../tokens/tokens.stylex";

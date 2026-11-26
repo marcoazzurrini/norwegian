@@ -1,7 +1,8 @@
 // Keeps the learner's data in IndexedDB. Nothing outside this file knows the layout.
 //
-// The layout is the one the app has always used (database "norsk", version 2), so data that is
-// already on a device needs no migration:
+// Each course has a database of its own. The first course keeps the name the app has always used
+// ("norsk"), and the layout is the one it has always used (version 2), so data that is already on
+// a device needs no migration:
 //   memory  one row per item; the key is the row's `id`
 //   log     one row per review; the key counts up; indexes `at` and `uid` (unique)
 //   meta    two rows: "meta" holds the settings and counters, "sync" what is known about the server
@@ -11,6 +12,7 @@
 // second one: a log row made on this device has `local: true`, and a memory row has `seq`, the key of
 // the last log row that existed when the memory was saved.
 import type { Mem } from "@norsk/engine";
+import { FIRST_COURSE } from "@norsk/protocol";
 import { wrap } from "idb";
 import type { IDBPDatabase, IDBPTransaction } from "idb";
 import * as v from "valibot";
@@ -24,8 +26,13 @@ import {
 } from "./records";
 import type { LogEntry, Meta, SyncRecord } from "./records";
 
-const NAME = "norsk";
+/** The database of the first course, which is older than courses. Every other course adds its name. */
+const FIRST_NAME = "norsk";
 const VERSION = 2;
+
+const nameOf = (course: string): string =>
+  course === FIRST_COURSE ? FIRST_NAME : `${FIRST_NAME}-${course}`;
+
 const STORES = ["memory", "log", "meta"];
 
 const SavedMemSchema = v.object({
@@ -131,9 +138,10 @@ const addLogIndexes = (
 
 const open = async (
   factory: IDBFactory,
+  course: string,
   newId: () => string
 ): Promise<IDBPDatabase> => {
-  const request = factory.open(NAME, VERSION);
+  const request = factory.open(nameOf(course), VERSION);
 
   request.addEventListener("upgradeneeded", (event) => {
     const { result, transaction } = request;
@@ -254,11 +262,13 @@ const addMissingLog = async (
   );
 };
 
+/** Opens the data of one course on this device. */
 export const openStorage = async (
   factory: IDBFactory,
+  course: string,
   newId: () => string
 ): Promise<Storage> => {
-  const db = await open(factory, newId);
+  const db = await open(factory, course, newId);
 
   // Memories whose log entries are saved but whose own save failed. They go along with the next
   // save of memories, so a failure that passes costs nothing even if the app is not restarted.

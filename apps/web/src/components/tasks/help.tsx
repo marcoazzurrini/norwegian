@@ -1,5 +1,5 @@
 // The help a learner can ask for while recalling: a hint, or the answer when nothing comes to mind.
-import type { Item } from "@norsk/content";
+import type { Item } from "@norsk/course";
 import { Button, Card, Display, effects } from "@norsk/ui";
 import * as stylex from "@stylexjs/stylex";
 

@@ -1,9 +1,11 @@
 import { expect, test } from "bun:test";
 
-import { lessons } from "@norsk/content";
-import type { Lesson } from "@norsk/content";
+import type { Lesson } from "@norsk/course";
+import { course } from "@norsk/norwegian";
 
 import { MAP_SIZES, layoutMap } from "./map-layout";
+
+const { lessons } = course;
 
 const lesson = (index: number, needs: number[]): Lesson => ({
   index,
