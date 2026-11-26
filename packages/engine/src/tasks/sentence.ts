@@ -44,6 +44,11 @@ export type SentencePhase =
       passed: boolean;
       failed: string[];
       last: SentenceGrade;
+      /**
+       * The answer an explanation is about: the last one that was wrong.
+       * After a wrong first try and a right second one, that is the first. Null if no answer was wrong.
+       */
+      mistake: SentenceGrade | null;
     };
 
 export interface SentenceState {
@@ -161,10 +166,13 @@ const showResult = (
   state: SentenceState,
   failed: string[],
   last: SentenceGrade,
-  passed: boolean
+  mistake: SentenceGrade | null
 ): Step<SentenceState> => ({
   effects: [{ text: state.sentence.target, type: "speak" }],
-  state: { ...state, phase: { failed, last, passed, step: "result" } },
+  state: {
+    ...state,
+    phase: { failed, last, mistake, passed: last.correct, step: "result" },
+  },
 });
 
 const answer = (state: SentenceState, text: string): Step<SentenceState> => {
@@ -172,11 +180,16 @@ const answer = (state: SentenceState, text: string): Step<SentenceState> => {
   const grade = gradeSentence(sentence, text);
 
   if (phase.step === "retry") {
-    return showResult(state, phase.failed, grade, grade.correct);
+    return showResult(
+      state,
+      phase.failed,
+      grade,
+      grade.correct ? phase.first : grade
+    );
   }
 
   if (grade.correct) {
-    return showResult(state, [], grade, true);
+    return showResult(state, [], grade, null);
   }
 
   const off = grade.missed.length + grade.typed.filter((w) => !w.ok).length;
@@ -257,7 +270,7 @@ const step = (
   }
 
   if (phase.step === "retry") {
-    return showResult(state, phase.failed, phase.first, false);
+    return showResult(state, phase.failed, phase.first, phase.first);
   }
 
   // Giving up before a first try is graded as an empty answer: every word was missed.
@@ -267,7 +280,7 @@ const step = (
     state,
     failedItems(state.sentence, blank, state.known),
     blank,
-    false
+    null
   );
 };
 
@@ -297,15 +310,16 @@ export const explainRequest = (state: SentenceState): ExplainRequest | null => {
     };
   }
 
-  // After "I don't know" there is no answer of the learner's to explain.
+  // After "I don't know" there is no answer of the learner's to explain. After a wrong try and
+  // a right one, the wrong one is explained: the right one has no mistake in it.
   if (
     phase.step === "result" &&
     phase.failed.length > 0 &&
-    phase.last.typed.length > 0
+    phase.mistake !== null
   ) {
     return {
       ...about,
-      answer: wordsOf(phase.last),
+      answer: wordsOf(phase.mistake),
       itemIds: phase.failed,
       kind: "explain",
     };

@@ -119,8 +119,9 @@ describe("a sentence", () => {
       step: "result",
     });
     expect(shown.effects).toEqual([hear(snakker)]);
+    // The explanation is about the try that was wrong: the right one has no mistake in it.
     expect(explainRequest(shown.state)).toMatchObject({
-      answer: "jeg snakker ikke norsk",
+      answer: "jeg snakker ikke engelsk",
       itemIds: ["w:norsk:adj"],
       kind: "explain",
     });
