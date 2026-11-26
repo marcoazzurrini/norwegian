@@ -57,13 +57,29 @@ const EARLY_SHARE = 0.5;
 const DAY = 86_400_000;
 
 /**
- * The waits of an item that is new. The first successful recall, when the item is taught,
- * takes the item past the first wait.
+ * The waits of an item that is new, in minutes. The first successful recall, when the item is
+ * taught, takes the item past the first wait.
  */
-const LEARNING_STEPS = ["1m", "5m", "15m"] as const;
+const LEARNING_MINUTES = [1, 5, 15] as const;
+
+/** The waits a new item still has after it was taught, in milliseconds. */
+const WAITS_AFTER_TEACHING = LEARNING_MINUTES.slice(1).map(
+  (minutes) => minutes * 60_000
+);
 
 /** How many recalls a new item needs after it was taught, before it is scheduled in days. */
-export const RECALLS_AFTER_TEACHING = LEARNING_STEPS.length - 1;
+export const RECALLS_AFTER_TEACHING = WAITS_AFTER_TEACHING.length;
+
+/**
+ * The shortest time after teaching in which a new item can have all the recalls it needs.
+ * Each recall comes when its wait is over. Only the last may come early, as soon as it counts,
+ * because the end of a session does not wait for it.
+ */
+export const FINISH_MS = WAITS_AFTER_TEACHING.reduce(
+  (sum, wait, index, waits) =>
+    sum + (index === waits.length - 1 ? EARLY_SHARE * wait : wait),
+  0
+);
 
 // Saved cards can hold dates as text (a backup file, an older version), so every read goes through Date.
 const time = (date: Date): number => new Date(date).getTime();
@@ -77,7 +93,7 @@ export const createScheduler = async (
     desiredRetention,
     enableFuzz: false,
     enableShortTerm: true,
-    learningSteps: [...LEARNING_STEPS],
+    learningSteps: LEARNING_MINUTES.map((minutes) => `${minutes}m` as const),
     relearningSteps: ["5m"],
     version: "FSRS-6",
   });
@@ -170,10 +186,17 @@ export const isFresh = (m: Mem): boolean =>
   isLearning(m) && (m.card.reps === 1 || m.card.learningStep === 0);
 
 /**
+ * True if a pass now would add evidence: the item has left the mind since its last recall.
+ * An item that is still being learned must have waited long enough; any other item must not
+ * have been recalled on the same day.
+ */
+export const passCounts = (m: Mem, now: number): boolean =>
+  isLearning(m) ? hasWaited(m, now) : now - lastRecall(m) >= SAME_DAY_MS;
+
+/**
  * Applies one recorded answer, or returns null when it adds no evidence and must not be recorded.
- * That is a pass that comes too soon after the last recall, when the item was still in mind:
- * before an item that is still being learned has waited long enough, or on the same day for any
- * other item. It does not matter whether the pass was on a card or inside a sentence.
+ * That is a pass that comes too soon after the last recall, when the item was still in mind.
+ * It does not matter whether the pass was on a card or inside a sentence.
  * Such a pass is practice. A miss always counts.
  */
 export const applyReview = (
@@ -181,12 +204,7 @@ export const applyReview = (
   m: Mem,
   input: ReviewInput,
   now: number
-): Mem | null => {
-  const tooSoon = isLearning(m)
-    ? !hasWaited(m, now)
-    : now - lastRecall(m) < SAME_DAY_MS;
-
-  return input.grade === "good" && tooSoon
+): Mem | null =>
+  input.grade === "good" && !passCounts(m, now)
     ? null
     : review(s, m, input.grade, now);
-};

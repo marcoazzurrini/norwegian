@@ -23,6 +23,7 @@ import {
   strength,
 } from "./index";
 import type { Mem, PickLimits, SessionView } from "./index";
+import { dueTime } from "./memory";
 import { course } from "./testing";
 
 const { item, lessons, levels, sentences, sentencesWith } = course;
@@ -510,7 +511,9 @@ describe("a session", () => {
     const mem = await taught([0, 1, 2, 3], T0);
     const session = new Session(course, 5, () => 0.3);
     const now = T0 + 40 * DAY;
-    session.record(3.5 * 60_000, "review");
+
+    // A session of five minutes teaches in its first half. Reviews may take 60% of that: a minute and a half.
+    session.record(1.6 * 60_000, "review");
     const task = session.next(view(mem), now);
     expect(["intro", "pattern"]).toContain(task.type);
   });
@@ -521,9 +524,15 @@ describe("a session", () => {
     const now = T0 + 40 * DAY;
     const first = session.next(view(mem), now);
 
-    // Reviews have had their share of the session, but four answers of six were wrong.
-    session.record(3 * 60_000, "review");
-    session.complete(first, answered(2, 4), 20_000);
+    // Reviews have had their share of the time for teaching, but three recall tasks of six had a miss.
+    // A task counts once: the fifteen words that were right in three sentences do not hide the three cards that were wrong.
+    session.record(1.6 * 60_000, "review");
+
+    for (let i = 0; i < 3; i += 1) {
+      session.complete(first, answered(0, 1), 1000);
+      session.complete(first, answered(5, 0), 1000);
+    }
+
     expect(["card", "sentence"]).toContain(session.next(view(mem), now).type);
 
     // Ten recalls that go well push the bad ones out of the count.
@@ -534,17 +543,35 @@ describe("a session", () => {
     expect(["intro", "pattern"]).toContain(session.next(view(mem), now).type);
   });
 
-  test("words taught in the last minute are still recalled before the session ends, each once", () => {
-    const { asked, session, taught: taughtIds } = playToEnd(4 * 60_000);
+  test("new material does not wait before enough recall tasks say how the learner is doing", async () => {
+    const mem = await taught([0, 1, 2, 3], T0);
+    const session = new Session(course, 5, () => 0.3);
+    const now = T0 + 40 * DAY;
+    const first = session.next(view(mem), now);
 
-    expect(taughtIds).toHaveLength(2);
+    session.record(1.6 * 60_000, "review");
+
+    // Five tasks with a miss are one too few to judge by.
+    for (let i = 0; i < 5; i += 1) {
+      session.complete(first, answered(0, 1), 1000);
+    }
+
+    expect(["intro", "pattern"]).toContain(session.next(view(mem), now).type);
+  });
+
+  test("the last words a session teaches are still recalled before it ends, each once", () => {
+    // A session of five minutes teaches in its first half: half a minute of that is left.
+    // Two words fit at the usual pace, and a third because the two took ten seconds each.
+    const { asked, session, taught: taughtIds } = playToEnd(2 * 60_000);
+
+    expect(taughtIds).toHaveLength(3);
     expect(asked).toEqual(taughtIds);
     expect(session.closing).toBe(true);
     expect(session.timeUp).toBe(true);
   });
 
   test("a single word taught last is recalled straight away, which is better than not at all", () => {
-    const { asked, taught: taughtIds } = playToEnd(4.4 * 60_000);
+    const { asked, taught: taughtIds } = playToEnd(2.2 * 60_000);
 
     expect(taughtIds).toHaveLength(1);
     expect(asked).toEqual(taughtIds);
@@ -575,7 +602,7 @@ describe("a session", () => {
   });
 
   test("at the end the session says that it closed, and that time was short", () => {
-    const { session } = playToEnd(4 * 60_000);
+    const { session } = playToEnd(2 * 60_000);
 
     expect(session.lastChoice).toMatchObject({
       owed: 0,
@@ -591,15 +618,118 @@ describe("a session", () => {
     const late = new Session(course, 5, () => 0.3);
 
     // One new word takes the time to teach it and the time of its recalls: about half a minute.
-    early.record(4 * 60_000, "review");
+    // Half a minute before the end of a session, the second half of which is already kept from teaching.
+    early.record(2 * 60_000, "review");
     late.record(4.7 * 60_000, "review");
 
     const task = early.next(view(mem), T0);
 
-    // A minute is left: enough for one or two words of the group of three.
+    // Half a minute of teaching is left: enough for one or two words of the group of three.
     expect(task.type === "intro" && task.items.length).toBeLessThan(3);
     expect(late.next(view(mem), T0).type).toBe("done");
     expect(late.timeUp).toBe(true);
+  });
+
+  test("a new item is taught only while the waits before its recalls still fit in the session", () => {
+    const mem = new Map<string, Mem>();
+    const fits = new Session(course, 40, () => 0.3, { card: [5000] });
+    const tooLate = new Session(course, 40, () => 0.3, { card: [5000] });
+
+    // A new item is recalled after 5 minutes, and then after 15, of which half must pass: 12.5 minutes.
+    // The time is recorded as new material, so that reviews have not had their share and sounds are over.
+    for (const [session, used] of [
+      [fits, 27],
+      [tooLate, 27.6],
+    ] as const) {
+      for (let i = 0; i < 10; i += 1) {
+        session.next(view(mem), T0);
+      }
+
+      session.record(used * 60_000, "new");
+    }
+
+    expect(fits.next(view(mem), T0).type).toBe("intro");
+
+    // Twelve minutes are left and nothing else is to do, but a word taught now could not be finished.
+    expect(tooLate.next(view(mem), T0).type).toBe("done");
+    expect(tooLate.timeUp).toBe(true);
+  });
+
+  test("a session too short for the waits of a new item teaches in its first half", () => {
+    const mem = new Map<string, Mem>();
+    const first = new Session(course, 15, () => 0.3);
+    const second = new Session(course, 15, () => 0.3);
+
+    for (const [session, used] of [
+      [first, 7],
+      [second, 7.6],
+    ] as const) {
+      // A session of fifteen minutes starts with six sounds.
+      for (let i = 0; i < 6; i += 1) {
+        session.next(view(mem), T0);
+      }
+
+      session.record(used * 60_000, "new");
+    }
+
+    expect(first.next(view(mem), T0).type).toBe("intro");
+    expect(second.next(view(mem), T0).type).toBe("done");
+  });
+
+  test("time to spare goes to a review ahead of time, of what is closest to due", async () => {
+    const mem = await taught([0, 1, 2, 3], T0);
+    const session = new Session(course, 5, () => 0.3);
+    const now = T0 + 4 * DAY;
+
+    // Nothing is due, and a session of five minutes no longer teaches in its second half.
+    session.record(2.6 * 60_000, "new");
+
+    const [first] = [...mem.values()].toSorted(
+      (x, y) => dueTime(x) - dueTime(y)
+    );
+
+    const soonest = first === undefined ? 0 : dueTime(first);
+
+    const closest = new Set(
+      [...mem.values()].flatMap((m) => (dueTime(m) === soonest ? [m.id] : []))
+    );
+
+    const task = session.next(view(mem), now);
+
+    expect(soonest).toBeGreaterThan(now);
+    expect(session.lastChoice?.step).toBe("ahead");
+    expect(["card", "sentence"]).toContain(task.type);
+
+    // Every item of these lessons is due at the same moment, so whatever is recalled is among the closest.
+    if (task.type === "card") {
+      expect(task.reason).toBe("review");
+      expect(closest.has(task.item.id)).toBe(true);
+    }
+
+    if (task.type === "sentence") {
+      expect(task.covers.every((id) => closest.has(id))).toBe(true);
+    }
+  });
+
+  test("an item recalled earlier the same day is not reviewed ahead of time", async () => {
+    const mem = await taught([0, 1, 2, 3], T0);
+    const session = new Session(course, 5, () => 0.3);
+
+    session.record(2.6 * 60_000, "new");
+
+    // Every item was last recalled three days after it was taught: an hour ago.
+    expect(session.next(view(mem), T0 + 3 * DAY + 3_600_000).type).toBe("done");
+  });
+
+  test("a review ahead of time is not started when the time left is too short for it", async () => {
+    const mem = await taught([0, 1, 2, 3], T0);
+    const session = new Session(course, 5, () => 0.3);
+
+    // Five seconds are left: less than a card or a sentence takes.
+    session.record(5 * 60_000 - 5000, "new");
+
+    expect(session.next(view(mem), T0 + 4 * DAY).type).toBe("done");
+    expect(session.timeUp).toBe(true);
   });
 
   test("a session with nothing left to do ends without its time being up", async () => {

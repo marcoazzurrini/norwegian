@@ -111,7 +111,7 @@ export interface Run {
   unknownReviews: number;
 }
 
-/** Share of the session that reviews may take while new material is waiting, as the session defines it. */
+/** Share of the time for teaching that reviews may take while new material is waiting, as the session defines it. */
 export const REVIEW_SHARE = 0.6;
 
 /** The session keeps the last three items apart from the next task. */

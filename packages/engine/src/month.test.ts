@@ -10,6 +10,12 @@ const MINUTE = 60_000;
 /** With this many reviews due, a session teaches nothing new. */
 const BACKLOG = 40;
 
+/**
+ * How far into a session of this length new material is taught: its first half. A session this
+ * short has no room for the waits a new item needs before its recalls.
+ */
+const TEACH_UNTIL = 0.5;
+
 /** The longest time a single task can add to a session. */
 const MAX_TASK_MS = 3 * MINUTE;
 
@@ -57,13 +63,26 @@ describe("a month of daily study", () => {
     expect(run.tasks.every((t) => t.ms > 0 && t.ms <= MAX_TASK_MS)).toBe(true);
   });
 
-  test("while there is new material, a session uses its time", () => {
+  test("while there is new material, a session teaches for as long as it may", () => {
     const total = run.days.at(-1)?.learned ?? 0;
     const busy = run.days.filter((d) => d.learned < total);
 
     expect(busy.length).toBeGreaterThan(10);
     expect(busy.filter((d) => !d.timeUp)).toEqual([]);
-    expect(busy.filter((d) => d.elapsedMs < d.budgetMs - MINUTE)).toEqual([]);
+
+    // After that it may end early: nothing new is started that could not be finished.
+    expect(
+      busy.filter((d) => d.elapsedMs < d.budgetMs * TEACH_UNTIL - MINUTE)
+    ).toEqual([]);
+  });
+
+  test("nothing new is taught in the second half of a short session", () => {
+    expect(
+      run.tasks.filter(
+        (t) =>
+          isNew(t) && t.elapsedBefore >= month.minutes * MINUTE * TEACH_UNTIL
+      )
+    ).toEqual([]);
   });
 
   test("a session closes with recalls of what is still being learned, each item once", () => {
@@ -118,8 +137,8 @@ describe("a month of daily study", () => {
     expect(new Set(sentences).size).toBe(sentences.length);
   });
 
-  test("due reviews come before new material, until reviews have had their share of the session", () => {
-    const share = REVIEW_SHARE * month.minutes * MINUTE;
+  test("due reviews come before new material, until reviews have had their share of the time for teaching", () => {
+    const share = REVIEW_SHARE * TEACH_UNTIL * month.minutes * MINUTE;
     const withDue = run.tasks.filter((t) => isNew(t) && t.dueReviews > 0);
 
     // New material with reviews still due is allowed for one reason only: reviews have had their share.

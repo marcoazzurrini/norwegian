@@ -4,12 +4,16 @@
 // What is recalled is decided here; how an item is recalled (alone on a card or inside
 // a sentence) is decided by the picker in select.ts, the same way for every priority.
 //
-// A session never starts what it cannot finish. An item that is still being learned is owed one
-// more recall before the session ends, unless it was recalled right a moment ago. The session
-// keeps the time for those recalls in reserve, and starts a task only if the task fits in the
-// time that is left over. When nothing fits any more, the session closes: it gives every item
-// the recall it is owed, then it ends. So an item taught in the last minutes is still recalled
-// the same day.
+// A session never starts what it cannot finish. A new item needs recalls after it was taught, and
+// each recall has a wait before it. The session teaches an item only while those waits still fit
+// in its time, so no item is taught in the last minutes. A session too short for the waits
+// teaches in its first half, and leaves the last recall to the next day.
+// Time that is left when nothing is due and nothing new may be taught goes to reviews ahead of
+// time, so that a session lasts as long as the learner chose.
+// An item that is still being learned is owed one more recall before the session ends, unless it
+// was recalled right a moment ago. The session keeps the time for those recalls in reserve, and
+// starts a task only if the task fits in the time that is left over. When nothing fits any more,
+// the session closes: it gives every item the recall it is owed, then it ends.
 import type {
   Course,
   Item,
@@ -20,10 +24,12 @@ import type {
 } from "@norsk/course";
 
 import {
+  FINISH_MS,
   RECALLS_AFTER_TEACHING,
   hasWaited,
   isFresh,
   isLearning,
+  passCounts,
 } from "./memory";
 import type { Mem } from "./memory";
 import { typicalMs, withTime } from "./pace";
@@ -94,6 +100,7 @@ export interface Choice {
    * "planned" a review, new material or the story, as the time budget allows;
    * "waited" an item in its first minutes that is not due yet, for want of other work;
    * "spare" new material although recalls are going badly, because nothing else was left;
+   * "ahead" a review that is not due yet, the one closest to it, because the session has time to spare;
    * "closing" a recall the session owes before it ends; "done" the end.
    */
   step:
@@ -102,6 +109,7 @@ export interface Choice {
     | "planned"
     | "waited"
     | "spare"
+    | "ahead"
     | "closing"
     | "done";
   /** Time left of the session, in milliseconds. Below zero once the session runs over. */
@@ -126,23 +134,38 @@ export interface Choice {
   shortOfTime: boolean;
 }
 
-/** Share of the session that reviews may take while new material is still waiting. */
+/**
+ * Share of the time in which the session may teach that reviews may take while new material is
+ * still waiting. It is a share of that time, not of the whole session: otherwise reviews could
+ * take all of it, and a learner with many reviews would be taught nothing.
+ */
 const REVIEW_SHARE = 0.6;
 
 /** With this many reviews due, the session teaches nothing new. */
 const BACKLOG = 40;
 
 /**
- * New material waits while fewer than this share of the latest recalls were right at the first try.
+ * New material waits while fewer than this share of the latest recall tasks were right at the first try.
  * Effort helps memory only when the recall succeeds in the end, so a learner who keeps missing
  * catches up first. The amount of new material is not capped otherwise: a count of new words
  * says nothing about whether they are being learned.
  */
 const MIN_SUCCESS = 0.7;
 
-/** How many of the latest recall tasks the success rate is taken from, and how many answers it needs. */
+/**
+ * How many of the latest recall tasks the success rate is taken from, and how many it needs.
+ * A task counts once, whether it is a card or a sentence: a sentence with five words that were
+ * right says no more about how the learner is doing than one card that was right.
+ */
 const SUCCESS_TASKS = 10;
-const SUCCESS_ANSWERS = 6;
+const MIN_SUCCESS_TASKS = 6;
+
+/**
+ * A session may always teach during this share of its time, from the start. A short session has
+ * no room for the waits of a new item, and it would teach nothing: there the last recall of an
+ * item is left to the next day.
+ */
+const TEACHING_SHARE = 0.5;
 
 /** A story is offered once this share of the session has passed. */
 const STORY_AFTER = 0.7;
@@ -150,6 +173,12 @@ const MIN_MINUTES_FOR_EXTRAS = 15;
 
 /** Time counted for one task is capped, so a break in the middle does not inflate study time. */
 const MAX_TASK_MS = 3 * 60_000;
+
+/**
+ * With time to spare, the session reviews ahead of time, and picks among this many of the items
+ * that are closest to due. Among few, a sentence cannot reach for items that are far from due.
+ */
+const AHEAD_ITEMS = 10;
 
 /** A new pattern is practised with at most this many sentences. */
 const PRACTICE_SENTENCES = 3;
@@ -228,8 +257,8 @@ export class Session {
   private storyOffered = false;
   /** The last few items the learner worked on, newest first. */
   private recent: string[] = [];
-  /** Right and wrong first tries of the latest recall tasks, newest first. */
-  private recalls: { right: number; wrong: number }[] = [];
+  /** The latest recall tasks, newest first: true if nothing in the task was wrong at the first try. */
+  private firstTries: boolean[] = [];
   private paceNow: Pace;
   /** When the session was to end, as it stood when the session started to close. Null before that. */
   private endAt: number | null = null;
@@ -326,10 +355,10 @@ export class Session {
 
     if (block === "review") {
       this.stats.reviewed += result.itemIds.length;
-      this.recalls = [
-        { right: result.right, wrong: result.wrong },
-        ...this.recalls,
-      ].slice(0, SUCCESS_TASKS);
+      this.firstTries = [result.wrong === 0, ...this.firstTries].slice(
+        0,
+        SUCCESS_TASKS
+      );
     }
 
     return counted;
@@ -435,6 +464,7 @@ export class Session {
       ["waited", () => this.waitedTask(view, learning, now)],
       // Nothing else is left to do: new material is better than ending the session early.
       ["spare", () => this.plannedTask(view, due, spare, false)],
+      ["ahead", () => this.fit(this.aheadTask(view, now), spare)],
     ];
 
     for (const [step, find] of steps) {
@@ -515,19 +545,26 @@ export class Session {
     return null;
   }
 
-  /** True while too many of the latest recalls failed: new material waits until the learner has caught up. */
+  /** True while too many of the latest recall tasks failed: new material waits until the learner has caught up. */
   private isStruggling(): boolean {
-    let right = 0;
-    let wrong = 0;
+    const tasks = this.firstTries.length;
+    const right = this.firstTries.filter(Boolean).length;
 
-    for (const recall of this.recalls) {
-      right += recall.right;
-      wrong += recall.wrong;
-    }
+    return tasks >= MIN_SUCCESS_TASKS && right / tasks < MIN_SUCCESS;
+  }
 
-    return (
-      right + wrong >= SUCCESS_ANSWERS && right / (right + wrong) < MIN_SUCCESS
-    );
+  /**
+   * The time left for teaching. Teaching stops early enough for the waits a new item needs
+   * before its recalls, but never before the share of the session that is kept for it.
+   * Zero or less once nothing new is taught any more.
+   */
+  private teachingMs(): number {
+    return this.teachUntilMs() - this.elapsedMs;
+  }
+
+  /** How far into the session new material may still be taught. */
+  private teachUntilMs(): number {
+    return Math.max(this.budgetMs - FINISH_MS, this.budgetMs * TEACHING_SHARE);
   }
 
   private nextSound(view: SessionView): Task {
@@ -590,7 +627,7 @@ export class Session {
 
     const reviewFirst =
       due.review.length > 0 &&
-      (lesson === null || this.reviewMs < this.budgetMs * REVIEW_SHARE);
+      (lesson === null || this.reviewMs < this.teachUntilMs() * REVIEW_SHARE);
 
     // New material that no longer fits leaves the rest of the time to reviews.
     const [first, second] = reviewFirst ? [review, fresh] : [fresh, review];
@@ -602,7 +639,10 @@ export class Session {
     );
   }
 
-  /** The next new material of the lesson. A group that is too big for the spare time is cut down to what fits. */
+  /**
+   * The next new material of the lesson, if the session can still finish it: teach it, and give
+   * it every recall it needs after the wait of each. A group that is too big is cut down to what fits.
+   */
   private newTask(lesson: Lesson, memory: Memory, spare: number): Task | null {
     const task = newMaterial(
       this.course,
@@ -610,7 +650,25 @@ export class Session {
       memory
     );
 
-    if (task?.type !== "intro") {
+    if (task === null) {
+      return null;
+    }
+
+    const each = typicalMs(
+      this.paceNow,
+      task.type === "intro" ? "intro" : "pattern"
+    );
+
+    // How many items can be taught while the session may still teach.
+    const finishable = Math.floor(this.teachingMs() / Math.max(1, each));
+
+    if (finishable < 1) {
+      this.shortOfTime = true;
+
+      return null;
+    }
+
+    if (task.type !== "intro") {
       return task;
     }
 
@@ -619,7 +677,8 @@ export class Session {
     const one =
       first === undefined ? 0 : this.costOf({ ...task, items: [first] });
 
-    const room = one > 0 ? Math.floor(spare / one) : task.items.length;
+    const affordable = one > 0 ? Math.floor(spare / one) : task.items.length;
+    const room = Math.min(affordable, finishable);
 
     // With no room for a single item the whole group is returned, and found not to fit.
     return room >= 1 && room < task.items.length
@@ -659,6 +718,21 @@ export class Session {
     const waited = learning.filter((m) => hasWaited(m, now));
 
     return this.recallTask(view, waited, "learning", this.recent.slice(0, 1));
+  }
+
+  /**
+   * Time to spare and nothing to do with it: a review ahead of time, of the items that are closest
+   * to due. Such a review loses the least of the wait the item was given, and its recall is the
+   * hardest of those to choose from. An item recalled earlier the same day is left out: a pass
+   * would add nothing.
+   */
+  private aheadTask(view: SessionView, now: number): Task | null {
+    const closest = [...view.memory.values()]
+      .filter((m) => !isLearning(m) && passCounts(m, now))
+      .toSorted(byDue)
+      .slice(0, AHEAD_ITEMS);
+
+    return this.recallTask(view, closest, "review", this.recent);
   }
 
   /**
