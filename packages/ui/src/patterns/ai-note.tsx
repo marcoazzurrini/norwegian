@@ -7,14 +7,17 @@ import { effects } from "../tokens/effects";
 import { color, radius, text } from "../tokens/tokens.stylex";
 
 const styles = stylex.create({
-  note: {
+  // The note arrives after the rest of the screen, so it opens in place.
+  opener: {
     alignSelf: "flex-start",
+    maxWidth: { default: "100%", [stylex.env.desktop]: "45rem" },
+  },
+  note: {
     backgroundColor: color.raised,
     borderRadius: { default: radius.r22, [stylex.env.desktop]: radius.r28 },
     display: "flex",
     flexDirection: "column",
     gap: { default: "0.375rem", [stylex.env.desktop]: "0.5rem" },
-    maxWidth: { default: "100%", [stylex.env.desktop]: "45rem" },
     paddingBlock: { default: "0.875rem", [stylex.env.desktop]: "1.25rem" },
     paddingInline: { default: "1.125rem", [stylex.env.desktop]: "1.75rem" },
   },
@@ -48,12 +51,16 @@ interface AiNoteProps {
 }
 
 export const AiNote = ({ label, children }: AiNoteProps) => (
-  <output {...stylex.props(effects.rise, styles.note)}>
-    <span {...stylex.props(styles.label)}>
-      <Sparkles {...stylex.props(styles.icon)} />
-      {label}
-      <span {...stylex.props(styles.source)}>· written by AI</span>
+  <output {...stylex.props(effects.open, styles.opener)}>
+    <span {...stylex.props(effects.openInner)}>
+      <span {...stylex.props(styles.note)}>
+        <span {...stylex.props(styles.label)}>
+          <Sparkles {...stylex.props(styles.icon)} />
+          {label}
+          <span {...stylex.props(styles.source)}>· written by AI</span>
+        </span>
+        <span {...stylex.props(styles.body)}>{children}</span>
+      </span>
     </span>
-    <span {...stylex.props(styles.body)}>{children}</span>
   </output>
 );

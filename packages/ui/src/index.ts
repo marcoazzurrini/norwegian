@@ -27,6 +27,8 @@ export { Display } from "./components/display";
 
 export { GroupLabel } from "./components/group-label";
 
+export { HoldButton } from "./components/hold-button";
+
 export { IconButton } from "./components/icon-button";
 
 export { Key } from "./components/key";

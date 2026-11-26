@@ -46,6 +46,7 @@ export const Remark = ({
   <output
     {...stylex.props(
       effects.rise,
+      effects.reply,
       styles.remark,
       center && styles.center,
       style

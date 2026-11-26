@@ -2,6 +2,7 @@ import { courses } from "@norsk/courses";
 import type { SyncStatus } from "@norsk/learner";
 import {
   Button,
+  HoldButton,
   ListCard,
   PageTitle,
   Segmented,
@@ -208,7 +209,6 @@ const SettingsPage = () => {
   const [firstVoice] = voices;
   const fileInput = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState("");
-  const [confirmReset, setConfirmReset] = useState(false);
   const sync = useSyncStatus();
   const { meta } = useCourse();
   const desktop = useDesktop();
@@ -222,7 +222,6 @@ const SettingsPage = () => {
 
   const deleteEverything = async () => {
     await learner().startOver();
-    setConfirmReset(false);
     setMessage("All progress deleted.");
   };
 
@@ -411,38 +410,13 @@ const SettingsPage = () => {
             title="Start over"
             help={`Deletes all progress on every signed-in device: ${memory.size} learned items.`}
           >
-            {confirmReset ? (
-              <div {...stylex.props(styles.buttons)}>
-                <Button
-                  variant="danger"
-                  size="small"
-                  onClick={() => {
-                    deleteEverything().catch(reportError);
-                  }}
-                >
-                  Delete everything
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="small"
-                  onClick={() => {
-                    setConfirmReset(false);
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <Button
-                variant="secondary"
-                size="small"
-                onClick={() => {
-                  setConfirmReset(true);
-                }}
-              >
-                Start over
-              </Button>
-            )}
+            <HoldButton
+              onHeld={() => {
+                deleteEverything().catch(reportError);
+              }}
+            >
+              Hold to delete everything
+            </HoldButton>
           </Row>
         </ListCard>
         {message === "" ? null : (

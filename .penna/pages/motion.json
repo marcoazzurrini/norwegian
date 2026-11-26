@@ -1,0 +1,1736 @@
+{
+ "version": 2,
+ "name": "Motion",
+ "children": [
+  {
+   "id": "5iyCf",
+   "type": "frame",
+   "name": "Segmented motion",
+   "x": 0,
+   "y": 0,
+   "style": {
+    "width": 520,
+    "background": "var(--panel)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": 40,
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 24
+   },
+   "children": [
+    {
+     "id": "Pt7fu",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 8
+     },
+     "children": [
+      {
+       "id": "Wu4Nk",
+       "type": "text",
+       "text": "Segmented switch",
+       "style": {
+        "fontSize": 28,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em"
+       },
+       "name": "Segmented switch"
+      },
+      {
+       "id": "nxSdS",
+       "type": "text",
+       "text": "The white pill is a window. It slides over a second, dark copy of the labels, so every label stays readable while the pill moves. 240ms, house curve, no bounce. Each length shrinks to 0.97 while pressed.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "The white pill is a win…"
+      }
+     ],
+     "name": "Frame"
+    },
+    {
+     "id": "TRxSP",
+     "type": "frame",
+     "name": "Slot",
+     "style": {
+      "display": "flex"
+     },
+     "children": [
+      {
+       "id": "hsu54",
+       "type": "frame",
+       "name": "Length switch",
+       "state": "s2",
+       "class": "group",
+       "style": {
+        "position": "relative",
+        "display": "inline-flex",
+        "padding": 4,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "color": "var(--text-2)",
+        "fontSize": 15,
+        "fontWeight": 500,
+        "alignSelf": "flex-start",
+        "cursor": "pointer",
+        "userSelect": "none"
+       },
+       "children": [
+        {
+         "id": "daEcT",
+         "type": "frame",
+         "name": "Seg 0",
+         "on": {
+          "click": [
+           {
+            "target": "Length switch",
+            "state": "s0"
+           }
+          ]
+         },
+         "class": "active:scale-[0.97]",
+         "style": {
+          "height": 34,
+          "padding": "0 14px",
+          "display": "flex",
+          "alignItems": "center",
+          "whiteSpace": "nowrap",
+          "borderRadius": 999,
+          "transition": "scale var(--press) var(--ease-out)"
+         },
+         "children": [
+          {
+           "id": "baaEp",
+           "type": "text",
+           "text": "5 min",
+           "name": "5 min"
+          }
+         ]
+        },
+        {
+         "id": "DUX4T",
+         "type": "frame",
+         "name": "Seg 1",
+         "on": {
+          "click": [
+           {
+            "target": "Length switch",
+            "state": "s1"
+           }
+          ]
+         },
+         "class": "active:scale-[0.97]",
+         "style": {
+          "height": 34,
+          "padding": "0 14px",
+          "display": "flex",
+          "alignItems": "center",
+          "whiteSpace": "nowrap",
+          "borderRadius": 999,
+          "transition": "scale var(--press) var(--ease-out)"
+         },
+         "children": [
+          {
+           "id": "Rkye5",
+           "type": "text",
+           "text": "15 min",
+           "name": "15 min"
+          }
+         ]
+        },
+        {
+         "id": "nPfL7",
+         "type": "frame",
+         "name": "Seg 2",
+         "on": {
+          "click": [
+           {
+            "target": "Length switch",
+            "state": "s2"
+           }
+          ]
+         },
+         "class": "active:scale-[0.97]",
+         "style": {
+          "height": 34,
+          "padding": "0 14px",
+          "display": "flex",
+          "alignItems": "center",
+          "whiteSpace": "nowrap",
+          "borderRadius": 999,
+          "transition": "scale var(--press) var(--ease-out)"
+         },
+         "children": [
+          {
+           "id": "2xi5j",
+           "type": "text",
+           "text": "25 min",
+           "name": "25 min"
+          }
+         ]
+        },
+        {
+         "id": "EJ5qf",
+         "type": "frame",
+         "name": "Seg 3",
+         "on": {
+          "click": [
+           {
+            "target": "Length switch",
+            "state": "s3"
+           }
+          ]
+         },
+         "class": "active:scale-[0.97]",
+         "style": {
+          "height": 34,
+          "padding": "0 14px",
+          "display": "flex",
+          "alignItems": "center",
+          "whiteSpace": "nowrap",
+          "borderRadius": 999,
+          "transition": "scale var(--press) var(--ease-out)"
+         },
+         "children": [
+          {
+           "id": "fHU5D",
+           "type": "text",
+           "text": "40 min",
+           "name": "40 min"
+          }
+         ]
+        },
+        {
+         "id": "RRivn",
+         "type": "frame",
+         "name": "Selected",
+         "style": {
+          "position": "absolute",
+          "inset": 0,
+          "display": "flex",
+          "padding": 4,
+          "borderRadius": 999,
+          "background": "var(--inverse)",
+          "color": "var(--on-inverse)",
+          "pointerEvents": "none",
+          "transition": "clip-path var(--move) var(--ease-out)"
+         },
+         "children": [
+          {
+           "id": "aRueJ",
+           "type": "frame",
+           "style": {
+            "height": 34,
+            "padding": "0 14px",
+            "display": "flex",
+            "alignItems": "center",
+            "whiteSpace": "nowrap",
+            "borderRadius": 999
+           },
+           "children": [
+            {
+             "id": "ma6WP",
+             "type": "text",
+             "text": "5 min",
+             "name": "5 min"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "yBj4t",
+           "type": "frame",
+           "style": {
+            "height": 34,
+            "padding": "0 14px",
+            "display": "flex",
+            "alignItems": "center",
+            "whiteSpace": "nowrap",
+            "borderRadius": 999
+           },
+           "children": [
+            {
+             "id": "QiD2A",
+             "type": "text",
+             "text": "15 min",
+             "name": "15 min"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "jCMwL",
+           "type": "frame",
+           "style": {
+            "height": 34,
+            "padding": "0 14px",
+            "display": "flex",
+            "alignItems": "center",
+            "whiteSpace": "nowrap",
+            "borderRadius": 999
+           },
+           "children": [
+            {
+             "id": "UgJTR",
+             "type": "text",
+             "text": "25 min",
+             "name": "25 min"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "Z8CuZ",
+           "type": "frame",
+           "style": {
+            "height": 34,
+            "padding": "0 14px",
+            "display": "flex",
+            "alignItems": "center",
+            "whiteSpace": "nowrap",
+            "borderRadius": 999
+           },
+           "children": [
+            {
+             "id": "EkhDj",
+             "type": "text",
+             "text": "40 min",
+             "name": "40 min"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "class": "group-data-[state=s0]:[clip-path:inset(4px_230px_4px_4px_round_999px)] group-data-[state=s1]:[clip-path:inset(4px_156px_4px_71px_round_999px)] group-data-[state=s2]:[clip-path:inset(4px_81px_4px_144px_round_999px)] group-data-[state=s3]:[clip-path:inset(4px_4px_4px_220px_round_999px)] motion-reduce:transition-none"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "6Ar2K",
+   "type": "frame",
+   "name": "1. Press",
+   "style": {
+    "width": 440,
+    "background": "var(--panel)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": 32,
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 24
+   },
+   "children": [
+    {
+     "id": "mTuNs",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 8
+     },
+     "children": [
+      {
+       "id": "T2MHR",
+       "type": "text",
+       "text": "Every button and tile",
+       "style": {
+        "fontSize": 13,
+        "color": "var(--text-3)"
+       },
+       "name": "Every button and tile"
+      },
+      {
+       "id": "nWgfu",
+       "type": "text",
+       "text": "1. Press",
+       "style": {
+        "fontSize": 24,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em"
+       },
+       "name": "1. Press"
+      },
+      {
+       "id": "sMEVv",
+       "type": "text",
+       "text": "A pressed shape shrinks to 0.97. 160ms. It confirms the tap before the screen changes.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "A pressed shape shrinks…"
+      },
+      {
+       "id": "xSzzA",
+       "type": "text",
+       "text": "Press and hold a shape.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text)"
+       },
+       "name": "Press and hold a shape."
+      }
+     ],
+     "name": "Frame"
+    },
+    {
+     "id": "zGWWr",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 12
+     },
+     "children": [
+      {
+       "id": "3ALp3",
+       "type": "frame",
+       "class": "active:scale-[0.97]",
+       "children": [
+        {
+         "id": "9mrsW",
+         "type": "icon",
+         "icon": "play",
+         "style": {
+          "width": 18,
+          "height": 18
+         },
+         "name": "play"
+        },
+        {
+         "id": "K2VGX",
+         "type": "text",
+         "text": "Start session",
+         "name": "Start session"
+        }
+       ],
+       "style": {
+        "height": 52,
+        "borderRadius": 999,
+        "background": "var(--inverse)",
+        "color": "var(--on-inverse)",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "gap": 8,
+        "fontSize": 17,
+        "fontWeight": 500,
+        "cursor": "pointer",
+        "userSelect": "none",
+        "transition": "scale var(--press) var(--ease-out)"
+       },
+       "name": "Frame"
+      },
+      {
+       "id": "QaEmT",
+       "type": "frame",
+       "style": {
+        "display": "grid",
+        "gridTemplateColumns": "1fr 1fr",
+        "gap": 12
+       },
+       "children": [
+        {
+         "id": "yvuKF",
+         "type": "frame",
+         "class": "active:scale-[0.97]",
+         "style": {
+          "background": "var(--base)",
+          "border": "1px solid var(--line-strong)",
+          "borderRadius": 20,
+          "height": 120,
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "center",
+          "fontSize": 44,
+          "fontWeight": 500,
+          "cursor": "pointer",
+          "userSelect": "none",
+          "transition": "scale var(--press) var(--ease-out)"
+         },
+         "children": [
+          {
+           "id": "HKr6s",
+           "type": "text",
+           "text": "by",
+           "name": "by"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "eywyw",
+         "type": "frame",
+         "class": "active:scale-[0.97]",
+         "style": {
+          "background": "var(--base)",
+          "border": "1px solid var(--line-strong)",
+          "borderRadius": 20,
+          "height": 120,
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "center",
+          "fontSize": 44,
+          "fontWeight": 500,
+          "cursor": "pointer",
+          "userSelect": "none",
+          "transition": "scale var(--press) var(--ease-out)"
+         },
+         "children": [
+          {
+           "id": "3ST3H",
+           "type": "text",
+           "text": "bi",
+           "name": "bi"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      }
+     ],
+     "name": "Frame"
+    }
+   ],
+   "x": 640,
+   "y": 0
+  },
+  {
+   "id": "cj5XP",
+   "type": "frame",
+   "name": "2. Answer and feedback enter",
+   "style": {
+    "width": 440,
+    "background": "var(--panel)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": 32,
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 24
+   },
+   "children": [
+    {
+     "id": "TghnZ",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 8
+     },
+     "children": [
+      {
+       "id": "D2umE",
+       "type": "text",
+       "text": "Session: every answer",
+       "style": {
+        "fontSize": 13,
+        "color": "var(--text-3)"
+       },
+       "name": "Session: every answer"
+      },
+      {
+       "id": "gV2H7",
+       "type": "text",
+       "text": "2. Answer and feedback enter",
+       "style": {
+        "fontSize": 24,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em"
+       },
+       "name": "2. Answer and feedback …"
+      },
+      {
+       "id": "a4GGK",
+       "type": "text",
+       "text": "The answer fades in from 0.96 scale and 8px lower. The feedback follows 80ms later. 200ms each.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "The answer fades in fro…"
+      },
+      {
+       "id": "u2eZZ",
+       "type": "text",
+       "text": "Tap Send. Tap again to reset.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text)"
+       },
+       "name": "Tap Send. Tap again to …"
+      }
+     ],
+     "name": "Frame"
+    },
+    {
+     "id": "MGSy4",
+     "type": "frame",
+     "name": "Chat",
+     "state": "ask",
+     "class": "group",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 10
+     },
+     "children": [
+      {
+       "id": "X6ixk",
+       "type": "frame",
+       "style": {
+        "alignSelf": "flex-start",
+        "background": "var(--raised)",
+        "borderRadius": 18,
+        "padding": "10px 16px"
+       },
+       "children": [
+        {
+         "id": "V8Ngi",
+         "type": "text",
+         "text": "Noun, with en, ei or et. Type it in Norwegian.",
+         "style": {
+          "fontSize": 12,
+          "color": "var(--text-2)"
+         },
+         "name": "Noun, with en, ei or et…"
+        },
+        {
+         "id": "GHqRS",
+         "type": "text",
+         "text": "student",
+         "style": {
+          "fontSize": 22,
+          "fontWeight": 500
+         },
+         "name": "student"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "RtNCY",
+       "type": "frame",
+       "name": "Mine",
+       "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=sent]:opacity-100 group-data-[state=sent]:translate-y-0 group-data-[state=sent]:scale-100 group-data-[state=sent]:transition-[opacity,translate,scale] group-data-[state=sent]:duration-200 group-data-[state=sent]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100",
+       "style": {
+        "alignSelf": "flex-end",
+        "background": "var(--inverse)",
+        "color": "var(--on-inverse)",
+        "borderRadius": 18,
+        "padding": "10px 16px",
+        "fontSize": 22,
+        "fontWeight": 500,
+        "transformOrigin": "bottom right"
+       },
+       "children": [
+        {
+         "id": "BES34",
+         "type": "text",
+         "text": "ei student",
+         "name": "ei student"
+        }
+       ]
+      },
+      {
+       "id": "rnGrh",
+       "type": "frame",
+       "name": "Note",
+       "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=sent]:opacity-100 group-data-[state=sent]:translate-y-0 group-data-[state=sent]:scale-100 group-data-[state=sent]:transition-[opacity,translate,scale] group-data-[state=sent]:duration-200 group-data-[state=sent]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100 group-data-[state=sent]:delay-[80ms]",
+       "style": {
+        "alignSelf": "flex-start",
+        "background": "var(--raised)",
+        "borderRadius": 18,
+        "padding": "10px 16px",
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)",
+        "transformOrigin": "bottom left"
+       },
+       "children": [
+        {
+         "id": "uQ79j",
+         "type": "text",
+         "spans": [
+          {
+           "text": "Not yet. ",
+           "style": {
+            "color": "var(--text)",
+            "fontWeight": 500
+           }
+          },
+          {
+           "text": "The word is right. Is it an en, ei or et word?"
+          }
+         ],
+         "name": "Not yet. The word is ri…"
+        }
+       ]
+      },
+      {
+       "id": "FXkvM",
+       "type": "frame",
+       "class": "active:scale-[0.97]",
+       "on": {
+        "click": [
+         {
+          "target": "Chat",
+          "toggle": "sent"
+         }
+        ]
+       },
+       "style": {
+        "height": 40,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "color": "var(--text)",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "gap": 8,
+        "fontSize": 15,
+        "fontWeight": 500,
+        "cursor": "pointer",
+        "userSelect": "none",
+        "transition": "scale var(--press) var(--ease-out)",
+        "padding": "0 16px",
+        "alignSelf": "flex-start",
+        "marginTop": 12
+       },
+       "children": [
+        {
+         "id": "CqEWe",
+         "type": "text",
+         "text": "Send",
+         "name": "Send"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    }
+   ],
+   "x": 1200,
+   "y": 0
+  },
+  {
+   "id": "xHc3x",
+   "type": "frame",
+   "name": "3. Session progress line",
+   "style": {
+    "width": 440,
+    "background": "var(--panel)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": 32,
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 24
+   },
+   "children": [
+    {
+     "id": "U2THV",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 8
+     },
+     "children": [
+      {
+       "id": "UTFVj",
+       "type": "text",
+       "text": "Session: top of the screen",
+       "style": {
+        "fontSize": 13,
+        "color": "var(--text-3)"
+       },
+       "name": "Session: top of the scr…"
+      },
+      {
+       "id": "5ZCJK",
+       "type": "text",
+       "text": "3. Session progress line",
+       "style": {
+        "fontSize": 24,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em"
+       },
+       "name": "3. Session progress line"
+      },
+      {
+       "id": "qAgxe",
+       "type": "text",
+       "text": "The line grows to its new length instead of jumping. 240ms.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "The line grows to its n…"
+      },
+      {
+       "id": "ZGHuj",
+       "type": "text",
+       "text": "Tap Answer. Tap again to reset.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text)"
+       },
+       "name": "Tap Answer. Tap again t…"
+      }
+     ],
+     "name": "Frame"
+    },
+    {
+     "id": "aYk4i",
+     "type": "frame",
+     "name": "Bar",
+     "state": "a",
+     "class": "group",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 20
+     },
+     "children": [
+      {
+       "id": "rsShK",
+       "type": "frame",
+       "style": {
+        "height": 3,
+        "borderRadius": 999,
+        "background": "var(--line-strong)",
+        "overflow": "hidden"
+       },
+       "children": [
+        {
+         "id": "HgJYg",
+         "type": "frame",
+         "name": "Fill",
+         "class": "scale-x-[0.3] group-data-[state=b]:scale-x-[0.42] motion-reduce:transition-none",
+         "style": {
+          "height": "100%",
+          "background": "var(--inverse)",
+          "transformOrigin": "left",
+          "transition": "scale var(--move) var(--ease-out)"
+         }
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "hKJyC",
+       "type": "frame",
+       "class": "active:scale-[0.97]",
+       "on": {
+        "click": [
+         {
+          "target": "Bar",
+          "toggle": "b"
+         }
+        ]
+       },
+       "style": {
+        "height": 40,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "color": "var(--text)",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "gap": 8,
+        "fontSize": 15,
+        "fontWeight": 500,
+        "cursor": "pointer",
+        "userSelect": "none",
+        "transition": "scale var(--press) var(--ease-out)",
+        "padding": "0 16px",
+        "alignSelf": "flex-start"
+       },
+       "children": [
+        {
+         "id": "LXu7e",
+         "type": "text",
+         "text": "Answer",
+         "name": "Answer"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    }
+   ],
+   "x": 1760,
+   "y": 0
+  },
+  {
+   "id": "CTmgZ",
+   "type": "frame",
+   "name": "4. Explanation opens",
+   "style": {
+    "width": 440,
+    "background": "var(--panel)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": 32,
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 24
+   },
+   "children": [
+    {
+     "id": "NNaFk",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 8
+     },
+     "children": [
+      {
+       "id": "yAZXV",
+       "type": "text",
+       "text": "Sentence result",
+       "style": {
+        "fontSize": 13,
+        "color": "var(--text-3)"
+       },
+       "name": "Sentence result"
+      },
+      {
+       "id": "q2XE5",
+       "type": "text",
+       "text": "4. Explanation opens",
+       "style": {
+        "fontSize": 24,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em"
+       },
+       "name": "4. Explanation opens"
+      },
+      {
+       "id": "RrBWg",
+       "type": "text",
+       "text": "The explanation arrives late. It opens and pushes the list down, so nothing jumps under the finger. 240ms.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "The explanation arrives…"
+      },
+      {
+       "id": "PhCB5",
+       "type": "text",
+       "text": "Tap Explain. Tap again to close.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text)"
+       },
+       "name": "Tap Explain. Tap again …"
+      }
+     ],
+     "name": "Frame"
+    },
+    {
+     "id": "vQJAw",
+     "type": "frame",
+     "name": "Result",
+     "state": "closed",
+     "class": "group",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column"
+     },
+     "children": [
+      {
+       "id": "6VukW",
+       "type": "frame",
+       "style": {
+        "background": "var(--base)",
+        "border": "1px solid var(--line)",
+        "borderRadius": 20,
+        "padding": 16
+       },
+       "children": [
+        {
+         "id": "uLwar",
+         "type": "text",
+         "text": "Huset er stort.",
+         "style": {
+          "fontSize": 22,
+          "fontWeight": 500
+         },
+         "name": "Huset er stort."
+        },
+        {
+         "id": "ti5fy",
+         "type": "text",
+         "text": "This is the answer.",
+         "style": {
+          "fontSize": 13,
+          "color": "var(--text-2)"
+         },
+         "name": "This is the answer."
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "paVQf",
+       "type": "frame",
+       "name": "Opener",
+       "class": "grid grid-rows-[0fr] opacity-0 group-data-[state=open]:grid-rows-[1fr] group-data-[state=open]:opacity-100 motion-reduce:transition-none",
+       "style": {
+        "transition": "grid-template-rows var(--move) var(--ease-out), opacity var(--move) var(--ease-out)"
+       },
+       "children": [
+        {
+         "id": "cGkhV",
+         "type": "frame",
+         "style": {
+          "overflow": "hidden",
+          "minHeight": 0
+         },
+         "children": [
+          {
+           "id": "cUiuC",
+           "type": "frame",
+           "style": {
+            "paddingTop": 12
+           },
+           "children": [
+            {
+             "id": "ucYEU",
+             "type": "frame",
+             "style": {
+              "background": "var(--raised)",
+              "border": "1px solid var(--line)",
+              "borderRadius": 20,
+              "padding": 16
+             },
+             "children": [
+              {
+               "id": "i7zWa",
+               "type": "text",
+               "text": "Explanation · written by AI",
+               "style": {
+                "fontSize": 12,
+                "color": "var(--violet)",
+                "marginBottom": 6
+               },
+               "name": "Explanation · written b…"
+              },
+              {
+               "id": "AEMQf",
+               "type": "text",
+               "text": "“Hus” is an et word. A describing word takes -t after an et word, so “stor” becomes “stort”.",
+               "style": {
+                "fontSize": 15,
+                "lineHeight": 1.45
+               },
+               "name": "“Hus” is an et word. A …"
+              }
+             ],
+             "name": "Frame"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ]
+      },
+      {
+       "id": "a7dSR",
+       "type": "frame",
+       "style": {
+        "paddingTop": 12
+       },
+       "children": [
+        {
+         "id": "tKbMa",
+         "type": "frame",
+         "style": {
+          "background": "var(--base)",
+          "border": "1px solid var(--line)",
+          "borderRadius": 20,
+          "padding": 16
+         },
+         "children": [
+          {
+           "id": "g4rBN",
+           "type": "text",
+           "text": "This sentence reviews 4 items",
+           "style": {
+            "fontSize": 14,
+            "fontWeight": 500,
+            "marginBottom": 8
+           },
+           "name": "This sentence reviews 4…"
+          },
+          {
+           "id": "q5BXk",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "justifyContent": "space-between",
+            "fontSize": 14,
+            "padding": "6px 0",
+            "color": "var(--text-2)"
+           },
+           "children": [
+            {
+             "id": "kxnVs",
+             "type": "text",
+             "text": "hus (house)",
+             "style": {
+              "color": "var(--text)"
+             },
+             "name": "hus (house)"
+            },
+            {
+             "id": "R9Qef",
+             "type": "text",
+             "text": "reviewed",
+             "name": "reviewed"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "mJ48v",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "justifyContent": "space-between",
+            "fontSize": 14,
+            "padding": "6px 0",
+            "color": "var(--text-2)"
+           },
+           "children": [
+            {
+             "id": "hqsM7",
+             "type": "text",
+             "text": "Saying “the”",
+             "style": {
+              "color": "var(--text)"
+             },
+             "name": "Saying “the”"
+            },
+            {
+             "id": "HB7eE",
+             "type": "text",
+             "text": "reviewed",
+             "name": "reviewed"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "8kagt",
+           "type": "frame",
+           "style": {
+            "display": "flex",
+            "justifyContent": "space-between",
+            "fontSize": 14,
+            "padding": "6px 0",
+            "color": "var(--text-2)"
+           },
+           "children": [
+            {
+             "id": "uFGe7",
+             "type": "text",
+             "text": "være (to be)",
+             "style": {
+              "color": "var(--text)"
+             },
+             "name": "være (to be)"
+            },
+            {
+             "id": "idDPU",
+             "type": "text",
+             "text": "reviewed",
+             "name": "reviewed"
+            }
+           ],
+           "name": "Frame"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "6hUcR",
+       "type": "frame",
+       "class": "active:scale-[0.97]",
+       "on": {
+        "click": [
+         {
+          "target": "Result",
+          "toggle": "open"
+         }
+        ]
+       },
+       "style": {
+        "height": 40,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "color": "var(--text)",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "gap": 8,
+        "fontSize": 15,
+        "fontWeight": 500,
+        "cursor": "pointer",
+        "userSelect": "none",
+        "transition": "scale var(--press) var(--ease-out)",
+        "padding": "0 16px",
+        "alignSelf": "flex-start",
+        "marginTop": 16
+       },
+       "children": [
+        {
+         "id": "5UFgw",
+         "type": "text",
+         "text": "Explain",
+         "name": "Explain"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    }
+   ],
+   "x": 2320,
+   "y": 0
+  },
+  {
+   "id": "zUuPS",
+   "type": "frame",
+   "name": "5. Hold to start over",
+   "style": {
+    "width": 440,
+    "background": "var(--panel)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": 32,
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 24
+   },
+   "children": [
+    {
+     "id": "jMGmr",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 8
+     },
+     "children": [
+      {
+       "id": "7wrJU",
+       "type": "text",
+       "text": "Settings: Start over",
+       "style": {
+        "fontSize": 13,
+        "color": "var(--text-3)"
+       },
+       "name": "Settings: Start over"
+      },
+      {
+       "id": "G4gsQ",
+       "type": "text",
+       "text": "5. Hold to start over",
+       "style": {
+        "fontSize": 24,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em"
+       },
+       "name": "5. Hold to start over"
+      },
+      {
+       "id": "mZ587",
+       "type": "text",
+       "text": "Deleting all progress needs a hold, not a tap. Red fills the button over 2s. On release it empties in 200ms.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "Deleting all progress n…"
+      },
+      {
+       "id": "cJ9pB",
+       "type": "text",
+       "text": "Press and hold. Let go early to cancel.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text)"
+       },
+       "name": "Press and hold. Let go …"
+      }
+     ],
+     "name": "Frame"
+    },
+    {
+     "id": "4xmWB",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 12
+     },
+     "children": [
+      {
+       "id": "gX6zC",
+       "type": "text",
+       "text": "Deletes all progress on every signed-in device: 127 learned items.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "Deletes all progress on…"
+      },
+      {
+       "id": "by3h6",
+       "type": "frame",
+       "name": "Hold",
+       "class": "group active:scale-[0.97]",
+       "style": {
+        "position": "relative",
+        "height": 44,
+        "width": 260,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "color": "var(--red)",
+        "fontSize": 15,
+        "fontWeight": 500,
+        "cursor": "pointer",
+        "userSelect": "none",
+        "transition": "scale var(--press) var(--ease-out)"
+       },
+       "children": [
+        {
+         "id": "6MmuE",
+         "type": "frame",
+         "style": {
+          "position": "absolute",
+          "inset": 0,
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "center",
+          "gap": 8,
+          "borderRadius": 999
+         },
+         "children": [
+          {
+           "id": "RUKpc",
+           "type": "text",
+           "text": "Hold to delete everything",
+           "name": "Hold to delete everythi…"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "YeDjv",
+         "type": "frame",
+         "name": "Fill",
+         "class": "[clip-path:inset(0_100%_0_0)] transition-[clip-path] duration-200 ease-(--ease-out) group-active:[clip-path:inset(0_0_0_0)] group-active:duration-[2000ms] group-active:ease-linear",
+         "style": {
+          "position": "absolute",
+          "inset": 0,
+          "display": "flex",
+          "alignItems": "center",
+          "justifyContent": "center",
+          "gap": 8,
+          "borderRadius": 999,
+          "background": "var(--red)",
+          "color": "var(--on-inverse)"
+         },
+         "children": [
+          {
+           "id": "q2d7a",
+           "type": "text",
+           "text": "Hold to delete everything",
+           "name": "Hold to delete everythi…"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "name": "Frame"
+    }
+   ],
+   "x": 2880,
+   "y": 0
+  },
+  {
+   "id": "sKcCW",
+   "type": "frame",
+   "name": "6. Session complete",
+   "style": {
+    "width": 440,
+    "background": "var(--panel)",
+    "color": "var(--text)",
+    "fontFamily": "'Geist', 'Inter', sans-serif",
+    "padding": 32,
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": 24
+   },
+   "children": [
+    {
+     "id": "MwRmn",
+     "type": "frame",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": 8
+     },
+     "children": [
+      {
+       "id": "P5wxG",
+       "type": "text",
+       "text": "Done screen",
+       "style": {
+        "fontSize": 13,
+        "color": "var(--text-3)"
+       },
+       "name": "Done screen"
+      },
+      {
+       "id": "gTysG",
+       "type": "text",
+       "text": "6. Session complete",
+       "style": {
+        "fontSize": 24,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em"
+       },
+       "name": "6. Session complete"
+      },
+      {
+       "id": "xRYWe",
+       "type": "text",
+       "text": "The one moment that may celebrate. Each part fades in 40ms after the one before. 200ms each, no bounce.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text-2)"
+       },
+       "name": "The one moment that may…"
+      },
+      {
+       "id": "b5vfq",
+       "type": "text",
+       "text": "Tap Replay once to clear, and again to play.",
+       "style": {
+        "fontSize": 14,
+        "lineHeight": 1.45,
+        "color": "var(--text)"
+       },
+       "name": "Tap Replay once to clea…"
+      }
+     ],
+     "name": "Frame"
+    },
+    {
+     "id": "BN5fY",
+     "type": "frame",
+     "name": "Done demo",
+     "state": "in",
+     "class": "group",
+     "style": {
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "gap": 12
+     },
+     "children": [
+      {
+       "id": "A7ARc",
+       "type": "frame",
+       "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=in]:opacity-100 group-data-[state=in]:translate-y-0 group-data-[state=in]:scale-100 group-data-[state=in]:transition-[opacity,translate,scale] group-data-[state=in]:duration-200 group-data-[state=in]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100",
+       "style": {
+        "background": "var(--base)",
+        "border": "1px solid var(--line)",
+        "borderRadius": 999,
+        "padding": "6px 12px",
+        "fontSize": 13
+       },
+       "children": [
+        {
+         "id": "tVKLp",
+         "type": "text",
+         "spans": [
+          {
+           "text": "Session complete. ",
+           "style": {
+            "fontWeight": 500
+           }
+          },
+          {
+           "text": "Day 37",
+           "style": {
+            "color": "var(--text-2)"
+           }
+          }
+         ],
+         "name": "Session complete. Day 37"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "kPH2f",
+       "type": "text",
+       "text": "Ferdig!",
+       "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=in]:opacity-100 group-data-[state=in]:translate-y-0 group-data-[state=in]:scale-100 group-data-[state=in]:transition-[opacity,translate,scale] group-data-[state=in]:duration-200 group-data-[state=in]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100 group-data-[state=in]:delay-[40ms]",
+       "style": {
+        "fontSize": 60,
+        "fontWeight": 500,
+        "letterSpacing": "-0.03em",
+        "lineHeight": 1.05
+       },
+       "name": "Ferdig!"
+      },
+      {
+       "id": "YhdG8",
+       "type": "text",
+       "text": "Finished. Your time is up.",
+       "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=in]:opacity-100 group-data-[state=in]:translate-y-0 group-data-[state=in]:scale-100 group-data-[state=in]:transition-[opacity,translate,scale] group-data-[state=in]:duration-200 group-data-[state=in]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100 group-data-[state=in]:delay-[80ms]",
+       "style": {
+        "fontSize": 16,
+        "color": "var(--text-2)"
+       },
+       "name": "Finished. Your time is …"
+      },
+      {
+       "id": "bhZyz",
+       "type": "frame",
+       "style": {
+        "display": "grid",
+        "gridTemplateColumns": "1fr 1fr",
+        "gap": 10,
+        "width": "100%",
+        "marginTop": 8
+       },
+       "children": [
+        {
+         "id": "524Jc",
+         "type": "frame",
+         "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=in]:opacity-100 group-data-[state=in]:translate-y-0 group-data-[state=in]:scale-100 group-data-[state=in]:transition-[opacity,translate,scale] group-data-[state=in]:duration-200 group-data-[state=in]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100 group-data-[state=in]:delay-[120ms]",
+         "style": {
+          "background": "var(--base)",
+          "border": "1px solid var(--line)",
+          "borderRadius": 20,
+          "padding": 16
+         },
+         "children": [
+          {
+           "id": "7vQBV",
+           "type": "text",
+           "text": "25",
+           "style": {
+            "fontSize": 32,
+            "fontWeight": 500,
+            "lineHeight": 1.1
+           },
+           "name": "25"
+          },
+          {
+           "id": "JA3Jc",
+           "type": "text",
+           "text": "minutes",
+           "style": {
+            "fontSize": 13,
+            "color": "var(--text-2)"
+           },
+           "name": "minutes"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "i6Kiy",
+         "type": "frame",
+         "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=in]:opacity-100 group-data-[state=in]:translate-y-0 group-data-[state=in]:scale-100 group-data-[state=in]:transition-[opacity,translate,scale] group-data-[state=in]:duration-200 group-data-[state=in]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100 group-data-[state=in]:delay-[160ms]",
+         "style": {
+          "background": "var(--base)",
+          "border": "1px solid var(--line)",
+          "borderRadius": 20,
+          "padding": 16
+         },
+         "children": [
+          {
+           "id": "AfZHe",
+           "type": "text",
+           "text": "6",
+           "style": {
+            "fontSize": 32,
+            "fontWeight": 500,
+            "lineHeight": 1.1
+           },
+           "name": "6"
+          },
+          {
+           "id": "y9Jci",
+           "type": "text",
+           "text": "new items",
+           "style": {
+            "fontSize": 13,
+            "color": "var(--text-2)"
+           },
+           "name": "new items"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "BRZPW",
+         "type": "frame",
+         "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=in]:opacity-100 group-data-[state=in]:translate-y-0 group-data-[state=in]:scale-100 group-data-[state=in]:transition-[opacity,translate,scale] group-data-[state=in]:duration-200 group-data-[state=in]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100 group-data-[state=in]:delay-[200ms]",
+         "style": {
+          "background": "var(--base)",
+          "border": "1px solid var(--line)",
+          "borderRadius": 20,
+          "padding": 16
+         },
+         "children": [
+          {
+           "id": "KzCDg",
+           "type": "text",
+           "text": "34",
+           "style": {
+            "fontSize": 32,
+            "fontWeight": 500,
+            "lineHeight": 1.1
+           },
+           "name": "34"
+          },
+          {
+           "id": "vvPmx",
+           "type": "text",
+           "text": "items reviewed",
+           "style": {
+            "fontSize": 13,
+            "color": "var(--text-2)"
+           },
+           "name": "items reviewed"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "k2e9v",
+         "type": "frame",
+         "class": "opacity-0 translate-y-2 scale-[0.96] group-data-[state=in]:opacity-100 group-data-[state=in]:translate-y-0 group-data-[state=in]:scale-100 group-data-[state=in]:transition-[opacity,translate,scale] group-data-[state=in]:duration-200 group-data-[state=in]:ease-(--ease-out) motion-reduce:translate-y-0 motion-reduce:scale-100 group-data-[state=in]:delay-[240ms]",
+         "style": {
+          "background": "var(--base)",
+          "border": "1px solid var(--line)",
+          "borderRadius": 20,
+          "padding": 16
+         },
+         "children": [
+          {
+           "id": "6yJmY",
+           "type": "text",
+           "text": "88%",
+           "style": {
+            "fontSize": 32,
+            "fontWeight": 500,
+            "lineHeight": 1.1
+           },
+           "name": "88%"
+          },
+          {
+           "id": "fNPDT",
+           "type": "text",
+           "text": "right first time",
+           "style": {
+            "fontSize": 13,
+            "color": "var(--text-2)"
+           },
+           "name": "right first time"
+          }
+         ],
+         "name": "Frame"
+        }
+       ],
+       "name": "Frame"
+      },
+      {
+       "id": "vUrrE",
+       "type": "frame",
+       "class": "active:scale-[0.97]",
+       "on": {
+        "click": [
+         {
+          "target": "Done demo",
+          "toggle": "out"
+         }
+        ]
+       },
+       "style": {
+        "height": 40,
+        "borderRadius": 999,
+        "background": "var(--control)",
+        "color": "var(--text)",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "gap": 8,
+        "fontSize": 15,
+        "fontWeight": 500,
+        "cursor": "pointer",
+        "userSelect": "none",
+        "transition": "scale var(--press) var(--ease-out)",
+        "padding": "0 16px",
+        "alignSelf": "flex-start",
+        "marginTop": 12
+       },
+       "children": [
+        {
+         "id": "QPWx6",
+         "type": "text",
+         "text": "Replay",
+         "name": "Replay"
+        }
+       ],
+       "name": "Frame"
+      }
+     ]
+    }
+   ],
+   "x": 3440,
+   "y": 0
+  }
+ ]
+}

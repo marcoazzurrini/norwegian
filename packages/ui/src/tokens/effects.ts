@@ -8,7 +8,12 @@ const fadeIn = stylex.keyframes({
 });
 
 const riseIn = stylex.keyframes({
-  from: { opacity: 0, transform: "translateY(8px) scale(0.98)" },
+  from: { opacity: 0, transform: "translateY(8px) scale(0.96)" },
+});
+
+// The row of a one-row grid grows from nothing, so what is below is pushed down smoothly.
+const openUp = stylex.keyframes({
+  from: { gridTemplateRows: "0fr", opacity: 0 },
 });
 
 const popIn = stylex.keyframes({
@@ -16,7 +21,7 @@ const popIn = stylex.keyframes({
 });
 
 /** The time between two parts that come in one after the other. */
-const STAGGER_MS = 50;
+const STAGGER_MS = 40;
 
 export const effects = stylex.create({
   // Buttons answer a press at once.
@@ -49,6 +54,27 @@ export const effects = stylex.create({
       [stylex.env.motionOk]: popIn,
     },
     animationTimingFunction: motion.easeOut,
+  },
+  // With `rise`: what the app says to an answer comes in a moment after the answer.
+  reply: {
+    animationDelay: motion.reply,
+  },
+  // A part that arrives late opens in place instead of making the page jump. Its one child takes
+  // `openInner`. With reduced motion it only fades.
+  open: {
+    animationDuration: motion.move,
+    animationFillMode: "both",
+    animationName: {
+      default: fadeIn,
+      [stylex.env.motionOk]: openUp,
+    },
+    animationTimingFunction: motion.easeOut,
+    display: "grid",
+    gridTemplateRows: "1fr",
+  },
+  openInner: {
+    minHeight: 0,
+    overflow: "hidden",
   },
   // With `rise`: the place of a part in a group whose parts come in one after the other.
   after: (place: number) => ({

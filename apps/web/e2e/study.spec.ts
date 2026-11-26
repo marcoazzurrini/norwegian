@@ -345,27 +345,25 @@ test("the sounds drill tells a right pick from a wrong one and keeps score", asy
   await expect(page.getByText(/^\d of \d right$/u).first()).toBeVisible();
 });
 
-test("Start over asks first, then deletes all progress", async ({ page }) => {
+test("Start over needs a long hold, then deletes all progress", async ({
+  page,
+}) => {
   const learned = (count: number) =>
     page.getByText(`${count} learned items.`, { exact: false });
+
+  const hold = page.getByRole("button", { name: "Hold to delete everything" });
 
   await startAs(page, "progress");
   await open(page, "/settings");
   await expect(learned(73)).toBeVisible();
 
-  // The first press only asks; Cancel leaves everything as it was.
-  await page.getByRole("button", { name: "Start over" }).click();
-  await expect(
-    page.getByRole("button", { name: "Delete everything" })
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Cancel" }).click();
-  await expect(
-    page.getByRole("button", { name: "Delete everything" })
-  ).toBeHidden();
+  // A tap, or a hold that ends early, leaves everything as it was.
+  await hold.click();
+  await hold.click({ delay: 500 });
+  await expect(page.getByText("All progress deleted.")).toBeHidden();
   await expect(learned(73)).toBeVisible();
 
-  await page.getByRole("button", { name: "Start over" }).click();
-  await page.getByRole("button", { name: "Delete everything" }).click();
+  await hold.click({ delay: 2200 });
   await expect(page.getByText("All progress deleted.")).toBeVisible();
   await expect(learned(0)).toBeVisible();
 

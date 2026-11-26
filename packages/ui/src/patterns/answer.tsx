@@ -62,7 +62,7 @@ export const Answer = ({
   note,
   children,
 }: AnswerProps) => (
-  <div {...stylex.props(effects.rise, styles.card)}>
+  <div {...stylex.props(effects.rise, effects.reply, styles.card)}>
     {audio}
     <div {...stylex.props(styles.text)}>
       <div {...stylex.props(styles.words)}>{children}</div>

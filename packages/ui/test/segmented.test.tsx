@@ -113,3 +113,30 @@ test("an option that is disabled is shown but cannot be chosen", async () => {
 
   expect(onPick).not.toHaveBeenCalled();
 });
+
+test("the pill lies over the chosen option and moves with the choice", async () => {
+  const screen = await render(<Lengths />);
+  const group = screen.getByRole("radiogroup").element();
+
+  /** The left edge of the visible part of the pill, from its clip path. */
+  const pillLeft = (): number => {
+    const pill = group.querySelector("span[aria-hidden]");
+    const clip = pill instanceof HTMLElement ? pill.style.clipPath : "";
+
+    return Number(
+      /inset\(\S+ \S+ \S+ (?<left>[\d.]+)px/u.exec(clip)?.groups?.left
+    );
+  };
+
+  const leftOf = (name: string): number => {
+    const option = screen.getByRole("radio", { name }).element();
+
+    return option instanceof HTMLElement ? option.offsetLeft : Number.NaN;
+  };
+
+  await expect.poll(pillLeft).toBe(leftOf("15 min"));
+
+  await screen.getByRole("radio", { name: "25 min" }).click();
+
+  await expect.poll(pillLeft).toBe(leftOf("25 min"));
+});

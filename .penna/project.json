@@ -6,7 +6,8 @@
   "patterns",
   "desktop",
   "mobile",
-  "tablet"
+  "tablet",
+  "motion"
  ],
  "variables": {
   "line": "rgba(255,255,255,0.08)",
@@ -30,6 +31,10 @@
   "green": "#58C878",
   "red": "#F2634B",
   "link": "#7AA2F7",
-  "yellow": "#E5C04B"
+  "yellow": "#E5C04B",
+  "ease-out": "cubic-bezier(0.23, 1, 0.32, 1)",
+  "spring-soft": "linear(0, 0.062, 0.202, 0.37, 0.535, 0.679, 0.796, 0.884, 0.947, 0.988, 1.012, 1.024, 1.028, 1.027, 1.024, 1.019, 1.014, 1.01, 1.007, 1.004, 1)",
+  "press": "160ms",
+  "move": "240ms"
  }
 }

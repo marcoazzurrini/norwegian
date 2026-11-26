@@ -23,7 +23,7 @@ const styles = stylex.create({
     // Above the reach, which starts at the same edge and goes further.
     position: "relative",
     zIndex: 1,
-    transitionDuration: motion.fill,
+    transitionDuration: motion.move,
     transitionProperty: "transform",
     transitionTimingFunction: motion.easeOut,
   },
@@ -35,7 +35,7 @@ const reachStyles = stylex.create({
     borderRadius: radius.pill,
     inset: 0,
     position: "absolute",
-    transitionDuration: motion.fill,
+    transitionDuration: motion.move,
     transitionProperty: "transform",
     transitionTimingFunction: motion.easeOut,
   },

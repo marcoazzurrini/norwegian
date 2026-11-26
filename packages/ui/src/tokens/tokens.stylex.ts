@@ -101,6 +101,10 @@ export const motion = stylex.defineConsts({
   press: "160ms",
   // New parts of an exchange come in.
   rise: "200ms",
-  // A progress bar moves to its new value.
-  fill: "300ms",
+  // The app's reply comes in this long after the learner's answer.
+  reply: "80ms",
+  // Something moves to a new place or size: a progress bar, the chosen option, a note that opens.
+  move: "240ms",
+  // A button that has to be held, for an action that cannot be undone. HoldButton waits as long.
+  hold: "2000ms",
 });

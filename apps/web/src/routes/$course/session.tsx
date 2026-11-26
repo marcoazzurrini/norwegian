@@ -119,18 +119,22 @@ const Done = ({ session, progressFrom, onClose }: DoneProps) => {
         </div>
       }
     >
-      <div {...stylex.props(effects.rise, styles.hero)}>
-        <Chip strong="Session complete.">
+      <div {...stylex.props(styles.hero)}>
+        <Chip strong="Session complete." style={effects.rise}>
           {days > 0 ? `Day ${days}` : undefined}
         </Chip>
-        <h1 {...stylex.props(styles.done)}>{course.meta.greetings.done}</h1>
-        <p {...stylex.props(styles.closing)}>{closing}</p>
+        <h1 {...stylex.props(effects.rise, effects.after(1), styles.done)}>
+          {course.meta.greetings.done}
+        </h1>
+        <p {...stylex.props(effects.rise, effects.after(2), styles.closing)}>
+          {closing}
+        </p>
       </div>
       <div {...stylex.props(styles.tiles)}>
         {tiles.map((tile, place) => (
           <Card
             key={tile.label}
-            style={[effects.rise, effects.after(place + 1), styles.tile]}
+            style={[effects.rise, effects.after(place + 3), styles.tile]}
           >
             <div {...stylex.props(styles.tileValue)}>{tile.value}</div>
             <div {...stylex.props(styles.tileLabel)}>{tile.label}</div>
@@ -141,7 +145,7 @@ const Done = ({ session, progressFrom, onClose }: DoneProps) => {
         <p
           {...stylex.props(
             effects.rise,
-            effects.after(tiles.length + 1),
+            effects.after(tiles.length + 3),
             styles.note
           )}
         >

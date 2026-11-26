@@ -3646,6 +3646,66 @@
    ],
    "x": 1560,
    "y": 0
+  },
+  {
+   "id": "dMXbB",
+   "type": "frame",
+   "name": "Button Hold",
+   "component": true,
+   "x": 1560,
+   "y": 120,
+   "class": "group active:scale-[0.97]",
+   "style": {
+    "position": "relative",
+    "display": "inline-flex",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "gap": 8,
+    "height": 36,
+    "padding": "0 16px",
+    "borderRadius": 999,
+    "whiteSpace": "nowrap",
+    "fontWeight": 500,
+    "fontSize": 14,
+    "background": "var(--control)",
+    "color": "var(--red)",
+    "cursor": "pointer",
+    "userSelect": "none",
+    "transition": "scale var(--press) var(--ease-out)"
+   },
+   "children": [
+    {
+     "id": "sCUkJ",
+     "type": "text",
+     "text": "Hold to delete everything",
+     "name": "Hold to delete everythi…"
+    },
+    {
+     "id": "g9zsd",
+     "type": "frame",
+     "name": "Fill",
+     "class": "[clip-path:inset(0_100%_0_0)] transition-[clip-path] duration-200 ease-(--ease-out) group-active:[clip-path:inset(0_0_0_0)] group-active:duration-[2000ms] group-active:ease-linear",
+     "style": {
+      "position": "absolute",
+      "inset": 0,
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "gap": 8,
+      "borderRadius": 999,
+      "background": "var(--red)",
+      "color": "var(--on-inverse)"
+     },
+     "children": [
+      {
+       "id": "njcvg",
+       "type": "text",
+       "text": "Hold to delete everything",
+       "name": "Hold to delete everythi…"
+      }
+     ]
+    }
+   ]
   }
  ]
 }

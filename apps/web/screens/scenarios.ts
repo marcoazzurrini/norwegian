@@ -317,12 +317,7 @@ export const scenarios: Scenario[] = [
     walk: async ({ open, page, shot }) => {
       await open("/settings");
       await shot("page");
-      await press(page, "Start over");
-      await shot("confirm");
-      await press(page, "Cancel");
-      await shot("cancelled");
-      await press(page, "Start over");
-      await press(page, "Delete everything");
+      await button(page, "Hold to delete everything").click({ delay: 2200 });
       await seen(page, "All progress deleted.");
       await shot("deleted");
     },

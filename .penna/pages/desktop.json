@@ -12745,23 +12745,19 @@
                "name": "Frame"
               },
               {
-               "id": "V8G2h",
+               "id": "BK4aB",
                "type": "frame",
                "style": {
                 "display": "flex",
+                "gap": 8,
                 "flexShrink": 0
                },
                "children": [
                 {
-                 "id": "kX5V5",
+                 "id": "Hde9u",
                  "type": "ref",
-                 "ref": "KCjGr",
-                 "overrides": {
-                  "Label": {
-                   "text": "Start over"
-                  }
-                 },
-                 "name": "Button Small Secondary"
+                 "ref": "dMXbB",
+                 "name": "Button Hold"
                 }
                ],
                "name": "Frame"
@@ -12784,7 +12780,7 @@
   {
    "id": "SdYK5",
    "type": "frame",
-   "name": "Settings, confirm start over",
+   "name": "Settings, holding to start over",
    "x": 2720,
    "y": 10080,
    "style": {
@@ -14319,7 +14315,7 @@
                "name": "Frame"
               },
               {
-               "id": "ZQjcQ",
+               "id": "qUgEN",
                "type": "frame",
                "style": {
                 "display": "flex",
@@ -14328,26 +14324,17 @@
                },
                "children": [
                 {
-                 "id": "SkkVp",
+                 "id": "TJasr",
                  "type": "ref",
-                 "ref": "YVKcT",
+                 "ref": "dMXbB",
                  "overrides": {
-                  "Label": {
-                   "text": "Delete everything"
+                  "Fill": {
+                   "style": {
+                    "clipPath": "inset(0 45% 0 0)"
+                   }
                   }
                  },
-                 "name": "Button Danger"
-                },
-                {
-                 "id": "urbHv",
-                 "type": "ref",
-                 "ref": "KCjGr",
-                 "overrides": {
-                  "Label": {
-                   "text": "Cancel"
-                  }
-                 },
-                 "name": "Button Small Secondary"
+                 "name": "Button Hold"
                 }
                ],
                "name": "Frame"

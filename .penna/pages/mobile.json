@@ -900,109 +900,253 @@
            "name": "Button Icon"
           },
           {
-           "id": "rxYjr",
+           "id": "jJnrV",
            "type": "frame",
+           "name": "Length switch",
+           "state": "s2",
+           "class": "group",
            "style": {
+            "position": "relative",
             "display": "inline-flex",
             "padding": 4,
             "borderRadius": 999,
             "background": "var(--control)",
+            "color": "var(--text-2)",
             "fontSize": 15,
             "fontWeight": 500,
-            "alignSelf": "flex-start"
+            "alignSelf": "flex-start",
+            "cursor": "pointer",
+            "userSelect": "none"
            },
            "children": [
             {
-             "id": "uT5pU",
+             "id": "hwiUZ",
              "type": "frame",
+             "name": "Seg 0",
+             "on": {
+              "click": [
+               {
+                "target": "Length switch",
+                "state": "s0"
+               }
+              ]
+             },
+             "class": "active:scale-[0.97]",
              "style": {
               "height": 34,
               "padding": "0 14px",
-              "borderRadius": 999,
               "display": "flex",
               "alignItems": "center",
               "whiteSpace": "nowrap",
-              "color": "var(--text-2)"
+              "borderRadius": 999,
+              "transition": "scale var(--press) var(--ease-out)"
              },
              "children": [
               {
-               "id": "aDf3A",
+               "id": "8nJBG",
                "type": "text",
                "text": "5 min",
                "name": "5 min"
               }
-             ],
-             "name": "Frame"
+             ]
             },
             {
-             "id": "vugMa",
+             "id": "W8j3w",
              "type": "frame",
+             "name": "Seg 1",
+             "on": {
+              "click": [
+               {
+                "target": "Length switch",
+                "state": "s1"
+               }
+              ]
+             },
+             "class": "active:scale-[0.97]",
              "style": {
               "height": 34,
               "padding": "0 14px",
-              "borderRadius": 999,
               "display": "flex",
               "alignItems": "center",
               "whiteSpace": "nowrap",
-              "color": "var(--text-2)"
+              "borderRadius": 999,
+              "transition": "scale var(--press) var(--ease-out)"
              },
              "children": [
               {
-               "id": "HjBdj",
+               "id": "bEqqd",
                "type": "text",
                "text": "15 min",
                "name": "15 min"
               }
-             ],
-             "name": "Frame"
+             ]
             },
             {
-             "id": "WhCQF",
+             "id": "EpYMQ",
              "type": "frame",
+             "name": "Seg 2",
+             "on": {
+              "click": [
+               {
+                "target": "Length switch",
+                "state": "s2"
+               }
+              ]
+             },
+             "class": "active:scale-[0.97]",
              "style": {
               "height": 34,
               "padding": "0 14px",
-              "borderRadius": 999,
               "display": "flex",
               "alignItems": "center",
               "whiteSpace": "nowrap",
-              "background": "var(--inverse)",
-              "color": "var(--on-inverse)"
+              "borderRadius": 999,
+              "transition": "scale var(--press) var(--ease-out)"
              },
              "children": [
               {
-               "id": "Qj4RZ",
+               "id": "FzZDJ",
                "type": "text",
                "text": "25 min",
                "name": "25 min"
               }
-             ],
-             "name": "Frame"
+             ]
             },
             {
-             "id": "VaLaj",
+             "id": "iddmG",
              "type": "frame",
+             "name": "Seg 3",
+             "on": {
+              "click": [
+               {
+                "target": "Length switch",
+                "state": "s3"
+               }
+              ]
+             },
+             "class": "active:scale-[0.97]",
              "style": {
               "height": 34,
               "padding": "0 14px",
-              "borderRadius": 999,
               "display": "flex",
               "alignItems": "center",
               "whiteSpace": "nowrap",
-              "color": "var(--text-2)"
+              "borderRadius": 999,
+              "transition": "scale var(--press) var(--ease-out)"
              },
              "children": [
               {
-               "id": "SD7Ck",
+               "id": "BgQZv",
                "type": "text",
                "text": "40 min",
                "name": "40 min"
               }
+             ]
+            },
+            {
+             "id": "ncB5s",
+             "type": "frame",
+             "name": "Selected",
+             "style": {
+              "position": "absolute",
+              "inset": 0,
+              "display": "flex",
+              "padding": 4,
+              "borderRadius": 999,
+              "background": "var(--inverse)",
+              "color": "var(--on-inverse)",
+              "pointerEvents": "none",
+              "transition": "clip-path var(--move) var(--ease-out)"
+             },
+             "children": [
+              {
+               "id": "7bTCy",
+               "type": "frame",
+               "style": {
+                "height": 34,
+                "padding": "0 14px",
+                "display": "flex",
+                "alignItems": "center",
+                "whiteSpace": "nowrap",
+                "borderRadius": 999
+               },
+               "children": [
+                {
+                 "id": "UtQPf",
+                 "type": "text",
+                 "text": "5 min",
+                 "name": "5 min"
+                }
+               ],
+               "name": "Frame"
+              },
+              {
+               "id": "4gpEc",
+               "type": "frame",
+               "style": {
+                "height": 34,
+                "padding": "0 14px",
+                "display": "flex",
+                "alignItems": "center",
+                "whiteSpace": "nowrap",
+                "borderRadius": 999
+               },
+               "children": [
+                {
+                 "id": "UJtjt",
+                 "type": "text",
+                 "text": "15 min",
+                 "name": "15 min"
+                }
+               ],
+               "name": "Frame"
+              },
+              {
+               "id": "MM39Y",
+               "type": "frame",
+               "style": {
+                "height": 34,
+                "padding": "0 14px",
+                "display": "flex",
+                "alignItems": "center",
+                "whiteSpace": "nowrap",
+                "borderRadius": 999
+               },
+               "children": [
+                {
+                 "id": "9wE83",
+                 "type": "text",
+                 "text": "25 min",
+                 "name": "25 min"
+                }
+               ],
+               "name": "Frame"
+              },
+              {
+               "id": "VieDA",
+               "type": "frame",
+               "style": {
+                "height": 34,
+                "padding": "0 14px",
+                "display": "flex",
+                "alignItems": "center",
+                "whiteSpace": "nowrap",
+                "borderRadius": 999
+               },
+               "children": [
+                {
+                 "id": "dmdJi",
+                 "type": "text",
+                 "text": "40 min",
+                 "name": "40 min"
+                }
+               ],
+               "name": "Frame"
+              }
              ],
-             "name": "Frame"
+             "class": "group-data-[state=s0]:[clip-path:inset(4px_230px_4px_4px_round_999px)] group-data-[state=s1]:[clip-path:inset(4px_156px_4px_71px_round_999px)] group-data-[state=s2]:[clip-path:inset(4px_81px_4px_144px_round_999px)] group-data-[state=s3]:[clip-path:inset(4px_4px_4px_220px_round_999px)] motion-reduce:transition-none"
             }
-           ],
-           "name": "Frame"
+           ]
           }
          ],
          "name": "Frame"
@@ -8702,7 +8846,7 @@
   {
    "id": "DbQ72",
    "type": "frame",
-   "name": "Settings, confirm start over",
+   "name": "Settings, holding to start over",
    "x": 473,
    "y": 5952,
    "style": {
@@ -9175,7 +9319,7 @@
            "name": "Frame"
           },
           {
-           "id": "M9T87",
+           "id": "E2hdH",
            "type": "frame",
            "style": {
             "display": "flex",
@@ -9184,26 +9328,17 @@
            },
            "children": [
             {
-             "id": "4qB5E",
+             "id": "aaYqi",
              "type": "ref",
-             "ref": "YVKcT",
+             "ref": "dMXbB",
              "overrides": {
-              "Label": {
-               "text": "Delete everything"
+              "Fill": {
+               "style": {
+                "clipPath": "inset(0 45% 0 0)"
+               }
               }
              },
-             "name": "Button Danger"
-            },
-            {
-             "id": "inZn9",
-             "type": "ref",
-             "ref": "KCjGr",
-             "overrides": {
-              "Label": {
-               "text": "Cancel"
-              }
-             },
-             "name": "Button Small Secondary"
+             "name": "Button Hold"
             }
            ],
            "name": "Frame"
