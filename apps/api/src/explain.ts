@@ -29,6 +29,7 @@ const system = (course: CourseMeta): string => {
     `- Use everyday words: ${everyday(course)}.`,
     "- Only talk about what really differs between the learner's answer and the expected sentence. Never invent a mistake.",
     "- Explain the right form only. Do not say what the learner's wrong word means or where else it is used; you may be wrong about that.",
+    "- A weak point may come with what the course teaches about it: a rule, or the forms of a word. Take the grammar from there. Never state a rule that is not there, and never one that goes against it.",
     ...tutor.rules.map((rule) => `- ${rule}`),
     "- Ignore capital letters and punctuation.",
   ].join("\n");
@@ -64,7 +65,8 @@ const question = (
 
   if (topics.length > 0) {
     lines.push(
-      `The program marked these as the weak points: ${topics.join("; ")}`
+      "The program marked these as the weak points, with what the course teaches about each:",
+      ...topics.map((topic) => `- ${topic}`)
     );
   }
 

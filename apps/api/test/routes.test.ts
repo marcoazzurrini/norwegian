@@ -649,7 +649,9 @@ describe("/api/explain", () => {
         "English sentence: I have a house.",
         "Expected Norwegian: Jeg har et hus.",
         "Learner's answer: jeg har en hus",
-        "The program marked these as the weak points: hus; et word",
+        "The program marked these as the weak points, with what the course teaches about each:",
+        "- hus",
+        "- et word",
         "",
         "Write a HINT for a second try. Say which word to look at again and what kind of thing to check (its ending, its place in the sentence, the choice of word). Do NOT write the correct word, the correct ending, the correct order or the correct sentence. The learner must still work it out.",
       ].join("\n")

@@ -25,7 +25,7 @@ import { say } from "../say";
 import { AnswerField } from "./answer-field";
 import type { Frame } from "./frame";
 import { HelpButtons } from "./help";
-import { itemName } from "./items";
+import { itemFacts, itemName } from "./items";
 import { hintText, sentenceNote } from "./sentence-text";
 import { taskStyles } from "./task-styles";
 import { useTask } from "./use-task";
@@ -147,7 +147,7 @@ export const SentenceView = ({
           course: course.meta.id,
           kind: ask.kind,
           target: ask.target,
-          topics: ask.itemIds.map((id) => itemName(course, id)),
+          topics: ask.itemIds.map((id) => itemFacts(course, id)),
         }
   );
 

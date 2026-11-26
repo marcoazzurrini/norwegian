@@ -13,6 +13,31 @@ export const nameOf = (one: Item): string =>
 export const itemName = (course: Course, id: string): string =>
   nameOf(course.item(id));
 
+/**
+ * What the course teaches about an item, in one line: its name, then the rule of a pattern, or
+ * the article and the forms of a word. It is written for the language model that explains a
+ * mistake, so that the model reads the grammar here and does not make it up.
+ */
+export const itemFacts = (course: Course, id: string): string => {
+  const one = course.item(id);
+  const name = nameOf(one);
+
+  if (one.kind === "pattern") {
+    return [`${name}:`, ...(one.rule ?? [])].join(" ");
+  }
+
+  const article = one.article === undefined ? [] : [`${one.article} word`];
+
+  // A word that never changes has an empty list of forms.
+  const forms = (one.forms ?? [])
+    .map(({ form, label }) => `"${label}" ${form}`)
+    .join(", ");
+
+  const facts = [...article, ...(forms === "" ? [] : [forms])];
+
+  return facts.length === 0 ? name : `${name}: ${facts.join("; ")}`;
+};
+
 /** True if the item is shown with an article in front, such as "et hus". */
 export const hasArticle = (one: Item): boolean =>
   one.pos === "noun" && one.display.includes(" ");

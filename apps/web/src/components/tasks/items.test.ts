@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 
 import { course } from "@norsk/norwegian";
 
-import { hasArticle, itemName, shuffled, soundOf } from "./items";
+import { hasArticle, itemFacts, itemName, shuffled, soundOf } from "./items";
 
 const { item } = course;
 
@@ -34,6 +34,17 @@ const stream = (seed: number) => {
     return state / 2_147_483_648;
   };
 };
+
+test("the facts of an item are its name with its rule, or with its article and forms", () => {
+  expect(itemFacts(course, "c:hei")).toBe("hei (hi)");
+  expect(itemFacts(course, "w:på:prep")).toBe("på (on)");
+  expect(itemFacts(course, "p:present")).toBe(
+    "Verbs now: A verb has one form for everyone: jeg er, du er, vi er. Most verbs end in -r in the present: snakker, kommer, heter."
+  );
+  expect(itemFacts(course, "w:rom:noun")).toBe(
+    'rom (room): et word; "a" rom, "the" rommet, "several" rom, "the several" rommene'
+  );
+});
 
 test("an item is named by its words and meaning, a pattern by its title", () => {
   expect(itemName(course, "c:hei")).toBe("hei (hi)");

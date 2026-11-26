@@ -35,6 +35,7 @@ export const meta: CourseMeta = {
     learner: "an English speaker",
     rules: [
       "In Bokmål an ei word may also be used as an en word (“boka” or “boken”, “ei bok” or “en bok”). Both are correct.",
+      "A verb has one form for everyone (“jeg er”, “vi er”). Never say that a verb must match or agree with who does it.",
     ],
     standard: "Bokmål",
     word: "hus",
