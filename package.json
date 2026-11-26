@@ -25,7 +25,9 @@
     "test:e2e": "bun run --filter @norsk/web test:e2e",
     "typecheck": "bun run --filter '*' typecheck",
     "content": "bun run --filter @norsk/norwegian build",
+    "content:es": "bun run --filter @norsk/spanish build",
     "audio": "bun run --filter @norsk/norwegian audio",
+    "audio:es": "bun run --filter @norsk/spanish audio",
     "fix": "ultracite fix",
     "prepare": "lefthook install",
     "lint": "ultracite check"

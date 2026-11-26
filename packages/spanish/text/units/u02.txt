@@ -1,0 +1,223 @@
+# unit 2 | La gente | Persone, numeri, età e lavoro | level: A1
+
+## lesson Noi, voi, loro
+f somos | verb | (noi) siamo | lemma=ser
+f sois | verb | (voi) siete | lemma=ser
+f son | verb | (loro) sono | lemma=ser
+w nosotros | pron | noi
+w vosotros | pron | voi
+w ellos | pron | loro
+
+## lesson Il plurale
+p plural | Il plurale | needs: articles
+rule: Dopo una vocale si aggiunge -s: el amigo, los amigos. La chica, las chicas.
+rule: Dopo una consonante si aggiunge -es: el profesor, los profesores. La ciudad, las ciudades.
+rule: Gli articoli del plurale sono «los» e «las».
+ex: el amigo > los amigos | l'amico > gli amici
+ex: la chica > las chicas | la ragazza > le ragazze
+ex: el profesor > los profesores | il professore > i professori
+q: los chicos | *i ragazzi | il ragazzo | le ragazze
+q: las amigas | *le amiche | gli amici | l'amica
+w libro | noun el | libro
+w ciudad | noun la | città
+w país | noun el | paese (nazione)
+w cosa | noun la | cosa
+w hombre | noun el | uomo
+w mujer | noun la | donna, moglie
+
+## lesson Gli aggettivi
+p adj | L'aggettivo si accorda | needs: plural
+rule: Come in italiano, l'aggettivo segue il nome in genere e numero: alto, alta, altos, altas.
+rule: Gli aggettivi in -e o in consonante hanno una sola forma per i due generi: grande, joven.
+rule: Le nazionalità in consonante fanno il femminile in -a: español, española. Inglés, inglesa.
+ex: el chico alto > la chica alta | il ragazzo alto > la ragazza alta
+ex: los chicos altos > las chicas altas | i ragazzi alti > le ragazze alte
+ex: un amigo español > una amiga española | un amico spagnolo > un'amica spagnola
+q: la chica italiana | *la ragazza italiana | il ragazzo italiano | le ragazze italiane
+q: los libros grandes | *i libri grandi | il libro grande | le cose grandi
+w alto | adj | alto
+w bajo | adj | basso
+w grande | adj | grande
+w pequeño | adj | piccolo
+w simpático | adj | simpatico
+w guapo | adj | bello (di persone)
+w joven | adj | giovane
+
+## lesson Verbi in -er e -ir
+p pres-er-ir | Il presente dei verbi in -er e -ir | needs: pres-ar
+rule: Verbi in -er: como, comes, come, comemos, coméis, comen.
+rule: Verbi in -ir: vivo, vives, vive, vivimos, vivís, viven. Cambiano solo «noi» e «voi».
+rule: Attenzione a «noi»: finisce in -emos o -imos, mai in -iamo. Comemos, vivimos.
+ex: vivo en Roma > vivimos en Roma | abito a Roma > abitiamo a Roma
+ex: comes > coméis | mangi > mangiate
+q: vivimos | *abitiamo | abito | abitate
+q: comen | *mangiano | mangiamo | mangia
+w vivir | verb | vivere, abitare
+w comer | verb | mangiare
+w beber | verb | bere
+w leer | verb | leggere
+w escribir | verb | scrivere
+w aprender | verb | imparare
+
+## lesson Avere e volere
+p pres-irreg | Verbi che cambiano | needs: pres-er-ir
+rule: In alcuni verbi la vocale cambia quando è accentata: e diventa ie, o diventa ue. Quiero, puedo.
+rule: «Noi» e «voi» restano regolari: queremos, podéis.
+rule: Alcuni verbi hanno «io» in -go: tengo.
+ex: quiero > queremos | voglio > vogliamo
+ex: puedes > podéis | puoi > potete
+ex: tengo > tienes | ho > hai
+q: tienes | *hai | ho | abbiamo
+q: podemos | *possiamo | posso | possono
+w tener | verb | avere (possedere)
+w querer | verb | volere
+w poder | verb | potere
+w año | noun el | anno
+c tener ___ años | avere ___ anni
+w cuánto | det | quanto
+c ¿cuántos años tienes? | quanti anni hai?
+
+## lesson Numeri da 1 a 5
+w uno | num | uno
+w dos | num | due
+w tres | num | tre
+w cuatro | num | quattro
+w cinco | num | cinque
+
+## lesson Numeri da 6 a 10
+w seis | num | sei (numero)
+w siete | num | sette
+w ocho | num | otto
+w nueve | num | nove
+w diez | num | dieci
+
+## lesson Il lavoro
+w médico | noun el | medico
+w camarero | noun el | cameriere
+w trabajo | noun el | lavoro
+w oficina | noun la | ufficio
+w empresa | noun la | azienda
+c ¿a qué te dedicas? | che lavoro fai?
+w ser | verb | essere | only
+
+## lesson Altra gente
+w francés | adj | francese
+w alemán | adj | tedesco
+w persona | noun la | persona
+w gente | noun la | gente
+w otro | det | altro
+
+## sentences
+
+s Somos de Roma. | Siamo di Roma.
+s ¿Sois de Madrid? | Siete di Madrid?
+s Carlos y Ana son de Sevilla. | Carlos e Ana sono di Siviglia.
+s Nosotros hablamos español. | Noi parliamo spagnolo.
+s Vosotros habláis muy bien. | Voi parlate molto bene.
+s Ellos trabajan en Barcelona. | Loro lavorano a Barcellona.
+s Ellos son de Sevilla. | Loro sono di Siviglia.
+s El libro es de Ana. | Il libro è di Ana.
+s Madrid es una ciudad. | Madrid è una città.
+s Italia es un país. | L'Italia è un paese.
+s Una cosa, por favor. | Una cosa, per favore.
+s El hombre habla inglés. | L'uomo parla inglese.
+s La mujer trabaja en Madrid. | La donna lavora a Madrid.
+s Los amigos de Pablo son de Roma. | Gli amici di Pablo sono di Roma.
+s Las chicas estudian en Sevilla. | Le ragazze studiano a Siviglia.
+s Los profesores hablan inglés. | I professori parlano inglese.
+s Los libros son de la señora. | I libri sono della signora.
+s Somos estudiantes. | Siamo studenti.
+s El chico es alto. | Il ragazzo è alto.
+s El profesor es bajo. | Il professore è basso.
+s Madrid es una ciudad grande. | Madrid è una città grande.
+s Es un país pequeño. | È un paese piccolo.
+s El señor es simpático. | Il signore è simpatico.
+s Pablo es guapo. | Pablo è bello.
+s La mujer es joven. | La donna è giovane.
+s La chica es alta. | La ragazza è alta.
+s Las chicas son altas. | Le ragazze sono alte.
+s Los chicos son simpáticos. | I ragazzi sono simpatici.
+s Ana es española. | Ana è spagnola.
+s Somos italianos. | Siamo italiani.
+s Ella es inglesa. | Lei è inglese.
+s Es una ciudad pequeña. | È una città piccola.
+s Las ciudades son grandes. | Le città sono grandi.
+s Los hombres son jóvenes. | Gli uomini sono giovani.
+s La señora es guapa y simpática. | La signora è bella e simpatica.
+s Vivimos en Madrid. | Abitiamo a Madrid.
+s Comemos en la ciudad. | Mangiamo in città.
+s Yo no bebo. | Io non bevo.
+s Leo un libro. | Leggo un libro.
+s Escribo un libro. | Scrivo un libro.
+s Aprendo español. | Imparo lo spagnolo.
+s ¿Dónde vivís? | Dove abitate?
+s Ellos viven en Italia. | Loro abitano in Italia.
+s Ana come y bebe. | Ana mangia e beve.
+s ¿Lees libros en inglés? | Leggi libri in inglese?
+s Aprendemos italiano. | Impariamo l'italiano.
+s Escribes muy bien. | Scrivi molto bene.
+s Tengo un libro. | Ho un libro.
+s Quiero aprender español. | Voglio imparare lo spagnolo.
+s No puedo comer. | Non posso mangiare.
+s Estudio un año en Madrid. | Studio un anno a Madrid.
+s ¿Cuántos libros tienes? | Quanti libri hai?
+s ¿Cuántos años tienes? | Quanti anni hai?
+s Tienes un amigo español. | Hai un amico spagnolo.
+s Queremos vivir en España. | Vogliamo vivere in Spagna.
+s ¿Puedes hablar inglés? | Puoi parlare inglese?
+s Tenemos amigos en Roma. | Abbiamo amici a Roma.
+s No quieren trabajar. | Non vogliono lavorare.
+s Podemos hablar italiano. | Possiamo parlare italiano.
+s Uno, por favor. | Uno, per favore.
+s Tengo dos libros. | Ho due libri.
+s Somos tres. | Siamo tre.
+s Leo cuatro libros. | Leggo quattro libri.
+s Tenemos cinco amigos. | Abbiamo cinque amici.
+s La chica tiene cinco años. | La ragazza ha cinque anni.
+s Tengo seis libros. | Ho sei libri.
+s Somos siete. | Siamo sette.
+s Son ocho chicas. | Sono otto ragazze.
+s Tienen nueve amigos. | Hanno nove amici.
+s Quiero diez libros. | Voglio dieci libri.
+s El chico tiene ocho años. | Il ragazzo ha otto anni.
+s Soy médico. | Sono medico.
+s Él es camarero. | Lui è cameriere.
+s Tengo un trabajo{noun}. | Ho un lavoro.
+s Trabajo{verb} en una oficina. | Lavoro in un ufficio.
+s Ella trabaja en una empresa grande. | Lei lavora in un'azienda grande.
+s ¿A qué te dedicas? | Che lavoro fai?
+s Quiero ser médico. | Voglio essere medico.
+s El trabajo{noun} es en Madrid. | Il lavoro è a Madrid.
+s Hablo francés. | Parlo francese.
+s Él es alemán. | Lui è tedesco.
+s Es una persona simpática. | È una persona simpatica.
+s La gente es simpática. | La gente è simpatica.
+s Quiero otro libro. | Voglio un altro libro.
+s Ella es francesa. | Lei è francese.
+s Tengo otros amigos. | Ho altri amici.
+s Los camareros son jóvenes. | I camerieri sono giovani.
+s Las oficinas son pequeñas. | Gli uffici sono piccoli.
+s ¿Cuántas personas trabajan en la empresa? | Quante persone lavorano nell'azienda?
+s Los médicos tienen otra oficina. | I medici hanno un altro ufficio.
+s ¿Vosotros sois estudiantes? | Voi siete studenti?
+
+## story En la oficina | In ufficio
+Javier: Hola, soy Javier. Trabajo{verb} en la oficina. ¿Y vosotros? | Ciao, sono Javier. Lavoro nell'ufficio. E voi?
+Elena: Somos Elena y Luis. Somos médicos. | Siamo Elena e Luis. Siamo medici.
+Javier: ¿Sois de Madrid? | Siete di Madrid?
+Luis: No, somos de Valencia, pero vivimos en Madrid. | No, siamo di Valencia, ma abitiamo a Madrid.
+Javier: ¿Tenéis amigos en la ciudad? | Avete amici in città?
+Elena: Sí, tenemos tres amigos alemanes. Son jóvenes y simpáticos. | Sì, abbiamo tre amici tedeschi. Sono giovani e simpatici.
+Luis: Quieren aprender español. | Vogliono imparare lo spagnolo.
+? Dove abitano Elena e Luis? | *a Madrid | a Valencia | non lo dicono
+? Chi vuole imparare lo spagnolo? | *gli amici tedeschi | Javier | Elena e Luis
+
+## story Los estudiantes | Gli studenti
+Marta: Somos ocho estudiantes. | Siamo otto studenti.
+Marta: Tres chicos son franceses y dos chicas son inglesas. | Tre ragazzi sono francesi e due ragazze sono inglesi.
+Marta: Giulia y Marco son italianos. | Giulia e Marco sono italiani.
+Marta: El profesor se llama Diego. Es joven y simpático. | Il professore si chiama Diego. È giovane e simpatico.
+Marta: Leemos libros y escribimos en español. | Leggiamo libri e scriviamo in spagnolo.
+Marta: Yo quiero aprender bien, pero tengo un trabajo{noun} y no puedo estudiar. | Io voglio imparare bene, ma ho un lavoro e non posso studiare.
+? Quanti studenti sono? | *otto | dieci | cinque
+? Com'è il professore? | *giovane e simpatico | alto e bello | non lo dice

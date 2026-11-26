@@ -1,0 +1,213 @@
+# unit 1 | ¡Hola! | Salutare e presentarsi | level: A1
+
+## lesson Saluti
+c hola | ciao (quando arrivi)
+c adiós | arrivederci
+c buenos días | buongiorno
+w sí | interj | sì | no-example
+w no | interj | no, non | no-example
+w gracias | interj | grazie
+
+## lesson Io e tu
+f soy | verb | (io) sono | lemma=ser
+f eres | verb | (tu) sei | lemma=ser
+w yo | pron | io
+w tú | pron | tu
+c me llamo ___ | mi chiamo ___
+c ¿cómo te llamas? | come ti chiami?
+
+## lesson Di dove sei
+w de | prep | di, da
+c ¿de dónde eres? | di dove sei?
+c soy de ___ | sono di ___
+w y | conj | e
+c vivo en ___ | abito a ___
+c ¿dónde vives? | dove abiti?
+w español | adj | spagnolo
+w italiano | adj | italiano
+
+## lesson Parlare
+p pres-ar | Il presente dei verbi in -ar | needs:
+rule: Come in italiano, la desinenza dice chi fa l'azione: hablo, hablas, habla, hablamos, habláis, hablan.
+rule: Il soggetto di solito non si dice: «Hablo español» vuol dire «Parlo spagnolo».
+rule: Attenzione al «tu»: finisce in -s. Tú hablas, tú trabajas.
+ex: hablo español | parlo spagnolo
+ex: hablas italiano | parli italiano
+ex: tú trabajas | tu lavori
+q: hablas | *(tu) parli | (io) parlo | parlare
+q: trabajo | *(io) lavoro | (tu) lavori | lavorare
+w hablar | verb | parlare
+w trabajar | verb | lavorare
+w estudiar | verb | studiare
+w en | prep | in, a (un luogo)
+w dónde | adv | dove
+c un poco | un po'
+
+## lesson Dire di no
+p neg | Dire «non» | needs: pres-ar
+rule: «No» vuol dire sia «no» sia «non».
+rule: Si mette subito prima del verbo: «No hablo inglés».
+ex: hablo español | parlo spagnolo
+ex: no hablo español | non parlo spagnolo
+ex: no, no soy Marco | no, non sono Marco
+q: no trabajo | *non lavoro | lavoro
+q: no eres italiano | *non sei italiano | sei italiano
+w inglés | adj | inglese
+w pero | conj | ma, però
+w también | adv | anche
+w bien | adv | bene
+c no entiendo | non capisco
+c no sé | non lo so
+
+## lesson Lui e lei
+f es | verb | (lui, lei) è | lemma=ser
+w él | pron | lui
+w ella | pron | lei
+c se llama ___ | si chiama ___
+w quién | pron | chi
+w estudiante | noun el | studente
+w profesor | noun el | professore
+
+## lesson Gli articoli
+p articles | El, la, un, una | needs:
+rule: el = il, lo. la = la. un = un, uno. una = una.
+rule: Quasi sempre il genere è lo stesso dell'italiano: el amigo, la amiga.
+rule: Non c'è mai l'apostrofo: «el amigo», non «l'amigo».
+ex: el amigo | l'amico
+ex: la amiga | l'amica
+ex: un chico | un ragazzo
+ex: una chica | una ragazza
+q: el chico | *il ragazzo | un ragazzo | la ragazza
+q: una amiga | *un'amica | l'amica | un amico
+w amigo | noun el | amico
+w amiga | noun la | amica
+w chico | noun el | ragazzo
+w chica | noun la | ragazza
+w señor | noun el | signore
+w señora | noun la | signora
+
+## lesson Cortesia
+c por favor | per favore
+c de nada | prego (risposta a «grazie»)
+c perdón | scusa, scusi
+c ¿qué tal? | come va?
+c muy bien | molto bene
+c mucho gusto | piacere (di conoscerti)
+c hasta luego | a dopo
+c buenas tardes | buon pomeriggio
+c buenas noches | buonanotte
+
+## sentences
+
+s Hola, me llamo Marco. | Ciao, mi chiamo Marco.
+s ¿Cómo te llamas? | Come ti chiami?
+s Yo soy Marco. | Io sono Marco.
+s Tú eres Lucía. | Tu sei Lucía.
+s ¿Eres Carlos? | Sei Carlos?
+s Sí, soy yo. | Sì, sono io.
+s No, gracias. | No, grazie.
+s Soy de Roma. | Sono di Roma.
+s ¿De dónde eres? | Di dove sei?
+s Eres de Madrid. | Sei di Madrid.
+s Vivo en Barcelona. | Abito a Barcellona.
+s ¿Dónde vives? | Dove abiti?
+s Yo soy Marco y tú eres Ana. | Io sono Marco e tu sei Ana.
+s Soy de Roma y vivo en Madrid. | Sono di Roma e abito a Madrid.
+s Soy español. | Sono spagnolo.
+s Soy italiano. | Sono italiano.
+s Hablo español. | Parlo spagnolo.
+s Tú hablas y yo no. | Tu parli e io no.
+s Hablas italiano. | Parli italiano.
+s Yo trabajo y tú hablas. | Io lavoro e tu parli.
+s Estudio español. | Studio spagnolo.
+s Trabajo en Madrid. | Lavoro a Madrid.
+s Estudias en Roma. | Studi a Roma.
+s Hablo un poco. | Parlo un po'.
+s Hablo un poco de español. | Parlo un po' di spagnolo.
+s No hablo inglés. | Non parlo inglese.
+s No trabajo en Madrid. | Non lavoro a Madrid.
+s Hablo español, pero no hablo inglés. | Parlo spagnolo, ma non parlo inglese.
+s También hablo italiano. | Parlo anche italiano.
+s Hablas bien. | Parli bene.
+s Hablas español muy bien. | Parli spagnolo molto bene.
+s No entiendo. | Non capisco.
+s No sé. | Non lo so.
+s Es de Roma. | È di Roma.
+s Él es Carlos. | Lui è Carlos.
+s Ella es Ana. | Lei è Ana.
+s ¿Quién es él? | Chi è lui?
+s ¿Quién eres? | Chi sei?
+s Se llama Pablo. | Si chiama Pablo.
+s Ella se llama Elena. | Lei si chiama Elena.
+s Él es estudiante. | Lui è studente.
+s Soy profesor. | Sono professore.
+s ¿Eres estudiante? | Sei studente?
+s Carlos es un amigo. | Carlos è un amico.
+s Ana es una amiga. | Ana è un'amica.
+s El chico se llama Pablo. | Il ragazzo si chiama Pablo.
+s La chica habla español. | La ragazza parla spagnolo.
+s El señor es de Madrid. | Il signore è di Madrid.
+s La señora habla italiano. | La signora parla italiano.
+s El profesor es español. | Il professore è spagnolo.
+s Es un chico italiano. | È un ragazzo italiano.
+s El amigo de Ana estudia en Madrid. | L'amico di Ana studia a Madrid.
+s La amiga de Carlos no trabaja. | L'amica di Carlos non lavora.
+s Gracias, señor. | Grazie, signore.
+s De nada. | Prego.
+s Perdón, ¿hablas inglés? | Scusa, parli inglese?
+s ¿Qué tal? | Come va?
+s Muy bien, gracias. | Molto bene, grazie.
+s Mucho gusto. | Piacere.
+s Hasta luego, Ana. | A dopo, Ana.
+s Buenos días, señora. | Buongiorno, signora.
+s Buenas tardes. | Buon pomeriggio.
+s Buenas noches, Carlos. | Buonanotte, Carlos.
+s Adiós, Marta. | Arrivederci, Marta.
+s Hola, ¿qué tal? | Ciao, come va?
+s ¿Hablas español? | Parli spagnolo?
+s Sí, pero no hablo bien. | Sì, ma non parlo bene.
+s Ella también es de Roma. | Anche lei è di Roma.
+s Él no es profesor. | Lui non è professore.
+s ¿Quién habla inglés? | Chi parla inglese?
+s La chica es una amiga de Pablo. | La ragazza è un'amica di Pablo.
+s Por favor, señor. | Per favore, signore.
+s Hola, soy Ana. | Ciao, sono Ana.
+s ¿Dónde estudias? | Dove studi?
+s ¿Dónde trabajas? | Dove lavori?
+s Sí, gracias. | Sì, grazie.
+s Buenos días, ¿qué tal? | Buongiorno, come va?
+s Perdón, no entiendo. | Scusa, non capisco.
+s Adiós, hasta luego. | Arrivederci, a dopo.
+s Me llamo Carmen y soy de Sevilla. | Mi chiamo Carmen e sono di Siviglia.
+s Vivo en Roma, pero trabajo en Milán. | Abito a Roma, ma lavoro a Milano.
+s No sé, pero él habla inglés. | Non lo so, ma lui parla inglese.
+s El estudiante habla un poco de italiano. | Lo studente parla un po' di italiano.
+s Mucho gusto, señora. | Piacere, signora.
+s Buenas tardes, señor. | Buon pomeriggio, signore.
+s Buenas noches, hasta luego. | Buonanotte, a dopo.
+s ¿Cómo te llamas y de dónde eres? | Come ti chiami e di dove sei?
+s De nada, Pablo. | Prego, Pablo.
+
+## story En clase | In classe
+Lucía: ¡Hola! Me llamo Lucía. ¿Cómo te llamas? | Ciao! Mi chiamo Lucía. Come ti chiami?
+Marco: Hola, me llamo Marco. | Ciao, mi chiamo Marco.
+Lucía: ¿De dónde eres? | Di dove sei?
+Marco: Soy de Roma, pero vivo en Madrid. | Sono di Roma, ma abito a Madrid.
+Lucía: Hablas español muy bien. | Parli spagnolo molto bene.
+Marco: Gracias. Estudio español y trabajo en Madrid. | Grazie. Studio spagnolo e lavoro a Madrid.
+Lucía: Yo soy estudiante. ¿Tú también eres estudiante? | Io sono studentessa. Anche tu sei studente?
+Marco: No, soy profesor. ¡Mucho gusto! | No, sono professore. Piacere!
+? Dove abita Marco? | *a Madrid | a Roma | a Barcellona
+? Che cosa fa Lucía? | *studia | insegna | non lo dice
+
+## story ¿Quién es? | Chi è?
+Pablo: ¿Quién es la chica? | Chi è la ragazza?
+Marta: Se llama Giulia. Es una amiga. | Si chiama Giulia. È un'amica.
+Pablo: ¿De dónde es? | Di dov'è?
+Marta: Es de Milán, pero estudia en Sevilla. | È di Milano, ma studia a Siviglia.
+Pablo: ¿Habla español? | Parla spagnolo?
+Marta: Sí, y también habla inglés. | Sì, e parla anche inglese.
+Pablo: ¿Y el chico? | E il ragazzo?
+Marta: Él es Diego. Es el profesor de Giulia. | Lui è Diego. È il professore di Giulia.
+? Di dov'è Giulia? | *di Milano | di Siviglia | di Madrid
+? Chi è Diego? | *il professore di Giulia | un amico di Pablo | uno studente

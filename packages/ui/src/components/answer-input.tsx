@@ -35,6 +35,10 @@ const styles = stylex.create({
     flexShrink: 0,
     gap: "0.25rem",
   },
+  // More than three buttons leave no room to type on a phone, and its keyboard has these letters under a long press.
+  lettersMany: {
+    display: { default: "flex", [stylex.env.touch]: "none" },
+  },
   letter: {
     alignItems: "center",
     backgroundColor: color.control,
@@ -106,6 +110,9 @@ interface AnswerInputProps {
 
 const NO_LETTERS: readonly AnswerLetter[] = [];
 
+/** The most letter buttons that fit beside the field on a phone. */
+const MOST_LETTERS_ON_TOUCH = 3;
+
 export const AnswerInput = ({
   value,
   onChange,
@@ -147,7 +154,12 @@ export const AnswerInput = ({
   return (
     <div {...stylex.props(styles.frame)}>
       {letters.length === 0 ? null : (
-        <div {...stylex.props(styles.letters)}>
+        <div
+          {...stylex.props(
+            styles.letters,
+            letters.length > MOST_LETTERS_ON_TOUCH && styles.lettersMany
+          )}
+        >
           {letters.map(({ letter, key }) => (
             <button
               key={letter}

@@ -1,0 +1,10 @@
+{
+  "model": "eleven_v4",
+  "voices": [
+    {
+      "slug": "sara",
+      "id": "KHCvMklQZZo0O30ERnVn",
+      "name": "Sara Martin"
+    }
+  ]
+}

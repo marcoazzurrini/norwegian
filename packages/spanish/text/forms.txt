@@ -1,0 +1,30 @@
+# Forms of words that UniMorph lacks or has wrong: word | class | form=what form=what ...
+# The word itself is the infinitive of a verb, the singular of a noun, the masculine singular of anything else.
+# What a form is: p1 to p6 (yo, tú, él, nosotros, vosotros, ellos), pl, fem, m-pl, f-pl.
+# A word that never changes has an empty list.
+
+tener | verb | tengo=p1 tienes=p2 tiene=p3 tenemos=p4 tenéis=p5 tienen=p6
+querer | verb | quiero=p1 quieres=p2 quiere=p3 queremos=p4 queréis=p5 quieren=p6
+escribir | verb | escribo=p1 escribes=p2 escribe=p3 escribimos=p4 escribís=p5 escriben=p6
+venir | verb | vengo=p1 vienes=p2 viene=p3 venimos=p4 venís=p5 vienen=p6
+poner | verb | pongo=p1 pones=p2 pone=p3 ponemos=p4 ponéis=p5 ponen=p6
+vender | verb | vendo=p1 vendes=p2 vende=p3 vendemos=p4 vendéis=p5 venden=p6
+terminar | verb | termino=p1 terminas=p2 termina=p3 terminamos=p4 termináis=p5 terminan=p6
+repetir | verb | repito=p1 repites=p2 repite=p3 repetimos=p4 repetís=p5 repiten=p6
+
+mi | det | mis=m-pl mis=f-pl
+tu | det | tus=m-pl tus=f-pl
+su | det | sus=m-pl sus=f-pl
+nuestro | det | nuestra=fem nuestros=m-pl nuestras=f-pl
+vuestro | det | vuestra=fem vuestros=m-pl vuestras=f-pl
+cuánto | det | cuánta=fem cuántos=m-pl cuántas=f-pl
+este | det | esta=fem estos=m-pl estas=f-pl
+ese | det | esa=fem esos=m-pl esas=f-pl
+aquel | det | aquella=fem aquellos=m-pl aquellas=f-pl
+
+ojo | noun | ojos=pl
+inteligente | adj | inteligentes=m-pl inteligentes=f-pl
+alegre | adj | alegres=m-pl alegres=f-pl
+triste | adj | tristes=m-pl tristes=f-pl
+interesante | adj | interesantes=m-pl interesantes=f-pl
+peor | adj | peores=m-pl peores=f-pl

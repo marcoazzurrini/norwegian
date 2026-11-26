@@ -1,0 +1,24 @@
+{
+  "name": "@norsk/spanish",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./meta": "./src/meta.ts"
+  },
+  "scripts": {
+    "build": "bun scripts/build-content.ts",
+    "audio": "bun scripts/build-audio.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@norsk/course": "workspace:*",
+    "valibot": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}

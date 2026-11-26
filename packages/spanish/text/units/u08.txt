@@ -1,0 +1,194 @@
+# unit 8 | En la ciudad | In città, in viaggio e nei negozi | level: A1
+
+## lesson Luoghi
+w calle | noun la | via, strada
+w plaza | noun la | piazza
+w tienda | noun la | negozio
+w supermercado | noun el | supermercato
+w banco | noun el | banca
+w farmacia | noun la | farmacia
+w hospital | noun el | ospedale
+w estación | noun la | stazione
+
+## lesson Usted
+p usted | Usted e ustedes | needs: pres-ar
+rule: «Usted» è il «Lei» di cortesia. Il verbo va alla terza persona, come in italiano: «¿Cómo se llama usted?».
+rule: Per più persone si dice «ustedes», con la terza persona plurale: «¿De dónde son ustedes?».
+rule: «Vosotros» è il «voi» tra amici. «Ustedes» è il «voi» di cortesia.
+ex: ¿usted habla italiano? | Lei parla italiano?
+ex: ¿dónde vive usted? | dove abita Lei?
+ex: ¿ustedes son de aquí? | voi siete di qui? (di cortesia)
+q: ¿usted es el profesor? | *Lei è il professore? | tu sei il professore? | lui è il professore?
+q: ustedes hablan | *voi parlate (di cortesia) | noi parliamo | loro parlano
+w usted | pron | Lei (di cortesia)
+w ustedes | pron | voi (di cortesia)
+c perdone | scusi
+c ¿puede ayudarme? | può aiutarmi?
+c muchas gracias | grazie mille
+
+## lesson La strada
+c todo recto | sempre dritto
+w girar | verb | girare
+w seguir | verb | continuare, seguire
+w cruzar | verb | attraversare
+w primero | adj | primo
+w segundo | adj | secondo
+w hasta | prep | fino a
+
+## lesson Mezzi di trasporto
+w coche | noun el | macchina, auto
+w tren | noun el | treno
+w autobús | noun el | autobus
+w metro | noun el | metropolitana
+w avión | noun el | aereo
+w bicicleta | noun la | bicicletta
+c ir en ___ | andare in ___ (con un mezzo)
+c ir andando | andare a piedi
+w billete | noun el | biglietto
+
+## lesson In viaggio
+w viajar | verb | viaggiare
+w viaje | noun el | viaggio
+w hotel | noun el | albergo
+w maleta | noun la | valigia
+w pasaporte | noun el | passaporto
+w aeropuerto | noun el | aeroporto
+w vacaciones | noun las | vacanze
+c estar de vacaciones | essere in vacanza
+
+## lesson Comprare
+w comprar | verb | comprare
+w vender | verb | vendere
+w pagar | verb | pagare
+w costar | verb | costare
+c ¿cuánto cuesta? | quanto costa?
+w precio | noun el | prezzo
+w tarjeta | noun la | carta (di credito)
+c con tarjeta | con la carta
+c en efectivo | in contanti
+
+## lesson Numeri fino a mille
+w treinta | num | trenta
+c treinta y ___ | trenta___ (da 31 a 39)
+w cuarenta | num | quaranta
+w cincuenta | num | cinquanta
+w cien | num | cento
+w mil | num | mille
+
+## lesson I vestiti
+w ropa | noun la | vestiti
+w camisa | noun la | camicia
+w pantalones | noun los | pantaloni
+w falda | noun la | gonna
+w zapato | noun el | scarpa
+w jersey | noun el | maglione
+w abrigo | noun el | cappotto
+
+## sentences
+
+s Vivo en una calle pequeña. | Abito in una via piccola.
+s La plaza está en el centro. | La piazza è in centro.
+s Hay muchas tiendas en esta calle. | Ci sono molti negozi in questa via.
+s Voy al supermercado. | Vado al supermercato.
+s El banco está al lado de la plaza. | La banca è accanto alla piazza.
+s ¿Hay una farmacia cerca? | C'è una farmacia vicino?
+s Mi madre trabaja en un hospital. | Mia madre lavora in un ospedale.
+s La estación está lejos. | La stazione è lontana.
+s El supermercado está detrás del banco. | Il supermercato è dietro la banca.
+s Las tiendas del centro son caras. | I negozi del centro sono cari.
+s ¿Usted es de Madrid? | Lei è di Madrid? | alt: ¿Es usted de Madrid?
+s ¿Ustedes hablan español? | Voi parlate spagnolo? (di cortesia) | alt: ¿Hablan ustedes español?
+s Perdone, ¿dónde está la estación? | Scusi, dov'è la stazione?
+s ¿Puede ayudarme? | Può aiutarmi?
+s Muchas gracias. | Grazie mille.
+s ¿Cómo se llama usted? | Come si chiama Lei?
+s ¿Dónde vive usted? | Dove abita Lei?
+s ¿Ustedes son de aquí? | Voi siete di qui? (di cortesia) | alt: ¿Son ustedes de aquí?
+s Perdone, ¿usted trabaja aquí? | Scusi, Lei lavora qui? | alt: Perdone, ¿trabaja usted aquí?
+s Giro a la derecha. | Giro a destra.
+s Sigo todo recto. | Continuo sempre dritto.
+s Cruzo la plaza. | Attraverso la piazza.
+s Es la primera calle a la derecha. | È la prima via a destra.
+s Vivo en el segundo piso. | Abito al secondo piano.
+s Sigo hasta la estación. | Continuo fino alla stazione.
+s Todo recto y luego a la izquierda. | Sempre dritto e poi a sinistra.
+s Usted cruza la calle y gira a la izquierda. | Lei attraversa la via e gira a sinistra.
+s Es la segunda puerta a la derecha. | È la seconda porta a destra.
+s Trabajo{verb} hasta las seis. | Lavoro fino alle sei.
+s Tengo un coche viejo. | Ho una macchina vecchia.
+s El tren llega a las diez. | Il treno arriva alle dieci.
+s El autobús sale de la plaza. | L'autobus parte dalla piazza.
+s El metro es barato. | La metropolitana è economica.
+s El avión sale tarde{adv}. | L'aereo parte tardi.
+s Mi bicicleta es roja. | La mia bicicletta è rossa.
+s Voy en tren. | Vado in treno.
+s Voy andando. | Vado a piedi.
+s Tengo dos billetes. | Ho due biglietti.
+s Vamos al trabajo{noun} en metro. | Andiamo al lavoro in metropolitana.
+s ¿Vas en coche o en autobús? | Vai in macchina o in autobus?
+s Mis hijos van andando. | I miei figli vanno a piedi.
+s Me gusta viajar. | Mi piace viaggiare.
+s El viaje es largo. | Il viaggio è lungo.
+s El hotel está en el centro. | L'albergo è in centro.
+s Llevo una maleta pequeña. | Porto una valigia piccola.
+s ¿Tienes el pasaporte? | Hai il passaporto?
+s El aeropuerto está lejos de la ciudad. | L'aeroporto è lontano dalla città.
+s Tengo vacaciones en verano. | Ho le vacanze d'estate.
+s Estoy de vacaciones. | Sono in vacanza.
+s Viajamos mucho en tren. | Viaggiamo molto in treno.
+s Mis padres están de vacaciones en Italia. | I miei genitori sono in vacanza in Italia.
+s Mi pasaporte está en la maleta. | Il mio passaporto è nella valigia.
+s Compro pan en el supermercado. | Compro pane al supermercato.
+s En esta tienda venden libros. | In questo negozio vendono libri.
+s Pago la cuenta. | Pago il conto.
+s El billete cuesta diez euros. | Il biglietto costa dieci euro.
+s ¿Cuánto cuesta? | Quanto costa?
+s El precio es bueno. | Il prezzo è buono.
+s No tengo mi tarjeta. | Non ho la mia carta.
+s Pago con tarjeta. | Pago con la carta.
+s Pagamos en efectivo. | Paghiamo in contanti.
+s ¿Cuánto cuesta el billete? | Quanto costa il biglietto?
+s Estos zapatos cuestan mucho. | Queste scarpe costano molto.
+s ¿Puedo pagar con tarjeta? | Posso pagare con la carta?
+s Tengo treinta años. | Ho trent'anni.
+s El hotel cuesta cuarenta euros. | L'albergo costa quaranta euro.
+s Cuesta cincuenta euros. | Costa cinquanta euro.
+s Tengo cien euros. | Ho cento euro.
+s El viaje cuesta mil euros. | Il viaggio costa mille euro.
+s Mi madre tiene cincuenta años. | Mia madre ha cinquant'anni.
+s Tiene treinta y dos años. | Ha trentadue anni.
+s Son treinta y cinco euros. | Sono trentacinque euro.
+s Compro ropa nueva. | Compro vestiti nuovi.
+s Llevo una camisa blanca. | Porto una camicia bianca.
+s Llevo pantalones negros. | Porto pantaloni neri.
+s La falda es roja. | La gonna è rossa.
+s Estos zapatos son caros. | Queste scarpe sono care.
+s Llevo un jersey verde. | Porto un maglione verde.
+s En invierno llevo abrigo. | D'inverno porto il cappotto.
+s Quiero comprar una falda y unos zapatos. | Voglio comprare una gonna e delle scarpe.
+s Este abrigo es muy caro. | Questo cappotto è molto caro.
+s Me gusta tu camisa azul. | Mi piace la tua camicia blu.
+
+## story Perdone, ¿dónde está…? | Scusi, dov'è…?
+Giulia: Perdone, ¿puede ayudarme? ¿Dónde está la estación? | Scusi, può aiutarmi? Dov'è la stazione?
+Señor: Está un poco lejos. ¿Va andando? | È un po' lontana. Va a piedi?
+Giulia: Sí. | Sì.
+Señor: Sigue todo recto hasta la plaza. Luego gira a la izquierda. | Continua sempre dritto fino alla piazza. Poi gira a sinistra.
+Señor: La estación está en la segunda calle a la derecha. | La stazione è nella seconda via a destra.
+Giulia: ¿Hay un autobús? | C'è un autobus?
+Señor: Sí, el autobús sale de esta calle. | Sì, l'autobus parte da questa via.
+Giulia: Muchas gracias. | Grazie mille.
+Señor: De nada. ¡Adiós! | Prego. Arrivederci!
+? Dove deve girare Giulia? | *a sinistra, alla piazza | a destra, alla piazza | alla stazione
+? Come va Giulia alla stazione? | *a piedi | in autobus | in macchina
+
+## story De vacaciones | In vacanza
+Marco: En junio estoy de vacaciones. | A giugno sono in vacanza.
+Marco: Voy a Sevilla con mi novia. Vamos en tren. | Vado a Siviglia con la mia fidanzata. Andiamo in treno.
+Marco: El billete cuesta cuarenta euros. No es caro. | Il biglietto costa quaranta euro. Non è caro.
+Marco: El hotel está en el centro, cerca de una plaza grande. | L'albergo è in centro, vicino a una piazza grande.
+Marco: Llevo una maleta pequeña: dos camisas, unos pantalones y mis zapatos nuevos. | Porto una valigia piccola: due camicie, dei pantaloni e le mie scarpe nuove.
+Marco: Mi novia compra mucha ropa en las tiendas de Sevilla. | La mia fidanzata compra molti vestiti nei negozi di Siviglia.
+Marco: ¡Yo pago con tarjeta! | Io pago con la carta!
+? Come vanno a Siviglia? | *in treno | in aereo | in macchina
+? Quanto costa il biglietto? | *quaranta euro | cinquanta euro | trenta euro

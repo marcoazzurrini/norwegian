@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@norsk/course": "workspace:*",
-    "@norsk/norwegian": "workspace:*"
+    "@norsk/norwegian": "workspace:*",
+    "@norsk/spanish": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "catalog:",

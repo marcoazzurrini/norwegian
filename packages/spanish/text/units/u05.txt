@@ -1,0 +1,197 @@
+# unit 5 | Me gusta | Mangiare, bere e dire che cosa ti piace | level: A1
+
+## lesson Da mangiare e da bere
+w agua | noun el | acqua | fem
+w pan | noun el | pane
+w leche | noun la | latte
+w café | noun el | caffè
+w carne | noun la | carne
+w pescado | noun el | pesce (da mangiare)
+w fruta | noun la | frutta
+w verdura | noun la | verdura
+
+## lesson Mi piace
+w me | pron | mi (a me)
+w te | pron | ti (a te)
+w le | pron | gli, le (a lui, a lei)
+p gustar | Me gusta, me gustan | needs: pres-ar, articles
+rule: Funziona come «mi piace»: me gusta, te gusta, le gusta.
+rule: Con un plurale si dice «gustan»: «Me gustan los libros» = «Mi piacciono i libri».
+rule: La cosa che piace vuole sempre l'articolo: «Me gusta el café».
+rule: Con un verbo si usa l'infinito: «Me gusta leer».
+ex: me gusta el café | mi piace il caffè
+ex: me gustan los libros | mi piacciono i libri
+ex: ¿te gusta leer? | ti piace leggere?
+ex: no le gusta la carne | non gli piace la carne
+q: te gusta el pan | *ti piace il pane | mi piace il pane | ti piacciono i libri
+q: le gustan los libros | *gli piacciono i libri | gli piace il libro | mi piacciono i libri
+w gustar | verb | piacere
+
+## lesson A noi piace
+w nos | pron | ci (a noi)
+w os | pron | vi (a voi)
+w les | pron | gli (a loro)
+w encantar | verb | piacere moltissimo
+w tampoco | adv | neanche
+c a mí también | anche a me
+c a mí tampoco | neanche a me
+
+## lesson Al bar
+w bar | noun el | bar
+w restaurante | noun el | ristorante
+w cerveza | noun la | birra
+w vino | noun el | vino
+w zumo | noun el | succo
+w bocadillo | noun el | panino
+w tortilla | noun la | frittata di patate
+
+## lesson Ordinare
+w tomar | verb | prendere (da bere o da mangiare)
+c ¿qué tomas? | che cosa prendi?
+c para mí ___ | per me ___
+w cuenta | noun la | conto
+c la cuenta, por favor | il conto, per favore
+c ¿cuánto es? | quant'è?
+w euro | noun el | euro
+
+## lesson I pasti
+w desayuno | noun el | colazione
+w comida | noun la | pranzo, cibo
+w cena | noun la | cena
+w desayunar | verb | fare colazione
+w cenar | verb | cenare
+c tener hambre | avere fame
+c tener sed | avere sete
+
+## lesson Com'è
+w bueno | adj | buono
+w malo | adj | cattivo
+w rico | adj | buono (di sapore)
+w caliente | adj | caldo
+w frío | adj | freddo
+w caro | adj | caro, costoso
+w barato | adj | economico
+
+## lesson Altro da mangiare
+w huevo | noun el | uovo
+w queso | noun el | formaggio
+w aceite | noun el | olio
+w sal | noun la | sale
+w ensalada | noun la | insalata
+w postre | noun el | dolce (a fine pasto)
+w plato | noun el | piatto
+w vaso | noun el | bicchiere
+
+## sentences
+
+s Bebo agua. | Bevo acqua.
+s Como pan. | Mangio pane.
+s Mi hijo bebe mucha leche. | Mio figlio beve molto latte.
+s Quiero un café. | Voglio un caffè.
+s No como carne. | Non mangio carne.
+s Comemos pescado. | Mangiamo pesce.
+s Como mucha fruta. | Mangio molta frutta.
+s Mi madre come mucha verdura. | Mia madre mangia molta verdura.
+s El agua está en la mesa. | L'acqua è sul tavolo.
+s Hay pan y leche en la cocina. | Ci sono pane e latte in cucina.
+s Mi hermano me escribe. | Mio fratello mi scrive.
+s Te escribo hoy. | Ti scrivo oggi.
+s Le hablo en español. | Gli parlo in spagnolo.
+s Me gusta el café. | Mi piace il caffè.
+s Me gustan los libros. | Mi piacciono i libri.
+s ¿Te gusta leer? | Ti piace leggere?
+s No le gusta la carne. | Non gli piace la carne.
+s Me gusta mucho la fruta. | Mi piace molto la frutta.
+s ¿Te gusta el pescado? | Ti piace il pesce?
+s No me gusta la leche. | Non mi piace il latte.
+s Le gusta vivir en Madrid. | Gli piace vivere a Madrid.
+s ¿Te gustan las ciudades grandes? | Ti piacciono le città grandi?
+s Me gusta hablar español. | Mi piace parlare spagnolo.
+s Nos gusta el pescado. | Ci piace il pesce.
+s ¿Os gusta la fruta? | Vi piace la frutta?
+s Les gustan los libros. | Gli piacciono i libri. | alt: Le gustan los libros.
+s Me encanta el café. | Mi piace moltissimo il caffè.
+s Yo tampoco como carne. | Neanch'io mangio carne.
+s A mí también. | Anche a me.
+s A mí tampoco. | Neanche a me.
+s Nos encanta esta ciudad. | Ci piace moltissimo questa città.
+s Les gusta mucho el pan. | A loro piace molto il pane.
+s Me encantan tus gafas. | Mi piacciono moltissimo i tuoi occhiali.
+s Tampoco bebo leche. | Non bevo neanche latte.
+s Estamos en un bar. | Siamo in un bar.
+s Mi tío trabaja en un restaurante. | Mio zio lavora in un ristorante.
+s Quiero una cerveza. | Voglio una birra.
+s Me gusta el vino. | Mi piace il vino.
+s Los chicos beben zumo. | I ragazzi bevono succo.
+s Como un bocadillo. | Mangio un panino.
+s Me encanta la tortilla. | Mi piace moltissimo la frittata di patate.
+s En este bar hay bocadillos muy grandes. | In questo bar ci sono panini molto grandi.
+s El restaurante está cerca de mi casa. | Il ristorante è vicino a casa mia.
+s Tomo un café. | Prendo un caffè.
+s ¿Qué tomas? | Che cosa prendi?
+s Para mí, un zumo. | Per me, un succo.
+s Quiero la cuenta. | Voglio il conto.
+s La cuenta, por favor. | Il conto, per favore.
+s ¿Cuánto es? | Quant'è?
+s Tengo veinte euros. | Ho venti euro.
+s Son quince euros. | Sono quindici euro.
+s Tomamos dos cervezas y un bocadillo. | Prendiamo due birre e un panino.
+s Para mí, una tortilla y un vaso de vino. | Per me, una frittata di patate e un bicchiere di vino.
+s Me gusta el desayuno{noun}. | Mi piace la colazione.
+s Me encanta la comida italiana. | Mi piace moltissimo il cibo italiano.
+s La cena{noun} está en la mesa. | La cena è sul tavolo.
+s Desayunamos en un bar. | Facciamo colazione in un bar.
+s Cenamos en un restaurante. | Ceniamo in un ristorante.
+s Tengo hambre. | Ho fame.
+s Tengo sed. | Ho sete.
+s ¿Tienes hambre? | Hai fame?
+s Mis hijos tienen sed. | I miei figli hanno sete.
+s Desayuno{verb} con mi familia. | Faccio colazione con la mia famiglia.
+s Hoy ceno en casa de mis abuelos. | Oggi ceno a casa dei miei nonni.
+s La comida está en la cocina. | Il pranzo è in cucina.
+s Este vino es muy bueno. | Questo vino è molto buono.
+s El café es malo. | Il caffè è cattivo.
+s La tortilla está muy rica. | La frittata di patate è molto buona.
+s El café está caliente. | Il caffè è caldo.
+s La cerveza está fría. | La birra è fredda.
+s Este restaurante es caro. | Questo ristorante è caro.
+s El bar es barato. | Il bar è economico.
+s La comida es buena y barata. | Il cibo è buono ed economico.
+s La leche está fría. | Il latte è freddo.
+s No me gusta el café frío. | Non mi piace il caffè freddo.
+s Quiero dos huevos. | Voglio due uova.
+s Me gusta mucho el queso. | Mi piace molto il formaggio.
+s El aceite español es muy bueno. | L'olio spagnolo è molto buono.
+s No hay sal. | Non c'è sale.
+s Tomo una ensalada. | Prendo un'insalata.
+s ¿Hay postre? | C'è il dolce?
+s Es un plato muy rico. | È un piatto molto buono.
+s Quiero un vaso de agua. | Voglio un bicchiere d'acqua.
+s Un bocadillo de queso, por favor. | Un panino al formaggio, per favore.
+s La ensalada tiene mucho aceite y poca sal. | L'insalata ha molto olio e poco sale.
+s Hay tres platos y cuatro vasos sobre la mesa. | Ci sono tre piatti e quattro bicchieri sul tavolo.
+s De postre quiero fruta. | Per dolce voglio frutta.
+
+## story En el bar | Al bar
+Camarero: Buenas tardes. ¿Qué toman? | Buon pomeriggio. Che cosa prendete?
+Lucía: Para mí, un café con leche, por favor. | Per me, un caffellatte, per favore.
+Marco: Yo quiero una cerveza y un bocadillo de queso. | Io voglio una birra e un panino al formaggio.
+Camarero: ¿Quieren otra cosa? | Volete altro?
+Lucía: Sí, tengo hambre. ¿Hay tortilla? | Sì, ho fame. C'è la frittata di patate?
+Camarero: Sí, hoy está muy rica. | Sì, oggi è molto buona.
+Marco: Dos, por favor. Me encanta la tortilla. | Due, per favore. Mi piace moltissimo la frittata di patate.
+Lucía: La cuenta, por favor. ¿Cuánto es? | Il conto, per favore. Quant'è?
+Camarero: Son doce euros. | Sono dodici euro.
+? Che cosa prende Lucía da bere? | *un caffellatte | una birra | un succo
+? Quanto pagano? | *dodici euro | venti euro | dieci euro
+
+## story ¿Qué te gusta? | Che cosa ti piace?
+Pablo: Sara, ¿te gusta el pescado? | Sara, ti piace il pesce?
+Sara: No, no me gusta. Tampoco como carne. | No, non mi piace. Non mangio neanche carne.
+Pablo: ¿Qué comes? | Che cosa mangi?
+Sara: Como mucha verdura, fruta, huevos y queso. Me encantan las ensaladas. | Mangio molta verdura, frutta, uova e formaggio. Mi piacciono moltissimo le insalate.
+Pablo: A mí también. Pero me gusta más la carne. | Anche a me. Ma mi piace di più la carne.
+Sara: ¿Cenamos en casa hoy? Tengo huevos y pan. | Ceniamo a casa oggi? Ho uova e pane.
+Pablo: Muy bien. Yo tengo vino y un postre. | Molto bene. Io ho vino e un dolce.
+? Che cosa non mangia Sara? | *carne e pesce | uova e formaggio | verdura
+? Dove cenano? | *a casa | al ristorante | al bar

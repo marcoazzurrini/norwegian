@@ -2,7 +2,7 @@
 
 A personal app for learning languages from zero. It teaches words, phrases and grammar patterns, then reviews them inside typed sentences so that one review covers several items.
 
-The app is a platform, and each language is a course built on it. There is one course so far: Norwegian (Bokmål). See [Courses](#courses).
+The app is a platform, and each language is a course built on it. There are two courses: Norwegian (Bokmål) for speakers of English, and Spanish (of Spain) for speakers of Italian. See [Courses](#courses).
 
 The reasoning behind the design is in [docs/spec.md](docs/spec.md).
 
@@ -24,6 +24,7 @@ Other commands, all run from the repository root:
 | `bun run lint` | Checks formatting and lint rules |
 | `bun run fix` | Formats and applies the safe lint fixes |
 | `bun run content` | Rebuilds the Norwegian curriculum from `packages/norwegian/text/` |
+| `bun run content:es` | Rebuilds the Spanish curriculum from `packages/spanish/text/` |
 
 The tests of `packages/ui` and the end-to-end tests need a browser: run `bunx playwright install chromium` once.
 
@@ -61,6 +62,7 @@ After the first visit it works offline.
 | `packages/course/` | What a course is: the shape of a curriculum, and the short description of what is particular to a language. |
 | `packages/courses/` | The list of courses. The only place that names them. |
 | `packages/norwegian/` | The Norwegian course. `text/` holds its curriculum as plain text (format in `text/README.md`); `scripts/build-content.ts` checks it and builds `src/curriculum.json`. |
+| `packages/spanish/` | The Spanish course, for speakers of Italian. Built like the Norwegian one, with its own `text/README.md`. Its recordings are made with `bun run audio:es`, in the same way as the Norwegian ones. |
 | `packages/engine/` | Memory model, grading, task choice and session flow, for whichever course it is handed. No UI. |
 | `packages/learner/` | The learner's data on a device, and sync. Kept apart for each course. |
 | `packages/protocol/` | The messages between the app and the server. |
@@ -105,6 +107,13 @@ With several voices, a text keeps one voice for a day and changes voice over tim
 | `freq/no_50k.txt` | [FrequencyWords](https://github.com/hermitdave/FrequencyWords), `content/2018/no/no_50k.txt` | CC BY-SA 4.0 |
 | `ordbank/` | [Norsk Ordbank, Bokmål 2005](https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-5/), National Library of Norway | CC BY 4.0 |
 | `uttale/nb_uttale_leksika/e_written_pronunciation_lexicon.csv` | [NB Uttale](https://www.nb.no/sprakbanken/ressurskatalog/oai-nb-no-sbr-79/), National Library of Norway | CC0 |
+
+`bun run content:es` needs two downloads in `packages/spanish/data/raw/`. The level and the themes follow the A1 inventories of the [Plan Curricular del Instituto Cervantes](https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/), which is used as a guide and not copied.
+
+| Folder | Source | Licence |
+| --- | --- | --- |
+| `freq/es_50k.txt` | [FrequencyWords](https://github.com/hermitdave/FrequencyWords), `content/2018/es/es_50k.txt` | CC BY-SA 4.0 |
+| `unimorph/spa` | [UniMorph Spanish](https://github.com/unimorph/spa), the file `spa` | CC BY-SA 3.0 |
 
 ## Your progress and sync
 

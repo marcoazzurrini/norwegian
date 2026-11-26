@@ -1,0 +1,183 @@
+# unit 6 | Mi día | La giornata, l'ora e i giorni della settimana | level: A1
+
+## lesson Verbi riflessivi
+p reflexive | Verbi con me, te, se | needs: pres-ar
+rule: Come in italiano: me levanto (mi alzo), te levantas, se levanta, nos levantamos, os levantáis, se levantan.
+rule: Il pronome va prima del verbo: «Me ducho». Con l'infinito va dopo, attaccato: «Quiero ducharme».
+rule: Attenzione: «ci» si dice «nos» e «vi» si dice «os».
+ex: me levanto | mi alzo
+ex: te duchas | ti fai la doccia
+ex: se llama Ana | si chiama Ana
+ex: nos levantamos | ci alziamo
+q: se levanta | *si alza | mi alzo | ti alzi
+q: os ducháis | *vi fate la doccia | ci facciamo la doccia | si fanno la doccia
+w levantarse | verb | alzarsi
+w ducharse | verb | farsi la doccia
+w se | pron | si
+w llamarse | verb | chiamarsi
+w acostarse | verb | andare a letto
+w despertarse | verb | svegliarsi
+
+## lesson L'ora
+w hora | noun la | ora
+c ¿qué hora es? | che ora è?
+c es la una | è l'una
+c son las ___ | sono le ___
+c y media | e mezza
+c y cuarto | e un quarto
+c menos cuarto | meno un quarto
+
+## lesson Mattina, pomeriggio, sera
+w día | noun el | giorno
+w mañana | noun la | mattina
+w tarde | noun la | pomeriggio, sera
+w noche | noun la | notte, sera
+c por la mañana | di mattina
+c por la tarde | di pomeriggio
+c por la noche | di sera, di notte
+
+## lesson I giorni
+w semana | noun la | settimana
+w lunes | noun el | lunedì
+w martes | noun el | martedì
+w miércoles | noun el | mercoledì
+w jueves | noun el | giovedì
+w viernes | noun el | venerdì
+
+## lesson Andare e tornare
+w ir | verb | andare
+w salir | verb | uscire
+w volver | verb | tornare
+w llegar | verb | arrivare
+w empezar | verb | cominciare
+w terminar | verb | finire
+
+## lesson Quando
+w sábado | noun el | sabato
+w domingo | noun el | domenica
+c el fin de semana | il fine settimana
+w cuándo | adv | quando (nelle domande)
+w siempre | adv | sempre
+w nunca | adv | mai
+w pronto | adv | presto
+w tarde | adv | tardi
+
+## lesson A che ora
+c ¿a qué hora ___? | a che ora ___?
+c a las ___ | alle ___ (ore)
+c a la una | all'una
+c antes de ___ | prima di ___
+c después de ___ | dopo ___
+w luego | adv | poi, dopo
+w normalmente | adv | di solito
+
+## lesson A casa, la sera
+w dormir | verb | dormire
+w descansar | verb | riposare
+w cocinar | verb | cucinare
+w televisión | noun la | televisione
+w película | noun la | film
+w ver | verb | vedere, guardare
+
+## sentences
+
+s Me levanto. | Mi alzo.
+s Me ducho en casa. | Mi faccio la doccia a casa.
+s Mi padre se levanta. | Mio padre si alza.
+s ¿Cómo se llaman tus hijos? | Come si chiamano i tuoi figli?
+s Los chicos se acuestan. | I ragazzi vanno a letto.
+s Me despierto y me levanto. | Mi sveglio e mi alzo.
+s ¿Te duchas ahora? | Ti fai la doccia adesso?
+s Nos levantamos y desayunamos. | Ci alziamo e facciamo colazione.
+s Quiero ducharme. | Voglio farmi la doccia.
+s Mis hermanos se llaman Pablo y Diego. | I miei fratelli si chiamano Pablo e Diego.
+s ¿Os acostáis ahora? | Andate a letto adesso?
+s No quiero levantarme. | Non voglio alzarmi.
+s Estudio dos horas. | Studio due ore.
+s ¿Qué hora es? | Che ora è?
+s Es la una. | È l'una.
+s Son las tres. | Sono le tre.
+s Son las tres y media. | Sono le tre e mezza.
+s Son las cinco y cuarto. | Sono le cinque e un quarto.
+s Son las ocho menos cuarto. | Sono le otto meno un quarto.
+s Es la una y media. | È l'una e mezza.
+s Son las diez y cuarto. | Sono le dieci e un quarto.
+s Trabajo{verb} ocho horas al día. | Lavoro otto ore al giorno.
+s Las mañanas son frías. | Le mattine sono fredde.
+s Esta tarde{noun} estoy en casa. | Questo pomeriggio sono a casa.
+s Esta noche ceno con mis padres. | Stasera ceno con i miei genitori.
+s Por la mañana bebo café. | Di mattina bevo caffè.
+s Por la tarde estudio español. | Di pomeriggio studio spagnolo.
+s Por la noche leo un libro. | Di sera leggo un libro.
+s Me ducho por la mañana. | Mi faccio la doccia di mattina.
+s Hoy es un día muy bueno. | Oggi è un giorno molto buono.
+s Trabajo{verb} cinco días a la semana. | Lavoro cinque giorni alla settimana.
+s El lunes trabajo{verb}. | Lunedì lavoro.
+s El martes estudio español. | Martedì studio spagnolo.
+s El miércoles ceno con Ana. | Mercoledì ceno con Ana.
+s El jueves no trabajo{verb}. | Giovedì non lavoro.
+s El viernes estoy en Sevilla. | Venerdì sono a Siviglia.
+s Esta semana estoy muy cansado. | Questa settimana sono molto stanco.
+s Los lunes me levanto a las seis. | Il lunedì mi alzo alle sei.
+s Voy a casa. | Vado a casa.
+s Salgo con mis amigos. | Esco con i miei amici.
+s Vuelvo a casa. | Torno a casa.
+s Llego a la oficina. | Arrivo in ufficio.
+s Empiezo el lunes. | Comincio lunedì.
+s Termino el viernes. | Finisco venerdì.
+s ¿Vas al centro? | Vai in centro?
+s Vamos a casa de mis abuelos. | Andiamo a casa dei miei nonni.
+s Mis padres van a Italia. | I miei genitori vanno in Italia.
+s Mi hermana sale por la noche. | Mia sorella esce di sera.
+s ¿Cuándo vuelves? | Quando torni?
+s El sábado salgo con Ana. | Sabato esco con Ana.
+s El domingo no trabajo{verb}. | Domenica non lavoro.
+s El fin de semana voy a casa de mis padres. | Il fine settimana vado a casa dei miei genitori.
+s Siempre desayuno{verb} en casa. | Faccio sempre colazione a casa.
+s Nunca bebo café. | Non bevo mai caffè.
+s Me levanto pronto. | Mi alzo presto.
+s Hoy llego tarde{adv}. | Oggi arrivo tardi.
+s ¿Cuándo empiezas? | Quando cominci?
+s Los domingos me levanto tarde{adv}. | La domenica mi alzo tardi.
+s Mi padre siempre llega pronto. | Mio padre arriva sempre presto.
+s ¿A qué hora te levantas? | A che ora ti alzi?
+s Me levanto a las siete. | Mi alzo alle sette.
+s Como a la una. | Mangio all'una.
+s Me ducho antes de desayunar. | Mi faccio la doccia prima di fare colazione.
+s Después de cenar leo un poco. | Dopo cena leggo un po'.
+s Desayuno{verb} y luego voy a la oficina. | Faccio colazione e poi vado in ufficio.
+s Normalmente me levanto a las siete. | Di solito mi alzo alle sette.
+s ¿A qué hora empiezas? | A che ora cominci?
+s Termino a las seis y media. | Finisco alle sei e mezza.
+s Normalmente ceno a las nueve. | Di solito ceno alle nove.
+s Duermo ocho horas. | Dormo otto ore.
+s El domingo descanso. | Domenica riposo.
+s Cocino por la noche. | Cucino di sera.
+s Tenemos una televisión grande. | Abbiamo una televisione grande.
+s Me gustan las películas españolas. | Mi piacciono i film spagnoli.
+s Veo una película. | Guardo un film.
+s Mi marido cocina{verb} muy bien. | Mio marito cucina molto bene.
+s Por la noche vemos la televisión. | Di sera guardiamo la televisione.
+s Mis hijos duermen mucho. | I miei figli dormono molto.
+s Después de comer descanso un poco. | Dopo pranzo riposo un po'.
+
+## story Un día normal | Una giornata normale
+Javier: Normalmente me levanto a las siete. | Di solito mi alzo alle sette.
+Javier: Me ducho y desayuno{verb} con mi mujer. | Mi faccio la doccia e faccio colazione con mia moglie.
+Javier: Salgo de casa a las ocho y llego a la oficina a las ocho y media. | Esco di casa alle otto e arrivo in ufficio alle otto e mezza.
+Javier: Termino a las seis y vuelvo a casa. | Finisco alle sei e torno a casa.
+Javier: Por la noche cocino, ceno y veo la televisión. | Di sera cucino, ceno e guardo la televisione.
+Javier: Me acuesto a las once. | Vado a letto alle undici.
+? A che ora si alza Javier? | *alle sette | alle otto | alle sei
+? Che cosa fa la sera? | *cucina e guarda la televisione | esce con gli amici | lavora
+
+## story El fin de semana | Il fine settimana
+Carmen: ¿Trabajas el sábado? | Lavori sabato?
+Diego: No, el fin de semana no trabajo{verb}. Me levanto tarde{adv}. | No, il fine settimana non lavoro. Mi alzo tardi.
+Carmen: ¿A qué hora te levantas? | A che ora ti alzi?
+Diego: A las diez. Luego desayuno{verb} en un bar con mis amigos. | Alle dieci. Poi faccio colazione in un bar con i miei amici.
+Carmen: ¿Y el domingo? | E domenica?
+Diego: El domingo como con mis padres y por la tarde descanso. | Domenica mangio con i miei genitori e di pomeriggio riposo.
+Carmen: Yo nunca descanso. El domingo estudio. | Io non riposo mai. Domenica studio.
+? Quando si alza tardi Diego? | *nel fine settimana | il lunedì | mai
+? Con chi mangia la domenica? | *con i genitori | con gli amici | con Carmen

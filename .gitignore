@@ -15,8 +15,11 @@ todos.json
 # Downloaded language data (see docs/spec.md, section 5) and build reports
 packages/norwegian/data/raw
 packages/norwegian/data/build
+packages/spanish/data/raw
+packages/spanish/data/build
 .dev.vars
 .sync-key
 packages/norwegian/data/audio
+packages/spanish/data/audio
 test-results
 playwright-report

@@ -1,0 +1,180 @@
+# unit 10 | Salud y planes | Il corpo, la salute, i programmi e gli auguri | level: A1
+
+## lesson Il corpo
+w cabeza | noun la | testa
+w mano | noun la | mano
+w pie | noun el | piede
+w brazo | noun el | braccio
+w pierna | noun la | gamba
+w espalda | noun la | schiena
+w boca | noun la | bocca
+
+## lesson Mi fa male
+w doler | verb | fare male
+c ¿qué te pasa? | che cos'hai?
+w fiebre | noun la | febbre
+c tener fiebre | avere la febbre
+w resfriado | adj | raffreddato
+w medicina | noun la | medicina
+w mejor | adj | migliore, meglio
+w peor | adj | peggiore, peggio
+
+## lesson Caldo, freddo, sonno
+c tener frío | avere freddo
+c tener calor | avere caldo
+c tener sueño | avere sonno
+c tener miedo | avere paura
+c tener prisa | avere fretta
+c tener razón | avere ragione
+
+## lesson Stare bene
+w lavarse | verb | lavarsi
+w vestirse | verb | vestirsi
+w salud | noun la | salute
+w sano | adj | sano
+w fumar | verb | fumare
+w andar | verb | camminare
+
+## lesson Programmi
+w mañana | adv | domani
+w plan | noun el | programma, piano
+w pensar | verb | pensare
+w creer | verb | credere
+w próximo | adj | prossimo
+w cumpleaños | noun el | compleanno
+w regalo | noun el | regalo
+
+## lesson Auguri
+c feliz cumpleaños | buon compleanno
+c felicidades | auguri, congratulazioni
+c buen viaje | buon viaggio
+c buena suerte | buona fortuna
+c que aproveche | buon appetito
+c hasta mañana | a domani
+c hasta pronto | a presto
+
+## lesson Animali e natura
+w perro | noun el | cane
+w gato | noun el | gatto
+w animal | noun el | animale
+w mar | noun el | mare
+w sol | noun el | sole
+w campo | noun el | campagna
+w árbol | noun el | albero
+
+## lesson Tutto e niente
+w todo | det | tutto
+w nada | pron | niente
+w algo | pron | qualcosa
+w alguien | pron | qualcuno
+w nadie | pron | nessuno
+w mismo | adj | stesso
+
+## sentences
+
+s Mi hijo tiene la cabeza grande. | Mio figlio ha la testa grande.
+s Tengo las manos frías. | Ho le mani fredde.
+s Tengo los pies pequeños. | Ho i piedi piccoli.
+s Tiene los brazos largos. | Ha le braccia lunghe.
+s Tiene las piernas largas. | Ha le gambe lunghe.
+s Llevo el bolso en la espalda. | Porto la borsa sulla schiena.
+s Tiene la boca pequeña. | Ha la bocca piccola.
+s Tengo un libro en la mano. | Ho un libro in mano.
+s Me duele la cabeza. | Mi fa male la testa.
+s ¿Qué te pasa? | Che cos'hai?
+s La fiebre es alta. | La febbre è alta.
+s Tengo fiebre. | Ho la febbre.
+s Estoy resfriado. | Sono raffreddato.
+s Tomo una medicina. | Prendo una medicina.
+s Hoy estoy mejor. | Oggi sto meglio.
+s Hoy estoy peor. | Oggi sto peggio.
+s Me duelen los pies. | Mi fanno male i piedi.
+s ¿Te duele la espalda? | Ti fa male la schiena?
+s Mi hija está resfriada y tiene fiebre. | Mia figlia è raffreddata e ha la febbre.
+s Le duelen las piernas. | Gli fanno male le gambe.
+s Este hotel es mejor. | Questo albergo è migliore.
+s Tengo frío. | Ho freddo.
+s Tengo calor. | Ho caldo.
+s Tengo sueño. | Ho sonno.
+s Tengo miedo. | Ho paura.
+s Tengo prisa. | Ho fretta.
+s Tienes razón. | Hai ragione.
+s ¿Tienes frío? | Hai freddo?
+s Los chicos tienen sueño. | I ragazzi hanno sonno.
+s Siempre tenemos prisa por la mañana. | Abbiamo sempre fretta di mattina.
+s Me lavo las manos. | Mi lavo le mani.
+s Me visto y salgo. | Mi vesto ed esco.
+s El deporte es bueno para la salud. | Lo sport fa bene alla salute.
+s Como comida sana. | Mangio cibo sano.
+s No fumo. | Non fumo.
+s Ando una hora al día. | Cammino un'ora al giorno.
+s Los chicos se lavan antes de comer. | I ragazzi si lavano prima di mangiare.
+s ¿Te vistes ahora? | Ti vesti adesso?
+s Mi abuelo anda mucho y no fuma. | Mio nonno cammina molto e non fuma.
+s La fruta es muy sana. | La frutta è molto sana.
+s Mañana{adv} trabajo{verb}. | Domani lavoro.
+s Tengo un plan. | Ho un programma.
+s Pienso en mi familia. | Penso alla mia famiglia.
+s No te creo. | Non ti credo.
+s La próxima semana estoy de vacaciones. | La prossima settimana sono in vacanza.
+s Mañana{adv} es mi cumpleaños. | Domani è il mio compleanno.
+s Compro un regalo para mi madre. | Compro un regalo per mia madre.
+s ¿Qué planes tienes para el sábado? | Che programmi hai per sabato?
+s Mañana{adv} por la mañana voy al médico. | Domani mattina vado dal medico.
+s El próximo mes empiezo un trabajo{noun} nuevo. | Il prossimo mese comincio un lavoro nuovo.
+s ¿Qué piensas hacer en verano? | Che cosa pensi di fare d'estate?
+s Feliz cumpleaños. | Buon compleanno.
+s Felicidades. | Auguri.
+s Buen viaje. | Buon viaggio.
+s Buena suerte. | Buona fortuna.
+s Que aproveche. | Buon appetito.
+s Hasta mañana. | A domani.
+s Hasta pronto. | A presto.
+s Feliz cumpleaños, abuela. | Buon compleanno, nonna.
+s Buena suerte en el examen. | Buona fortuna per l'esame.
+s Adiós, hasta mañana. | Arrivederci, a domani.
+s Tengo un perro. | Ho un cane.
+s Mi gato es negro. | Il mio gatto è nero.
+s Me gustan los animales. | Mi piacciono gli animali.
+s Me encanta el mar. | Mi piace moltissimo il mare.
+s Me gusta el sol. | Mi piace il sole.
+s Mis abuelos viven en el campo. | I miei nonni vivono in campagna.
+s Hay un árbol delante de mi casa. | C'è un albero davanti a casa mia.
+s Mi perro duerme debajo de la mesa. | Il mio cane dorme sotto il tavolo.
+s En el campo hay muchos árboles. | In campagna ci sono molti alberi.
+s Los gatos duermen mucho. | I gatti dormono molto.
+s Todos mis amigos viven aquí. | Tutti i miei amici abitano qui.
+s No quiero nada{pron}. | Non voglio niente.
+s ¿Quieres algo? | Vuoi qualcosa?
+s ¿Hay alguien en casa? | C'è qualcuno a casa?
+s No hay nadie. | Non c'è nessuno.
+s Tenemos el mismo jefe. | Abbiamo lo stesso capo.
+s Trabajo{verb} todo el día. | Lavoro tutto il giorno.
+s No entiendo nada{pron}. | Non capisco niente.
+s Nadie sabe dónde está. | Nessuno sa dov'è.
+s Vivimos en la misma calle. | Abitiamo nella stessa via.
+s Necesito algo para la cabeza. | Ho bisogno di qualcosa per la testa.
+s Toda la familia está en casa. | Tutta la famiglia è a casa.
+
+## story No estoy bien | Non sto bene
+Luis: Hola, Carmen. ¿Qué te pasa? | Ciao, Carmen. Che cos'hai?
+Carmen: No estoy bien. Me duele mucho la cabeza y tengo fiebre. | Non sto bene. Mi fa molto male la testa e ho la febbre.
+Luis: ¿Estás resfriada? | Sei raffreddata?
+Carmen: Sí, y también me duele la espalda. | Sì, e mi fa male anche la schiena.
+Luis: Tienes que descansar y tomar una medicina. | Devi riposare e prendere una medicina.
+Carmen: Tienes razón. Hoy no voy a la oficina. | Hai ragione. Oggi non vado in ufficio.
+Luis: Mañana{adv} vengo a tu casa. ¿Necesitas algo? | Domani vengo a casa tua. Hai bisogno di qualcosa?
+Carmen: No, nada{pron}. Gracias, Luis. | No, niente. Grazie, Luis.
+? Che cos'ha Carmen? | *mal di testa e febbre | mal di gambe | niente
+? Che cosa deve fare? | *riposare e prendere una medicina | andare in ufficio | fare sport
+
+## story El cumpleaños de Sara | Il compleanno di Sara
+Pablo: Mañana{adv} es el cumpleaños de Sara. | Domani è il compleanno di Sara.
+Ana: ¿Tienes un regalo para ella? | Hai un regalo per lei?
+Pablo: Todavía no. No sé qué comprar. | Non ancora. Non so che cosa comprare.
+Ana: Le gustan mucho los animales. ¿Un libro sobre perros y gatos? | Le piacciono molto gli animali. Un libro su cani e gatti?
+Pablo: Me gusta el plan. | Mi piace il programma.
+Ana: Yo llevo el postre. Creo que viene toda su familia. | Io porto il dolce. Credo che venga tutta la sua famiglia.
+Pablo: Entonces compro también algo para beber. | Allora compro anche qualcosa da bere.
+? Che cosa piace a Sara? | *gli animali | i dolci | i film
+? Che cosa porta Ana? | *il dolce | un libro | qualcosa da bere

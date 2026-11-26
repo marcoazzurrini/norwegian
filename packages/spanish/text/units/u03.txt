@@ -1,0 +1,211 @@
+# unit 3 | La familia | La famiglia e descrivere le persone | level: A1
+
+## lesson La famiglia
+w familia | noun la | famiglia
+w padre | noun el | padre (los padres = i genitori)
+w madre | noun la | madre
+w hermano | noun el | fratello
+w hermana | noun la | sorella
+w hijo | noun el | figlio
+w hija | noun la | figlia
+
+## lesson I possessivi
+p possessive | Mi, tu, su | needs: plural
+rule: Davanti al nome non c'è l'articolo: «mi hermano» = «mio fratello», e anche «mi libro» = «il mio libro».
+rule: Mi, tu e su hanno solo singolare e plurale, senza genere: mi amigo, mi amiga, mis amigos.
+rule: «Su» vuol dire suo, sua e anche loro.
+ex: mi hermano | mio fratello
+ex: mi libro | il mio libro
+ex: tus amigos | i tuoi amici
+ex: su madre | sua madre, la loro madre
+q: mis libros | *i miei libri | il mio libro | i tuoi libri
+q: su hermana | *sua sorella | mia sorella | tua sorella
+w mi | det | mio
+w tu | det | tuo
+w su | det | suo, loro
+w nuestro | det | nostro
+w vuestro | det | vostro
+
+## lesson Altri parenti
+w abuelo | noun el | nonno
+w abuela | noun la | nonna
+w tío | noun el | zio
+w tía | noun la | zia
+w primo | noun el | cugino
+w marido | noun el | marito
+w novio | noun el | fidanzato
+w novia | noun la | fidanzata
+
+## lesson Muy e mucho
+p muy-mucho | Muy o mucho | needs: adj
+rule: L'italiano ha solo «molto». Lo spagnolo ha due parole.
+rule: «Muy» va davanti ad aggettivi e avverbi e non cambia mai: muy alto, muy bien.
+rule: «Mucho» va con i nomi e si accorda: mucho trabajo, mucha gente, muchos amigos, muchas cosas.
+rule: Dopo un verbo si usa «mucho»: «Trabajo mucho».
+ex: muy alto | molto alto
+ex: mucha gente | molta gente
+ex: muchos amigos | molti amici
+ex: hablas mucho | parli molto
+q: muy simpático | *molto simpatico | poco simpatico | molti simpatici
+q: muchas cosas | *molte cose | poche cose | molto bene
+w muy | adv | molto (con aggettivi e avverbi)
+w mucho | det | molto (con nomi e verbi)
+w poco | det | poco
+w bastante | adv | abbastanza
+w más | adv | più
+
+## lesson L'aspetto
+w pelo | noun el | capelli
+w ojo | noun el | occhio
+w rubio | adj | biondo
+w moreno | adj | moro, castano
+w largo | adj | lungo
+w corto | adj | corto
+w gafas | noun las | occhiali
+w llevar | verb | portare (addosso)
+
+## lesson Il carattere
+w cómo | adv | come (nelle domande)
+c ¿cómo es? | com'è?
+w inteligente | adj | intelligente
+w alegre | adj | allegro
+w serio | adj | serio
+w tímido | adj | timido
+w trabajador | adj | laborioso
+
+## lesson Questo e quello
+p demonstrative | Este, ese, aquel | needs: adj
+rule: Este = questo (vicino a me). Ese = quello (vicino a te). Aquel = quello (lontano da tutti e due).
+rule: Si accordano: este, esta, estos, estas. Ese, esa, esos, esas. Aquel, aquella, aquellos, aquellas.
+rule: Attenzione: «esta» (questa) non ha l'accento. Con l'accento, «está» è un verbo.
+ex: este libro | questo libro
+ex: esta chica | questa ragazza
+ex: ese chico | quel ragazzo (vicino a te)
+ex: aquellos hombres | quegli uomini (laggiù)
+q: estas gafas | *questi occhiali | quegli occhiali | questo occhio
+q: ese libro | *quel libro | questo libro | quei libri
+w este | det | questo
+w ese | det | quello (vicino a te)
+w aquel | det | quello (lontano)
+w qué | pron | che cosa, che
+w esto | pron | questo, questa cosa
+c ¿qué es esto? | che cos'è questo?
+
+## lesson Numeri da 11 a 20
+w once | num | undici
+w doce | num | dodici
+w trece | num | tredici
+w catorce | num | quattordici
+w quince | num | quindici
+w veinte | num | venti
+
+## sentences
+
+s Tengo una familia grande. | Ho una famiglia grande.
+s El padre de Ana es médico. | Il padre di Ana è medico.
+s La madre de Pablo es alta. | La madre di Pablo è alta.
+s Tengo un hermano. | Ho un fratello.
+s Tengo dos hermanas. | Ho due sorelle.
+s Tienen un hijo. | Hanno un figlio.
+s La hija tiene cinco años. | La figlia ha cinque anni.
+s Los padres de Carlos son de Valencia. | I genitori di Carlos sono di Valencia.
+s ¿Tienes hermanos? | Hai fratelli?
+s No tengo hijos. | Non ho figli.
+s Mi hermano vive en Roma. | Mio fratello abita a Roma.
+s Tu madre es simpática. | Tua madre è simpatica.
+s Su padre es médico. | Suo padre è medico.
+s Nuestra familia es grande. | La nostra famiglia è grande.
+s Vuestro hijo es alto. | Vostro figlio è alto.
+s Mis padres viven en Italia. | I miei genitori abitano in Italia.
+s Tus amigos son simpáticos. | I tuoi amici sono simpatici.
+s Sus hijas estudian en Madrid. | Le sue figlie studiano a Madrid.
+s Es mi libro. | È il mio libro.
+s Nuestros amigos son alemanes. | I nostri amici sono tedeschi.
+s Vuestra ciudad es pequeña. | La vostra città è piccola.
+s Mi hermana tiene un trabajo{noun} en Barcelona. | Mia sorella ha un lavoro a Barcellona.
+s Mi abuelo vive en Sevilla. | Mio nonno abita a Siviglia.
+s Mi abuela es simpática. | Mia nonna è simpatica.
+s Mi tío es camarero. | Mio zio è cameriere.
+s Mi tía habla francés. | Mia zia parla francese.
+s Mi primo es de Valencia. | Mio cugino è di Valencia.
+s Su marido es alemán. | Suo marito è tedesco.
+s Mi novio es español. | Il mio fidanzato è spagnolo.
+s Su novia es inglesa. | La sua fidanzata è inglese.
+s Tengo dos tíos y tres primos. | Ho due zii e tre cugini.
+s Mis abuelos tienen cinco hijos. | I miei nonni hanno cinque figli.
+s Mi hermano es muy alto. | Mio fratello è molto alto.
+s Tengo muchos amigos. | Ho molti amici.
+s Tengo pocos amigos. | Ho pochi amici.
+s Es bastante alto. | È abbastanza alto.
+s Quiero más libros. | Voglio più libri.
+s Mi padre trabaja mucho. | Mio padre lavora molto.
+s Mucha gente habla español. | Molta gente parla spagnolo.
+s Tu abuela es muy simpática. | Tua nonna è molto simpatica.
+s Mi tío lee muchos libros. | Mio zio legge molti libri.
+s Comes muy poco. | Mangi molto poco.
+s Hablas bastante bien. | Parli abbastanza bene.
+s Mi hermana estudia más. | Mia sorella studia di più.
+s Mi madre tiene mucho pelo. | Mia madre ha molti capelli.
+s Tiene los ojos grandes. | Ha gli occhi grandi.
+s Mi hermana es rubia. | Mia sorella è bionda.
+s Soy moreno. | Sono moro.
+s Tiene el pelo largo. | Ha i capelli lunghi.
+s Tengo el pelo corto. | Ho i capelli corti.
+s Mi padre tiene unas gafas grandes. | Mio padre ha degli occhiali grandi.
+s Llevo gafas. | Porto gli occhiali.
+s Mi novia es morena y tiene el pelo muy largo. | La mia fidanzata è mora e ha i capelli molto lunghi.
+s Mis hermanos son rubios. | I miei fratelli sono biondi.
+s ¿Llevas gafas? | Porti gli occhiali?
+s Mi abuelo lleva unas gafas pequeñas. | Mio nonno porta degli occhiali piccoli.
+s ¿Cómo son tus padres? | Come sono i tuoi genitori?
+s ¿Cómo es tu hermano? | Com'è tuo fratello?
+s Tu hermana es muy inteligente. | Tua sorella è molto intelligente.
+s Mi abuelo es alegre. | Mio nonno è allegro.
+s Su padre es serio. | Suo padre è serio.
+s Mi primo es tímido. | Mio cugino è timido.
+s Mi madre es muy trabajadora. | Mia madre è molto laboriosa.
+s Mis tías son muy alegres. | Le mie zie sono molto allegre.
+s Soy un poco tímido. | Sono un po' timido.
+s Este libro es de mi hermano. | Questo libro è di mio fratello.
+s Ese chico es mi primo. | Quel ragazzo è mio cugino. | alt: Aquel chico es mi primo.
+s Aquel señor es mi abuelo. | Quel signore è mio nonno. | alt: Ese señor es mi abuelo.
+s ¿Qué quieres? | Che cosa vuoi?
+s Esto es un libro. | Questo è un libro.
+s ¿Qué es esto? | Che cos'è questo?
+s Esta chica es mi hermana. | Questa ragazza è mia sorella.
+s Estos señores son mis tíos. | Questi signori sono i miei zii.
+s Estas gafas son de mi madre. | Questi occhiali sono di mia madre.
+s Esa mujer es mi tía. | Quella donna è mia zia. | alt: Aquella mujer es mi tía.
+s Aquellas chicas son francesas. | Quelle ragazze sono francesi. | alt: Esas chicas son francesas.
+s ¿Qué lees? | Che cosa leggi?
+s ¿Qué quiere este señor? | Che cosa vuole questo signore?
+s Tengo once primos. | Ho undici cugini.
+s Mi hermana tiene doce años. | Mia sorella ha dodici anni.
+s Mi hermano tiene trece años. | Mio fratello ha tredici anni.
+s Somos catorce. | Siamo quattordici.
+s Tengo quince libros. | Ho quindici libri.
+s Mi primo tiene veinte años. | Mio cugino ha vent'anni.
+s Mi hija tiene catorce años. | Mia figlia ha quattordici anni.
+s Tenemos veinte libros en español. | Abbiamo venti libri in spagnolo.
+
+## story Mi familia | La mia famiglia
+Carmen: Esta es mi familia. | Questa è la mia famiglia.
+Carmen: Mi padre se llama Luis y mi madre se llama Elena. | Mio padre si chiama Luis e mia madre si chiama Elena.
+Carmen: Tengo dos hermanos. Pablo tiene quince años y Sara tiene doce. | Ho due fratelli. Pablo ha quindici anni e Sara ne ha dodici.
+Carmen: Pablo es alto y moreno. Sara es rubia y lleva gafas. | Pablo è alto e moro. Sara è bionda e porta gli occhiali.
+Carmen: Mis abuelos viven en Sevilla. Son muy alegres. | I miei nonni abitano a Siviglia. Sono molto allegri.
+Carmen: También tengo muchos primos. ¡Somos una familia grande! | Ho anche molti cugini. Siamo una famiglia grande!
+? Quanti anni ha Sara? | *dodici | quindici | venti
+? Chi porta gli occhiali? | *Sara | Pablo | la madre
+
+## story ¿Quién es ese chico? | Chi è quel ragazzo?
+Marta: ¿Quién es ese chico alto? | Chi è quel ragazzo alto?
+Ana: Es mi primo Diego. | È mio cugino Diego.
+Marta: ¿Cómo es? | Com'è?
+Ana: Es muy simpático, pero un poco tímido. | È molto simpatico, ma un po' timido.
+Marta: ¿Y aquella chica rubia? | E quella ragazza bionda?
+Ana: Es su novia. Es inglesa y habla poco español. | È la sua fidanzata. È inglese e parla poco spagnolo.
+Marta: ¿Tienen hijos? | Hanno figli?
+Ana: No, son muy jóvenes. Él tiene veinte años. | No, sono molto giovani. Lui ha vent'anni.
+? Com'è Diego? | *simpatico ma timido | serio e alto | allegro
+? Di dov'è la fidanzata di Diego? | *è inglese | è spagnola | è francese

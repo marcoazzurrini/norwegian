@@ -5,9 +5,10 @@
 // the courses without loading a curriculum.
 import type { CourseMeta } from "@norsk/course";
 import { meta as norwegian } from "@norsk/norwegian/meta";
+import { meta as spanish } from "@norsk/spanish/meta";
 
 /** Every course, in the order the app lists them. The first is the one a new learner starts in. */
-export const courses: readonly CourseMeta[] = [norwegian];
+export const courses: readonly CourseMeta[] = [norwegian, spanish];
 
 /** The course with this id, or undefined if there is none. */
 export const courseMeta = (id: string): CourseMeta | undefined =>

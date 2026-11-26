@@ -93,6 +93,7 @@
       "dependencies": {
         "@norsk/course": "workspace:*",
         "@norsk/norwegian": "workspace:*",
+        "@norsk/spanish": "workspace:*",
       },
       "devDependencies": {
         "@types/bun": "catalog:",
@@ -173,6 +174,17 @@
     "packages/protocol": {
       "name": "@norsk/protocol",
       "dependencies": {
+        "valibot": "^1.5.0",
+      },
+      "devDependencies": {
+        "@types/bun": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "packages/spanish": {
+      "name": "@norsk/spanish",
+      "dependencies": {
+        "@norsk/course": "workspace:*",
         "valibot": "^1.5.0",
       },
       "devDependencies": {
@@ -492,6 +504,8 @@
     "@norsk/norwegian": ["@norsk/norwegian@workspace:packages/norwegian"],
 
     "@norsk/protocol": ["@norsk/protocol@workspace:packages/protocol"],
+
+    "@norsk/spanish": ["@norsk/spanish@workspace:packages/spanish"],
 
     "@norsk/speech": ["@norsk/speech@workspace:packages/speech"],
 

@@ -1,0 +1,43 @@
+# group id | title | hint
+# pair groupId | word a | meaning a | word b | meaning b
+#
+# The sounds an Italian speaker does not have, or writes in another way.
+
+group z-s | z o s | La z, e la c davanti a e o i, si dicono con la lingua tra i denti, come «th» nell'inglese «think». La s è come in italiano.
+pair z-s | caza | caccia | casa | casa
+pair z-s | cocer | cuocere | coser | cucire
+pair z-s | zumo | succo | sumo | sommo
+pair z-s | pozo | pozzo | poso | fondo (del caffè)
+pair z-s | vez | volta | ves | vedi
+
+group r-rr | r o rr | Una r sola tra due vocali è un colpo solo della lingua. La rr è lunga e vibra, come una r italiana molto forte.
+pair r-rr | pero | ma | perro | cane
+pair r-rr | caro | caro | carro | carro
+pair r-rr | para | per | parra | pergola
+pair r-rr | coro | coro | corro | corro
+pair r-rr | ahora | adesso | ahorra | risparmia
+
+group j-g | j o g | La j, e la g davanti a e o i, sono un soffio forte in fondo alla gola. In italiano questo suono non esiste. La g davanti a a, o, u è come in «gatto».
+pair j-g | paja | paglia | paga | paga
+pair j-g | ajo | aglio | hago | faccio
+pair j-g | jota | la lettera j | gota | goccia
+pair j-g | justo | giusto | gusto | gusto
+pair j-g | jarra | caraffa | garra | artiglio
+
+group ll-l | ll o l | La ll si dice quasi come «gl» in «figlio», o come la «i» di «ieri». La l è come in italiano.
+pair ll-l | pollo | pollo | polo | polo
+pair ll-l | llave | chiave | lave | lavi
+pair ll-l | callado | silenzioso | calado | bagnato fradicio
+pair ll-l | llama | fiamma | lama | fango
+
+group ñ-n | ñ o n | La ñ è il suono «gn» di «gnocco». La n è come in italiano.
+pair ñ-n | peña | roccia | pena | pena
+pair ñ-n | caña | canna | cana | capello bianco
+pair ñ-n | moño | chignon | mono | scimmia
+pair ñ-n | uña | unghia | una | una
+
+group accento | Dove cade l'accento | L'accento scritto dice dove la voce è più forte. Senza accento scritto, la voce cade sulla penultima sillaba se la parola finisce in vocale, n o s.
+pair accento | esta | questa | está | sta, è
+pair accento | hablo | parlo | habló | parlò
+pair accento | papa | patata | papá | papà
+pair accento | trabajo | lavoro | trabajó | lavorò

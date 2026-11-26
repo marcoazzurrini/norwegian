@@ -1,11 +1,11 @@
 // Compares what the learner typed with what was expected.
 import type { Item, Sentence } from "@norsk/course";
 
-/** Lower-case, no punctuation, single spaces. */
+/** Lower-case, no punctuation, single spaces. The marks that open a Spanish question or exclamation count as punctuation. */
 const normalize = (text: string): string =>
   text
     .toLowerCase()
-    .replaceAll(/[.,!?:;"«»()]/gu, " ")
+    .replaceAll(/[.,!?¿¡:;"«»()]/gu, " ")
     .replaceAll(/\s+/gu, " ")
     .trim();
 

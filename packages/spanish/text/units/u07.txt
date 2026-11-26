@@ -1,0 +1,182 @@
+# unit 7 | Tiempo libre | Il tempo libero, gli inviti e il tempo che fa | level: A1
+
+## lesson Che cosa fai
+w hacer | verb | fare
+c ¿qué haces? | che cosa fai?
+w música | noun la | musica
+w escuchar | verb | ascoltare
+w deporte | noun el | sport
+c hacer deporte | fare sport
+w cine | noun el | cinema
+c ir al cine | andare al cinema
+
+## lesson Sport e giochi
+w jugar | verb | giocare
+w fútbol | noun el | calcio
+c jugar al ___ | giocare a ___
+w nadar | verb | nuotare
+w correr | verb | correre
+w bailar | verb | ballare
+w cantar | verb | cantare
+
+## lesson Con gli amici
+w quedar | verb | vedersi, darsi appuntamento
+w fiesta | noun la | festa
+w venir | verb | venire
+c conmigo | con me
+c contigo | con te
+w solo | adj | solo, da solo
+w junto | adj | insieme (juntos)
+
+## lesson Inviti
+c vale | va bene, d'accordo
+c claro | certo
+c lo siento | mi dispiace
+w porque | conj | perché (nelle risposte)
+c ¿por qué? | perché? (nelle domande)
+w si | conj | se
+w o | conj | o, oppure
+
+## lesson Preferenze
+w preferir | verb | preferire
+w favorito | adj | preferito
+w interesante | adj | interessante
+w divertido | adj | divertente
+w aburrido | adj | noioso
+w nuevo | adj | nuovo
+w viejo | adj | vecchio
+
+## lesson Che tempo fa
+w tiempo | noun el | tempo
+c ¿qué tiempo hace? | che tempo fa?
+c hace calor | fa caldo
+c hace frío | fa freddo
+c hace sol | c'è il sole
+c hace buen tiempo | fa bel tempo
+f llueve | verb | piove | lemma=llover
+
+## lesson Le stagioni
+w primavera | noun la | primavera
+w verano | noun el | estate
+w otoño | noun el | autunno
+w invierno | noun el | inverno
+w mes | noun el | mese
+w playa | noun la | spiaggia
+w montaña | noun la | montagna
+
+## lesson I mesi, da gennaio a giugno
+w enero | noun el | gennaio
+w febrero | noun el | febbraio
+w marzo | noun el | marzo
+w abril | noun el | aprile
+w mayo | noun el | maggio
+w junio | noun el | giugno
+
+## sentences
+
+s Hago la cena{noun}. | Faccio la cena.
+s ¿Qué haces? | Che cosa fai?
+s Me gusta la música. | Mi piace la musica.
+s Escucho música. | Ascolto musica.
+s Me gusta el deporte. | Mi piace lo sport.
+s Hago deporte. | Faccio sport.
+s El cine está cerca. | Il cinema è vicino.
+s Voy al cine. | Vado al cinema.
+s ¿Qué hacéis el sábado? | Che cosa fate sabato?
+s Mis hijos hacen mucho deporte. | I miei figli fanno molto sport.
+s Los viernes vamos al cine. | Il venerdì andiamo al cinema.
+s Escuchamos música española. | Ascoltiamo musica spagnola.
+s ¿Qué hace tu hermano? | Che cosa fa tuo fratello?
+s Los chicos juegan en casa. | I ragazzi giocano a casa.
+s Me encanta el fútbol. | Mi piace moltissimo il calcio.
+s Juego al fútbol. | Gioco a calcio.
+s Nado muy bien. | Nuoto molto bene.
+s Corro por la mañana. | Corro di mattina.
+s Bailamos el sábado. | Balliamo sabato.
+s Mi hermana canta muy bien. | Mia sorella canta molto bene.
+s ¿Juegas al fútbol con nosotros? | Giochi a calcio con noi?
+s No me gusta correr. | Non mi piace correre.
+s Mis amigos nadan los martes. | I miei amici nuotano il martedì.
+s ¿Te gusta bailar? | Ti piace ballare?
+s Quedo con mis amigos. | Mi vedo con i miei amici.
+s Hay una fiesta el sábado. | C'è una festa sabato.
+s ¿Vienes a la fiesta? | Vieni alla festa?
+s ¿Vienes conmigo? | Vieni con me?
+s Voy contigo. | Vengo con te. | alt: Vengo contigo.
+s Vivo solo. | Vivo da solo.
+s Cenamos juntos. | Ceniamo insieme.
+s Mis padres vienen el domingo. | I miei genitori vengono domenica.
+s ¿Quedamos a las ocho? | Ci vediamo alle otto?
+s Mi abuela vive sola. | Mia nonna vive da sola.
+s Vamos juntos a la fiesta. | Andiamo insieme alla festa.
+s Vale, quedamos el viernes. | Va bene, ci vediamo venerdì.
+s Claro, voy contigo. | Certo, vengo con te. | alt: Claro, vengo contigo.
+s Lo siento, no puedo. | Mi dispiace, non posso.
+s No voy porque estoy cansado. | Non vado perché sono stanco.
+s ¿Por qué no vienes? | Perché non vieni?
+s Si quieres, vamos al cine. | Se vuoi, andiamo al cinema.
+s ¿Quieres café o zumo? | Vuoi caffè o succo?
+s No salgo porque tengo mucho trabajo{noun}. | Non esco perché ho molto lavoro.
+s ¿Por qué estudias español? | Perché studi spagnolo?
+s Si tienes hambre, hay pan y queso. | Se hai fame, ci sono pane e formaggio.
+s ¿Vamos el sábado o el domingo? | Andiamo sabato o domenica?
+s Prefiero el cine. | Preferisco il cinema.
+s Mi deporte favorito es el fútbol. | Il mio sport preferito è il calcio.
+s Este libro es muy interesante. | Questo libro è molto interessante.
+s La fiesta es muy divertida. | La festa è molto divertente.
+s Esta película es aburrida. | Questo film è noioso.
+s Tengo un móvil nuevo. | Ho un cellulare nuovo.
+s Mi ordenador es viejo. | Il mio computer è vecchio.
+s ¿Prefieres salir o estar en casa? | Preferisci uscire o stare a casa?
+s Preferimos las películas divertidas. | Preferiamo i film divertenti.
+s Mi música favorita es española. | La mia musica preferita è spagnola.
+s Tengo amigos nuevos. | Ho amici nuovi.
+s No tengo tiempo. | Non ho tempo.
+s ¿Qué tiempo hace? | Che tempo fa?
+s Hace calor. | Fa caldo.
+s Hace frío. | Fa freddo.
+s Hace sol. | C'è il sole.
+s Hace buen tiempo. | Fa bel tempo.
+s Hoy llueve. | Oggi piove.
+s Si llueve, no salgo. | Se piove, non esco.
+s Hoy hace frío y llueve. | Oggi fa freddo e piove.
+s Me gusta la primavera. | Mi piace la primavera.
+s En verano hace calor. | D'estate fa caldo.
+s En otoño llueve mucho. | In autunno piove molto.
+s En invierno hace frío. | D'inverno fa freddo.
+s Un año tiene doce meses. | Un anno ha dodici mesi.
+s En verano voy a la playa. | D'estate vado in spiaggia.
+s Prefiero la montaña. | Preferisco la montagna.
+s Este mes tengo mucho trabajo{noun}. | Questo mese ho molto lavoro.
+s La playa está cerca de mi casa. | La spiaggia è vicina a casa mia.
+s En invierno vamos a la montaña. | D'inverno andiamo in montagna.
+s En enero hace frío. | A gennaio fa freddo.
+s Febrero es un mes corto. | Febbraio è un mese corto.
+s En marzo empieza la primavera. | A marzo comincia la primavera.
+s En abril llueve mucho. | Ad aprile piove molto.
+s En mayo hace buen tiempo. | A maggio fa bel tempo.
+s En junio empieza el verano. | A giugno comincia l'estate.
+s Mi mes favorito es mayo. | Il mio mese preferito è maggio.
+s En febrero voy a Italia. | A febbraio vado in Italia.
+
+## story ¿Vienes al cine? | Vieni al cinema?
+Ana: Hola, Pablo. ¿Qué haces el sábado? | Ciao, Pablo. Che cosa fai sabato?
+Pablo: Por la mañana juego al fútbol con mis amigos. | Di mattina gioco a calcio con i miei amici.
+Ana: ¿Y por la tarde? Hay una película nueva. ¿Vienes al cine conmigo? | E di pomeriggio? C'è un film nuovo. Vieni al cinema con me?
+Pablo: Lo siento, no puedo. Quedo con mi hermano. | Mi dispiace, non posso. Mi vedo con mio fratello.
+Ana: ¿Y el domingo? | E domenica?
+Pablo: Vale, el domingo sí. ¿A qué hora empieza la película? | Va bene, domenica sì. A che ora comincia il film?
+Ana: A las seis. Luego cenamos juntos, si quieres. | Alle sei. Poi ceniamo insieme, se vuoi.
+Pablo: ¡Claro! | Certo!
+? Perché Pablo non può sabato pomeriggio? | *vede suo fratello | gioca a calcio | lavora
+? Quando vanno al cinema? | *domenica alle sei | sabato alle sei | domenica mattina
+
+## story El tiempo en España | Il tempo in Spagna
+Lucía: En España el tiempo es muy bueno. | In Spagna il tempo è molto buono.
+Lucía: En verano hace calor y la gente va a la playa. | D'estate fa caldo e la gente va in spiaggia.
+Lucía: En invierno hace frío, pero hace sol. | D'inverno fa freddo, ma c'è il sole.
+Lucía: En primavera llueve un poco. | In primavera piove un po'.
+Lucía: Mi mes favorito es mayo. Hace buen tiempo y salgo mucho con mis amigos. | Il mio mese preferito è maggio. Fa bel tempo ed esco molto con i miei amici.
+Lucía: En enero prefiero estar en casa, leer y escuchar música. | A gennaio preferisco stare a casa, leggere e ascoltare musica.
+? Che cosa fa la gente d'estate? | *va in spiaggia | resta a casa | va in montagna
+? Qual è il mese preferito di Lucía? | *maggio | gennaio | giugno

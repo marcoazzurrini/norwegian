@@ -1,0 +1,210 @@
+# unit 4 | En casa | La casa, dove sono le cose, come stai | level: A1
+
+## lesson La casa
+w casa | noun la | casa
+w piso | noun el | appartamento
+w habitación | noun la | stanza, camera
+w cocina | noun la | cucina
+w baño | noun el | bagno
+w salón | noun el | soggiorno
+
+## lesson Estar
+p ser-estar | Ser o estar | needs: pres-irreg
+rule: L'italiano dice «essere» per tutto. Lo spagnolo ha due verbi.
+rule: «Estar» dice dove si trova qualcosa e come sta qualcuno: «Estoy en casa», «Estoy bien».
+rule: «Ser» dice chi è qualcuno e com'è di natura: «Soy Marco», «Soy italiano», «Es alto».
+rule: Estar: estoy, estás, está, estamos, estáis, están.
+ex: estoy en casa | sono a casa
+ex: soy de Roma | sono di Roma
+ex: ¿dónde estás? | dove sei?
+ex: Madrid está en España | Madrid è in Spagna
+q: estoy en Madrid | *sono a Madrid (mi trovo lì) | sono di Madrid
+q: es español | *è spagnolo | è in Spagna
+w estar | verb | essere (trovarsi), stare
+w aquí | adv | qui
+w allí | adv | lì, là
+c en casa | a casa
+w cerca | adv | vicino
+w lejos | adv | lontano
+
+## lesson Hay
+p hay | Hay: c'è, ci sono | needs: ser-estar
+rule: «Hay» vuol dire «c'è» e anche «ci sono»: non cambia mai.
+rule: Dopo «hay» vengono un, una, un numero o un plurale senza articolo: «Hay una cama», «Hay dos sillas».
+rule: Con el, la, los, las o con mi, tu, su si usa «estar»: «La cama está aquí».
+ex: hay una cama | c'è un letto
+ex: hay dos sillas | ci sono due sedie
+ex: la cama está aquí | il letto è qui
+q: hay muchas sillas | *ci sono molte sedie | c'è una sedia | le sedie sono qui
+q: hay un armario | *c'è un armadio | l'armadio è qui
+f hay | verb | c'è, ci sono | lemma=haber
+w cama | noun la | letto
+w silla | noun la | sedia
+w mesa | noun la | tavolo
+w armario | noun el | armadio
+w ventana | noun la | finestra
+w puerta | noun la | porta
+
+## lesson Al e del
+p al-del | Al e del | needs: articles
+rule: a + el = al. de + el = del. Sono le sole due preposizioni articolate dello spagnolo.
+rule: Con la, los, las restano due parole: a la, de la, de los.
+rule: Le altre preposizioni non si uniscono mai: en el, con el. Non esiste «nel» o «sul».
+ex: el baño del piso | il bagno dell'appartamento
+ex: la puerta de la casa | la porta della casa
+ex: en el salón | nel soggiorno
+q: la ventana del baño | *la finestra del bagno | la finestra nel bagno
+q: en el armario | *nell'armadio | dell'armadio
+w a | prep | a
+w con | prep | con
+c al lado de ___ | accanto a ___
+c cerca de ___ | vicino a ___
+c lejos de ___ | lontano da ___
+c delante de ___ | davanti a ___
+c detrás de ___ | dietro ___
+
+## lesson Dove
+w sobre | prep | sopra, su
+c debajo de ___ | sotto ___
+w entre | prep | tra, fra
+c a la derecha | a destra
+c a la izquierda | a sinistra
+w centro | noun el | centro
+c en el centro | in centro
+
+## lesson Come stai
+w cansado | adj | stanco
+w contento | adj | contento
+w enfermo | adj | malato
+w triste | adj | triste
+w nervioso | adj | nervoso
+c ¿cómo estás? | come stai?
+c estoy bien | sto bene
+w ahora | adv | adesso
+w hoy | adv | oggi
+
+## lesson Le mie cose
+w llave | noun la | chiave
+w móvil | noun el | cellulare
+w ordenador | noun el | computer
+w teléfono | noun el | telefono
+w reloj | noun el | orologio
+w bolso | noun el | borsa
+w dinero | noun el | soldi
+
+## lesson I colori
+w color | noun el | colore
+w blanco | adj | bianco
+w negro | adj | nero
+w rojo | adj | rosso
+w azul | adj | blu, azzurro
+w verde | adj | verde
+w amarillo | adj | giallo
+c ¿de qué color es ___? | di che colore è ___?
+
+## sentences
+
+s Mi casa es grande. | La mia casa è grande.
+s Tengo un piso pequeño. | Ho un appartamento piccolo.
+s Mi piso tiene tres habitaciones. | Il mio appartamento ha tre stanze.
+s La cocina es pequeña. | La cucina è piccola.
+s Tenemos dos baños. | Abbiamo due bagni.
+s El salón es muy grande. | Il soggiorno è molto grande.
+s Vivimos en una casa con muchas habitaciones. | Abitiamo in una casa con molte stanze.
+s Estoy en Madrid. | Sono a Madrid.
+s Mi hermano está aquí. | Mio fratello è qui.
+s Mis padres están allí. | I miei genitori sono lì.
+s Estoy en casa. | Sono a casa.
+s Mi casa está cerca. | La mia casa è vicina.
+s Sevilla está lejos. | Siviglia è lontana.
+s ¿Dónde estás? | Dove sei?
+s ¿Dónde está el baño? | Dov'è il bagno?
+s Estamos en la cocina. | Siamo in cucina.
+s ¿Estáis en casa? | Siete a casa?
+s Mi madre es de Roma, pero está en Madrid. | Mia madre è di Roma, ma è a Madrid.
+s Mis hermanas no están en casa. | Le mie sorelle non sono a casa.
+s Hay un baño. | C'è un bagno.
+s Hay una cama grande. | C'è un letto grande.
+s Hay cuatro sillas. | Ci sono quattro sedie.
+s Hay una mesa en la cocina. | C'è un tavolo in cucina.
+s Hay un armario en mi habitación. | C'è un armadio nella mia stanza.
+s La habitación tiene dos ventanas. | La stanza ha due finestre.
+s La puerta es pequeña. | La porta è piccola.
+s En el salón hay muchas sillas. | Nel soggiorno ci sono molte sedie.
+s No hay camas en esta habitación. | Non ci sono letti in questa stanza.
+s La cama está en la habitación pequeña. | Il letto è nella stanza piccola.
+s ¿Hay un baño aquí? | C'è un bagno qui?
+s Escribo a mi hermano. | Scrivo a mio fratello.
+s Vivo con mi novia. | Abito con la mia fidanzata.
+s La puerta del baño es pequeña. | La porta del bagno è piccola.
+s La silla está al lado del armario. | La sedia è accanto all'armadio.
+s Mi casa está cerca de la oficina. | La mia casa è vicina all'ufficio.
+s Vivimos lejos del trabajo{noun}. | Abitiamo lontano dal lavoro.
+s La mesa está delante de la ventana. | Il tavolo è davanti alla finestra.
+s El baño está detrás de esa puerta. | Il bagno è dietro quella porta. | alt: El baño está detrás de aquella puerta.
+s La cocina está al lado del salón. | La cucina è accanto al soggiorno.
+s Hablo con el profesor. | Parlo con il professore.
+s Es la habitación de los hijos. | È la stanza dei figli.
+s Escribimos al señor alemán. | Scriviamo al signore tedesco.
+s El libro está sobre la mesa. | Il libro è sul tavolo.
+s La mesa está entre la cama y la ventana. | Il tavolo è tra il letto e la finestra.
+s El centro de la ciudad es grande. | Il centro della città è grande.
+s Las gafas están debajo de la cama. | Gli occhiali sono sotto il letto.
+s El baño está a la derecha. | Il bagno è a destra.
+s La cocina está a la izquierda. | La cucina è a sinistra.
+s Trabajo{verb} en el centro. | Lavoro in centro.
+s Mi piso está en el centro de Madrid. | Il mio appartamento è nel centro di Madrid.
+s Estoy cansado. | Sono stanco.
+s Mi madre está contenta. | Mia madre è contenta.
+s Mi abuelo está enfermo. | Mio nonno è malato.
+s ¿Estás triste? | Sei triste?
+s Estamos nerviosos. | Siamo nervosi.
+s ¿Cómo estás? | Come stai?
+s Estoy bien, gracias. | Sto bene, grazie.
+s Ahora estoy en casa. | Adesso sono a casa.
+s Hoy estoy muy cansado. | Oggi sono molto stanco.
+s Hoy no trabajo{verb}. | Oggi non lavoro.
+s Mis hijas están muy contentas. | Le mie figlie sono molto contente.
+s Ana es alegre, pero hoy está triste. | Ana è allegra, ma oggi è triste.
+s ¿Dónde están mis llaves? | Dove sono le mie chiavi?
+s Mi móvil está sobre la mesa. | Il mio cellulare è sul tavolo.
+s Tengo un ordenador. | Ho un computer.
+s El teléfono está en el salón. | Il telefono è nel soggiorno.
+s Llevo un reloj. | Porto un orologio.
+s Las llaves están en mi bolso. | Le chiavi sono nella mia borsa.
+s No tengo dinero. | Non ho soldi.
+s Trabajo{verb} con el ordenador. | Lavoro con il computer.
+s Tu reloj está al lado del teléfono. | Il tuo orologio è accanto al telefono.
+s ¿Tienes mucho dinero? | Hai molti soldi?
+s ¿Qué color quieres? | Che colore vuoi?
+s Mi casa es blanca. | La mia casa è bianca.
+s Tengo el pelo negro. | Ho i capelli neri.
+s La puerta es roja. | La porta è rossa.
+s Tiene los ojos azules. | Ha gli occhi azzurri.
+s La silla es verde. | La sedia è verde.
+s El bolso es amarillo. | La borsa è gialla.
+s ¿De qué color es tu móvil? | Di che colore è il tuo cellulare?
+s Las sillas son blancas y la mesa es negra. | Le sedie sono bianche e il tavolo è nero.
+s Tengo dos bolsos rojos. | Ho due borse rosse.
+s Mi habitación tiene una puerta verde. | La mia stanza ha una porta verde.
+
+## story Mi piso | Il mio appartamento
+Marco: Vivo en un piso pequeño en el centro de Madrid. | Abito in un appartamento piccolo nel centro di Madrid.
+Marco: Tiene dos habitaciones, una cocina y un baño. | Ha due stanze, una cucina e un bagno.
+Marco: En mi habitación hay una cama, un armario y una mesa. | Nella mia stanza ci sono un letto, un armadio e un tavolo.
+Marco: El salón es grande y tiene tres ventanas. | Il soggiorno è grande e ha tre finestre.
+Marco: El piso está cerca de mi trabajo{noun}. | L'appartamento è vicino al mio lavoro.
+Marco: Estoy muy contento aquí. | Sono molto contento qui.
+? Quante stanze ha l'appartamento? | *due | tre | una
+? Dov'è l'appartamento? | *in centro, vicino al lavoro | lontano dal centro | accanto alla casa dei genitori
+
+## story ¿Dónde están mis llaves? | Dove sono le mie chiavi?
+Elena: ¿Dónde están mis llaves? | Dove sono le mie chiavi?
+Luis: ¿Están en tu bolso? | Sono nella tua borsa?
+Elena: No, en el bolso hay un libro y mi móvil. | No, nella borsa ci sono un libro e il mio cellulare.
+Luis: ¿Están sobre la mesa de la cocina? | Sono sul tavolo della cucina?
+Elena: No, allí no están. Estoy muy nerviosa. | No, lì non ci sono. Sono molto nervosa.
+Luis: ¡Están aquí, debajo de la silla! | Sono qui, sotto la sedia!
+Elena: ¡Gracias! Ahora estoy contenta. | Grazie! Adesso sono contenta.
+? Che cosa c'è nella borsa di Elena? | *un libro e il cellulare | le chiavi | i soldi
+? Dove sono le chiavi? | *sotto la sedia | sul tavolo | nella borsa

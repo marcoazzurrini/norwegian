@@ -1,0 +1,180 @@
+# unit 9 | Estudiar y trabajar | A lezione, al lavoro e all'università | level: A1
+
+## lesson In classe
+w clase | noun la | lezione, classe
+w palabra | noun la | parola
+w pregunta | noun la | domanda
+c ¿cómo se dice ___? | come si dice ___?
+c ¿qué significa ___? | che cosa significa ___?
+c más despacio, por favor | più piano, per favore
+c otra vez | un'altra volta
+
+## lesson Sapere e capire
+w saber | verb | sapere
+w conocer | verb | conoscere
+w entender | verb | capire
+w preguntar | verb | chiedere, domandare
+w repetir | verb | ripetere
+w decir | verb | dire
+w explicar | verb | spiegare
+
+## lesson Per scrivere
+w bolígrafo | noun el | penna
+w lápiz | noun el | matita
+w papel | noun el | carta, foglio
+w cuaderno | noun el | quaderno
+w página | noun la | pagina
+w examen | noun el | esame
+w ejercicio | noun el | esercizio
+
+## lesson Dovere
+c tener que ___ | dovere ___
+w necesitar | verb | aver bisogno di
+w ayudar | verb | aiutare
+w esperar | verb | aspettare
+w buscar | verb | cercare
+w encontrar | verb | trovare
+w para | prep | per
+
+## lesson Al lavoro
+w jefe | noun el | capo
+w compañero | noun el | collega, compagno
+w reunión | noun la | riunione
+w horario | noun el | orario
+w libre | adj | libero
+w ocupado | adj | occupato, impegnato
+c estar en paro | essere disoccupato
+
+## lesson Studiare
+w universidad | noun la | università
+w biblioteca | noun la | biblioteca
+w librería | noun la | libreria (negozio)
+w curso | noun el | corso
+w idioma | noun el | lingua (idioma)
+w fácil | adj | facile
+w difícil | adj | difficile
+
+## lesson I mesi, da luglio a dicembre
+w julio | noun el | luglio
+w agosto | noun el | agosto
+w septiembre | noun el | settembre
+w octubre | noun el | ottobre
+w noviembre | noun el | novembre
+w diciembre | noun el | dicembre
+
+## lesson Parole per collegare
+w cuando | conj | quando
+w entonces | adv | allora
+w todavía | adv | ancora
+w ya | adv | già
+w casi | adv | quasi
+w que | conj | che
+c creo que ___ | credo che ___
+
+## sentences
+
+s Tengo clase de español. | Ho lezione di spagnolo.
+s Aprendo palabras nuevas. | Imparo parole nuove.
+s Tengo una pregunta{noun}. | Ho una domanda.
+s ¿Cómo se dice «libro» en italiano? | Come si dice «libro» in italiano?
+s ¿Qué significa «tienda»? | Che cosa significa «tienda»?
+s Más despacio, por favor. | Più piano, per favore.
+s Otra vez, por favor. | Un'altra volta, per favore.
+s La clase empieza a las nueve. | La lezione comincia alle nove.
+s No entiendo esta palabra. | Non capisco questa parola.
+s ¿Qué significa esta palabra? | Che cosa significa questa parola?
+s Sé muchas palabras. | So molte parole.
+s Conozco Madrid. | Conosco Madrid.
+s Entiendo la pregunta{noun}. | Capisco la domanda.
+s Pregunto al profesor. | Chiedo al professore.
+s Repito la palabra. | Ripeto la parola.
+s ¿Qué dices? | Che cosa dici?
+s El profesor explica muy bien. | Il professore spiega molto bene.
+s ¿Sabes nadar? | Sai nuotare?
+s No conozco esta ciudad. | Non conosco questa città.
+s ¿Entiendes el ejercicio? | Capisci l'esercizio?
+s ¿Puede repetir, por favor? | Può ripetere, per favore?
+s Mi madre dice que no. | Mia madre dice di no.
+s No sabemos dónde está la estación. | Non sappiamo dov'è la stazione.
+s El profesor pregunta{verb} y nosotros hablamos. | Il professore chiede e noi parliamo.
+s Escribo con un bolígrafo azul. | Scrivo con una penna blu.
+s Tengo dos lápices. | Ho due matite.
+s Escribo en un papel. | Scrivo su un foglio.
+s Mi cuaderno está en el bolso. | Il mio quaderno è nella borsa.
+s Leemos la página veinte. | Leggiamo la pagina venti.
+s El lunes tengo un examen. | Lunedì ho un esame.
+s Hago los ejercicios. | Faccio gli esercizi.
+s Necesito papel y un lápiz. | Ho bisogno di carta e di una matita.
+s Los exámenes son en junio. | Gli esami sono a giugno.
+s El ejercicio está en la página doce. | L'esercizio è a pagina dodici.
+s Tengo que estudiar. | Devo studiare.
+s Necesito un bolígrafo. | Ho bisogno di una penna.
+s Mi hermano me ayuda. | Mio fratello mi aiuta.
+s Espero el autobús. | Aspetto l'autobus.
+s Busco mis llaves. | Cerco le mie chiavi.
+s No encuentro mi móvil. | Non trovo il mio cellulare.
+s Este libro es para mi hermano. | Questo libro è per mio fratello.
+s Tenemos que salir pronto. | Dobbiamo uscire presto.
+s ¿Tienes que trabajar el sábado? | Devi lavorare sabato?
+s Busco un piso en el centro. | Cerco un appartamento in centro.
+s Estudio español para trabajar en Madrid. | Studio spagnolo per lavorare a Madrid.
+s Te espero en la plaza. | Ti aspetto in piazza.
+s Mi jefe es simpático. | Il mio capo è simpatico.
+s Como con mis compañeros. | Mangio con i miei colleghi.
+s Tengo una reunión a las diez. | Ho una riunione alle dieci.
+s Tengo un horario bueno. | Ho un orario buono.
+s El viernes estoy libre. | Venerdì sono libero.
+s Hoy estoy muy ocupado. | Oggi sono molto impegnato.
+s Mi primo está en paro. | Mio cugino è disoccupato.
+s La reunión termina a las doce. | La riunione finisce alle dodici.
+s Mis compañeros son muy trabajadores. | I miei colleghi sono molto laboriosi.
+s ¿Estás libre esta tarde{noun}? | Sei libero questo pomeriggio?
+s Estudio en la universidad. | Studio all'università.
+s Estudio en la biblioteca. | Studio in biblioteca.
+s Compro libros en una librería. | Compro libri in una libreria.
+s Hago un curso de español. | Faccio un corso di spagnolo.
+s Hablo tres idiomas. | Parlo tre lingue.
+s El español es fácil. | Lo spagnolo è facile.
+s El alemán es difícil. | Il tedesco è difficile.
+s La biblioteca de la universidad es muy grande. | La biblioteca dell'università è molto grande.
+s Este ejercicio es muy fácil. | Questo esercizio è molto facile.
+s Las preguntas{noun} del examen son difíciles. | Le domande dell'esame sono difficili.
+s En julio hace calor. | A luglio fa caldo.
+s En agosto estoy de vacaciones. | Ad agosto sono in vacanza.
+s En septiembre empieza el curso. | A settembre comincia il corso.
+s En octubre llueve. | A ottobre piove.
+s En noviembre hace frío. | A novembre fa freddo.
+s En diciembre voy a Italia. | A dicembre vado in Italia.
+s El curso termina en julio. | Il corso finisce a luglio.
+s Cuando llueve, voy en autobús. | Quando piove, vado in autobus.
+s Entonces no voy. | Allora non vado.
+s Todavía estoy en la oficina. | Sono ancora in ufficio.
+s Ya estoy en casa. | Sono già a casa.
+s Casi siempre como en casa. | Mangio quasi sempre a casa.
+s Dice que está cansado. | Dice che è stanco.
+s Creo que es muy caro. | Credo che sia molto caro.
+s Cuando tengo tiempo, leo. | Quando ho tempo, leggo.
+s ¿Todavía vives con tus padres? | Vivi ancora con i tuoi genitori?
+s Creo que el examen es fácil. | Credo che l'esame sia facile.
+s Ya sé muchas palabras en español. | So già molte parole in spagnolo.
+
+## story La clase de español | La lezione di spagnolo
+Profesora: Buenos días. Hoy tenemos que hacer los ejercicios de la página treinta. | Buongiorno. Oggi dobbiamo fare gli esercizi di pagina trenta.
+Marco: Perdone, no entiendo esta palabra. ¿Qué significa «tienda»? | Scusi, non capisco questa parola. Che cosa significa «tienda»?
+Profesora: En una tienda compras cosas. ¿Entiendes ahora? | In una «tienda» compri cose. Capisci adesso?
+Marco: Sí, gracias. ¿Y cómo se dice esto en español? | Sì, grazie. E come si dice questo in spagnolo?
+Profesora: Se dice «zapato». | Si dice «zapato».
+Marco: ¿Puede repetir más despacio, por favor? | Può ripetere più piano, per favore?
+Profesora: Claro: zapato. | Certo: zapato.
+? Che cosa non capisce Marco? | *la parola «tienda» | l'esercizio | la domanda
+? A che pagina sono gli esercizi? | *a pagina trenta | a pagina venti | a pagina tredici
+
+## story Mi semana | La mia settimana
+Sara: Estudio en la universidad y también trabajo{verb} en una librería. | Studio all'università e lavoro anche in una libreria.
+Sara: Tengo clase por la mañana y trabajo{verb} por la tarde. | Ho lezione di mattina e lavoro di pomeriggio.
+Sara: Mi jefe es simpático y mis compañeros me ayudan mucho. | Il mio capo è simpatico e i miei colleghi mi aiutano molto.
+Sara: En junio tengo cuatro exámenes. Tengo que estudiar mucho. | A giugno ho quattro esami. Devo studiare molto.
+Sara: Casi nunca estoy libre, pero el domingo descanso. | Non sono quasi mai libera, ma domenica riposo.
+Sara: Creo que el curso es difícil, pero me gusta. | Credo che il corso sia difficile, ma mi piace.
+? Dove lavora Sara? | *in una libreria | all'università | in biblioteca
+? Quando riposa? | *la domenica | mai | il venerdì

@@ -11,6 +11,14 @@ const LOADERS = new Map<string, () => Promise<Course>>([
       return loaded.course;
     },
   ],
+  [
+    "es",
+    async () => {
+      const loaded = await import("@norsk/spanish");
+
+      return loaded.course;
+    },
+  ],
 ]);
 
 const loaded = new Map<string, Promise<Course>>();
