@@ -4,6 +4,7 @@
 // server cannot be reached. A caller notes an event and goes on; it never waits and never fails.
 // Events are kept on the device until the server has stored them, so a session studied offline
 // arrives later. Nothing in the app reads the journal: it is read on the server, with queries.
+// Only the events listed in `events.ts` can be noted.
 import {
   EVENT_PAGE,
   JournalEventSchema,
@@ -15,6 +16,12 @@ import { wrap } from "idb";
 import type { IDBPDatabase } from "idb";
 import * as v from "valibot";
 
+import type { EventKind, Events } from "./events";
+
+export { taskIds } from "./events";
+
+export type { EventKind, Events, SessionTotals, TaskIds } from "./events";
+
 const NAME = "norsk-journal";
 const STORE = "events";
 
@@ -25,9 +32,6 @@ const STORE = "events";
 export const MAX_KEPT = 20_000;
 
 export type Fetch = (path: string, init: RequestInit) => Promise<Response>;
-
-/** What describes one event. Anything JSON can carry. */
-export type EventData = JournalEvent["data"];
 
 export interface JournalDeps {
   /** Where the events wait on this device. */
@@ -42,8 +46,15 @@ export interface JournalDeps {
 }
 
 export interface Journal {
-  /** Notes that something happened, now. `session` is the session it happened in, if any. */
-  record: (kind: string, data: EventData, session?: string | null) => void;
+  /**
+   * Notes that something happened, now. `kind` is one of the listed events and `data` is what
+   * that event carries. `session` is the session it happened in, if any.
+   */
+  record: <Kind extends EventKind>(
+    kind: Kind,
+    data: Events[Kind],
+    session?: string | null
+  ) => void;
   /**
    * Sends the events that wait to the server, oldest first, and forgets those it stored.
    * Resolves when all are sent or the server cannot be reached. Never rejects.

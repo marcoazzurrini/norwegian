@@ -4,8 +4,8 @@
 // Hides: which session an event belongs to, and when the events are sent to the server.
 // A screen notes what happened and goes on.
 import type { Session, Task, TaskResult } from "@norsk/engine";
-import { createJournal } from "@norsk/journal";
-import type { EventData } from "@norsk/journal";
+import { createJournal, taskIds } from "@norsk/journal";
+import type { EventKind, Events, SessionTotals } from "@norsk/journal";
 
 import { report } from "./sentry";
 
@@ -32,7 +32,7 @@ interface Current {
 /** Null outside a session. Events noted during a session belong to it. */
 let current: Current | null = null;
 
-const totals = (session: Session) => ({
+const totals = (session: Session): SessionTotals => ({
   elapsedMs: session.elapsedMs,
   timeUp: session.timeUp,
   ...session.stats,
@@ -42,8 +42,14 @@ const send = (): void => {
   journal.flush().catch(reportError);
 };
 
-/** Notes that something happened, in the session under way if there is one. */
-export const note = (kind: string, data: EventData): void => {
+/**
+ * Notes that something happened, in the session under way if there is one.
+ * `kind` is one of the events the journal lists, and `data` is what that event carries.
+ */
+export const note = <Kind extends EventKind>(
+  kind: Kind,
+  data: Events[Kind]
+): void => {
   journal.record(kind, data, current?.id ?? null);
 };
 
@@ -68,46 +74,6 @@ export const startJournal = (): (() => void) => {
   };
 };
 
-/** What a task was about: its kind and the ids of what it used, never the texts. */
-const taskData = (task: Task): EventData => {
-  switch (task.type) {
-    case "sound": {
-      return { group: task.pair.group, target: task.target };
-    }
-
-    case "intro": {
-      return { items: task.items.map((item) => item.id) };
-    }
-
-    case "pattern": {
-      return {
-        item: task.item.id,
-        practice: task.practice.map((sentence) => sentence.id),
-      };
-    }
-
-    case "card": {
-      return { item: task.item.id, reason: task.reason };
-    }
-
-    case "sentence": {
-      return { covers: task.covers, sentence: task.sentence.id };
-    }
-
-    case "story": {
-      return { story: task.story.id };
-    }
-
-    case "done": {
-      return {};
-    }
-
-    default: {
-      return task satisfies never;
-    }
-  }
-};
-
 /**
  * The session chose its next task: which one, and why. `count` numbers the tasks of the session.
  * The first task of a session notes that the session began, and its last that it ended.
@@ -123,20 +89,17 @@ export const noteTaskChosen = (
     note("session.started", { minutes: session.minutes, pace: session.pace });
   }
 
-  if (current.count >= count) {
+  const choice = session.lastChoice;
+
+  if (current.count >= count || choice === null) {
     return;
   }
 
   current.count = count;
-  note("task.chosen", {
-    ...session.lastChoice,
-    ...taskData(task),
-    count,
-    task: task.type,
-  });
+  note("task.chosen", { ...choice, ...taskIds(task), count });
 
   if (task.type === "done") {
-    note("session.ended", { ...totals(session) });
+    note("session.ended", totals(session));
     current.over = true;
     send();
   }
@@ -155,7 +118,7 @@ export const noteTaskDone = (
 /** The learner left the session's page. If the session had not ended, it was left before its end. */
 export const noteSessionLeft = (): void => {
   if (current !== null && !current.over) {
-    note("session.left", { ...totals(current.session) });
+    note("session.left", totals(current.session));
     send();
   }
 

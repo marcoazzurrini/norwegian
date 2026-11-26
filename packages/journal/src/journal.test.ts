@@ -53,9 +53,9 @@ const setup = (status: () => number = () => 200) => {
 test("events are sent in the order they happened, with their time and session", async () => {
   const { journal, sent } = setup();
 
-  journal.record("session.started", { minutes: 15 }, "s-1");
-  journal.record("task.chosen", { why: "review" }, "s-1");
-  journal.record("app.opened", {});
+  journal.record("task.taught", { ids: ["w-0"] }, "s-1");
+  journal.record("task.taught", { ids: ["w-1"] }, "s-1");
+  journal.record("task.event", { event: "typed" });
   await journal.flush();
 
   expect(sent).toEqual([
@@ -63,19 +63,25 @@ test("events are sent in the order they happened, with their time and session", 
       events: [
         {
           at: 1001,
-          data: { minutes: 15 },
-          kind: "session.started",
+          data: { ids: ["w-0"] },
+          kind: "task.taught",
           session: "s-1",
           uid: "e-1",
         },
         {
           at: 1002,
-          data: { why: "review" },
-          kind: "task.chosen",
+          data: { ids: ["w-1"] },
+          kind: "task.taught",
           session: "s-1",
           uid: "e-2",
         },
-        { at: 1003, data: {}, kind: "app.opened", session: null, uid: "e-3" },
+        {
+          at: 1003,
+          data: { event: "typed" },
+          kind: "task.event",
+          session: null,
+          uid: "e-3",
+        },
       ],
     },
   ]);
@@ -84,14 +90,14 @@ test("events are sent in the order they happened, with their time and session", 
 test("events the server stored are not sent again", async () => {
   const { journal, sent } = setup();
 
-  journal.record("a", {});
+  journal.record("task.taught", { ids: ["a"] });
   await journal.flush();
-  journal.record("b", {});
+  journal.record("task.taught", { ids: ["b"] });
   await journal.flush();
 
-  expect(sent.map((page) => page.events.map((event) => event.kind))).toEqual([
-    ["a"],
-    ["b"],
+  expect(sent.map((page) => page.events.map((event) => event.data))).toEqual([
+    [{ ids: ["a"] }],
+    [{ ids: ["b"] }],
   ]);
   expect(await journal.waiting()).toBe(0);
 });
@@ -100,23 +106,26 @@ test("without a connection the events wait, and go with the next flush", async (
   let online = false;
   const { journal, sent } = setup(() => (online ? 200 : 0));
 
-  journal.record("a", {});
+  journal.record("task.taught", { ids: ["a"] });
   await journal.flush();
 
   expect(await journal.waiting()).toBe(1);
 
   online = true;
-  journal.record("b", {});
+  journal.record("task.taught", { ids: ["b"] });
   await journal.flush();
 
-  expect(sent[0]?.events.map((event) => event.kind)).toEqual(["a", "b"]);
+  expect(sent[0]?.events.map((event) => event.data)).toEqual([
+    { ids: ["a"] },
+    { ids: ["b"] },
+  ]);
   expect(await journal.waiting()).toBe(0);
 });
 
 test("a refusal by the server, such as not being signed in, keeps the events", async () => {
   const { journal } = setup(() => 401);
 
-  journal.record("a", {});
+  journal.record("task.taught", { ids: ["a"] });
   await journal.flush();
 
   expect(await journal.waiting()).toBe(1);
@@ -126,7 +135,7 @@ test("more events than one message carries are sent in pages", async () => {
   const { journal, sent } = setup();
 
   for (let index = 0; index < 1200; index += 1) {
-    journal.record("tick", { index });
+    journal.record("task.event", { event: index });
   }
 
   await journal.flush();
@@ -139,7 +148,7 @@ test("a device that cannot send keeps only the newest events", async () => {
   const { journal, sent } = setup(() => 200);
 
   for (let index = 0; index < MAX_KEPT + 50; index += 1) {
-    journal.record("tick", { index });
+    journal.record("task.event", { event: index });
   }
 
   expect(await journal.waiting()).toBe(MAX_KEPT);
