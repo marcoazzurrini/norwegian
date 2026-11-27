@@ -161,11 +161,11 @@ describe("settings and counters", () => {
     const world = createWorld();
     const learner = await world.device("phone").launch();
 
-    await learner.updateSettings({ minutes: 25, voice: "Nora" });
+    await learner.updateSettings({ minutes: 30, voice: "Nora" });
 
     expect(learner.settings()).toEqual({
       ...DEFAULT_SETTINGS,
-      minutes: 25,
+      minutes: 30,
       voice: "Nora",
     });
   });

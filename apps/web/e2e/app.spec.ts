@@ -161,13 +161,13 @@ test("a learner who draws a blank can ask for a hint, or for the answer", async 
 test("the session length is remembered", async ({ page }) => {
   await open(page, "/settings");
   const group = page.getByRole("radiogroup", { name: "Session length" });
-  await group.getByRole("radio", { name: "25 min" }).click();
-  await expect(group.getByRole("radio", { name: "25 min" })).toBeChecked();
+  await group.getByRole("radio", { name: "30 min" }).click();
+  await expect(group.getByRole("radio", { name: "30 min" })).toBeChecked();
   await page.reload();
   await expect(
     page
       .getByRole("radiogroup", { name: "Session length" })
-      .getByRole("radio", { name: "25 min" })
+      .getByRole("radio", { name: "30 min" })
   ).toBeChecked();
 });
 

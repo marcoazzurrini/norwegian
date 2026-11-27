@@ -2,6 +2,7 @@
 // A learner studies fifteen minutes every day for thirty days and answers right 85% of the time.
 import { describe, expect, test } from "bun:test";
 
+import { SESSION_LENGTHS } from "./session";
 import { REVIEW_SHARE, isRealItem, simulate } from "./simulation";
 import type { Options, TaskRecord } from "./simulation";
 
@@ -226,7 +227,7 @@ describe("a month of daily study", () => {
 const isPattern = (id: string): boolean => id.startsWith("p:");
 
 describe("every word and phrase taught in a session is recalled again before the session ends", () => {
-  for (const minutes of [5, 15, 25, 40]) {
+  for (const minutes of SESSION_LENGTHS) {
     test(`in a session of ${minutes} minutes`, async () => {
       const days = await simulate({ ...month, days: 10, minutes });
 
@@ -250,6 +251,42 @@ describe("every word and phrase taught in a session is recalled again before the
       }
     });
   }
+});
+
+/** The stories of each day, in the order they were offered. */
+const storiesByDay = (tasks: TaskRecord[]): Map<number, string[]> => {
+  const byDay = new Map<number, string[]>();
+
+  for (const task of tasks.filter((t) => t.type === "story")) {
+    byDay.set(task.day, [...(byDay.get(task.day) ?? []), task.subject]);
+  }
+
+  return byDay;
+};
+
+describe("stories in a session", () => {
+  test("a session of an hour offers two different stories", async () => {
+    const days = await simulate({ ...month, days: 20, minutes: 60 });
+    const byDay = [...storiesByDay(days.tasks).values()];
+
+    expect(byDay.some((ids) => ids.length === 2)).toBe(true);
+
+    for (const ids of byDay) {
+      expect(ids.length).toBeLessThanOrEqual(2);
+      expect(new Set(ids).size).toBe(ids.length);
+    }
+  });
+
+  test("a session of half an hour offers one story at most", async () => {
+    const days = await simulate({ ...month, days: 20, minutes: 30 });
+    const byDay = [...storiesByDay(days.tasks).values()];
+
+    expect(byDay.length).toBeGreaterThan(0);
+
+    for (const ids of byDay) {
+      expect(ids.length).toBe(1);
+    }
+  });
 });
 
 describe("coming back after two weeks away", () => {

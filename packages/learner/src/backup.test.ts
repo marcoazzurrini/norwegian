@@ -233,6 +233,23 @@ describe("a backup file", () => {
     );
   });
 
+  test.each([
+    [25, 30],
+    [40, 60],
+  ])(
+    "with a session length of %i minutes, which the app no longer offers, loads %i minutes",
+    async (old, now) => {
+      const world = createWorld();
+      const learner = await world.device("phone").launch();
+
+      await learner.restoreBackup(
+        fromFirstVersion.replace('"minutes":10', `"minutes":${old}`)
+      );
+
+      expect(learner.settings().minutes).toBe(now);
+    }
+  );
+
   test("from the first version of the app loads, with ids given to its log entries", async () => {
     const world = createWorld();
     const learner = await world.device("phone").launch();

@@ -167,9 +167,18 @@ const MIN_SUCCESS_TASKS = 6;
  */
 const TEACHING_SHARE = 0.5;
 
-/** A story is offered once this share of the session has passed. */
+/** The session lengths a learner can choose from, in minutes. */
+export const SESSION_LENGTHS = [5, 15, 30, 60] as const;
+
+/**
+ * The last story of a session is offered first once this share of the session has passed.
+ * With more than one story, the earlier ones come at even steps before it.
+ */
 const STORY_AFTER = 0.7;
 const MIN_MINUTES_FOR_EXTRAS = 15;
+
+/** A session of at least this many minutes offers two stories. */
+const MIN_MINUTES_FOR_TWO_STORIES = 60;
 
 /** Time counted for one task is capped, so a break in the middle does not inflate study time. */
 const MAX_TASK_MS = 3 * 60_000;
@@ -187,15 +196,23 @@ const PRACTICE_SENTENCES = 3;
 const RECENT_ITEMS = 3;
 
 const soundsFor = (minutes: number): number => {
-  if (minutes >= 40) {
+  if (minutes >= 60) {
     return 10;
   }
 
-  if (minutes >= 25) {
+  if (minutes >= 30) {
     return 8;
   }
 
   return minutes >= MIN_MINUTES_FOR_EXTRAS ? 6 : 0;
+};
+
+const storiesFor = (minutes: number): number => {
+  if (minutes >= MIN_MINUTES_FOR_TWO_STORIES) {
+    return 2;
+  }
+
+  return minutes >= MIN_MINUTES_FOR_EXTRAS ? 1 : 0;
 };
 
 /**
@@ -254,7 +271,9 @@ export class Session {
   private readonly usedSentences = new Set<string>();
   private reviewMs = 0;
   private soundsLeft: number;
-  private storyOffered = false;
+  private readonly storiesTotal: number;
+  /** The stories offered in this session, so that none is offered twice. */
+  private readonly storiesOffered = new Set<string>();
   /** The last few items the learner worked on, newest first. */
   private recent: string[] = [];
   /** The latest recall tasks, newest first: true if nothing in the task was wrong at the first try. */
@@ -286,6 +305,7 @@ export class Session {
     this.budgetMs = minutes * 60_000;
     this.soundsTotal = soundsFor(minutes);
     this.soundsLeft = this.soundsTotal;
+    this.storiesTotal = storiesFor(minutes);
     this.paceNow = pace;
   }
 
@@ -380,7 +400,7 @@ export class Session {
     }
 
     if (task.type === "story") {
-      this.storyOffered = true;
+      this.storiesOffered.add(task.story.id);
     }
 
     return task;
@@ -603,15 +623,26 @@ export class Session {
         ? null
         : nextLesson(this.course, memory, view.chosenLesson);
 
+    const offered = this.storiesOffered.size;
+
     const found =
-      this.minutes >= MIN_MINUTES_FOR_EXTRAS && !this.storyOffered
-        ? nextStory(this.course, memory, view.storiesDone)
+      offered < this.storiesTotal
+        ? nextStory(
+            this.course,
+            memory,
+            new Set([...view.storiesDone, ...this.storiesOffered])
+          )
         : null;
 
     const story: Task | null =
       found === null ? null : { story: found, type: "story" };
 
-    if (this.elapsedMs >= this.budgetMs * STORY_AFTER) {
+    // The time from which the next story comes before reviews and new material.
+    const storyFrom =
+      (this.budgetMs * STORY_AFTER * (offered + 1)) /
+      Math.max(1, this.storiesTotal);
+
+    if (this.elapsedMs >= storyFrom) {
       const now = this.fit(story, spare);
 
       if (now !== null) {

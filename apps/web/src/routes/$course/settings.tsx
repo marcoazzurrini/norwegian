@@ -17,16 +17,10 @@ import { useRef, useState } from "react";
 import type { ReactNode } from "react";
 
 import { AppShell } from "../../components/app-shell";
+import { LENGTH_OPTIONS } from "../../components/session-summary";
 import { useCourse } from "../../course";
 import { learner, useMemory, useSettings, useSyncStatus } from "../../learner";
 import { speak, useVoices } from "../../speech";
-
-const LENGTHS = [
-  [5, "5 min"],
-  [15, "15 min"],
-  [25, "25 min"],
-  [40, "40 min"],
-] as const;
 
 const TARGETS = [
   [0.85, "85%"],
@@ -257,7 +251,7 @@ const SettingsPage = () => {
             <Segmented
               label="Session length"
               value={settings.minutes}
-              options={LENGTHS}
+              options={LENGTH_OPTIONS}
               onPick={(minutes) => {
                 learner().updateSettings({ minutes }).catch(reportError);
               }}

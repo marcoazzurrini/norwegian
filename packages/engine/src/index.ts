@@ -63,7 +63,7 @@ export { typicalMs, withTime } from "./pace";
 export type { Pace, PaceKind } from "./pace";
 
 // A study session: one task after another until the time is up.
-export { Session, blockOf } from "./session";
+export { SESSION_LENGTHS, Session, blockOf } from "./session";
 
 export type {
   Block,

@@ -22,6 +22,20 @@ export const DEFAULT_SETTINGS: Readonly<Settings> = {
   voice: null,
 };
 
+/**
+ * Session lengths that the app no longer offers, and the length that takes the place of each.
+ * A learner who chose one of them keeps a session of about the same kind.
+ */
+const RETIRED_MINUTES: ReadonlyMap<number, number> = new Map([
+  [25, 30],
+  [40, 60],
+]);
+
+const toCurrentMinutes = (minutes: number): number =>
+  RETIRED_MINUTES.get(minutes) ?? minutes;
+
+const MinutesSchema = v.pipe(v.number(), v.transform(toCurrentMinutes));
+
 const SoundScoreSchema = v.object({ right: v.number(), total: v.number() });
 
 const TimesSchema = v.exactOptional(v.pipe(v.array(v.number()), v.readonly()));
@@ -40,7 +54,7 @@ const PaceSchema = v.object({
 
 const SettingsSchema = v.looseObject({
   desiredRetention: v.optional(v.number(), DEFAULT_SETTINGS.desiredRetention),
-  minutes: v.optional(v.number(), DEFAULT_SETTINGS.minutes),
+  minutes: v.optional(MinutesSchema, DEFAULT_SETTINGS.minutes),
   rate: v.optional(v.number(), DEFAULT_SETTINGS.rate),
   textScale: v.optional(v.number(), DEFAULT_SETTINGS.textScale),
   voice: v.optional(v.nullable(v.string()), DEFAULT_SETTINGS.voice),
@@ -61,7 +75,7 @@ export type Meta = v.InferOutput<typeof MetaSchema>;
 
 const SavedSettingsSchema = v.looseObject({
   desiredRetention: v.fallback(v.number(), DEFAULT_SETTINGS.desiredRetention),
-  minutes: v.fallback(v.number(), DEFAULT_SETTINGS.minutes),
+  minutes: v.fallback(MinutesSchema, DEFAULT_SETTINGS.minutes),
   rate: v.fallback(v.number(), DEFAULT_SETTINGS.rate),
   textScale: v.fallback(v.number(), DEFAULT_SETTINGS.textScale),
   voice: v.fallback(v.nullable(v.string()), DEFAULT_SETTINGS.voice),
