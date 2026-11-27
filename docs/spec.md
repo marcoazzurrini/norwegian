@@ -2,7 +2,7 @@
 
 Status: draft 1, 2026-11-17. Target: Bokmål, Urban East Norwegian pronunciation, from zero to B1.
 
-Decided: explanations are in English; session length varies and is chosen at the start of each session (5, 15, 25 or 40 minutes), with blocks scaled to fit and review taking priority when time is short; the app is for personal use only; answers are typed at first.
+Decided: explanations are in English; session length varies and is chosen at the start of each session (5, 15, 30 or 60 minutes), with blocks scaled to fit and review taking priority when time is short; the app is for personal use only; answers are typed at first.
 
 Word testing: the scheduled test is always a meaning cue followed by typed Norwegian. The cue is the English word by default, with a short disambiguating hint where English is ambiguous ("know (a fact)" for _vite_). Concrete nouns may use an image. Later stages use a Norwegian sentence with a gap. Recognition (Norwegian to meaning) appears once, at first exposure. Comprehension is not scheduled with its own cards: it is credited from production passes, stories and listening.
 
@@ -139,21 +139,23 @@ Do not show a backlog. Run a short adaptive check (10 to 15 carriers) that propa
 4. **Produce**: typed items, with hint and retry on error.
 5. Mixed into review from the next session, interleaved with confusable patterns.
 
-### Session shape (25 minutes)
+### Session shape (30 minutes)
 
 | Block | Minutes | Content |
 | --- | --- | --- |
 | Sounds | 2 | Minimal pairs, several voices |
-| Review | 8 | Compressed carriers, then leftovers |
-| New | 8 | One pattern or 6 to 10 words and chunks |
+| Review | 10 | Compressed carriers, then leftovers |
+| New | 10 | One pattern or 6 to 10 words and chunks |
 | Input | 5 | Mini story or dialogue at 95 to 98% known words, read while listening, then shadow one line |
-| Recall again | 2 | Today's new items |
+| Recall again | 3 | Today's new items |
+
+A session of 60 minutes has 10 sound questions instead of 8, and two stories instead of one. A session of 5 minutes has no sounds and no story.
 
 Every block can be stopped early. The app shows hours studied against the level estimates below.
 
 ## 4. Curriculum
 
-Hours are estimates for a solo learner: A1 80 to 120, A2 200 to 250, B1 400 to 500 (cumulative). At 25 minutes a day, A1 takes about 7 months.
+Hours are estimates for a solo learner: A1 80 to 120, A2 200 to 250, B1 400 to 500 (cumulative). At 30 minutes a day, A1 takes about 6 months.
 
 Vocabulary order: frequency in spoken Norwegian (subtitle corpus), cognates first, function words early, chunks as first-class items. Target: 2,000 lemmas by B1.
 

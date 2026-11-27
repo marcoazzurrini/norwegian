@@ -32,7 +32,7 @@ describe("two devices", () => {
     later();
     laptop.review("w:hus:noun");
     later();
-    laptop.setMinutes(25);
+    laptop.setMinutes(30);
     later();
 
     await phone.sync();
@@ -50,7 +50,7 @@ describe("two devices", () => {
       days: ["2026-11-17", "2026-11-18"],
       totalMs: 5 * MINUTE,
     });
-    expect(phone.meta.settings.minutes).toBe(25);
+    expect(phone.meta.settings.minutes).toBe(30);
     // Each device keeps its own voice.
     expect(phone.meta.settings.voice).toBe("mia");
     expect(laptop.meta.settings.voice).toBeNull();
@@ -189,7 +189,7 @@ describe("devices in two courses", () => {
     const germanToo = new Device("german-too", cookie, null, "de");
 
     phone.teach("w:hus:noun");
-    phone.setMinutes(25);
+    phone.setMinutes(30);
     phone.study(5 * MINUTE, "2026-11-17");
     later();
     // The same item id means another word in another course.
@@ -212,7 +212,7 @@ describe("devices in two courses", () => {
     expect(laptop.log.size).toBe(1);
     expect(germanToo.log.size).toBe(3);
     expect(laptop.meta).toMatchObject({ days: ["2026-11-17"] });
-    expect(laptop.meta.settings.minutes).toBe(25);
+    expect(laptop.meta.settings.minutes).toBe(30);
     expect(germanToo.meta).toMatchObject({ days: [], totalMs: 0 });
     expect(germanToo.meta.settings.minutes).toBe(15);
   });

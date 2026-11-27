@@ -13,6 +13,7 @@ import { Check, Lock, Play } from "lucide-react";
 import { useMemo } from "react";
 
 import { AppShell } from "../../components/app-shell";
+import { LENGTH_OPTIONS } from "../../components/session-summary";
 import { greetingAt, todayOf } from "../../components/today-plan";
 import type { LevelStep } from "../../components/today-plan";
 import { useCourse } from "../../course";
@@ -23,12 +24,6 @@ import {
   useScheduler,
   useSettings,
 } from "../../learner";
-
-const LENGTHS = [5, 15, 25, 40] as const;
-
-const LENGTH_OPTIONS = LENGTHS.map(
-  (minutes) => [minutes, `${minutes} min`] as const
-);
 
 /** Sounds and a story are only part of a session of at least this many minutes. */
 const MIN_MINUTES_FOR_EXTRAS = 15;

@@ -1,4 +1,5 @@
 // What a session says about itself: the time left while it runs, and the numbers when it ends.
+import { SESSION_LENGTHS } from "@norsk/engine";
 import type { Session } from "@norsk/engine";
 
 const MS_PER_MINUTE = 60_000;
@@ -11,6 +12,11 @@ export const sessionMinutes = (asked: number): number =>
     LONGEST_MINUTES,
     Math.max(1, Number.isNaN(asked) || asked === 0 ? DEFAULT_MINUTES : asked)
   );
+
+/** The session lengths a learner can choose from, with their labels. */
+export const LENGTH_OPTIONS = SESSION_LENGTHS.map(
+  (minutes) => [minutes, `${minutes} min`] as const
+);
 
 type SessionTimes = Pick<Session, "budgetMs" | "elapsedMs">;
 

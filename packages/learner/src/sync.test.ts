@@ -224,13 +224,13 @@ describe("two devices", () => {
     const { laptop, phone, world } = await pair();
 
     world.clock.now += MINUTE;
-    await phone.learner().updateSettings({ minutes: 25 });
+    await phone.learner().updateSettings({ minutes: 30 });
     world.clock.now += MINUTE;
     await laptop.learner().updateSettings({ rate: 1.4 });
     await settle([laptop, phone]);
 
-    expect(phone.learner().settings().minutes).toBe(25);
-    expect(laptop.learner().settings().minutes).toBe(25);
+    expect(phone.learner().settings().minutes).toBe(30);
+    expect(laptop.learner().settings().minutes).toBe(30);
   });
 
   test("how long tasks take belongs to each device", async () => {

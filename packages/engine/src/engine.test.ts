@@ -494,7 +494,7 @@ describe("a session", () => {
   });
 
   test("a longer session starts with sounds", () => {
-    const session = new Session(course, 25, () => 0.3);
+    const session = new Session(course, 30, () => 0.3);
     expect(session.next(view(new Map()), T0).type).toBe("sound");
   });
 
@@ -632,14 +632,14 @@ describe("a session", () => {
 
   test("a new item is taught only while the waits before its recalls still fit in the session", () => {
     const mem = new Map<string, Mem>();
-    const fits = new Session(course, 40, () => 0.3, { card: [5000] });
-    const tooLate = new Session(course, 40, () => 0.3, { card: [5000] });
+    const fits = new Session(course, 60, () => 0.3, { card: [5000] });
+    const tooLate = new Session(course, 60, () => 0.3, { card: [5000] });
 
     // A new item is recalled after 5 minutes, and then after 15, of which half must pass: 12.5 minutes.
     // The time is recorded as new material, so that reviews have not had their share and sounds are over.
     for (const [session, used] of [
-      [fits, 27],
-      [tooLate, 27.6],
+      [fits, 47],
+      [tooLate, 47.6],
     ] as const) {
       for (let i = 0; i < 10; i += 1) {
         session.next(view(mem), T0);
