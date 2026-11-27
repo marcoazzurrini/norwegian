@@ -38,6 +38,9 @@ const ICON: Record<LessonState, LucideIcon> = {
 /** The router restores its own scroll position first; the Map waits this long before it sets its own. */
 const SCROLL_DELAY_MS = 150;
 
+/** The graph is made smaller to fit the width of its frame, but never below this, so its names stay readable. */
+const MIN_ZOOM = 0.6;
+
 const styles = stylex.create({
   // The states of the lessons, at the end of the row of tabs. On a phone there is no room for them.
   legend: {
@@ -76,11 +79,12 @@ const styles = stylex.create({
     padding: { default: "1.25rem", [stylex.env.desktop]: "2rem" },
   },
   // Lengths are in rem; the SVG uses the same numbers as its own course.units.
-  graph: (width: number, height: number) => ({
+  graph: (width: number, height: number, zoom: number) => ({
     height: `${height}rem`,
     margin: "auto",
     position: "relative",
     width: `${width}rem`,
+    zoom,
   }),
   curves: {
     height: "100%",
@@ -511,6 +515,34 @@ const MapPage = () => {
 
   const lesson = course.lessons[selected];
   const scroller = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState(1);
+
+  // On a wide screen the graph is made smaller until it is as wide as its frame, and again when
+  // the frame changes size. On a phone it keeps its size, and the learner moves it with a finger.
+  useEffect(() => {
+    const watch = new ResizeObserver(([entry]) => {
+      if (entry === undefined || !desktop) {
+        setZoom(1);
+
+        return;
+      }
+
+      // The room inside the padding of the frame, and the width of the graph, both in pixels.
+      const room = entry.contentRect.width;
+      const { fontSize } = getComputedStyle(document.documentElement);
+      const graph = width * Number(fontSize.replace("px", ""));
+
+      setZoom(Math.min(1, Math.max(MIN_ZOOM, room / graph)));
+    });
+
+    if (scroller.current !== null) {
+      watch.observe(scroller.current);
+    }
+
+    return () => {
+      watch.disconnect();
+    };
+  }, [width, desktop]);
 
   // The graph is larger than its frame: open it on the lesson that comes next, and again when
   // another level is picked or the layout changes between the phone and the wide one.
@@ -523,8 +555,8 @@ const MapPage = () => {
     return () => {
       clearTimeout(wait);
     };
-    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- neither is read here; a change of the layout or the level is what asks for a new scroll position
-  }, [desktop, level]);
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- none is read here; a change of the layout, the level or the zoom is what asks for a new scroll position
+  }, [desktop, level, zoom]);
 
   return (
     <CoursePage
@@ -558,7 +590,7 @@ const MapPage = () => {
           ref={scroller}
           {...stylex.props(styles.scroller, effects.noScrollbar)}
         >
-          <div {...stylex.props(styles.graph(width, height))}>
+          <div {...stylex.props(styles.graph(width, height, zoom))}>
             <svg
               viewBox={`0 0 ${width} ${height}`}
               aria-hidden
