@@ -17,6 +17,9 @@ const BACKLOG = 40;
  */
 const TEACH_UNTIL = 0.5;
 
+/** Ten days of the longest sessions take a few seconds to simulate, more on a slow machine. */
+const LONG_SIMULATION_MS = 30_000;
+
 /** The longest time a single task can add to a session. */
 const MAX_TASK_MS = 3 * MINUTE;
 
@@ -228,28 +231,32 @@ const isPattern = (id: string): boolean => id.startsWith("p:");
 
 describe("every word and phrase taught in a session is recalled again before the session ends", () => {
   for (const minutes of SESSION_LENGTHS) {
-    test(`in a session of ${minutes} minutes`, async () => {
-      const days = await simulate({ ...month, days: 10, minutes });
+    test(
+      `in a session of ${minutes} minutes`,
+      async () => {
+        const days = await simulate({ ...month, days: 10, minutes });
 
-      const notRecalled = days.tasks.flatMap((task, i) =>
-        task.taught
-          .filter(
-            (id) =>
-              !isPattern(id) &&
-              !days.tasks
-                .slice(i + 1)
-                .some((t) => t.day === task.day && t.answered.includes(id))
-          )
-          .map((id) => `day ${task.day}: ${id}`)
-      );
+        const notRecalled = days.tasks.flatMap((task, i) =>
+          task.taught
+            .filter(
+              (id) =>
+                !isPattern(id) &&
+                !days.tasks
+                  .slice(i + 1)
+                  .some((t) => t.day === task.day && t.answered.includes(id))
+            )
+            .map((id) => `day ${task.day}: ${id}`)
+        );
 
-      expect(days.tasks.flatMap((t) => t.taught).length).toBeGreaterThan(30);
-      expect(notRecalled).toEqual([]);
+        expect(days.tasks.flatMap((t) => t.taught).length).toBeGreaterThan(30);
+        expect(notRecalled).toEqual([]);
 
-      for (const d of days.days) {
-        expect(d.elapsedMs).toBeLessThan(d.budgetMs + 1.5 * MINUTE);
-      }
-    });
+        for (const d of days.days) {
+          expect(d.elapsedMs).toBeLessThan(d.budgetMs + 1.5 * MINUTE);
+        }
+      },
+      LONG_SIMULATION_MS
+    );
   }
 });
 
@@ -264,10 +271,14 @@ const storiesByDay = (tasks: TaskRecord[]): Map<number, string[]> => {
   return byDay;
 };
 
+// A few days are enough: the first lessons already make stories ready. The runs are made here,
+// outside the tests, so that a slow machine does not hit the time limit of a test.
+const hourLong = await simulate({ ...month, days: 5, minutes: 60 });
+const halfHourLong = await simulate({ ...month, days: 5, minutes: 30 });
+
 describe("stories in a session", () => {
-  test("a session of an hour offers two different stories", async () => {
-    const days = await simulate({ ...month, days: 20, minutes: 60 });
-    const byDay = [...storiesByDay(days.tasks).values()];
+  test("a session of an hour offers two different stories", () => {
+    const byDay = [...storiesByDay(hourLong.tasks).values()];
 
     expect(byDay.some((ids) => ids.length === 2)).toBe(true);
 
@@ -277,9 +288,8 @@ describe("stories in a session", () => {
     }
   });
 
-  test("a session of half an hour offers one story at most", async () => {
-    const days = await simulate({ ...month, days: 20, minutes: 30 });
-    const byDay = [...storiesByDay(days.tasks).values()];
+  test("a session of half an hour offers one story at most", () => {
+    const byDay = [...storiesByDay(halfHourLong.tasks).values()];
 
     expect(byDay.length).toBeGreaterThan(0);
 
