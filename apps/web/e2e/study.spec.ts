@@ -301,7 +301,7 @@ test("a story is read, a word is looked up, and its questions are answered", asy
 
   // Back on the list, the story is marked as read.
   await expect(
-    page.getByRole("heading", { level: 1, name: "Stories" })
+    page.getByRole("heading", { level: 1, name: "Course" })
   ).toBeVisible();
   await expect(
     page

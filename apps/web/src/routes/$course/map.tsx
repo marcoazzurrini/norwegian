@@ -1,12 +1,12 @@
-import type { Course, Lesson, Level } from "@norsk/course";
-import { itemState, lessonState, nextLesson } from "@norsk/engine";
+import type { Course, Lesson, Level, Story } from "@norsk/course";
+import { itemState, lessonState, nextLesson, storyReady } from "@norsk/engine";
 import type { LessonState, Memory } from "@norsk/engine";
 import {
   Blob,
   Button,
   Card,
   GroupLabel,
-  PageTitle,
+  Progress,
   Tag,
   buttonStyle,
   effects,
@@ -19,8 +19,8 @@ import { Check, CircleDashed, Lock, Ruler, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { AppShell } from "../../components/app-shell";
-import { LevelSwitch, useLevel } from "../../components/level-switch";
+import { CoursePage } from "../../components/course-page";
+import { useLevel } from "../../components/level-switch";
 import { ITEM_LOOK, LESSON_LOOK } from "../../components/looks";
 import { MAP_SIZES, layoutMap } from "../../components/map-layout";
 import { useCourse } from "../../course";
@@ -39,15 +39,7 @@ const ICON: Record<LessonState, LucideIcon> = {
 const SCROLL_DELAY_MS = 150;
 
 const styles = stylex.create({
-  // The same two columns as the content below, so that the level switch ends where the graph ends.
-  titleRow: {
-    display: { default: "flex", [stylex.env.desktop]: "grid" },
-    gridTemplateColumns: {
-      default: null,
-      [stylex.env.desktop]: "minmax(0, 1fr) 32.5rem",
-    },
-  },
-  // As tall as the level switch, so the two share one centre line.
+  // The states of the lessons, at the end of the row of tabs. On a phone there is no room for them.
   legend: {
     alignContent: "center",
     alignItems: "center",
@@ -55,7 +47,7 @@ const styles = stylex.create({
     flexWrap: "wrap",
     gap: "0.625rem",
     justifyContent: "flex-end",
-    minHeight: "3.25rem",
+    minWidth: 0,
   },
   columns: {
     display: "grid",
@@ -65,7 +57,7 @@ const styles = stylex.create({
     gap: "1.25rem",
     gridTemplateColumns: {
       default: null,
-      [stylex.env.desktop]: "minmax(0, 1fr) 32.5rem",
+      [stylex.env.desktop]: "minmax(0, 1fr) 30rem",
     },
     gridTemplateRows: {
       default: null,
@@ -180,9 +172,57 @@ const styles = stylex.create({
   statePhone: {
     display: { default: "inline-flex", [stylex.env.desktop]: "none" },
   },
+  // How much of the lesson is learned, with its state at the end. On a phone the state sits beside the title instead.
+  meter: {
+    alignItems: "center",
+    display: "flex",
+    gap: "0.875rem",
+    paddingBottom: { default: "0.25rem", [stylex.env.desktop]: "0.75rem" },
+  },
+  meterBar: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+  },
   stateWide: {
-    display: { default: "none", [stylex.env.desktop]: "flex" },
-    paddingBottom: "0.5rem",
+    display: { default: "none", [stylex.env.desktop]: "inline-flex" },
+  },
+  gloss: {
+    color: color.fg2,
+    paddingLeft: "0.5rem",
+  },
+  story: {
+    alignItems: "center",
+    borderColor: color.line,
+    borderStyle: "solid",
+    borderTopWidth: 1,
+    borderWidth: 0,
+    color: color.fg,
+    display: "flex",
+    gap: "0.875rem",
+    paddingBlock: { default: "0.625rem", [stylex.env.desktop]: "0.875rem" },
+    textDecoration: "none",
+  },
+  storyBlob: {
+    height: "2.25rem",
+    width: "2.25rem",
+  },
+  storyText: {
+    flexBasis: "0%",
+    flexGrow: 1,
+    flexShrink: 1,
+    minWidth: 0,
+  },
+  storyTitle: {
+    display: "block",
+    fontSize: { default: text.s16, [stylex.env.desktop]: text.s18 },
+    fontWeight: 500,
+  },
+  storyBase: {
+    color: color.fg2,
+    display: "block",
+    fontSize: { default: text.s14, [stylex.env.desktop]: text.s15 },
+    lineHeight: 1.4,
   },
   firstLabel: {
     paddingBlock: "0.5rem",
@@ -204,9 +244,10 @@ const styles = stylex.create({
     paddingBlock: { default: "0.6875rem", [stylex.env.desktop]: "1rem" },
   },
   rowName: {
+    fontWeight: 500,
     minWidth: 0,
   },
-  teaches: {
+  unlocks: {
     display: "flex",
     flexWrap: "wrap",
     gap: "0.5rem",
@@ -240,39 +281,67 @@ const iconTones = stylex.create({
   started: { color: color.orange },
 });
 
-interface LessonRowProps {
-  lesson: Lesson;
-  memory: Memory;
-}
-
-const LessonRow = ({ lesson, memory }: LessonRowProps) => {
-  const course = useCourse();
-  const look = LESSON_LOOK[lessonState(course, lesson, memory)];
-
-  return (
-    <div {...stylex.props(styles.row)}>
-      <span {...stylex.props(styles.rowName)}>{lesson.title}</span>
-      <Tag tone={look.tone}>{look.label}</Tag>
-    </div>
-  );
-};
-
-interface TaughtProps {
+interface TaughtRowProps {
   id: string;
   memory: Memory;
 }
 
-/** One thing a lesson teaches: a pattern by its name, a word with its state. */
-const Taught = ({ id, memory }: TaughtProps) => {
+/** One thing a lesson teaches: a word with its meaning, or a pattern by its name, and its state. */
+const TaughtRow = ({ id, memory }: TaughtRowProps) => {
   const course = useCourse();
   const taught = course.item(id);
+  const isPattern = taught.kind === "pattern";
 
-  return taught.kind === "pattern" ? (
-    <Tag icon={Ruler}>{taught.title}</Tag>
-  ) : (
-    <Tag tone={ITEM_LOOK[itemState(course, taught, memory)].tone}>
-      {taught.text}
-    </Tag>
+  return (
+    <div {...stylex.props(styles.row)}>
+      <span {...stylex.props(styles.rowName)}>
+        {isPattern ? taught.title : taught.display}
+        {isPattern ? null : (
+          <span {...stylex.props(styles.gloss)}>{taught.gloss}</span>
+        )}
+      </span>
+      {isPattern ? (
+        <Tag icon={Ruler}>Pattern</Tag>
+      ) : (
+        <Tag tone={ITEM_LOOK[itemState(course, taught, memory)].tone}>
+          {ITEM_LOOK[itemState(course, taught, memory)].label}
+        </Tag>
+      )}
+    </div>
+  );
+};
+
+/** True if a line of the story uses one of these items, as a word or as part of a chunk. */
+const usesAny = (story: Story, ids: ReadonlySet<string>): boolean =>
+  story.lines.some((line) =>
+    line.tokens.some(
+      (token) =>
+        (token.w !== undefined && ids.has(token.w)) ||
+        (token.c !== undefined && ids.has(token.c))
+    )
+  );
+
+interface StoryRowProps {
+  story: Story;
+  read: boolean;
+}
+
+const StoryRow = ({ story, read }: StoryRowProps) => {
+  const course = useCourse();
+
+  return (
+    <Link
+      to="/$course/stories/$id"
+      params={{ course: course.meta.id, id: story.id }}
+      {...stylex.props(effects.press, styles.story)}
+    >
+      <Blob kind="story" style={styles.storyBlob} />
+      <span {...stylex.props(styles.storyText)}>
+        <span {...stylex.props(styles.storyTitle)}>{story.title}</span>
+        <span {...stylex.props(styles.storyBase)}>{story.titleBase}</span>
+      </span>
+      {read ? <Tag tone="good">Read</Tag> : <Tag tone="new">New</Tag>}
+    </Link>
   );
 };
 
@@ -284,11 +353,21 @@ interface DetailProps {
 
 const Detail = ({ lesson, memory, chosen }: DetailProps) => {
   const course = useCourse();
+  const { storiesDone } = useProgress();
   const state = lessonState(course, lesson, memory);
   const look = LESSON_LOOK[state];
   const unit = course.units[lesson.unit - 1];
-  const needs = lesson.needs.flatMap((need) => course.lessons[need] ?? []);
   const unlocks = course.unlockedBy(lesson.index);
+  const learned = lesson.items.filter((id) => memory.has(id)).length;
+
+  const total = lesson.items.length;
+
+  // The stories that use what this lesson teaches and that the learner can read now.
+  const taught = new Set(lesson.items);
+
+  const stories = course.stories.filter(
+    (story) => usesAny(story, taught) && storyReady(story, memory)
+  );
 
   return (
     <Card style={styles.detail}>
@@ -297,38 +376,56 @@ const Detail = ({ lesson, memory, chosen }: DetailProps) => {
         <div {...stylex.props(styles.headText)}>
           <h2 {...stylex.props(styles.title)}>{lesson.title}</h2>
           <p {...stylex.props(styles.unit)}>
-            Unit {unit?.index}: {unit?.name}
+            Unit {unit?.index}: {unit?.name} · {learned} of {total} learned
           </p>
         </div>
         <Tag tone={look.tone} style={styles.statePhone}>
           {look.label}
         </Tag>
       </div>
-      <div {...stylex.props(styles.stateWide)}>
-        <Tag tone={look.tone}>{look.label}</Tag>
+      <div {...stylex.props(styles.meter)}>
+        <Progress
+          value={total === 0 ? 0 : learned / total}
+          tone="good"
+          style={styles.meterBar}
+        />
+        <Tag tone={look.tone} style={styles.stateWide}>
+          {look.label}
+        </Tag>
       </div>
-      {needs.length > 0 ? (
+      <GroupLabel style={styles.firstLabel}>Teaches · {total}</GroupLabel>
+      {lesson.items.map((id) => (
+        <TaughtRow key={id} id={id} memory={memory} />
+      ))}
+      {stories.length > 0 ? (
         <>
-          <GroupLabel style={styles.firstLabel}>Needs</GroupLabel>
-          {needs.map((need) => (
-            <LessonRow key={need.index} lesson={need} memory={memory} />
+          <GroupLabel style={styles.label}>
+            Stories you can read · {stories.length}
+          </GroupLabel>
+          {stories.map((story) => (
+            <StoryRow
+              key={story.id}
+              story={story}
+              read={storiesDone.includes(story.id)}
+            />
           ))}
         </>
       ) : null}
       {unlocks.length > 0 ? (
         <>
           <GroupLabel style={styles.label}>Unlocks</GroupLabel>
-          {unlocks.map((unlocked) => (
-            <LessonRow key={unlocked.index} lesson={unlocked} memory={memory} />
-          ))}
+          <div {...stylex.props(styles.unlocks)}>
+            {unlocks.map((unlocked) => (
+              <Tag
+                key={unlocked.index}
+                tone={LESSON_LOOK[lessonState(course, unlocked, memory)].tone}
+              >
+                {unlocked.title}
+              </Tag>
+            ))}
+          </div>
         </>
       ) : null}
-      <GroupLabel style={styles.label}>Teaches</GroupLabel>
-      <div {...stylex.props(styles.teaches)}>
-        {lesson.items.map((id) => (
-          <Taught key={id} id={id} memory={memory} />
-        ))}
-      </div>
       {state === "ready" ? (
         <>
           <div {...stylex.props(styles.spacer)} />
@@ -430,41 +527,32 @@ const MapPage = () => {
   }, [desktop, level]);
 
   return (
-    <AppShell width="full" fill>
-      <PageTitle
-        title="Map"
-        sub="What you know, and what it unlocks."
-        style={styles.titleRow}
-        aside={
-          <div {...stylex.props(styles.legend)}>
-            {STATES.map((state) => (
-              <Tag key={state} tone={LESSON_LOOK[state].tone}>
-                {LESSON_LOOK[state].label}
-              </Tag>
-            ))}
-          </div>
+    <CoursePage
+      tab="map"
+      fill
+      level={level}
+      memory={memory}
+      onPickLevel={(id) => {
+        const picked = course.levels.find((one) => one.id === id);
+
+        pickLevel(id);
+
+        if (picked !== undefined) {
+          setSelected(
+            startOf(course, picked, nextLesson(course, memory, chosenLesson))
+          );
         }
-      >
-        <LevelSwitch
-          level={level}
-          memory={memory}
-          onPick={(id) => {
-            const picked = course.levels.find((one) => one.id === id);
-
-            pickLevel(id);
-
-            if (picked !== undefined) {
-              setSelected(
-                startOf(
-                  course,
-                  picked,
-                  nextLesson(course, memory, chosenLesson)
-                )
-              );
-            }
-          }}
-        />
-      </PageTitle>
+      }}
+      tool={
+        <div {...stylex.props(styles.legend)}>
+          {STATES.map((state) => (
+            <Tag key={state} tone={LESSON_LOOK[state].tone}>
+              {LESSON_LOOK[state].label}
+            </Tag>
+          ))}
+        </div>
+      }
+    >
       <div {...stylex.props(styles.columns)}>
         <div
           ref={scroller}
@@ -531,7 +619,7 @@ const MapPage = () => {
           )}
         </div>
       </div>
-    </AppShell>
+    </CoursePage>
   );
 };
 

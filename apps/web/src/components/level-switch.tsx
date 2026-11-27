@@ -7,7 +7,7 @@ import { color } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
 import { Check, Lock } from "lucide-react";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 
 import { useCourse } from "../course";
 
@@ -41,21 +41,54 @@ const mark = (state: LevelState): ReactNode => {
   ) : null;
 };
 
+/** The level the learner picked on the Course, by course, so that every tab of it shows the same one. */
+const picks = new Map<string, string>();
+const listeners = new Set<() => void>();
+
+const subscribe = (listener: () => void) => {
+  listeners.add(listener);
+
+  return () => {
+    listeners.delete(listener);
+  };
+};
+
+const pickFor = (course: string, id: string) => {
+  picks.set(course, id);
+
+  for (const listener of listeners) {
+    listener();
+  }
+};
+
 /**
- * The level a page shows, and a way to pick another. Until the learner picks one,
+ * The level the Course shows, and a way to pick another. Until the learner picks one,
  * it is the level they are in, so it moves on by itself when they finish a level.
+ * The pick is kept while the app is open, so the tabs of the Course share it.
  */
 export const useLevel = (
   memory: Memory
 ): readonly [Level, (id: string) => void] => {
   const course = useCourse();
-  const [picked, setPicked] = useState<string | null>(null);
+  const courseId = course.meta.id;
 
-  const level =
-    course.levels.find((one) => one.id === picked) ??
-    currentLevel(course, memory);
+  const picked = useSyncExternalStore(
+    subscribe,
+    () => picks.get(courseId) ?? null
+  );
 
-  return [level, setPicked];
+  // A pick that has since become locked, such as after the progress was deleted, no longer counts.
+  const chosen = course.levels.find(
+    (one) => one.id === picked && levelState(course, one, memory) !== "locked"
+  );
+
+  const level = chosen ?? currentLevel(course, memory);
+
+  const pick = (id: string) => {
+    pickFor(courseId, id);
+  };
+
+  return [level, pick];
 };
 
 interface LevelSwitchProps {

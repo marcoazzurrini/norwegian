@@ -51,10 +51,28 @@ test("a new learner sees an empty Today page", async ({ page }) => {
 test("every page opens from the navigation", async ({ page }) => {
   await open(page);
 
-  await inOrder(["Map", "Stories", "Sounds", "Items"], async (name) => {
-    await nav(page, name).click();
-    await expect(page.getByRole("heading", { level: 1, name })).toBeVisible();
+  await nav(page, "Course").click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Course" })
+  ).toBeVisible();
+
+  // The map, the stories and the items are tabs of the Course.
+  await inOrder(["Stories", "Items", "Map"], async (name) => {
+    await page
+      .getByRole("navigation", { name: "Course" })
+      .getByRole("link", { name: new RegExp(`^${name}`, "u") })
+      .click();
+    await expect(
+      page
+        .getByRole("navigation", { name: "Course" })
+        .getByRole("link", { name: new RegExp(`^${name}`, "u") })
+    ).toHaveAttribute("aria-current", "page");
   });
+
+  await nav(page, "Sounds").click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Sounds" })
+  ).toBeVisible();
 
   await page
     .getByRole("link", { name: "Settings" })

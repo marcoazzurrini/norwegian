@@ -30,6 +30,8 @@ export interface ShellDestination {
   icon: LucideIcon;
   /** The page is current only on its own path, not on the pages under it. For the first page of a course. */
   exact?: boolean;
+  /** Other paths that belong to this destination, such as the other tabs of one page. */
+  also?: readonly string[];
 }
 
 /** A course the learner can open from the list in the sidebar. */
@@ -43,7 +45,7 @@ export interface ShellCourse {
   to: string;
 }
 
-export type ShellWidth = "page" | "narrow" | "full";
+export type ShellWidth = "page" | "wide" | "narrow" | "full";
 
 const SAFE_TOP = "calc(max(env(safe-area-inset-top), 0.5rem) + 0.375rem)";
 
@@ -319,6 +321,7 @@ const styles = stylex.create({
 
 const widths = stylex.create({
   page: { maxWidth: { default: null, [stylex.env.desktop]: "80rem" } },
+  wide: { maxWidth: { default: null, [stylex.env.desktop]: "100rem" } },
   narrow: { maxWidth: { default: null, [stylex.env.desktop]: "60rem" } },
   full: { maxWidth: { default: null, [stylex.env.desktop]: "none" } },
 });
@@ -344,6 +347,13 @@ const nameOf = (account: string | null) => {
 const isCurrent = (to: string, path: string, exact = false): boolean =>
   path === to || (!exact && path.startsWith(`${to}/`));
 
+/** A destination is current on its own path and on the other paths that belong to it. */
+const isDestination = (
+  { to, exact, also = [] }: ShellDestination,
+  path: string
+): boolean =>
+  isCurrent(to, path, exact) || also.some((one) => isCurrent(one, path));
+
 const current = (active: boolean): { "aria-current"?: "page" } =>
   active ? { "aria-current": "page" } : {};
 
@@ -365,7 +375,7 @@ interface ShellProps {
   account: string | null;
   /** Renders every link of the shell. See `ShellLinkProps`. */
   link: ComponentType<ShellLinkProps>;
-  /** Width of the content column on a wide screen: 80rem, 60rem, or all of it. */
+  /** Width of the content column on a wide screen: 80rem, 100rem, 60rem, or all of it. */
   width?: ShellWidth;
   /** The page fills the window and scrolls inside its own parts, instead of scrolling as a whole. */
   fill?: boolean;
@@ -391,8 +401,9 @@ export const Shell = ({
     <div {...stylex.props(styles.frame)}>
       <nav aria-label="Main" {...stylex.props(styles.sidebar)}>
         <div {...stylex.props(styles.sidebarName)}>{appName}</div>
-        {destinations.map(({ to, label, icon: Icon, exact }) => {
-          const active = isCurrent(to, currentPath, exact);
+        {destinations.map((destination) => {
+          const { to, label, icon: Icon } = destination;
+          const active = isDestination(destination, currentPath);
 
           return (
             <Link
@@ -496,8 +507,9 @@ export const Shell = ({
       <div {...stylex.props(styles.fade)} />
       <nav aria-label="Main" {...stylex.props(styles.tabs)}>
         <div {...stylex.props(styles.tabBar)}>
-          {destinations.map(({ to, label, icon: Icon, exact }) => {
-            const active = isCurrent(to, currentPath, exact);
+          {destinations.map((destination) => {
+            const { to, label, icon: Icon } = destination;
+            const active = isDestination(destination, currentPath);
 
             return (
               <Link

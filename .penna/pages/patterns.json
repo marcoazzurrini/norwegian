@@ -287,24 +287,7 @@
                    "icon": "waypoints"
                   },
                   "Label": {
-                   "text": "Map"
-                  }
-                 },
-                 "style": {
-                  "width": "100%"
-                 },
-                 "name": "Nav Row"
-                },
-                {
-                 "id": "tDm4U",
-                 "type": "ref",
-                 "ref": "j4XjN",
-                 "overrides": {
-                  "Icon": {
-                   "icon": "book-open"
-                  },
-                  "Label": {
-                   "text": "Stories"
+                   "text": "Course"
                   }
                  },
                  "style": {
@@ -322,23 +305,6 @@
                   },
                   "Label": {
                    "text": "Sounds"
-                  }
-                 },
-                 "style": {
-                  "width": "100%"
-                 },
-                 "name": "Nav Row"
-                },
-                {
-                 "id": "7QiFg",
-                 "type": "ref",
-                 "ref": "j4XjN",
-                 "overrides": {
-                  "Icon": {
-                   "icon": "library"
-                  },
-                  "Label": {
-                   "text": "Items"
                   }
                  },
                  "style": {
@@ -1567,7 +1533,7 @@
         {
          "id": "bXBqp",
          "type": "text",
-         "text": "Phones are designed for an iPhone 14 Pro: 393 by 852 points, with 59 points kept clear at the top and 34 at the bottom. A floating pill sits above the content, with five destinations.",
+         "text": "Phones are designed for an iPhone 14 Pro: 393 by 852 points, with 59 points kept clear at the top and 34 at the bottom. A floating pill sits above the content, with three destinations.",
          "style": {
           "fontSize": 14,
           "lineHeight": 1.45,
@@ -1636,21 +1602,7 @@
                "icon": "waypoints"
               },
               "Label": {
-               "text": "Map"
-              }
-             },
-             "name": "Tab"
-            },
-            {
-             "id": "7YqCk",
-             "type": "ref",
-             "ref": "rivtR",
-             "overrides": {
-              "Icon": {
-               "icon": "book-open"
-              },
-              "Label": {
-               "text": "Stories"
+               "text": "Course"
               }
              },
              "name": "Tab"
@@ -1665,20 +1617,6 @@
               },
               "Label": {
                "text": "Sounds"
-              }
-             },
-             "name": "Tab"
-            },
-            {
-             "id": "RGwBS",
-             "type": "ref",
-             "ref": "rivtR",
-             "overrides": {
-              "Icon": {
-               "icon": "library"
-              },
-              "Label": {
-               "text": "Items"
               }
              },
              "name": "Tab"

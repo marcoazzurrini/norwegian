@@ -1,13 +1,13 @@
 import type { Story } from "@norsk/course";
 import { storyReady } from "@norsk/engine";
-import { ListCard, PageTitle, Tag, effects } from "@norsk/ui";
+import { ListCard, Tag, effects } from "@norsk/ui";
 import { color, text } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Lock } from "lucide-react";
 
-import { AppShell } from "../../components/app-shell";
-import { LevelSwitch, useLevel } from "../../components/level-switch";
+import { CoursePage } from "../../components/course-page";
+import { useLevel } from "../../components/level-switch";
 import { useCourse } from "../../course";
 import { useMemory, useProgress } from "../../learner";
 
@@ -143,13 +143,12 @@ const StoriesPage = () => {
     ));
 
   return (
-    <AppShell>
-      <PageTitle
-        title="Stories"
-        sub="Short texts made only from words you have learned."
-      >
-        <LevelSwitch level={level} memory={memory} onPick={pickLevel} />
-      </PageTitle>
+    <CoursePage
+      tab="stories"
+      level={level}
+      memory={memory}
+      onPickLevel={pickLevel}
+    >
       <div {...stylex.props(styles.columns)}>
         <ListCard style={styles.phoneOnly}>{rows(shown)}</ListCard>
         <ListCard style={styles.wideOnly}>
@@ -157,7 +156,7 @@ const StoriesPage = () => {
         </ListCard>
         <ListCard style={styles.wideOnly}>{rows(shown.slice(half))}</ListCard>
       </div>
-    </AppShell>
+    </CoursePage>
   );
 };
 
