@@ -1776,21 +1776,7 @@
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "c5jgZ",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
+           "text": "Course"
           }
          },
          "name": "Tab"
@@ -1805,20 +1791,6 @@
           },
           "Label": {
            "text": "Sounds"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "3c3vR",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
           }
          },
          "name": "Tab"
@@ -2853,21 +2825,7 @@
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "n57Mf",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
+           "text": "Course"
           }
          },
          "name": "Tab"
@@ -2882,20 +2840,6 @@
           },
           "Label": {
            "text": "Sounds"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "Y2uAL",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
           }
          },
          "name": "Tab"
@@ -3928,21 +3872,7 @@
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "5fhWf",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
+           "text": "Course"
           }
          },
          "name": "Tab"
@@ -3957,20 +3887,6 @@
           },
           "Label": {
            "text": "Sounds"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "sCUvu",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
           }
          },
          "name": "Tab"
@@ -4177,7 +4093,7 @@
           {
            "id": "bb4QE",
            "type": "text",
-           "text": "Map",
+           "text": "Course",
            "style": {
             "fontSize": 36,
             "lineHeight": 1,
@@ -4189,7 +4105,7 @@
           {
            "id": "GYei8",
            "type": "text",
-           "text": "What you know, and what it unlocks.",
+           "text": "Unit 2: Hjemme · 127 of 460 learned in A1.",
            "style": {
             "fontSize": 16,
             "lineHeight": 1.5,
@@ -4311,6 +4227,122 @@
            "type": "text",
            "text": "B1",
            "name": "B1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "ngCGc",
+       "type": "frame",
+       "name": "Course tabs",
+       "style": {
+        "display": "flex",
+        "gap": 24,
+        "borderBottom": "1px solid var(--line)",
+        "flexShrink": 0
+       },
+       "children": [
+        {
+         "id": "73grq",
+         "type": "frame",
+         "name": "Tab Map",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text)",
+          "boxShadow": "inset 0 -2px 0 var(--text)"
+         },
+         "children": [
+          {
+           "id": "7wFSp",
+           "type": "icon",
+           "icon": "waypoints",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "waypoints"
+          },
+          {
+           "id": "LkCC6",
+           "type": "text",
+           "text": "Map",
+           "name": "Map"
+          }
+         ]
+        },
+        {
+         "id": "5FK6v",
+         "type": "frame",
+         "name": "Tab Stories",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text-3)"
+         },
+         "children": [
+          {
+           "id": "kjahf",
+           "type": "icon",
+           "icon": "book-open",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "book-open"
+          },
+          {
+           "id": "vB9Rr",
+           "type": "text",
+           "text": "Stories",
+           "name": "Stories"
+          }
+         ]
+        },
+        {
+         "id": "DchYt",
+         "type": "frame",
+         "name": "Tab Items",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text-3)"
+         },
+         "children": [
+          {
+           "id": "TWY9h",
+           "type": "icon",
+           "icon": "library",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "library"
+          },
+          {
+           "id": "sJHtK",
+           "type": "text",
+           "text": "Items",
+           "name": "Items"
           }
          ]
         }
@@ -4535,7 +4567,8 @@
             "fontSize": 13,
             "fontWeight": 500,
             "whiteSpace": "nowrap",
-            "background": "var(--raised)"
+            "background": "var(--inverse)",
+            "color": "var(--on-inverse)"
            },
            "children": [
             {
@@ -4545,7 +4578,7 @@
              "style": {
               "width": 14,
               "height": 14,
-              "color": "var(--orange)"
+              "color": "var(--on-inverse)"
              },
              "name": "circle-dashed"
             },
@@ -4658,8 +4691,7 @@
             "fontSize": 13,
             "fontWeight": 500,
             "whiteSpace": "nowrap",
-            "background": "var(--inverse)",
-            "color": "var(--on-inverse)"
+            "background": "var(--raised)"
            },
            "children": [
             {
@@ -4669,7 +4701,7 @@
              "style": {
               "width": 14,
               "height": 14,
-              "color": "var(--on-inverse)"
+              "color": "var(--violet)"
              },
              "name": "sparkles"
             },
@@ -4857,8 +4889,9 @@
        "name": "Frame"
       },
       {
-       "id": "JU7cP",
+       "id": "AdEgn",
        "type": "frame",
+       "name": "Detail",
        "style": {
         "background": "var(--inset)",
         "border": "1px solid var(--line)",
@@ -4869,7 +4902,7 @@
        },
        "children": [
         {
-         "id": "C7FXK",
+         "id": "HfqYu",
          "type": "frame",
          "style": {
           "display": "flex",
@@ -4879,124 +4912,47 @@
          },
          "children": [
           {
-           "id": "ED8uq",
+           "id": "UAkbi",
            "type": "ref",
            "ref": "AnFXZ",
            "name": "Blob Map"
           },
           {
-           "id": "2FqkV",
+           "id": "Ls37y",
            "type": "frame",
            "style": {
-            "flex": 1
+            "flex": 1,
+            "minWidth": 0
            },
            "children": [
             {
-             "id": "GmjnQ",
+             "id": "ry7v5",
              "type": "text",
-             "text": "Saying “the”",
+             "text": "At home",
              "style": {
               "fontSize": 20,
               "lineHeight": 1.15,
               "letterSpacing": "-0.02em",
               "fontWeight": 500
              },
-             "name": "Saying “the”"
+             "name": "At home"
             },
             {
-             "id": "MXrKk",
+             "id": "2kae6",
              "type": "text",
-             "text": "Unit 2: Hjemme",
+             "text": "Unit 2: Hjemme · 4 of 9 learned",
              "style": {
               "fontSize": 15,
               "lineHeight": 1.5,
-              "fontWeight": 400,
               "color": "var(--text-2)"
              },
-             "name": "Unit 2: Hjemme"
+             "name": "Unit 2: Hjemme · 4 of 9…"
             }
            ],
            "name": "Frame"
           },
           {
-           "id": "ZHVum",
-           "type": "ref",
-           "ref": "KBscw",
-           "overrides": {
-            "Label": {
-             "text": "Ready to learn"
-            }
-           },
-           "name": "Tag New"
-          }
-         ],
-         "name": "Frame"
-        },
-        {
-         "id": "F3T4M",
-         "type": "text",
-         "text": "Needs",
-         "style": {
-          "fontSize": 14,
-          "lineHeight": 1.45,
-          "fontWeight": 500,
-          "color": "var(--text-3)",
-          "padding": "8px 0 8px"
-         },
-         "name": "Needs"
-        },
-        {
-         "id": "XCSFj",
-         "type": "frame",
-         "style": {
-          "display": "flex",
-          "justifyContent": "space-between",
-          "alignItems": "center",
-          "padding": "11px 0",
-          "borderTop": "1px solid var(--line)",
-          "fontSize": 16
-         },
-         "children": [
-          {
-           "id": "GFBQj",
-           "type": "text",
-           "text": "En, ei, et",
-           "name": "En, ei, et"
-          },
-          {
-           "id": "Aw7H7",
-           "type": "ref",
-           "ref": "zgJc9",
-           "overrides": {
-            "Label": {
-             "text": "Learned"
-            }
-           },
-           "name": "Tag Good"
-          }
-         ],
-         "name": "Frame"
-        },
-        {
-         "id": "RwStS",
-         "type": "frame",
-         "style": {
-          "display": "flex",
-          "justifyContent": "space-between",
-          "alignItems": "center",
-          "padding": "11px 0",
-          "borderTop": "1px solid var(--line)",
-          "fontSize": 16
-         },
-         "children": [
-          {
-           "id": "GNfzW",
-           "type": "text",
-           "text": "At home",
-           "name": "At home"
-          },
-          {
-           "id": "uRMrJ",
+           "id": "UncU4",
            "type": "ref",
            "ref": "uWVcM",
            "overrides": {
@@ -5010,33 +4966,443 @@
          "name": "Frame"
         },
         {
-         "id": "AxSXg",
+         "id": "BWyjY",
          "type": "frame",
          "style": {
-          "paddingTop": 14
+          "paddingBottom": 4
          },
          "children": [
           {
-           "id": "xacvS",
+           "id": "tY3xf",
            "type": "ref",
-           "ref": "SV4nn",
+           "ref": "3dFRX",
            "overrides": {
-            "Label": {
-             "text": "Learn this next"
+            "Fill": {
+             "style": {
+              "width": "44%",
+              "background": "var(--green)"
+             }
             }
            },
            "style": {
-            "height": 52,
-            "fontSize": 17,
-            "width": "100%"
+            "width": "100%",
+            "height": 6
            },
-           "name": "Button"
+           "name": "Progress"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "RfXma",
+         "type": "text",
+         "text": "Teaches · 4",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 500,
+          "color": "var(--text-3)",
+          "padding": "8px 0"
+         },
+         "name": "Teaches · 4"
+        },
+        {
+         "id": "qVtry",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "justifyContent": "space-between",
+          "alignItems": "center",
+          "gap": 12,
+          "padding": "11px 0",
+          "borderTop": "1px solid var(--line)",
+          "fontSize": 16
+         },
+         "children": [
+          {
+           "id": "3RqKL",
+           "type": "text",
+           "spans": [
+            {
+             "text": "et hus",
+             "style": {
+              "fontWeight": 500
+             }
+            },
+            {
+             "text": "  house",
+             "style": {
+              "color": "var(--text-2)"
+             }
+            }
+           ],
+           "name": "et hus  house"
+          },
+          {
+           "id": "BvueB",
+           "type": "ref",
+           "ref": "KBscw",
+           "overrides": {
+            "Label": {
+             "text": "Ready"
+            }
+           },
+           "name": "Tag New"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "xmagC",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "justifyContent": "space-between",
+          "alignItems": "center",
+          "gap": 12,
+          "padding": "11px 0",
+          "borderTop": "1px solid var(--line)",
+          "fontSize": 16
+         },
+         "children": [
+          {
+           "id": "Pewhi",
+           "type": "text",
+           "spans": [
+            {
+             "text": "ei bok",
+             "style": {
+              "fontWeight": 500
+             }
+            },
+            {
+             "text": "  book",
+             "style": {
+              "color": "var(--text-2)"
+             }
+            }
+           ],
+           "name": "ei bok  book"
+          },
+          {
+           "id": "dSv6a",
+           "type": "ref",
+           "ref": "KBscw",
+           "overrides": {
+            "Label": {
+             "text": "Ready"
+            }
+           },
+           "name": "Tag New"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "LaYig",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "justifyContent": "space-between",
+          "alignItems": "center",
+          "gap": 12,
+          "padding": "11px 0",
+          "borderTop": "1px solid var(--line)",
+          "fontSize": 16
+         },
+         "children": [
+          {
+           "id": "Pgpja",
+           "type": "text",
+           "spans": [
+            {
+             "text": "et rom",
+             "style": {
+              "fontWeight": 500
+             }
+            },
+            {
+             "text": "  room",
+             "style": {
+              "color": "var(--text-2)"
+             }
+            }
+           ],
+           "name": "et rom  room"
+          },
+          {
+           "id": "Migxm",
+           "type": "ref",
+           "ref": "uWVcM",
+           "overrides": {
+            "Label": {
+             "text": "Learning"
+            }
+           },
+           "name": "Tag Progress"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "AcEbc",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "justifyContent": "space-between",
+          "alignItems": "center",
+          "gap": 12,
+          "padding": "11px 0",
+          "borderTop": "1px solid var(--line)",
+          "fontSize": 16
+         },
+         "children": [
+          {
+           "id": "rJ9at",
+           "type": "text",
+           "spans": [
+            {
+             "text": "en nøkkel",
+             "style": {
+              "fontWeight": 500
+             }
+            },
+            {
+             "text": "  key",
+             "style": {
+              "color": "var(--text-2)"
+             }
+            }
+           ],
+           "name": "en nøkkel  key"
+          },
+          {
+           "id": "jxH8s",
+           "type": "ref",
+           "ref": "nzCf2",
+           "overrides": {
+            "Label": {
+             "text": "Locked"
+            }
+           },
+           "name": "Tag Neutral"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "vbavE",
+         "type": "text",
+         "text": "Stories you can read · 2",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 500,
+          "color": "var(--text-3)",
+          "padding": "16px 0 4px"
+         },
+         "name": "Stories you can read · 2"
+        },
+        {
+         "id": "j3Ewf",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 12,
+          "padding": "10px 0",
+          "borderTop": "1px solid var(--line)"
+         },
+         "children": [
+          {
+           "id": "24bei",
+           "type": "ref",
+           "ref": "6qNCK",
+           "style": {
+            "width": 36,
+            "height": 36
+           },
+           "overrides": {
+            "Glyph": {
+             "style": {
+              "width": 16,
+              "height": 16
+             }
+            }
+           },
+           "name": "Blob Story"
+          },
+          {
+           "id": "szc2B",
+           "type": "frame",
+           "style": {
+            "flex": 1,
+            "minWidth": 0
+           },
+           "children": [
+            {
+             "id": "zG94Q",
+             "type": "text",
+             "text": "Hvor er nøkkelen?",
+             "style": {
+              "fontSize": 16,
+              "fontWeight": 500,
+              "lineHeight": 1.4
+             },
+             "name": "Hvor er nøkkelen?"
+            },
+            {
+             "id": "tj3Gf",
+             "type": "text",
+             "text": "Where is the key?",
+             "style": {
+              "fontSize": 14,
+              "color": "var(--text-2)",
+              "lineHeight": 1.4
+             },
+             "name": "Where is the key?"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "PxuXk",
+           "type": "ref",
+           "ref": "zgJc9",
+           "overrides": {
+            "Label": {
+             "text": "Read"
+            }
+           },
+           "name": "Tag Good"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "avnsG",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 12,
+          "padding": "10px 0",
+          "borderTop": "1px solid var(--line)"
+         },
+         "children": [
+          {
+           "id": "QHQYD",
+           "type": "ref",
+           "ref": "6qNCK",
+           "style": {
+            "width": 36,
+            "height": 36
+           },
+           "overrides": {
+            "Glyph": {
+             "style": {
+              "width": 16,
+              "height": 16
+             }
+            }
+           },
+           "name": "Blob Story"
+          },
+          {
+           "id": "JeGSV",
+           "type": "frame",
+           "style": {
+            "flex": 1,
+            "minWidth": 0
+           },
+           "children": [
+            {
+             "id": "XuN7Y",
+             "type": "text",
+             "text": "Et rom i Oslo",
+             "style": {
+              "fontSize": 16,
+              "fontWeight": 500,
+              "lineHeight": 1.4
+             },
+             "name": "Et rom i Oslo"
+            },
+            {
+             "id": "MCvDj",
+             "type": "text",
+             "text": "A room in Oslo",
+             "style": {
+              "fontSize": 14,
+              "color": "var(--text-2)",
+              "lineHeight": 1.4
+             },
+             "name": "A room in Oslo"
+            }
+           ],
+           "name": "Frame"
+          },
+          {
+           "id": "nCpsm",
+           "type": "ref",
+           "ref": "KBscw",
+           "overrides": {
+            "Label": {
+             "text": "New"
+            }
+           },
+           "name": "Tag New"
+          }
+         ],
+         "name": "Frame"
+        },
+        {
+         "id": "jqgBs",
+         "type": "text",
+         "text": "Unlocks",
+         "style": {
+          "fontSize": 14,
+          "lineHeight": 1.45,
+          "fontWeight": 500,
+          "color": "var(--text-3)",
+          "padding": "16px 0 8px"
+         },
+         "name": "Unlocks"
+        },
+        {
+         "id": "cz5tb",
+         "type": "frame",
+         "style": {
+          "display": "flex",
+          "gap": 8,
+          "flexWrap": "wrap"
+         },
+         "children": [
+          {
+           "id": "jvHha",
+           "type": "ref",
+           "ref": "nzCf2",
+           "overrides": {
+            "Label": {
+             "text": "Saying “the”"
+            }
+           },
+           "name": "Tag Neutral"
+          },
+          {
+           "id": "pg9kw",
+           "type": "ref",
+           "ref": "nzCf2",
+           "overrides": {
+            "Label": {
+             "text": "My and your"
+            }
+           },
+           "name": "Tag Neutral"
           }
          ],
          "name": "Frame"
         }
-       ],
-       "name": "Frame"
+       ]
       }
      ]
     },
@@ -5100,24 +5466,10 @@
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
+           "text": "Course"
           }
          },
          "name": "Tab Selected"
-        },
-        {
-         "id": "NtRmp",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
-          }
-         },
-         "name": "Tab"
         },
         {
          "id": "sjStK",
@@ -5129,20 +5481,6 @@
           },
           "Label": {
            "text": "Sounds"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "ETr4N",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
           }
          },
          "name": "Tab"
@@ -5351,7 +5689,7 @@
           {
            "id": "hqSFt",
            "type": "text",
-           "text": "Stories",
+           "text": "Course",
            "style": {
             "fontSize": 36,
             "lineHeight": 1,
@@ -5363,7 +5701,7 @@
           {
            "id": "JRjw9",
            "type": "text",
-           "text": "Short texts made only from words you have learned.",
+           "text": "Unit 2: Hjemme · 127 of 460 learned in A1.",
            "style": {
             "fontSize": 16,
             "lineHeight": 1.5,
@@ -5485,6 +5823,122 @@
            "type": "text",
            "text": "B1",
            "name": "B1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "eLiTk",
+       "type": "frame",
+       "name": "Course tabs",
+       "style": {
+        "display": "flex",
+        "gap": 24,
+        "borderBottom": "1px solid var(--line)",
+        "flexShrink": 0
+       },
+       "children": [
+        {
+         "id": "MHVe5",
+         "type": "frame",
+         "name": "Tab Map",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text-3)"
+         },
+         "children": [
+          {
+           "id": "PV8yR",
+           "type": "icon",
+           "icon": "waypoints",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "waypoints"
+          },
+          {
+           "id": "gNZwT",
+           "type": "text",
+           "text": "Map",
+           "name": "Map"
+          }
+         ]
+        },
+        {
+         "id": "jdKF5",
+         "type": "frame",
+         "name": "Tab Stories",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text)",
+          "boxShadow": "inset 0 -2px 0 var(--text)"
+         },
+         "children": [
+          {
+           "id": "4S4wt",
+           "type": "icon",
+           "icon": "book-open",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "book-open"
+          },
+          {
+           "id": "9pDh6",
+           "type": "text",
+           "text": "Stories",
+           "name": "Stories"
+          }
+         ]
+        },
+        {
+         "id": "bQj4T",
+         "type": "frame",
+         "name": "Tab Items",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text-3)"
+         },
+         "children": [
+          {
+           "id": "8pbLF",
+           "type": "icon",
+           "icon": "library",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "library"
+          },
+          {
+           "id": "3ZmWt",
+           "type": "text",
+           "text": "Items",
+           "name": "Items"
           }
          ]
         }
@@ -6025,29 +6479,15 @@
          "name": "Tab"
         },
         {
-         "id": "fse4j",
+         "id": "5cssZ",
          "type": "ref",
-         "ref": "rivtR",
+         "ref": "CGHwa",
          "overrides": {
           "Icon": {
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "MyHaY",
-         "type": "ref",
-         "ref": "CGHwa",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
+           "text": "Course"
           }
          },
          "name": "Tab Selected"
@@ -6062,20 +6502,6 @@
           },
           "Label": {
            "text": "Sounds"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "C6Hjw",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
           }
          },
          "name": "Tab"
@@ -6777,21 +7203,7 @@
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "KiZj8",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
+           "text": "Course"
           }
          },
          "name": "Tab"
@@ -6809,20 +7221,6 @@
           }
          },
          "name": "Tab Selected"
-        },
-        {
-         "id": "HRhxc",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
-          }
-         },
-         "name": "Tab"
         }
        ],
        "name": "Frame"
@@ -7028,7 +7426,7 @@
           {
            "id": "TRRSJ",
            "type": "text",
-           "text": "Items",
+           "text": "Course",
            "style": {
             "fontSize": 36,
             "lineHeight": 1,
@@ -7040,7 +7438,7 @@
           {
            "id": "ZjDsq",
            "type": "text",
-           "text": "127 of 460 learned in A1.",
+           "text": "Unit 2: Hjemme · 127 of 460 learned in A1.",
            "style": {
             "fontSize": 16,
             "lineHeight": 1.5,
@@ -7162,6 +7560,122 @@
            "type": "text",
            "text": "B1",
            "name": "B1"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "A7rcY",
+       "type": "frame",
+       "name": "Course tabs",
+       "style": {
+        "display": "flex",
+        "gap": 24,
+        "borderBottom": "1px solid var(--line)",
+        "flexShrink": 0
+       },
+       "children": [
+        {
+         "id": "muGhV",
+         "type": "frame",
+         "name": "Tab Map",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text-3)"
+         },
+         "children": [
+          {
+           "id": "nkVfW",
+           "type": "icon",
+           "icon": "waypoints",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "waypoints"
+          },
+          {
+           "id": "Dnzwg",
+           "type": "text",
+           "text": "Map",
+           "name": "Map"
+          }
+         ]
+        },
+        {
+         "id": "W5k3g",
+         "type": "frame",
+         "name": "Tab Stories",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text-3)"
+         },
+         "children": [
+          {
+           "id": "WUH3M",
+           "type": "icon",
+           "icon": "book-open",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "book-open"
+          },
+          {
+           "id": "R6WzF",
+           "type": "text",
+           "text": "Stories",
+           "name": "Stories"
+          }
+         ]
+        },
+        {
+         "id": "FP3Ac",
+         "type": "frame",
+         "name": "Tab Items",
+         "style": {
+          "display": "flex",
+          "alignItems": "center",
+          "gap": 8,
+          "height": 48,
+          "fontSize": 16,
+          "fontWeight": 500,
+          "marginBottom": -1,
+          "whiteSpace": "nowrap",
+          "color": "var(--text)",
+          "boxShadow": "inset 0 -2px 0 var(--text)"
+         },
+         "children": [
+          {
+           "id": "CG8uP",
+           "type": "icon",
+           "icon": "library",
+           "style": {
+            "width": 18,
+            "height": 18
+           },
+           "name": "library"
+          },
+          {
+           "id": "SBkaB",
+           "type": "text",
+           "text": "Items",
+           "name": "Items"
           }
          ]
         }
@@ -7778,32 +8292,18 @@
          "name": "Tab"
         },
         {
-         "id": "AkeRx",
+         "id": "gPkhz",
          "type": "ref",
-         "ref": "rivtR",
+         "ref": "CGHwa",
          "overrides": {
           "Icon": {
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
+           "text": "Course"
           }
          },
-         "name": "Tab"
-        },
-        {
-         "id": "jWb6c",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
-          }
-         },
-         "name": "Tab"
+         "name": "Tab Selected"
         },
         {
          "id": "wCQnP",
@@ -7818,20 +8318,6 @@
           }
          },
          "name": "Tab"
-        },
-        {
-         "id": "7mzhZ",
-         "type": "ref",
-         "ref": "CGHwa",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
-          }
-         },
-         "name": "Tab Selected"
         }
        ],
        "name": "Frame"
@@ -8773,21 +9259,7 @@
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "pAAA5",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
+           "text": "Course"
           }
          },
          "name": "Tab"
@@ -8802,20 +9274,6 @@
           },
           "Label": {
            "text": "Sounds"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "XF93L",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
           }
          },
          "name": "Tab"
@@ -9411,21 +9869,7 @@
            "icon": "waypoints"
           },
           "Label": {
-           "text": "Map"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "WCBKY",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "book-open"
-          },
-          "Label": {
-           "text": "Stories"
+           "text": "Course"
           }
          },
          "name": "Tab"
@@ -9440,20 +9884,6 @@
           },
           "Label": {
            "text": "Sounds"
-          }
-         },
-         "name": "Tab"
-        },
-        {
-         "id": "3Kw6Q",
-         "type": "ref",
-         "ref": "rivtR",
-         "overrides": {
-          "Icon": {
-           "icon": "library"
-          },
-          "Label": {
-           "text": "Items"
           }
          },
          "name": "Tab"
@@ -20503,7 +20933,7 @@
     {
      "id": "fU4jz",
      "type": "text",
-     "text": "Map",
+     "text": "Course: Map",
      "style": {
       "fontSize": 72,
       "fontWeight": 500,
@@ -20547,7 +20977,7 @@
     {
      "id": "3nuc3",
      "type": "text",
-     "text": "Stories",
+     "text": "Course: Stories",
      "style": {
       "fontSize": 72,
       "fontWeight": 500,
@@ -20635,7 +21065,7 @@
     {
      "id": "8GGsM",
      "type": "text",
-     "text": "Items",
+     "text": "Course: Items",
      "style": {
       "fontSize": 72,
       "fontWeight": 500,

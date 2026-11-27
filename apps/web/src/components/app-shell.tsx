@@ -8,7 +8,7 @@ import type {
   ShellWidth,
 } from "@norsk/ui";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Ear, Library, Sun, Waypoints } from "lucide-react";
+import { Ear, Sun, Waypoints } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { useCourse } from "../course";
@@ -17,10 +17,14 @@ import { useSyncStatus } from "../learner";
 /** The pages of a course, by the address of its first page, such as "/no". */
 const destinationsOf = (home: string): readonly ShellDestination[] => [
   { exact: true, icon: Sun, label: "Today", to: home },
-  { icon: Waypoints, label: "Map", to: `${home}/map` },
-  { icon: BookOpen, label: "Stories", to: `${home}/stories` },
+  // The map, the stories and the items are the three tabs of one page, the Course.
+  {
+    also: [`${home}/stories`, `${home}/items`],
+    icon: Waypoints,
+    label: "Course",
+    to: `${home}/map`,
+  },
   { icon: Ear, label: "Sounds", to: `${home}/sounds` },
-  { icon: Library, label: "Items", to: `${home}/items` },
 ];
 
 /** Every course of the app, as the sidebar lists them. */

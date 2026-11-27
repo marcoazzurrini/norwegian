@@ -8,7 +8,6 @@ import {
   Display,
   GroupLabel,
   ListCard,
-  PageTitle,
   Progress,
   Tag,
   effects,
@@ -20,9 +19,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Ruler, Search } from "lucide-react";
 import { useId, useMemo, useState } from "react";
 
-import { AppShell } from "../../components/app-shell";
+import { CoursePage } from "../../components/course-page";
 import { itemGroups, memoryNote, splitAt } from "../../components/item-list";
-import { LevelSwitch, useLevel } from "../../components/level-switch";
+import { useLevel } from "../../components/level-switch";
 import { ITEM_LOOK } from "../../components/looks";
 import { hasArticle, soundOf } from "../../components/tasks/items";
 import { useCourse } from "../../course";
@@ -45,10 +44,10 @@ const styles = stylex.create({
     display: "flex",
     fontSize: text.s16,
     gap: "0.75rem",
-    height: { default: "3rem", [stylex.env.desktop]: "3.25rem" },
+    height: "3rem",
     minWidth: 0,
     paddingInline: "1.125rem",
-    width: "100%",
+    width: { default: "100%", [stylex.env.desktop]: "26.25rem" },
   },
   searchIcon: {
     color: color.fg3,
@@ -68,21 +67,13 @@ const styles = stylex.create({
     minWidth: 0,
     padding: 0,
   },
-  // The same two columns as the content below, so that the level switch ends where the list ends.
-  titleRow: {
-    display: { default: "flex", [stylex.env.desktop]: "grid" },
-    gridTemplateColumns: {
-      default: null,
-      [stylex.env.desktop]: "minmax(0, 1fr) 35rem",
-    },
-  },
   columns: {
     alignItems: "start",
     display: "grid",
     gap: "1.25rem",
     gridTemplateColumns: {
       default: null,
-      [stylex.env.desktop]: "minmax(0, 1fr) 35rem",
+      [stylex.env.desktop]: "minmax(0, 1fr) 30rem",
     },
   },
   groups: {
@@ -138,8 +129,10 @@ const styles = stylex.create({
     fontWeight: 400,
     paddingLeft: "0.625rem",
   },
+  // Starts level with the first list, under the name of its unit: one line of the name and the gap under it.
   side: {
     display: { default: "none", [stylex.env.desktop]: "block" },
+    marginTop: `calc(${text.s16} * 1.45 + 0.625rem)`,
     position: "sticky",
     top: 0,
   },
@@ -477,44 +470,35 @@ const ItemsPage = () => {
     [course, query, level]
   );
 
-  const taught = course.levelItems(level);
-  const learned = taught.filter((id) => memory.has(id)).length;
-
   const pick = (id: string) => {
     setSelected(selected === id ? null : id);
   };
 
   return (
-    <AppShell>
-      <PageTitle
-        title="Items"
-        sub={`${learned} of ${taught.length} learned in ${level.id}.`}
-        style={styles.titleRow}
-        aside={
-          <label htmlFor={searchId} {...stylex.props(styles.search)}>
-            <Search {...stylex.props(styles.searchIcon)} />
-            <input
-              id={searchId}
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-              }}
-              placeholder={`Search ${course.meta.name} or ${course.meta.base}`}
-              aria-label="Search items"
-              {...stylex.props(styles.searchField)}
-            />
-          </label>
-        }
-      >
-        <LevelSwitch
-          level={level}
-          memory={memory}
-          onPick={(id) => {
-            pickLevel(id);
-            setSelected(null);
-          }}
-        />
-      </PageTitle>
+    <CoursePage
+      tab="items"
+      level={level}
+      memory={memory}
+      onPickLevel={(id) => {
+        pickLevel(id);
+        setSelected(null);
+      }}
+      tool={
+        <label htmlFor={searchId} {...stylex.props(styles.search)}>
+          <Search {...stylex.props(styles.searchIcon)} />
+          <input
+            id={searchId}
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+            }}
+            placeholder={`Search ${course.meta.name} or ${course.meta.base}`}
+            aria-label="Search items"
+            {...stylex.props(styles.searchField)}
+          />
+        </label>
+      }
+    >
       <div {...stylex.props(styles.columns)}>
         <div {...stylex.props(styles.groups)}>
           {groups.length === 0 ? (
@@ -579,7 +563,7 @@ const ItemsPage = () => {
           )}
         </div>
       </div>
-    </AppShell>
+    </CoursePage>
   );
 };
 

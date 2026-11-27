@@ -266,7 +266,7 @@ export const scenarios: Scenario[] = [
       await shot("question-2");
       await pick(page, "Norwegian and English");
       await tick(RIGHT_PAUSE_MS);
-      await page.getByRole("heading", { level: 1, name: "Stories" }).waitFor();
+      await page.getByRole("heading", { level: 1, name: "Course" }).waitFor();
       await shot("read");
     },
   },
