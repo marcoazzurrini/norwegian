@@ -279,7 +279,9 @@ const requireMeaning = (
 const otherSpellings = (best: Candidate, written: string): string[] => {
   const least = FEAT_ORDER.find((f) => best.feats.has(f));
 
-  if (best.exact || least === undefined) {
+  // A form the dictionary does not name ("other") is not known to be the same form as any other:
+  // "vår", "vårt" and "våre" are three forms, and only one of them fits a given sentence.
+  if (best.exact || least === undefined || least === "other") {
     return [];
   }
 

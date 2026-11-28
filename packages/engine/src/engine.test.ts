@@ -122,6 +122,51 @@ describe("grading a sentence", () => {
     ).toBe(true);
   });
 
+  test("accepts the en form of “my” after an ei word, but no other form of it", () => {
+    const mora = find("Dette er mora mi.");
+
+    expect(gradeSentence(mora, "dette er moren min").correct).toBe(true);
+    expect(gradeSentence(mora, "dette er mora mitt").correct).toBe(false);
+    expect(
+      gradeSentence(find("Huset vårt har fem rom."), "huset vår har fem rom")
+        .missed
+    ).toEqual([1]);
+  });
+
+  test("tells which wrong word stands where a missed word belongs", () => {
+    const rooms = find("Huset vårt har fem rom.");
+    const g = gradeSentence(rooms, "huset vår har fem rømet");
+
+    expect(g.missed).toEqual([1, 4]);
+    expect(g.instead).toEqual([["vår"], ["rømet"]]);
+    expect(g.extra).toEqual([]);
+  });
+
+  test("a word left out has nothing in its place, and a word too many belongs nowhere", () => {
+    const vent = find("Vent på meg!");
+
+    expect(gradeSentence(vent, "vent meg").instead).toEqual([[]]);
+    expect(gradeSentence(vent, "vent litt på meg")).toMatchObject({
+      extra: ["litt"],
+      instead: [],
+      missed: [],
+    });
+  });
+
+  test("missed words side by side get one wrong word each when the counts match", () => {
+    const vent = find("Vent på meg!");
+
+    expect(gradeSentence(vent, "vent til deg").instead).toEqual([
+      ["til"],
+      ["deg"],
+    ]);
+    // Three wrong words for two missed ones: nothing says which belongs where.
+    expect(gradeSentence(vent, "vent litt til deg").instead).toEqual([
+      ["litt", "til", "deg"],
+      ["litt", "til", "deg"],
+    ]);
+  });
+
   test("accepts a listed alternative sentence", () => {
     expect(
       gradeSentence(

@@ -354,6 +354,7 @@ app.post(ROUTES.explain, async (c) => {
   const explanation = await explain(apiKey, course, request.output);
 
   logInfo("explain", {
+    error: explanation.ok ? null : explanation.error,
     ms: Date.now() - started,
     ok: explanation.ok,
     status: explanation.ok ? 200 : explanation.status,

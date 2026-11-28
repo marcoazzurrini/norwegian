@@ -456,7 +456,7 @@ class Learner {
       case "pattern": {
         return this.drive(
           patternTask,
-          { item: task.item, known, practice: task.practice },
+          { course, item: task.item, known, practice: task.practice },
           (state) => this.patternMove(state)
         );
       }
@@ -470,7 +470,7 @@ class Learner {
       case "sentence": {
         return this.drive(
           sentenceTask,
-          { known, sentence: task.sentence },
+          { course, known, sentence: task.sentence },
           (state) => this.sentenceMove(state)
         );
       }

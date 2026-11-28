@@ -5,6 +5,7 @@ import { CourseIdSchema, FIRST_COURSE } from "./course";
 
 const MAX_TEXT = 300;
 const MAX_TOPICS = 8;
+const MAX_DIFFERENCES = 8;
 
 /** One line of text: extra white space removed, and cut off if it is very long. */
 const Line = v.pipe(
@@ -30,6 +31,17 @@ const SHARED = {
 
 const CurrentSchema = v.object({
   ...SHARED,
+  /**
+   * Where the answer differs from the expected sentence, one line for each place, as the app found them.
+   * Versions from before the app sent them have none.
+   */
+  differences: v.optional(
+    v.pipe(
+      v.array(Line),
+      v.transform((differences) => differences.slice(0, MAX_DIFFERENCES))
+    ),
+    []
+  ),
   /** The sentence the learner was asked to say, in their own language. */
   base: Line,
   /** The course the sentence is from. */
@@ -45,6 +57,7 @@ const FirstSchema = v.pipe(
     ...rest,
     base: en,
     course: FIRST_COURSE,
+    differences: [],
     target: no,
   }))
 );

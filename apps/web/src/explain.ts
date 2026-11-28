@@ -11,7 +11,8 @@ import * as v from "valibot";
 
 import { note } from "./journal";
 
-const TIMEOUT_MS = 12_000;
+/** A little longer than the server waits for the model, so that the server's answer is the one that arrives. */
+const TIMEOUT_MS = 28_000;
 
 /** Sends a request, already written as JSON. Returns null when there is no connection, no server, or no answer in time. */
 const ask = async (

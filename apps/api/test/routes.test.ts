@@ -605,7 +605,7 @@ describe("/api/explain", () => {
     expect(asked).toHaveBeenCalledTimes(1);
   });
 
-  test("asks the model exactly as before", async () => {
+  test("asks a model that thinks first, with the sentences, the weak points and the task", async () => {
     const asked = model(completion("ok"));
 
     await post(
@@ -625,37 +625,96 @@ describe("/api/explain", () => {
     });
     expect(init?.signal).toBeInstanceOf(AbortSignal);
     expect(sent).toMatchObject({
-      max_tokens: 300,
-      model: "anthropic/claude-haiku-5.5",
-      reasoning: { enabled: false },
-      temperature: 0.2,
+      max_tokens: 4000,
+      model: "openai/gpt-6.2-sol",
+      reasoning: { effort: "medium" },
+      verbosity: "low",
     });
     expect(Object.keys(sent).toSorted()).toEqual([
       "max_tokens",
       "messages",
       "model",
       "reasoning",
-      "temperature",
+      "verbosity",
     ]);
     expect(sent.messages.map((message) => message.role)).toEqual([
       "system",
       "user",
     ]);
     expect(sent.messages[0]?.content).toMatch(
-      /^You help an English speaker who is a beginner in Norwegian \(Bokmål\)\./u
+      /^You are the tutor of a language course\. The learner is an English speaker and a beginner in Norwegian \(Bokmål\)\./u
     );
-    expect(sent.messages[1]?.content).toBe(
-      [
-        "English sentence: I have a house.",
-        "Expected Norwegian: Jeg har et hus.",
-        "Learner's answer: jeg har en hus",
-        "The program marked these as the weak points, with what the course teaches about each:",
-        "- hus",
-        "- et word",
-        "",
-        "Write a HINT for a second try. Say which word to look at again and what kind of thing to check (its ending, its place in the sentence, the choice of word). Do NOT write the correct word, the correct ending, the correct order or the correct sentence. The learner must still work it out.",
-      ].join("\n")
+    expect(sent.messages[1]?.content).toMatch(
+      new RegExp(
+        `^${[
+          "English sentence: I have a house\\.",
+          "Expected Norwegian: Jeg har et hus\\.",
+          "The learner typed: jeg har en hus",
+          "",
+          "Course notes on the words and patterns at those places:",
+          "- hus",
+          "- et word",
+          "",
+          "Task: write a HINT for a second try\\. ",
+        ].join("\n")}`,
+        "u"
+      )
     );
+  });
+
+  test("the differences the app found are passed on, before the course notes", async () => {
+    const asked = model(completion("ok"));
+
+    const body = {
+      answer: "vi har tre barnet",
+      base: "We have three children.",
+      course: "no",
+      differences: [
+        'Expected “barn”, typed “barnet”: the right word in the wrong form, its "the" form.',
+      ],
+      kind: "explain",
+      target: "Vi har tre barn.",
+      topics: ["barn (child): et word"],
+    };
+
+    await post("/api/explain", body, await signIn());
+
+    expect(firstQuestion(asked).body.messages[1]?.content).toMatch(
+      new RegExp(
+        `^${[
+          "English sentence: We have three children\\.",
+          "Expected Norwegian: Vi har tre barn\\.",
+          "The learner typed: vi har tre barnet",
+          "",
+          "Where the answer differs, as the program found:",
+          '- Expected “barn”, typed “barnet”: the right word in the wrong form, its "the" form\\.',
+          "",
+          "Course notes on the words and patterns at those places:",
+          "- barn \\(child\\): et word",
+          "",
+          "Task: the expected sentence is now on screen\\. EXPLAIN ",
+        ].join("\n")}`,
+        "u"
+      )
+    );
+  });
+
+  test("a hint that writes a word of the answer the learner did not type is not passed on", async () => {
+    model(completion("Use “et” here, not “en”."));
+
+    expect(
+      await result(post("/api/explain", question, await signIn()))
+    ).toEqual({
+      body: { error: "The hint gave the answer away" },
+      status: 502,
+    });
+
+    // After the answer is shown there is nothing left to give away.
+    expect(
+      await result(
+        post("/api/explain", { ...question, kind: "explain" }, await signIn())
+      )
+    ).toEqual({ body: { text: "Use “et” here, not “en”." }, status: 200 });
   });
 
   test("without weak points, and after the answer is shown, the question says so", async () => {
@@ -670,7 +729,7 @@ describe("/api/explain", () => {
     const { body: sent } = firstQuestion(asked);
 
     expect(sent.messages[1]?.content).toMatch(
-      /^English sentence: I have a house\.\nExpected Norwegian: Jeg har et hus\.\nLearner's answer: jeg har en hus\n\nThe correct answer is now on screen\. EXPLAIN /u
+      /^English sentence: I have a house\.\nExpected Norwegian: Jeg har et hus\.\nThe learner typed: jeg har en hus\n\nTask: the expected sentence is now on screen\. EXPLAIN /u
     );
   });
 

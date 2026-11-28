@@ -16,6 +16,7 @@ import { color, radius, text, tracking } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
 import { ArrowRight } from "lucide-react";
 
+import { useCourse } from "../../course";
 import { learner } from "../../learner";
 import { say } from "../say";
 import { contrast, spokenForm } from "./contrast";
@@ -200,9 +201,16 @@ export const PatternTask = ({
   frame,
   onDone,
 }: PatternTaskProps) => {
+  const course = useCourse();
+
   const [state, send] = useTask(
     patternTask,
-    () => ({ item, known: new Set(learner().memory().keys()), practice }),
+    () => ({
+      course,
+      item,
+      known: new Set(learner().memory().keys()),
+      practice,
+    }),
     onDone
   );
 

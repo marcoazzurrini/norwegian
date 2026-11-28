@@ -1,6 +1,6 @@
 // Teaches a grammar pattern: contrasting examples and a short rule, reading questions, then typed sentences.
 // The pattern counts as taught once the reading questions are answered; the sentences then review it.
-import type { Item, Quiz, Sentence } from "@norsk/course";
+import type { Course, Item, Quiz, Sentence } from "@norsk/course";
 
 import { askQuestion, pickOption } from "./quiz";
 import type { QuizState } from "./quiz";
@@ -16,6 +16,8 @@ export interface PatternInput {
   practice: Sentence[];
   /** Ids of the items the learner already has. */
   known: ReadonlySet<string>;
+  /** The course the pattern is from. */
+  course: Course;
 }
 
 export type PatternPhase =
@@ -27,6 +29,7 @@ export type PatternPhase =
   | { step: "produce"; index: number; sentence: SentenceState };
 
 export interface PatternState {
+  course: Course;
   item: Item;
   quiz: Quiz[];
   practice: Sentence[];
@@ -47,8 +50,14 @@ export type PatternEvent =
   /** The pause after a right pick is over. */
   | { type: "next" };
 
-const init = ({ item, known, practice }: PatternInput): Step<PatternState> =>
+const init = ({
+  course,
+  item,
+  known,
+  practice,
+}: PatternInput): Step<PatternState> =>
   stay({
+    course,
     done: false,
     item,
     known: new Set([...known, item.id]),
@@ -79,7 +88,11 @@ const produce = (
     return finish(state, effects);
   }
 
-  const first = sentenceTask.init({ known: state.known, sentence });
+  const first = sentenceTask.init({
+    course: state.course,
+    known: state.known,
+    sentence,
+  });
 
   return {
     effects: [...effects, ...first.effects],

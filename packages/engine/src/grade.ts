@@ -21,6 +21,14 @@ export interface SentenceGrade {
   typed: TypedWord[];
   /** Indexes of the expected words the learner did not produce. */
   missed: number[];
+  /**
+   * For each missed word, in the order of `missed`: the wrong words typed where it belongs.
+   * Empty for a word that was left out. Missed words side by side get one wrong word each when
+   * there are as many of the one as of the other, and otherwise share the wrong words between them.
+   */
+  instead: string[][];
+  /** The wrong words that stand where no expected word is missing: words too many. */
+  extra: string[];
   /** All the right words, in the wrong order. */
   orderOnly: boolean;
   /**
@@ -35,6 +43,8 @@ interface Alignment {
   expected: Set<number>;
   /** Indexes of the typed words that were matched. */
   typed: Set<number>;
+  /** Each matched expected word with its typed word, as [expected, typed], in the order of the sentence. */
+  pairs: [number, number][];
 }
 
 type Same = (i: number, j: number) => boolean;
@@ -66,7 +76,13 @@ const lcsTable = (
  */
 const align = (n: number, m: number, same: Same): Alignment => {
   const lcs = lcsTable(n, m, same);
-  const matched: Alignment = { expected: new Set(), typed: new Set() };
+
+  const matched: Alignment = {
+    expected: new Set(),
+    pairs: [],
+    typed: new Set(),
+  };
+
   let i = 0;
   let j = 0;
 
@@ -74,6 +90,7 @@ const align = (n: number, m: number, same: Same): Alignment => {
     if (same(i, j)) {
       matched.expected.add(i);
       matched.typed.add(j);
+      matched.pairs.push([i, j]);
       i += 1;
       j += 1;
     } else if (lcs(i + 1, j) >= lcs(i, j + 1)) {
@@ -84,6 +101,40 @@ const align = (n: number, m: number, same: Same): Alignment => {
   }
 
   return matched;
+};
+
+/** The place of a missed word among the typed words: after the typed word at `before`, up to the one at `after`. */
+const gapAt = ({ pairs }: Alignment, typed: number, at: number) => ({
+  after: pairs.find(([expected]) => expected > at)?.[1] ?? typed,
+  before: pairs.findLast(([expected]) => expected < at)?.[1] ?? -1,
+});
+
+/** The wrong words typed where each missed word belongs, and the wrong words that belong nowhere. */
+const wrongWords = (
+  matched: Alignment,
+  typed: string[],
+  missed: number[]
+): Pick<SentenceGrade, "extra" | "instead"> => {
+  const gaps = missed.map((at) => gapAt(matched, typed.length, at));
+  const inGap = new Set<number>();
+
+  const instead = gaps.map(({ after, before }, k) => {
+    const words = typed.slice(before + 1, after);
+    const first = gaps.findIndex((gap) => gap.before === before);
+    const sharing = gaps.filter((gap) => gap.before === before).length;
+    const own = words[k - first];
+
+    for (let j = before + 1; j < after; j += 1) {
+      inGap.add(j);
+    }
+
+    return sharing === words.length && own !== undefined ? [own] : words;
+  });
+
+  return {
+    extra: typed.filter((_, j) => !matched.typed.has(j) && !inGap.has(j)),
+    instead,
+  };
 };
 
 /**
@@ -136,6 +187,8 @@ export const gradeSentence = (
   ) {
     return {
       correct: true,
+      extra: [],
+      instead: [],
       misplaced: [],
       missed: [],
       orderOnly: false,
@@ -168,6 +221,7 @@ export const gradeSentence = (
 
   return {
     correct,
+    ...wrongWords(matched, typed, missed),
     misplaced: orderOnly ? outOfPlace(expected.length, typed.length, same) : [],
     missed,
     orderOnly,

@@ -28,7 +28,7 @@ const run = (
   events: SentenceEvent[],
   sentence = snakker,
   known: string[] = all
-) => play(sentenceTask, { known: new Set(known), sentence }, events);
+) => play(sentenceTask, { course, known: new Set(known), sentence }, events);
 
 /** The effects of finishing the sentence: reviews, the time it was seen, and the result. */
 const recorded = (
@@ -99,8 +99,10 @@ describe("a sentence", () => {
     expect(explainRequest(state)).toEqual({
       answer: "jeg snakker ikke engelsk",
       base: snakker.base,
+      differences: [{ expected: "norsk", sameWord: null, typed: ["engelsk"] }],
       itemIds: ["w:norsk:adj"],
       kind: "hint",
+      orderOnly: false,
       target: snakker.target,
     });
   });
@@ -190,20 +192,104 @@ describe("a sentence", () => {
     });
   });
 
-  test("a known word in the wrong form gets a hint at the pattern", () => {
+  test("a known word in the wrong form fails the pattern and not the word, and gets a hint at the pattern", () => {
     const huset = sentenceOf("Huset er stort.");
-
-    const { state } = run([answer("hus er stort")], huset, [
-      "w:hus:noun",
-      "p:definite",
-      "w:er:verb",
-      "w:stor:adj",
-    ]);
+    const known = ["w:hus:noun", "p:definite", "w:er:verb", "w:stor:adj"];
+    const events = [answer("hus er stort")];
+    const { state } = run(events, huset, known);
 
     expect(state.phase).toMatchObject({
-      failed: ["w:hus:noun", "p:definite"],
+      failed: ["p:definite"],
       hint: { id: "p:definite", kind: "pattern" },
+      unsure: [],
     });
+    // The model still reads the forms of the word, to name the right one.
+    expect(explainRequest(state)).toMatchObject({
+      differences: [
+        { expected: "Huset", sameWord: "w:hus:noun", typed: ["hus"] },
+      ],
+      itemIds: ["w:hus:noun", "p:definite"],
+    });
+
+    // Before the pattern is taught there is nothing but the word to fail.
+    const early = known.filter((id) => id !== "p:definite");
+
+    expect(run(events, huset, early).state.phase).toMatchObject({
+      failed: ["w:hus:noun", "p:definite"],
+      hint: { id: "w:hus:noun", kind: "word" },
+    });
+  });
+
+  test("a word that is the same for one and for several fails “more than one” in the wrong form", () => {
+    const barn = sentenceOf("Vi har tre barn.");
+    const known = sentenceItems(barn);
+
+    expect(known).toContain("p:plural");
+    expect(
+      run([answer("vi har tre barnet")], barn, [...known]).state.phase
+    ).toMatchObject({ failed: ["p:plural"], unsure: [] });
+  });
+
+  test("a word with an ending it does not have is the right word in the wrong form", () => {
+    const rooms = sentenceOf("Huset vårt har fem rom.");
+    const come = sentenceOf("Kom hit!");
+
+    expect(
+      run([answer("huset vårt har fem romer")], rooms, [
+        ...sentenceItems(rooms),
+      ]).state.phase
+    ).toMatchObject({ failed: ["p:plural"], unsure: [] });
+    expect(
+      run([answer("komm hit")], come, [...sentenceItems(come)]).state.phase
+    ).toMatchObject({ failed: ["p:imperative"], unsure: [] });
+  });
+
+  test("a misspelled word fails as a word, and the pattern on it is not reviewed", () => {
+    const key = sentenceOf("Hvor er nøkkelen din?");
+    const known = [...sentenceItems(key)];
+    const events = [answer("hvor er snøkkelen din"), answer(key.target)];
+    const shown = run(events, key, known);
+
+    expect(run(events.slice(0, 1), key, known).state.phase).toMatchObject({
+      hint: { id: "w:nøkkel:noun", kind: "word" },
+    });
+    expect(shown.state.phase).toMatchObject({
+      failed: ["w:nøkkel:noun"],
+      unsure: ["p:definite"],
+    });
+
+    const [, review, , done] = run([...events, next], key, known).effects;
+    const reviewed = shown.state.covered.filter((id) => id !== "p:definite");
+
+    expect(review).toEqual({
+      inputs: reviewed.map((id) => ({
+        carrier: true,
+        grade: id === "w:nøkkel:noun" ? "again" : "good",
+        id,
+      })),
+      type: "review",
+    });
+    expect(done).toMatchObject({
+      result: { right: reviewed.length - 1, wrong: 1 },
+    });
+  });
+
+  test("a pattern in doubt on one word still passes when another word shows it right", () => {
+    const book = sentenceOf("Boka ligger på bordet.");
+    const known = [...sentenceItems(book)];
+
+    expect(
+      run([answer("boka ligger på bårdet")], book, known).state.phase
+    ).toMatchObject({ failed: ["w:bord:noun"], unsure: [] });
+  });
+
+  test("the wrong form of “our” is wrong, and fails “mine and yours”", () => {
+    const rooms = sentenceOf("Huset vårt har fem rom.");
+    const known = [...sentenceItems(rooms)];
+
+    expect(
+      run([answer("huset vår har fem rom")], rooms, known).state.phase
+    ).toMatchObject({ failed: ["p:possessive"], step: "retry" });
   });
 
   test("the right words in the wrong order fail the word-order pattern, not the words", () => {
@@ -261,7 +347,7 @@ describe("a sentence", () => {
         const swapped = words.with(k, word).with(k + 1, words[k] ?? "");
 
         const { phase } = sentenceTask.step(
-          sentenceTask.init({ known, sentence: s }).state,
+          sentenceTask.init({ course, known, sentence: s }).state,
           answer(swapped.join(" ")),
           T0
         ).state;

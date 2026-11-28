@@ -1,5 +1,6 @@
 // How an item is named and shown, wherever a task or a list mentions it.
 import type { Course, Item } from "@norsk/course";
+import type { Difference } from "@norsk/engine";
 
 /** The gap in a phrase such as "jeg heter ___", with the spaces around it. */
 const GAP = /\s*___\s*/gu;
@@ -30,13 +31,62 @@ export const itemFacts = (course: Course, id: string): string => {
 
   // A word that never changes has an empty list of forms.
   const forms = (one.forms ?? [])
-    .map(({ form, label }) => `"${label}" ${form}`)
+    .map(({ form, label }) => `"${label}" form “${form}”`)
     .join(", ");
 
   const facts = [...article, ...(forms === "" ? [] : [forms])];
 
   return facts.length === 0 ? name : `${name}: ${facts.join("; ")}`;
 };
+
+const quoted = (words: string[]): string =>
+  words.map((word) => `“${word}”`).join(" ");
+
+/** What a wrong word is, when it is the expected word in another form: the names the course gives that form. */
+const formNames = (course: Course, id: string, typed: string[]): string => {
+  const { forms, text } = course.item(id);
+
+  const names = (forms ?? [])
+    .filter(({ form }) => typed.includes(form.toLowerCase()))
+    .map(({ label }) => `"${label}"`);
+
+  if (names.length > 0) {
+    return `, its ${names.join(" or ")} form`;
+  }
+
+  // A word such as "vår" has no table of forms, so its form has no name.
+  return typed.includes(text.toLowerCase())
+    ? ""
+    : ", a form that this word does not have";
+};
+
+/**
+ * One place where an answer differs from the expected sentence, in one line. Like `itemFacts`, it
+ * is written for the language model: the app has found the difference, and the model is told what
+ * kind it is, so that it does not guess.
+ */
+export const differenceFacts = (
+  course: Course,
+  { expected, sameWord, typed }: Difference
+): string => {
+  if (expected === null) {
+    return `${quoted(typed)} is a word too many.`;
+  }
+
+  if (typed.length === 0) {
+    return `“${expected}” is missing.`;
+  }
+
+  const kind =
+    sameWord === null
+      ? "not a form of the expected word, so a misspelling or a different word"
+      : `the right word in the wrong form${formNames(course, sameWord, typed)}`;
+
+  return `Expected “${expected}”, typed ${quoted(typed)}: ${kind}.`;
+};
+
+/** The line that stands for the differences when all the words are right and only their order is wrong. */
+export const ORDER_ONLY = "All the words are right. Only their order is wrong.";
 
 /** True if the item is shown with an article in front, such as "et hus". */
 export const hasArticle = (one: Item): boolean =>
