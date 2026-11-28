@@ -36,7 +36,11 @@ const answer = (s: Sentence): PatternEvent => ({
 const teach: Effect = { ids: [neg.id], type: "teach" };
 
 const run = (events: PatternEvent[], sentences = practice, pattern = neg) =>
-  play(patternTask, { item: pattern, known, practice: sentences }, events);
+  play(
+    patternTask,
+    { course, item: pattern, known, practice: sentences },
+    events
+  );
 
 /** Both reading questions answered correctly. */
 const read = [next, pick(rightFirst), after, pick(rightSecond), after];

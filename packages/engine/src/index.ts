@@ -97,6 +97,7 @@ export type { QuizState } from "./tasks/quiz";
 export { explainRequest, sentenceTask } from "./tasks/sentence";
 
 export type {
+  Difference,
   ExplainRequest,
   SentenceEvent,
   SentenceHint,

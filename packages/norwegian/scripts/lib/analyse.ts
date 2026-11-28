@@ -19,6 +19,16 @@ const POSSESSIVE_LEMMAS = new Set([
   "deres",
 ]);
 
+/**
+ * An ei word may be used as an en word, and then "my", "your" and "own" take their en form:
+ * "boka mi" or "boken min". So the en form counts wherever the ei form is written.
+ */
+const EN_FOR_EI = new Map([
+  ["mi", ["min"]],
+  ["di", ["din"]],
+  ["si", ["sin"]],
+]);
+
 const OBJECT_PRONOUNS = new Set(["meg", "deg", "ham", "henne", "oss", "dem"]);
 
 const SUBJECTS = new Set([
@@ -279,7 +289,9 @@ const requireMeaning = (
 const otherSpellings = (best: Candidate, written: string): string[] => {
   const least = FEAT_ORDER.find((f) => best.feats.has(f));
 
-  if (best.exact || least === undefined) {
+  // A form the dictionary does not name ("other") is not known to be the same form as any other:
+  // "vår", "vårt" and "våre" are three forms, and only one of them fits a given sentence.
+  if (best.exact || least === undefined || least === "other") {
     return [];
   }
 
@@ -337,7 +349,10 @@ const readWord = (a: Analysis, word: Word, token: Token, i: number) => {
 
   token.w = best.id;
 
-  const alts = otherSpellings(best, word.lc);
+  const alts = [
+    ...otherSpellings(best, word.lc),
+    ...(EN_FOR_EI.get(word.lc) ?? []),
+  ];
 
   if (alts.length > 0) {
     token.alts = alts;
@@ -501,6 +516,25 @@ const textPatterns = (a: Analysis): Set<string> => {
   return found;
 };
 
+/**
+ * Positions of the words that carry a pattern the author added, when the pattern is one of single words.
+ * The author adds such a pattern where the text cannot show it: "rom" is the same word for one room and for five.
+ * Empty for a pattern of the text as a whole, such as word order.
+ */
+const carriersOf = (a: Analysis, name: string): number[] => {
+  const all = a.tokens.map((_, i) => i);
+
+  if (name === "plural") {
+    return all.filter((i) => {
+      const { pos, feats } = readingAt(a, i);
+
+      return pos === "noun" && feats.has("pl");
+    });
+  }
+
+  return name === "det-subj" ? all.filter((i) => wordAt(a, i) === "det") : [];
+};
+
 // ---------------------------------------------------------------- the whole text
 
 export interface AnalyseOptions {
@@ -566,7 +600,20 @@ export const analyse = (
       report.errors.push(`${a.where}: unknown pattern +${name}`);
     }
 
-    patterns.add(name);
+    const carriers = carriersOf(a, name);
+
+    // On its words, the pattern fails when one of them is wrong, and not when only the order is.
+    for (const i of carriers) {
+      const token = a.tokens[i];
+
+      if (token !== undefined) {
+        token.p = [...new Set([...(token.p ?? []), `p:${name}`])];
+      }
+    }
+
+    if (carriers.length === 0) {
+      patterns.add(name);
+    }
   }
 
   for (const name of options.minus ?? []) {

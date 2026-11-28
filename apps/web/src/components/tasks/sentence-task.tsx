@@ -1,6 +1,7 @@
-import type { Sentence } from "@norsk/course";
+import type { Course, Sentence } from "@norsk/course";
 import { explainRequest, sentenceTask } from "@norsk/engine";
 import type { SentenceEvent, SentenceState, TaskResult } from "@norsk/engine";
+import type { ExplainRequest } from "@norsk/protocol";
 import {
   AiNote,
   Answer,
@@ -15,7 +16,7 @@ import {
 } from "@norsk/ui";
 import { color, radius, text } from "@norsk/ui/tokens.stylex";
 import * as stylex from "@stylexjs/stylex";
-import { Check, CircleAlert, X } from "lucide-react";
+import { Check, CircleAlert, Minus, X } from "lucide-react";
 import { useState } from "react";
 
 import { useCourse } from "../../course";
@@ -25,7 +26,7 @@ import { say } from "../say";
 import { AnswerField } from "./answer-field";
 import type { Frame } from "./frame";
 import { HelpButtons } from "./help";
-import { itemFacts, itemName } from "./items";
+import { ORDER_ONLY, differenceFacts, itemFacts, itemName } from "./items";
 import { hintText, sentenceNote } from "./sentence-text";
 import { taskStyles } from "./task-styles";
 import { useTask } from "./use-task";
@@ -90,6 +91,7 @@ const styles = stylex.create({
     fontSize: { default: text.s15, [stylex.env.desktop]: text.s18 },
     fontWeight: 500,
   },
+  notCounted: { color: color.fg2 },
   toRepeat: {
     color: color.fg2,
     flexShrink: 0,
@@ -107,6 +109,54 @@ const styles = stylex.create({
     paddingBlock: { default: "0.5rem", [stylex.env.desktop]: "0.6875rem" },
   },
 });
+
+/**
+ * What to ask the language model about the mistake on screen, or null when there is none.
+ * The app has already decided right and wrong. The model only adds words about the mistake, and
+ * is told what the app found and what the course teaches about it.
+ */
+const modelRequest = (
+  course: Course,
+  state: SentenceState
+): ExplainRequest | null => {
+  const ask = explainRequest(state);
+
+  return ask === null
+    ? null
+    : {
+        answer: ask.answer,
+        base: ask.base,
+        course: course.meta.id,
+        differences: ask.orderOnly
+          ? [ORDER_ONLY]
+          : ask.differences.map((one) => differenceFacts(course, one)),
+        kind: ask.kind,
+        target: ask.target,
+        topics: ask.itemIds.map((id) => itemFacts(course, id)),
+      };
+};
+
+/** The icon and the words at the end of the row of one reviewed item. */
+const rowMark = (bad: boolean, unsure: boolean) => {
+  if (bad) {
+    return {
+      icon: (
+        <CircleAlert {...stylex.props(taskStyles.icon18, taskStyles.wrong)} />
+      ),
+      label: "needs work",
+    };
+  }
+
+  return unsure
+    ? {
+        icon: <Minus {...stylex.props(taskStyles.icon18, styles.notCounted)} />,
+        label: "not counted",
+      }
+    : {
+        icon: <Check {...stylex.props(taskStyles.icon18, taskStyles.right)} />,
+        label: "reviewed",
+      };
+};
 
 interface SentenceViewProps {
   state: SentenceState;
@@ -135,23 +185,11 @@ export const SentenceView = ({
   const retryWords = phase.step === "retry" ? phase.first.typed : null;
   const shown = phase.step === "result" ? phase.last.typed : retryWords;
 
-  // The app has already decided right and wrong. The language model only adds words about the mistake.
-  const ask = explainRequest(state);
-
-  const aiText = useExplain(
-    ask === null
-      ? null
-      : {
-          answer: ask.answer,
-          base: ask.base,
-          course: course.meta.id,
-          kind: ask.kind,
-          target: ask.target,
-          topics: ask.itemIds.map((id) => itemFacts(course, id)),
-        }
-  );
+  const aiText = useExplain(modelRequest(course, state));
 
   const failed = phase.step === "result" ? phase.failed : [];
+  // Items the wrong answer says nothing about: a misspelled word does not show whether its form was known.
+  const unsure = phase.step === "result" ? phase.unsure : [];
 
   return (
     <Focus
@@ -281,24 +319,16 @@ export const SentenceView = ({
                 ) : null}
               </div>
               {covered.map((id) => {
-                const bad = failed.includes(id);
+                const mark = rowMark(failed.includes(id), unsure.includes(id));
 
                 return (
                   <div key={id} {...stylex.props(styles.coveredRow)}>
-                    {bad ? (
-                      <CircleAlert
-                        {...stylex.props(taskStyles.icon18, taskStyles.wrong)}
-                      />
-                    ) : (
-                      <Check
-                        {...stylex.props(taskStyles.icon18, taskStyles.right)}
-                      />
-                    )}
+                    {mark.icon}
                     <span {...stylex.props(taskStyles.grow)}>
                       {itemName(course, id)}
                     </span>
                     <span {...stylex.props(taskStyles.quiet14)}>
-                      {bad ? "needs work" : "reviewed"}
+                      {mark.label}
                     </span>
                   </div>
                 );
@@ -326,11 +356,12 @@ export const SentenceTask = ({
   stamp,
   onDone,
 }: SentenceTaskProps) => {
-  const { meta } = useCourse();
+  const course = useCourse();
+  const { meta } = course;
 
   const [state, send] = useTask(
     sentenceTask,
-    () => ({ known: new Set(learner().memory().keys()), sentence }),
+    () => ({ course, known: new Set(learner().memory().keys()), sentence }),
     onDone
   );
 

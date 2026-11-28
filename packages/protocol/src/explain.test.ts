@@ -37,6 +37,7 @@ describe("the explain request, across versions", () => {
       answer: "jeg er et hus",
       base: "I have a house.",
       course: FIRST_COURSE,
+      differences: [],
       kind: "explain",
       target: "Jeg har et hus.",
       topics: [],

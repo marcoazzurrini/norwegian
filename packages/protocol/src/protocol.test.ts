@@ -285,6 +285,24 @@ describe("the explain request", () => {
     expect(parsed.topics).toHaveLength(8);
   });
 
+  test("the differences are kept, a few at most, and a request without them has none", () => {
+    const current = {
+      answer: "vi har tre barnet",
+      base: "We have three children.",
+      course: "no",
+      kind: "explain",
+      target: "Vi har tre barn.",
+      topics: [],
+    };
+
+    const differences = Array.from({ length: 12 }, (_, at) => `place ${at}`);
+
+    expect(v.parse(ExplainRequestSchema, current).differences).toEqual([]);
+    expect(
+      v.parse(ExplainRequestSchema, { ...current, differences }).differences
+    ).toEqual(differences.slice(0, 8));
+  });
+
   test("an empty answer is refused", () => {
     expect(v.is(ExplainRequestSchema, { ...request, answer: "   " })).toBe(
       false

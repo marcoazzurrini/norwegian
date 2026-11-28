@@ -2,7 +2,14 @@ import { expect, test } from "bun:test";
 
 import { course } from "@norsk/norwegian";
 
-import { hasArticle, itemFacts, itemName, shuffled, soundOf } from "./items";
+import {
+  differenceFacts,
+  hasArticle,
+  itemFacts,
+  itemName,
+  shuffled,
+  soundOf,
+} from "./items";
 
 const { item } = course;
 
@@ -42,8 +49,48 @@ test("the facts of an item are its name with its rule, or with its article and f
     "Verbs now: A verb has one form for everyone: jeg er, du er, vi er. Most verbs end in -r in the present: snakker, kommer, heter."
   );
   expect(itemFacts(course, "w:rom:noun")).toBe(
-    'rom (room): et word; "a" rom, "the" rommet, "several" rom, "the several" rommene'
+    'rom (room): et word; "a" form “rom”, "the" form “rommet”, "several" form “rom”, "the several" form “rommene”'
   );
+});
+
+test("a difference says what kind of wrong word was typed", () => {
+  const room = { expected: "rom", sameWord: null };
+
+  expect(differenceFacts(course, { ...room, typed: ["rømet"] })).toBe(
+    "Expected “rom”, typed “rømet”: not a form of the expected word, so a misspelling or a different word."
+  );
+  expect(
+    differenceFacts(course, {
+      expected: "rom",
+      sameWord: "w:rom:noun",
+      typed: ["rommet"],
+    })
+  ).toBe(
+    'Expected “rom”, typed “rommet”: the right word in the wrong form, its "the" form.'
+  );
+  // A word such as "vår" has no table of forms, so its wrong form has no name.
+  expect(
+    differenceFacts(course, {
+      expected: "vårt",
+      sameWord: "w:vår:det",
+      typed: ["vår"],
+    })
+  ).toBe("Expected “vårt”, typed “vår”: the right word in the wrong form.");
+  expect(
+    differenceFacts(course, {
+      expected: "rom",
+      sameWord: "w:rom:noun",
+      typed: ["romer"],
+    })
+  ).toBe(
+    "Expected “rom”, typed “romer”: the right word in the wrong form, a form that this word does not have."
+  );
+  expect(differenceFacts(course, { ...room, typed: [] })).toBe(
+    "“rom” is missing."
+  );
+  expect(
+    differenceFacts(course, { expected: null, sameWord: null, typed: ["nå"] })
+  ).toBe("“nå” is a word too many.");
 });
 
 test("an item is named by its words and meaning, a pattern by its title", () => {
